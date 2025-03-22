@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { createContext, useContext, useEffect, useState } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import type { SupabaseClient, User } from "@supabase/auth-helpers-nextjs"
-import { useToast } from "@/components/ui/use-toast"
+import { createContext, useContext, useEffect, useState } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import type { SupabaseClient, User } from '@supabase/auth-helpers-nextjs'
+import { useToast } from '@/hooks/use-toast'
 
 type SupabaseContext = {
   supabase: SupabaseClient
@@ -29,11 +29,11 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
       } = await supabase.auth.getSession()
 
       if (error) {
-        console.error("Error getting session:", error)
+        console.error('Error getting session:', error)
         toast({
-          title: "Authentication error",
-          description: "There was a problem with your authentication.",
-          variant: "destructive",
+          title: 'Authentication error',
+          description: 'There was a problem with your authentication.',
+          variant: 'destructive',
         })
         setLoading(false)
         return
@@ -56,14 +56,17 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     }
   }, [supabase, toast])
 
-  return <Context.Provider value={{ supabase, user, loading }}>{children}</Context.Provider>
+  return (
+    <Context.Provider value={{ supabase, user, loading }}>
+      {children}
+    </Context.Provider>
+  )
 }
 
 export const useSupabase = () => {
   const context = useContext(Context)
   if (context === undefined) {
-    throw new Error("useSupabase must be used inside SupabaseProvider")
+    throw new Error('useSupabase must be used inside SupabaseProvider')
   }
   return context
 }
-
