@@ -8,7 +8,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
-import reviewStar from '../../../public/review-star.svg'
+import { AssetDownload } from './asset-download'
 import { AssetReviews } from './asset-reviews'
 import { PurchaseOptions } from './purchase-options'
 import { RelatedAssets } from './related-assets'
@@ -130,6 +130,9 @@ export default function AssetPage({ params }: { params: { id: string } }) {
     notFound()
   }
 
+  // In a real app, this would be determined by checking if the user has purchased the asset
+  const isPurchased = false
+
   return (
     <>
       <Script
@@ -152,11 +155,9 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                   </Badge>
                   <Badge variant='outline'>{asset.useCase}</Badge>
                 </div>
-
                 <h1 className='text-3xl font-bold tracking-tight mb-3'>
                   {asset.title}
                 </h1>
-
                 <div className='flex items-center space-x-4'>
                   <div className='flex items-center space-x-2'>
                     <Avatar className='h-8 w-8'>
@@ -168,29 +169,30 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                         {asset.creator.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-
                     <span className='text-sm'>
                       by{' '}
                       <span className='font-medium'>{asset.creator.name}</span>
                     </span>
                   </div>
-
                   <div className='flex items-center'>
-                    <Image
-                      src={reviewStar}
-                      width={16}
-                      height={16}
-                      alt='Review star'
-                      className='mr-1'
-                    />
-
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 24 24'
+                      fill='currentColor'
+                      className='w-4 h-4 text-yellow-500 mr-1'
+                      aria-hidden='true'
+                    >
+                      <path
+                        fillRule='evenodd'
+                        d='M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
                     <span className='text-sm font-medium'>{asset.rating}</span>
-
                     <span className='text-xs text-muted-foreground ml-1'>
                       ({asset.reviews} reviews)
                     </span>
                   </div>
-
                   <div className='text-sm text-muted-foreground'>
                     {asset.sales} sales
                   </div>
@@ -207,7 +209,6 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                   priority
                 />
               </div>
-
               <div className='grid grid-cols-3 gap-4'>
                 {asset.gallery.map((image, index) => (
                   <div
@@ -262,12 +263,10 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                         ))}
                       </ul>
                     </div>
-
                     <div>
                       <h3 className='text-xl font-semibold mb-3'>
                         Requirements
                       </h3>
-
                       <ul className='space-y-2'>
                         {asset.requirements.map((requirement, index) => (
                           <li key={index} className='flex items-start'>
@@ -291,7 +290,6 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                     </div>
                   </div>
                 </TabsContent>
-
                 <TabsContent value='reviews' className='pt-6'>
                   <AssetReviews assetId={asset.id} />
                 </TabsContent>
@@ -306,20 +304,16 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                         src={asset.creator.avatar}
                         alt={asset.creator.name}
                       />
-
                       <AvatarFallback>
                         {asset.creator.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-
                     <div>
                       <h3 className='font-semibold'>{asset.creator.name}</h3>
                       <p className='text-sm text-muted-foreground'>Creator</p>
                     </div>
                   </div>
-
                   <p className='text-sm mb-4'>{asset.creator.bio}</p>
-
                   <Button variant='outline' className='w-full'>
                     View Profile
                   </Button>
@@ -331,7 +325,6 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                 <h2 className='text-2xl font-bold tracking-tight mb-6'>
                   You May Also Like
                 </h2>
-
                 <RelatedAssets currentAssetId={asset.id} />
               </div>
             </div>
@@ -339,8 +332,16 @@ export default function AssetPage({ params }: { params: { id: string } }) {
 
           <div className='lg:col-span-1'>
             <div className='space-y-6 lg:sticky lg:top-20'>
-              {/* Purchase Options */}
-              <PurchaseOptions asset={asset} />
+              {/* Purchase Options or Download */}
+              {isPurchased ? (
+                <AssetDownload
+                  assetId={asset.id}
+                  assetTitle={asset.title}
+                  isPurchased={true}
+                />
+              ) : (
+                <PurchaseOptions asset={asset} />
+              )}
 
               {/* Creator Info (Desktop) */}
               <Card className='hidden lg:block border-border/50'>
@@ -355,15 +356,12 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                         {asset.creator.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-
                     <div>
                       <h3 className='font-semibold'>{asset.creator.name}</h3>
                       <p className='text-sm text-muted-foreground'>Creator</p>
                     </div>
                   </div>
-
                   <p className='text-sm mb-4'>{asset.creator.bio}</p>
-
                   <Button variant='outline' className='w-full'>
                     View Profile
                   </Button>
@@ -379,19 +377,16 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                       <span className='text-muted-foreground'>Created</span>
                       <span>{asset.created}</span>
                     </div>
-
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>
                         Last updated
                       </span>
                       <span>{asset.updated}</span>
                     </div>
-
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Category</span>
                       <span>{asset.category}</span>
                     </div>
-
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Use Case</span>
                       <span>{asset.useCase}</span>

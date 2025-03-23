@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { Logo } from './logo'
 
 export const Footer = () => {
   return (
@@ -7,11 +8,7 @@ export const Footer = () => {
       <div className='container py-8 md:py-12'>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-4'>
           <div className='space-y-4'>
-            <Link href='/' className='flex items-center space-x-2'>
-              <span className='text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600'>
-                AIAssets
-              </span>
-            </Link>
+            <Logo />
 
             <p className='text-sm text-muted-foreground'>
               The marketplace for high-quality AI assets, tools, and resources.

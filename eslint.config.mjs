@@ -14,6 +14,8 @@ const eslintConfig = [
     extends: ['next/core-web-vitals', 'next/typescript', 'prettier'],
     rules: {
       'no-console': 'warn',
+      'no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
     },
   }),
 ]

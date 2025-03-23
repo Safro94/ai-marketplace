@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { FC, useState } from 'react'
+import { ReviewForm } from './review-form'
 
 interface Props {
   assetId: number
@@ -70,7 +71,6 @@ const TOTAL_REVIEWS = REVIEWS.length
 const AVERAGE_RATING =
   REVIEWS.reduce((acc, review) => acc + review.rating, 0) / TOTAL_REVIEWS
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AssetReviews: FC<Props> = ({ assetId }) => {
   const [visibleReviews, setVisibleReviews] = useState(3)
 
@@ -197,6 +197,11 @@ export const AssetReviews: FC<Props> = ({ assetId }) => {
             </Button>
           </div>
         )}
+
+        <div className='mt-8 pt-8 border-t'>
+          <h3 className='text-xl font-semibold mb-4'>Write a Review</h3>
+          <ReviewForm assetId={assetId} />
+        </div>
       </div>
     </div>
   )

@@ -1,5 +1,7 @@
 'use client'
 
+import { useSupabase } from '@/app/supabase-provider'
+import { Logo } from '@/components/logo'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,7 +18,7 @@ import { Menu, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { useSupabase } from '../app/supabase-provider'
+import Notifications from './notifications'
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -35,11 +37,7 @@ export const Header = () => {
     <header className='sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
       <div className='container flex h-16 items-center justify-between'>
         <div className='flex items-center gap-6 md:gap-10'>
-          <Link href='/' className='flex items-center space-x-2'>
-            <span className='text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600'>
-              AIAssets
-            </span>
-          </Link>
+          <Logo />
 
           <nav className='hidden md:flex gap-6'>
             {navigation.map((item) => (
@@ -89,60 +87,55 @@ export const Header = () => {
           )}
 
           {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant='ghost'
-                  className='relative h-8 w-8 rounded-full'
-                >
-                  <Avatar className='h-8 w-8'>
-                    <AvatarImage src='' alt={user.email || ''} />
-                    <AvatarFallback>
-                      {user.email?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent className='w-56' align='end' forceMount>
-                <DropdownMenuLabel className='font-normal'>
-                  <div className='flex flex-col space-y-1'>
-                    <p className='text-sm font-medium leading-none'>
-                      {user.email}
-                    </p>
-                    <p className='text-xs leading-none text-muted-foreground'>
-                      {user.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem asChild>
-                  <Link href='/dashboard'>Dashboard</Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem asChild>
-                  <Link href='/account'>Account</Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem asChild>
-                  <Link href='/purchases'>Purchases</Link>
-                </DropdownMenuItem>
-
-                {user.app_metadata.creator && (
+            <>
+              <Notifications />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant='ghost'
+                    className='relative h-8 w-8 rounded-full'
+                  >
+                    <Avatar className='h-8 w-8'>
+                      <AvatarImage src='' alt={user.email || ''} />
+                      <AvatarFallback>
+                        {user.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-56' align='end' forceMount>
+                  <DropdownMenuLabel className='font-normal'>
+                    <div className='flex flex-col space-y-1'>
+                      <p className='text-sm font-medium leading-none'>
+                        {user.email}
+                      </p>
+                      <p className='text-xs leading-none text-muted-foreground'>
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href='/creator-dashboard'>Creator Dashboard</Link>
+                    <Link href='/dashboard'>Dashboard</Link>
                   </DropdownMenuItem>
-                )}
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem asChild>
-                  <Link href='/api/auth/signout'>Log out</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuItem asChild>
+                    <Link href='/account'>Account</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href='/purchases'>Purchases</Link>
+                  </DropdownMenuItem>
+                  {user.app_metadata.creator && (
+                    <DropdownMenuItem asChild>
+                      <Link href='/creator-dashboard'>Creator Dashboard</Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href='/api/auth/signout'>Log out</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           ) : (
             <div className='hidden md:flex gap-2'>
               <Button variant='ghost' asChild>
@@ -209,7 +202,6 @@ export const Header = () => {
                   >
                     Log in
                   </Link>
-
                   <Button asChild className='w-full'>
                     <Link href='/signup' onClick={() => setIsMenuOpen(false)}>
                       Sign up

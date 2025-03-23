@@ -13,7 +13,7 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 252 59% 48%;
+    --primary: 265 60% 55%;
     --primary-foreground: 0 0% 98%;
 
     --secondary: 240 3.7% 15.9%;
@@ -30,7 +30,7 @@
 
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 252 59% 48%;
+    --ring: 265 60% 55%;
 
     --radius: 0.5rem;
   }
@@ -43,4 +43,31 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Add chart colors for analytics */
+:root {
+  --chart-1: 265 60% 55%;
+  --chart-2: 220 70% 60%;
+  --chart-3: 180 70% 55%;
+  --chart-4: 330 70% 55%;
+}
+
+/* Add gradient for hero section */
+.hero-gradient {
+  background:
+    radial-gradient(circle at top right, hsl(265 60% 30%), transparent 70%),
+    radial-gradient(circle at bottom left, hsl(220 70% 30%), transparent 70%);
+}
+
+/* Add hover effect for asset cards */
+.card-hover {
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  border-color: hsl(var(--primary) / 0.5);
 }
