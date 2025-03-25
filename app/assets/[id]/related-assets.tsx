@@ -2,63 +2,68 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import prisma from '@/lib/prisma'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
 import reviewStar from '../../../public/review-star.svg'
 
 interface Props {
-  currentAssetId: number
+  currentAssetId: string
+  categoryId: string
 }
-// Mock data for related assets
-const RELATED_ASSETS = [
-  {
-    id: 101,
-    title: 'Content Calendar Generator',
-    description:
-      'AI system for planning and scheduling content across multiple platforms.',
-    price: 59,
-    category: 'Content Templates',
-    image: '/placeholder.svg?height=300&width=400',
-    rating: 4.7,
-  },
-  {
-    id: 102,
-    title: 'Keyword Research Framework',
-    description:
-      'Advanced prompts for discovering high-value keywords and search intent.',
-    price: 49,
-    category: 'Prompt Engineering',
-    image: '/placeholder.svg?height=300&width=400',
-    rating: 4.8,
-  },
-  {
-    id: 103,
-    title: 'Blog Post Optimizer',
-    description:
-      'AI system that enhances existing content for better SEO performance.',
-    price: 69,
-    category: 'AI Workflows',
-    image: '/placeholder.svg?height=300&width=400',
-    rating: 4.6,
-  },
-]
 
-export const RelatedAssets: FC<Props> = ({ currentAssetId }) => {
-  // Filter out the current asset if it's in the related assets
-  const filteredAssets = RELATED_ASSETS.filter(
-    (asset) => asset.id !== currentAssetId,
-  )
+export const RelatedAssets: FC<Props> = async ({
+  currentAssetId,
+  categoryId,
+}) => {
+  // Fetch related assets from the same category
+  const relatedAssets = await prisma.asset.findMany({
+    where: {
+      id: { not: currentAssetId },
+      categoryId: categoryId,
+      status: 'PUBLISHED',
+    },
+    include: {
+      category: true,
+    },
+    orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
+    take: 3,
+  })
 
+  if (relatedAssets.length === 0) {
+    // If no assets in the same category, get top-rated assets
+    const topAssets = await prisma.asset.findMany({
+      where: {
+        id: { not: currentAssetId },
+        status: 'PUBLISHED',
+      },
+      include: {
+        category: true,
+      },
+      orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
+      take: 3,
+    })
+
+    return <RelatedAssetsList assets={topAssets} />
+  }
+
+  return <RelatedAssetsList assets={relatedAssets} />
+}
+
+const RelatedAssetsList: FC<{ assets: unknown[] }> = ({ assets }) => {
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-      {filteredAssets.map((asset) => (
+      {assets.map((asset) => (
         <Link href={`/assets/${asset.id}`} key={asset.id}>
           <Card className='h-full overflow-hidden border-border/50 card-hover'>
             <CardHeader className='p-0'>
               <div className='relative aspect-[4/3] w-full overflow-hidden'>
                 <Image
-                  src={asset.image || '/placeholder.svg'}
+                  src={
+                    asset.featuredImage ||
+                    '/placeholder.svg?height=300&width=400'
+                  }
                   alt={asset.title}
                   fill
                   className='object-cover transition-all'
@@ -69,7 +74,7 @@ export const RelatedAssets: FC<Props> = ({ currentAssetId }) => {
             <CardContent className='p-4'>
               <div className='flex items-center justify-between mb-2'>
                 <Badge variant='secondary' className='bg-secondary/80 text-xs'>
-                  {asset.category}
+                  {asset.category.name}
                 </Badge>
                 <span className='text-sm font-bold'>${asset.price}</span>
               </div>
@@ -86,7 +91,9 @@ export const RelatedAssets: FC<Props> = ({ currentAssetId }) => {
                   alt='Review star'
                   className='mr-1'
                 />
-                <span className='font-medium'>{asset.rating}</span>
+                <span className='font-medium'>
+                  {asset.averageRating.toFixed(1)}
+                </span>
               </div>
             </CardContent>
           </Card>

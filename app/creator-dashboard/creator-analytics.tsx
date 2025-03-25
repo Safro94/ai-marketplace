@@ -13,6 +13,8 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useToast } from '@/hooks/use-toast'
+import { useEffect, useState } from 'react'
 import {
   Bar,
   BarChart,
@@ -25,49 +27,74 @@ import {
   YAxis,
 } from 'recharts'
 
-// Mock data for analytics
-const SALES_DATA = [
-  { date: '2024-03-01', sales: 2, revenue: 158 },
-  { date: '2024-03-02', sales: 1, revenue: 79 },
-  { date: '2024-03-03', sales: 0, revenue: 0 },
-  { date: '2024-03-04', sales: 3, revenue: 237 },
-  { date: '2024-03-05', sales: 2, revenue: 158 },
-  { date: '2024-03-06', sales: 1, revenue: 79 },
-  { date: '2024-03-07', sales: 4, revenue: 316 },
-  { date: '2024-03-08', sales: 2, revenue: 158 },
-  { date: '2024-03-09', sales: 3, revenue: 237 },
-  { date: '2024-03-10', sales: 5, revenue: 395 },
-  { date: '2024-03-11', sales: 2, revenue: 158 },
-  { date: '2024-03-12', sales: 1, revenue: 79 },
-  { date: '2024-03-13', sales: 0, revenue: 0 },
-  { date: '2024-03-14', sales: 3, revenue: 237 },
-]
-
-const VISITS_DATA = [
-  { date: '2024-03-01', visits: 45 },
-  { date: '2024-03-02', visits: 38 },
-  { date: '2024-03-03', visits: 52 },
-  { date: '2024-03-04', visits: 78 },
-  { date: '2024-03-05', visits: 63 },
-  { date: '2024-03-06', visits: 42 },
-  { date: '2024-03-07', visits: 85 },
-  { date: '2024-03-08', visits: 59 },
-  { date: '2024-03-09', visits: 67 },
-  { date: '2024-03-10', visits: 92 },
-  { date: '2024-03-11', visits: 73 },
-  { date: '2024-03-12', visits: 54 },
-  { date: '2024-03-13', visits: 49 },
-  { date: '2024-03-14', visits: 68 },
-]
-
-const ASSET_PERFORMANCE = [
-  { name: 'Advanced SEO Content Generation System', sales: 12, revenue: 948 },
-  { name: 'Financial Advisor GPT', sales: 8, revenue: 792 },
-  { name: 'Marketing Campaign Planner', sales: 6, revenue: 774 },
-  { name: 'Social Media Content Calendar', sales: 3, revenue: 207 },
-]
-
 export default function CreatorAnalytics() {
+  const [salesData, setSalesData] = useState([])
+  const [visitsData, setVisitsData] = useState([])
+  const [assetPerformance, setAssetPerformance] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      setIsLoading(true)
+      try {
+        // Fetch sales data
+        const salesResponse = await fetch('/api/creator/analytics/sales')
+        if (salesResponse.ok) {
+          const salesData = await salesResponse.json()
+          setSalesData(salesData)
+        }
+
+        // Fetch visits data
+        const visitsResponse = await fetch('/api/creator/analytics/visits')
+        if (visitsResponse.ok) {
+          const visitsData = await visitsResponse.json()
+          setVisitsData(visitsData)
+        }
+
+        // Fetch asset performance data
+        const assetsResponse = await fetch('/api/creator/analytics/assets')
+        if (assetsResponse.ok) {
+          const assetsData = await assetsResponse.json()
+          setAssetPerformance(assetsData)
+        }
+      } catch (error) {
+        console.error('Error fetching analytics:', error)
+        toast({
+          title: 'Error',
+          description: 'Failed to load analytics data. Please try again later.',
+          variant: 'destructive',
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchAnalytics()
+  }, [toast])
+
+  // If data is loading or empty, show placeholder data
+  const placeholderSalesData = [
+    { date: '2024-03-01', sales: 0, revenue: 0 },
+    { date: '2024-03-07', sales: 0, revenue: 0 },
+    { date: '2024-03-14', sales: 0, revenue: 0 },
+  ]
+
+  const placeholderVisitsData = [
+    { date: '2024-03-01', visits: 0 },
+    { date: '2024-03-07', visits: 0 },
+    { date: '2024-03-14', visits: 0 },
+  ]
+
+  const placeholderAssetData = [{ name: 'No assets yet', sales: 0, revenue: 0 }]
+
+  const displaySalesData =
+    salesData.length > 0 ? salesData : placeholderSalesData
+  const displayVisitsData =
+    visitsData.length > 0 ? visitsData : placeholderVisitsData
+  const displayAssetData =
+    assetPerformance.length > 0 ? assetPerformance : placeholderAssetData
+
   return (
     <div className='space-y-6'>
       <Tabs defaultValue='sales'>
@@ -86,53 +113,59 @@ export default function CreatorAnalytics() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer
-                config={{
-                  sales: {
-                    label: 'Sales',
-                    color: 'hsl(var(--chart-1))',
-                  },
-                  revenue: {
-                    label: 'Revenue ($)',
-                    color: 'hsl(var(--chart-2))',
-                  },
-                }}
-                className='h-[300px]'
-              >
-                <ResponsiveContainer width='100%' height='100%'>
-                  <LineChart
-                    data={SALES_DATA}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray='3 3' />
-                    <XAxis
-                      dataKey='date'
-                      tickFormatter={(value) => {
-                        const date = new Date(value)
-                        return `${date.getMonth() + 1}/${date.getDate()}`
-                      }}
-                    />
-                    <YAxis yAxisId='left' />
-                    <YAxis yAxisId='right' orientation='right' />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Legend />
-                    <Line
-                      type='monotone'
-                      dataKey='sales'
-                      stroke='var(--color-sales)'
-                      yAxisId='left'
-                      name='Sales'
-                    />
-                    <Line
-                      type='monotone'
-                      dataKey='revenue'
-                      stroke='var(--color-revenue)'
-                      yAxisId='right'
-                      name='Revenue ($)'
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+              {isLoading ? (
+                <div className='h-[300px] flex items-center justify-center'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
+                </div>
+              ) : (
+                <ChartContainer
+                  config={{
+                    sales: {
+                      label: 'Sales',
+                      color: 'hsl(var(--chart-1))',
+                    },
+                    revenue: {
+                      label: 'Revenue ($)',
+                      color: 'hsl(var(--chart-2))',
+                    },
+                  }}
+                  className='h-[300px]'
+                >
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <LineChart
+                      data={displaySalesData}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis
+                        dataKey='date'
+                        tickFormatter={(value) => {
+                          const date = new Date(value)
+                          return `${date.getMonth() + 1}/${date.getDate()}`
+                        }}
+                      />
+                      <YAxis yAxisId='left' />
+                      <YAxis yAxisId='right' orientation='right' />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Legend />
+                      <Line
+                        type='monotone'
+                        dataKey='sales'
+                        stroke='var(--color-sales)'
+                        yAxisId='left'
+                        name='Sales'
+                      />
+                      <Line
+                        type='monotone'
+                        dataKey='revenue'
+                        stroke='var(--color-revenue)'
+                        yAxisId='right'
+                        name='Revenue ($)'
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -146,40 +179,46 @@ export default function CreatorAnalytics() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer
-                config={{
-                  visits: {
-                    label: 'Page Visits',
-                    color: 'hsl(var(--chart-3))',
-                  },
-                }}
-                className='h-[300px]'
-              >
-                <ResponsiveContainer width='100%' height='100%'>
-                  <LineChart
-                    data={VISITS_DATA}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray='3 3' />
-                    <XAxis
-                      dataKey='date'
-                      tickFormatter={(value) => {
-                        const date = new Date(value)
-                        return `${date.getMonth() + 1}/${date.getDate()}`
-                      }}
-                    />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Legend />
-                    <Line
-                      type='monotone'
-                      dataKey='visits'
-                      stroke='var(--color-visits)'
-                      name='Page Visits'
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+              {isLoading ? (
+                <div className='h-[300px] flex items-center justify-center'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
+                </div>
+              ) : (
+                <ChartContainer
+                  config={{
+                    visits: {
+                      label: 'Page Visits',
+                      color: 'hsl(var(--chart-3))',
+                    },
+                  }}
+                  className='h-[300px]'
+                >
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <LineChart
+                      data={displayVisitsData}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis
+                        dataKey='date'
+                        tickFormatter={(value) => {
+                          const date = new Date(value)
+                          return `${date.getMonth() + 1}/${date.getDate()}`
+                        }}
+                      />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Legend />
+                      <Line
+                        type='monotone'
+                        dataKey='visits'
+                        stroke='var(--color-visits)'
+                        name='Page Visits'
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -193,52 +232,58 @@ export default function CreatorAnalytics() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer
-                config={{
-                  sales: {
-                    label: 'Sales',
-                    color: 'hsl(var(--chart-1))',
-                  },
-                  revenue: {
-                    label: 'Revenue ($)',
-                    color: 'hsl(var(--chart-2))',
-                  },
-                }}
-                className='h-[300px]'
-              >
-                <ResponsiveContainer width='100%' height='100%'>
-                  <BarChart
-                    data={ASSET_PERFORMANCE}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray='3 3' />
-                    <XAxis
-                      dataKey='name'
-                      tickFormatter={(value) =>
-                        value.length > 20
-                          ? `${value.substring(0, 20)}...`
-                          : value
-                      }
-                    />
-                    <YAxis yAxisId='left' />
-                    <YAxis yAxisId='right' orientation='right' />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Legend />
-                    <Bar
-                      dataKey='sales'
-                      fill='var(--color-sales)'
-                      yAxisId='left'
-                      name='Sales'
-                    />
-                    <Bar
-                      dataKey='revenue'
-                      fill='var(--color-revenue)'
-                      yAxisId='right'
-                      name='Revenue ($)'
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+              {isLoading ? (
+                <div className='h-[300px] flex items-center justify-center'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
+                </div>
+              ) : (
+                <ChartContainer
+                  config={{
+                    sales: {
+                      label: 'Sales',
+                      color: 'hsl(var(--chart-1))',
+                    },
+                    revenue: {
+                      label: 'Revenue ($)',
+                      color: 'hsl(var(--chart-2))',
+                    },
+                  }}
+                  className='h-[300px]'
+                >
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <BarChart
+                      data={displayAssetData}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis
+                        dataKey='name'
+                        tickFormatter={(value) =>
+                          value.length > 20
+                            ? `${value.substring(0, 20)}...`
+                            : value
+                        }
+                      />
+                      <YAxis yAxisId='left' />
+                      <YAxis yAxisId='right' orientation='right' />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Legend />
+                      <Bar
+                        dataKey='sales'
+                        fill='var(--color-sales)'
+                        yAxisId='left'
+                        name='Sales'
+                      />
+                      <Bar
+                        dataKey='revenue'
+                        fill='var(--color-revenue)'
+                        yAxisId='right'
+                        name='Revenue ($)'
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

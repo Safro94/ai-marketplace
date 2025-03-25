@@ -20,13 +20,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import { useSupabase } from '../../supabase-provider'
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name is required' }),
@@ -61,8 +61,7 @@ const formSchema = z.object({
 
 export const CreatorApplicationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  // const { supabase, user } = useSupabase()
-  const { user } = useSupabase()
+  const { data: session } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
 
@@ -70,7 +69,7 @@ export const CreatorApplicationForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: '',
-      email: user?.email || '',
+      email: session?.user?.email || '',
       website: '',
       expertise: '',
       experience: '',
@@ -81,9 +80,8 @@ export const CreatorApplicationForm = () => {
     },
   })
 
-  // async function onSubmit(values: z.infer<typeof formSchema>) {
-  async function onSubmit() {
-    if (!user) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!session?.user) {
       toast({
         title: 'Authentication required',
         description: 'Please log in to submit your application.',
@@ -96,20 +94,22 @@ export const CreatorApplicationForm = () => {
     setIsLoading(true)
 
     try {
-      // This would be a real API call in production
-      // const { error } = await supabase
-      //   .from('creator_applications')
-      //   .insert({
-      //     user_id: user.id,
-      //     ...values,
-      //     status: 'pending',
-      //     submitted_at: new Date().toISOString(),
-      //   });
+      // Submit the creator application
+      const response = await fetch('/api/creators/apply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...values,
+          userId: session.user.id,
+        }),
+      })
 
-      // if (error) throw error;
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to submit application')
+      }
 
       toast({
         title: 'Application submitted',
@@ -119,10 +119,12 @@ export const CreatorApplicationForm = () => {
 
       router.push('/creators/thank-you')
     } catch (error) {
-      console.error(error)
       toast({
         title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong. Please try again.',
         variant: 'destructive',
       })
     } finally {
@@ -236,7 +238,7 @@ export const CreatorApplicationForm = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value='beginner\'>
+                    <SelectItem value='beginner'>
                       Beginner (&lt; 1 year)
                     </SelectItem>
                     <SelectItem value='intermediate'>
@@ -345,7 +347,7 @@ export const CreatorApplicationForm = () => {
           isLoading={isLoading}
           disabled={isLoading}
         >
-          Submitting Application...
+          Submit Application
         </LoadingButton>
       </form>
     </Form>

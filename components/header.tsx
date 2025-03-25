@@ -1,6 +1,5 @@
 'use client'
 
-import { useSupabase } from '@/app/supabase-provider'
 import { Logo } from '@/components/logo'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -13,18 +12,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 import { Menu, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import Notifications from './notifications'
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const pathname = usePathname()
-  const { user } = useSupabase()
+  const { data: session } = useAuth()
+  const user = session?.user
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -88,7 +88,6 @@ export const Header = () => {
 
           {user ? (
             <>
-              <Notifications />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -103,6 +102,7 @@ export const Header = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent className='w-56' align='end' forceMount>
                   <DropdownMenuLabel className='font-normal'>
                     <div className='flex flex-col space-y-1'>
@@ -114,22 +114,29 @@ export const Header = () => {
                       </p>
                     </div>
                   </DropdownMenuLabel>
+
                   <DropdownMenuSeparator />
+
                   <DropdownMenuItem asChild>
                     <Link href='/dashboard'>Dashboard</Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuItem asChild>
                     <Link href='/account'>Account</Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuItem asChild>
                     <Link href='/purchases'>Purchases</Link>
                   </DropdownMenuItem>
-                  {user.app_metadata.creator && (
+
+                  {/* {user.creator && (
                     <DropdownMenuItem asChild>
                       <Link href='/creator-dashboard'>Creator Dashboard</Link>
                     </DropdownMenuItem>
-                  )}
+                  )} */}
+
                   <DropdownMenuSeparator />
+
                   <DropdownMenuItem asChild>
                     <Link href='/api/auth/signout'>Log out</Link>
                   </DropdownMenuItem>

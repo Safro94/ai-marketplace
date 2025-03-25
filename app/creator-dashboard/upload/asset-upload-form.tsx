@@ -1,8 +1,6 @@
 'use client'
 
-import type React from 'react'
-
-import { useSupabase } from '@/app/supabase-provider'
+import { FileUpload } from '@/components/file-upload'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -24,9 +22,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FileText, ImageIcon, Upload, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -88,9 +87,14 @@ export default function AssetUploadForm() {
   const [assetFile, setAssetFile] = useState<File | null>(null)
   const [previewImages, setPreviewImages] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
-  const { user } = useSupabase()
+  const { data: session } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
+
+  // Add these state variables at the top of the component:
+  const [assetFileUrl, setAssetFileUrl] = useState<string | null>(null)
+  const [assetFileKey, setAssetFileKey] = useState<string | null>(null)
+  const [previewImageKeys, setPreviewImageKeys] = useState<string[]>([])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -114,7 +118,9 @@ export default function AssetUploadForm() {
       if (file.size > MAX_FILE_SIZE) {
         toast({
           title: 'File too large',
-          description: `The file size should not exceed ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
+          description: `The file size should not exceed ${
+            MAX_FILE_SIZE / (1024 * 1024)
+          }MB`,
           variant: 'destructive',
         })
         return
@@ -142,7 +148,9 @@ export default function AssetUploadForm() {
         if (file.size > MAX_IMAGE_SIZE) {
           toast({
             title: 'Image too large',
-            description: `Image "${file.name}" exceeds ${MAX_IMAGE_SIZE / (1024 * 1024)}MB limit`,
+            description: `Image "${file.name}" exceeds ${
+              MAX_IMAGE_SIZE / (1024 * 1024)
+            }MB limit`,
             variant: 'destructive',
           })
           return false
@@ -178,9 +186,8 @@ export default function AssetUploadForm() {
   }
 
   const removePreviewImage = (index: number) => {
-    URL.revokeObjectURL(previewUrls[index])
-    setPreviewImages((prev) => prev.filter((_, i) => i !== index))
     setPreviewUrls((prev) => prev.filter((_, i) => i !== index))
+    setPreviewImageKeys((prev) => prev.filter((_, i) => i !== index))
   }
 
   const removeAssetFile = () => {
@@ -188,7 +195,7 @@ export default function AssetUploadForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!user) {
+    if (!session?.user) {
       toast({
         title: 'Authentication required',
         description: 'Please log in to upload assets',
@@ -198,7 +205,7 @@ export default function AssetUploadForm() {
       return
     }
 
-    if (!assetFile) {
+    if (!assetFileUrl || !assetFileKey) {
       toast({
         title: 'Asset file required',
         description: 'Please upload your asset file',
@@ -207,7 +214,7 @@ export default function AssetUploadForm() {
       return
     }
 
-    if (previewImages.length === 0) {
+    if (previewUrls.length === 0) {
       toast({
         title: 'Preview images required',
         description: 'Please upload at least one preview image',
@@ -220,8 +227,28 @@ export default function AssetUploadForm() {
 
     try {
       // This would be a real API call in production
-      // Simulate API call for now
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const response = await fetch('/api/assets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...values,
+          featuredImage: previewUrls[0],
+          galleryImages: previewUrls,
+          assetFile: assetFileUrl,
+          features: values.features.split('\n').filter((f) => f.trim()),
+          requirements: values.requirements
+            ? values.requirements.split('\n').filter((r) => r.trim())
+            : [],
+          slug: values.title.toLowerCase().replace(/\s+/g, '-'),
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to create asset')
+      }
 
       toast({
         title: 'Asset submitted',
@@ -230,10 +257,12 @@ export default function AssetUploadForm() {
 
       router.push('/creator-dashboard')
     } catch (error) {
-      console.log(error)
       toast({
         title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong. Please try again.',
         variant: 'destructive',
       })
     } finally {
@@ -402,90 +431,46 @@ export default function AssetUploadForm() {
             {/* Asset File Upload */}
             <div>
               <FormLabel className='block mb-2'>Asset File</FormLabel>
-              <div className='border-2 border-dashed border-border rounded-lg p-6 text-center'>
-                {!assetFile ? (
-                  <>
-                    <Upload className='h-10 w-10 text-muted-foreground mx-auto mb-4' />
-                    <p className='text-sm text-muted-foreground mb-2'>
-                      Upload your asset file (PDF, DOCX, JSON, ZIP, etc.)
-                    </p>
-                    <p className='text-xs text-muted-foreground mb-4'>
-                      Max file size: 50MB
-                    </p>
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='sm'
-                      onClick={() =>
-                        document.getElementById('asset-file-input')?.click()
-                      }
-                    >
-                      Select File
-                    </Button>
-                    <Input
-                      id='asset-file-input'
-                      type='file'
-                      className='hidden'
-                      onChange={handleAssetFileChange}
-                    />
-                  </>
-                ) : (
-                  <div className='flex items-center justify-between bg-secondary/50 rounded-md p-3'>
-                    <div className='flex items-center'>
-                      <FileText className='h-8 w-8 text-primary mr-3' />
-                      <div className='text-left'>
-                        <p className='text-sm font-medium truncate max-w-[200px]'>
-                          {assetFile.name}
-                        </p>
-                        <p className='text-xs text-muted-foreground'>
-                          {(assetFile.size / (1024 * 1024)).toFixed(2)} MB
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
-                      onClick={removeAssetFile}
-                    >
-                      <X className='h-4 w-4' />
-                    </Button>
-                  </div>
-                )}
-              </div>
+              <FileUpload
+                fileType='asset'
+                accept='.pdf,.docx,.json,.zip,.txt,.md'
+                maxSize={50 * 1024 * 1024} // 50MB
+                onUploadComplete={(url, key) => {
+                  // Store the asset file URL and key
+                  setAssetFileUrl(url)
+                  setAssetFileKey(key)
+                }}
+                onUploadError={(error) => {
+                  toast({
+                    title: 'Upload error',
+                    description: error,
+                    variant: 'destructive',
+                  })
+                }}
+              />
             </div>
 
             {/* Preview Images Upload */}
             <div>
               <FormLabel className='block mb-2'>Preview Images</FormLabel>
-              <div className='border-2 border-dashed border-border rounded-lg p-6 text-center'>
-                <div className='mb-4'>
-                  <ImageIcon className='h-10 w-10 text-muted-foreground mx-auto mb-4' />
-                  <p className='text-sm text-muted-foreground mb-2'>
-                    Upload preview images of your asset (up to 5)
-                  </p>
-                  <p className='text-xs text-muted-foreground mb-4'>
-                    Max file size: 5MB per image
-                  </p>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    onClick={() =>
-                      document.getElementById('preview-image-input')?.click()
-                    }
-                  >
-                    Select Images
-                  </Button>
-                  <Input
-                    id='preview-image-input'
-                    type='file'
-                    className='hidden'
-                    multiple
-                    accept='image/*'
-                    onChange={handlePreviewImageChange}
-                  />
-                </div>
+              <div className='space-y-4'>
+                <FileUpload
+                  fileType='preview'
+                  accept='image/*'
+                  maxSize={5 * 1024 * 1024} // 5MB
+                  onUploadComplete={(url, key) => {
+                    // Add to preview images
+                    setPreviewUrls((prev) => [...prev, url])
+                    setPreviewImageKeys((prev) => [...prev, key])
+                  }}
+                  onUploadError={(error) => {
+                    toast({
+                      title: 'Upload error',
+                      description: error,
+                      variant: 'destructive',
+                    })
+                  }}
+                />
 
                 {previewUrls.length > 0 && (
                   <div className='grid grid-cols-2 md:grid-cols-3 gap-4 mt-4'>

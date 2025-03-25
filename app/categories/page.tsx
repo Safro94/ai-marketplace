@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import prisma from '@/lib/prisma'
 import {
   ArrowRight,
   Bot,
@@ -26,91 +27,55 @@ export const metadata: Metadata = {
   },
 }
 
-const CATEGORIES = [
-  {
-    id: 'prompt-engineering',
-    name: 'Prompt Engineering Systems',
-    description:
-      'Advanced prompt frameworks and systems for optimizing AI outputs',
-    icon: MessageSquare,
-    color: 'bg-purple-500/10 text-purple-500',
-    count: 124,
-    featured: [
-      'SEO Content Generation System',
-      'Storytelling Framework',
-      'Technical Documentation Generator',
-    ],
-  },
-  {
-    id: 'custom-gpts',
-    name: 'Custom GPTs & AI Agents',
-    description:
-      'Specialized AI assistants designed for specific tasks and industries',
-    icon: Bot,
-    color: 'bg-blue-500/10 text-blue-500',
-    count: 87,
-    featured: [
-      'Financial Advisor GPT',
-      'Legal Document Analyzer',
-      'Healthcare Assistant',
-    ],
-  },
-  {
-    id: 'ai-workflows',
-    name: 'AI Workflow Automations',
-    description: 'Ready-to-use automation templates for business processes',
-    icon: Workflow,
-    color: 'bg-green-500/10 text-green-500',
-    count: 56,
-    featured: [
-      'Marketing Campaign Planner',
-      'Customer Support Workflow',
-      'Content Calendar Automation',
-    ],
-  },
-  {
-    id: 'industry-solutions',
-    name: 'Industry-Specific Solutions',
-    description:
-      'Tailored AI assets for specific industries and business needs',
-    icon: Briefcase,
-    color: 'bg-amber-500/10 text-amber-500',
-    count: 42,
-    featured: [
-      'Real Estate Listing Generator',
-      'E-commerce Product Description System',
-      'Healthcare Documentation Assistant',
-    ],
-  },
-  {
-    id: 'content-templates',
-    name: 'Content Creation Templates',
-    description: 'Templates for creating various types of content efficiently',
-    icon: FileText,
-    color: 'bg-pink-500/10 text-pink-500',
-    count: 98,
-    featured: [
-      'Social Media Content Calendar',
-      'Email Marketing Templates',
-      'Blog Post Framework',
-    ],
-  },
-  {
-    id: 'data-tools',
-    name: 'Data Analysis Tools',
-    description: 'AI tools for analyzing and visualizing data effectively',
-    icon: Database,
-    color: 'bg-cyan-500/10 text-cyan-500',
-    count: 35,
-    featured: [
-      'Data Visualization Prompt System',
-      'Market Research Analyzer',
-      'Business Intelligence Assistant',
-    ],
-  },
-]
+const iconMap = {
+  MessageSquare: MessageSquare,
+  Bot: Bot,
+  Workflow: Workflow,
+  Briefcase: Briefcase,
+  FileText: FileText,
+  Database: Database,
+}
 
-export default function CategoriesPage() {
+export const CategoriesPage = async () => {
+  // Fetch categories from the database
+  const categories = await prisma.category.findMany({
+    orderBy: {
+      name: 'asc',
+    },
+  })
+
+  // Count assets in each category and get featured assets
+  const categoriesWithData = await Promise.all(
+    categories.map(async (category) => {
+      // Count assets in this category
+      const count = await prisma.asset.count({
+        where: {
+          categoryId: category.id,
+          status: 'PUBLISHED',
+        },
+      })
+
+      // Get top 3 assets in this category
+      const featuredAssets = await prisma.asset.findMany({
+        where: {
+          categoryId: category.id,
+          status: 'PUBLISHED',
+        },
+        orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
+        select: {
+          title: true,
+        },
+        take: 3,
+      })
+
+      return {
+        ...category,
+        count,
+        featured: featuredAssets.map((asset) => asset.title),
+      }
+    }),
+  )
+
   return (
     <div className='container py-12'>
       <div className='text-center mb-12'>
@@ -124,47 +89,60 @@ export default function CategoriesPage() {
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-        {CATEGORIES.map((category) => (
-          <Card key={category.id} className='border-border/50 overflow-hidden'>
-            <CardHeader className='pb-2'>
-              <div className='flex items-start'>
-                <div className={`p-3 rounded-lg ${category.color} mr-4`}>
-                  <category.icon className='h-6 w-6' />
+        {categoriesWithData.map((category) => {
+          // Get the icon component or default to MessageSquare
+          const IconComponent =
+            category.iconName && iconMap[category.iconName]
+              ? iconMap[category.iconName]
+              : MessageSquare
+
+          return (
+            <Card
+              key={category.id}
+              className='border-border/50 overflow-hidden'
+            >
+              <CardHeader className='pb-2'>
+                <div className='flex items-start'>
+                  <div
+                    className={`p-3 rounded-lg ${category.colorClass || 'bg-primary/10 text-primary'} mr-4`}
+                  >
+                    <IconComponent className='h-6 w-6' />
+                  </div>
+                  <div>
+                    <CardTitle className='text-xl'>{category.name}</CardTitle>
+                    <CardDescription className='mt-1'>
+                      {category.description}
+                    </CardDescription>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle className='text-xl'>{category.name}</CardTitle>
-                  <CardDescription className='mt-1'>
-                    {category.description}
-                  </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='mt-2'>
+                  <p className='text-sm font-medium mb-2'>
+                    {category.count} assets
+                  </p>
+                  <div className='space-y-1 mb-4'>
+                    {category.featured.map((item, index) => (
+                      <p
+                        key={index}
+                        className='text-sm text-muted-foreground flex items-center'
+                      >
+                        <span className='h-1 w-1 rounded-full bg-muted-foreground mr-2'></span>
+                        {item}
+                      </p>
+                    ))}
+                  </div>
+                  <Button variant='outline' className='w-full' asChild>
+                    <Link href={`/categories/${category.slug}`}>
+                      Browse {category.name}
+                      <ArrowRight className='ml-2 h-4 w-4' />
+                    </Link>
+                  </Button>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className='mt-2'>
-                <p className='text-sm font-medium mb-2'>
-                  {category.count} assets
-                </p>
-                <div className='space-y-1 mb-4'>
-                  {category.featured.map((item, index) => (
-                    <p
-                      key={index}
-                      className='text-sm text-muted-foreground flex items-center'
-                    >
-                      <span className='h-1 w-1 rounded-full bg-muted-foreground mr-2'></span>
-                      {item}
-                    </p>
-                  ))}
-                </div>
-                <Button variant='outline' className='w-full' asChild>
-                  <Link href={`/categories/${category.id}`}>
-                    Browse {category.name}
-                    <ArrowRight className='ml-2 h-4 w-4' />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
     </div>
   )

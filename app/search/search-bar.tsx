@@ -1,5 +1,7 @@
 'use client'
 
+import type React from 'react'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { SearchIcon, X } from 'lucide-react'
@@ -22,16 +24,38 @@ export const SearchBar: FC<Props> = ({ className }) => {
     }
   }, [searchParams])
 
+  // Update the handleSearch function
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      // Create a new URLSearchParams object
+      const params = new URLSearchParams(searchParams.toString())
+
+      // Set the search query parameter
+      params.set('q', searchQuery.trim())
+
+      // Reset to page 1 when performing a new search
+      params.delete('page')
+
+      // Navigate to the search page with the query
+      router.push(`/search?${params.toString()}`)
     }
   }
 
+  // Update the clearSearch function
   const clearSearch = () => {
     setSearchQuery('')
-    router.push('/explore')
+
+    // Create a new URLSearchParams object without the query parameter
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('q')
+
+    // Navigate to the current page without the search query
+    if (params.toString()) {
+      router.push(`${window.location.pathname}?${params.toString()}`)
+    } else {
+      router.push(window.location.pathname)
+    }
   }
 
   return (

@@ -2,25 +2,171 @@
 
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { FC, useEffect, useState } from 'react'
 import { FiltersContent } from './filters-content'
 
-export const AssetFilters = () => {
-  const [priceRange, setPriceRange] = useState([0, 300])
-  const [showMobileFilters, setShowMobileFilters] = useState(false)
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedUseCases, setSelectedUseCases] = useState<string[]>([])
-  const [selectedRatings, setSelectedRatings] = useState<string[]>([])
+export interface FilterOption {
+  id: string
+  label: string
+  colorClass?: string
+  iconName?: string
+}
 
-  const clearAllFilters = useCallback(() => {
-    setSelectedCategories([])
+interface Props {
+  initialCategory?: string
+}
+
+// Update the component to use URL search params
+export const AssetFilters: FC<Props> = ({ initialCategory }) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [categories, setCategories] = useState<FilterOption[]>([])
+  const [useCases, setUseCases] = useState<FilterOption[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  const [priceRange, setPriceRange] = useState([
+    Number(searchParams.get('minPrice') || 0),
+    Number(searchParams.get('maxPrice') || 300),
+  ])
+
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    initialCategory
+      ? [initialCategory]
+      : searchParams.get('category')?.split(',') || [],
+  )
+
+  const [selectedUseCases, setSelectedUseCases] = useState<string[]>(
+    searchParams.get('useCase')?.split(',') || [],
+  )
+
+  const [selectedRatings, setSelectedRatings] = useState<string[]>(
+    searchParams.get('minRating')
+      ? [searchParams.get('minRating') as string]
+      : [],
+  )
+
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
+
+  // Fetch categories and use cases from API
+  useEffect(() => {
+    const fetchFilterData = async () => {
+      setIsLoading(true)
+
+      try {
+        // Fetch categories
+        const categoriesResponse = await fetch('/api/categories')
+
+        if (categoriesResponse.ok) {
+          const categoriesData = await categoriesResponse.json()
+
+          setCategories(
+            categoriesData.map((cat) => ({
+              id: cat.id,
+              label: cat.name,
+              colorClass: cat.colorClass,
+              iconName: cat.iconName,
+            })),
+          )
+        }
+
+        // Fetch use cases
+        const useCasesResponse = await fetch('/api/use-cases')
+
+        if (useCasesResponse.ok) {
+          const useCasesData = await useCasesResponse.json()
+          setUseCases(useCasesData)
+        }
+      } catch (error) {
+        console.error('Error fetching filter data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchFilterData()
+  }, [])
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    // Update category param
+    if (selectedCategories.length > 0) {
+      params.set('category', selectedCategories.join(','))
+    } else {
+      params.delete('category')
+    }
+
+    // Update useCase param
+    if (selectedUseCases.length > 0) {
+      params.set('useCase', selectedUseCases.join(','))
+    } else {
+      params.delete('useCase')
+    }
+
+    // Update rating param
+    if (selectedRatings.length > 0) {
+      // Extract the numeric value from the rating (e.g., "4-up" -> 4)
+      const minRating = selectedRatings[0].split('-')[0]
+      params.set('minRating', minRating)
+    } else {
+      params.delete('minRating')
+    }
+
+    // Update price range params
+    if (priceRange[0] > 0) {
+      params.set('minPrice', priceRange[0].toString())
+    } else {
+      params.delete('minPrice')
+    }
+
+    if (priceRange[1] < 300) {
+      params.set('maxPrice', priceRange[1].toString())
+    } else {
+      params.delete('maxPrice')
+    }
+
+    // Only update the URL if filters have changed
+    const hasActiveFilters =
+      selectedCategories.length > 0 ||
+      selectedUseCases.length > 0 ||
+      selectedRatings.length > 0 ||
+      priceRange[0] > 0 ||
+      priceRange[1] < 300
+
+    if (hasActiveFilters) {
+      router.push(`?${params.toString()}`)
+    }
+  }, [
+    selectedCategories,
+    selectedUseCases,
+    selectedRatings,
+    priceRange,
+    router,
+    searchParams,
+  ])
+
+  const clearAllFilters = () => {
+    setSelectedCategories(initialCategory ? [initialCategory] : [])
     setSelectedUseCases([])
     setSelectedRatings([])
     setPriceRange([0, 300])
-  }, [])
+
+    // Clear URL params and navigate to base URL
+    if (initialCategory) {
+      // If we have an initial category, keep it in the URL
+      router.push(`?${initialCategory ? `category=${initialCategory}` : ''}`)
+    } else {
+      router.push(window.location.pathname)
+    }
+  }
 
   const hasActiveFilters =
-    selectedCategories.length > 0 ||
+    (initialCategory
+      ? selectedCategories.length > 1
+      : selectedCategories.length > 0) ||
     selectedUseCases.length > 0 ||
     selectedRatings.length > 0 ||
     priceRange[0] > 0 ||
@@ -31,6 +177,10 @@ export const AssetFilters = () => {
       {/* Desktop filters */}
       <div className='hidden md:block sticky top-20'>
         <FiltersContent
+          initialCategory={initialCategory}
+          isLoading={isLoading}
+          categories={categories}
+          useCases={useCases}
           hasActiveFilters={hasActiveFilters}
           priceRange={priceRange}
           selectedCategories={selectedCategories}
@@ -54,7 +204,9 @@ export const AssetFilters = () => {
           Filters
           {hasActiveFilters && (
             <span className='ml-2 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-white'>
-              {selectedCategories.length +
+              {(initialCategory
+                ? selectedCategories.length - 1
+                : selectedCategories.length) +
                 selectedUseCases.length +
                 selectedRatings.length +
                 (priceRange[0] > 0 || priceRange[1] < 300 ? 1 : 0)}
@@ -69,7 +221,6 @@ export const AssetFilters = () => {
           <div className='p-4'>
             <div className='flex items-center justify-between mb-4'>
               <h2 className='text-lg font-semibold'>Filters</h2>
-
               <Button
                 variant='ghost'
                 size='icon'
@@ -80,6 +231,10 @@ export const AssetFilters = () => {
             </div>
 
             <FiltersContent
+              initialCategory={initialCategory}
+              isLoading={isLoading}
+              categories={categories}
+              useCases={useCases}
               hasActiveFilters={hasActiveFilters}
               priceRange={priceRange}
               selectedCategories={selectedCategories}
@@ -96,7 +251,6 @@ export const AssetFilters = () => {
               <Button variant='outline' onClick={clearAllFilters}>
                 Clear all
               </Button>
-
               <Button onClick={() => setShowMobileFilters(false)}>
                 Apply filters
               </Button>

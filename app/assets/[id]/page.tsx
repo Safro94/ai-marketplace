@@ -3,9 +3,14 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { checkUserPurchasedAsset } from '@/lib/db/purchases'
+import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
+import { getServerSession } from '@/lib/session'
+import { formatDate } from '@/lib/utils'
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
 import { AssetDownload } from './asset-download'
@@ -13,84 +18,24 @@ import { AssetReviews } from './asset-reviews'
 import { PurchaseOptions } from './purchase-options'
 import { RelatedAssets } from './related-assets'
 
-// Mock data for a single asset
-const getAsset = (id: string) => {
-  const assetId = Number.parseInt(id)
-
-  // This would be a database query in a real application
-  const asset = {
-    id: assetId,
-    title: 'Advanced SEO Content Generation System',
-    description:
-      'A comprehensive prompt system for creating SEO-optimized content that ranks well in search engines and drives organic traffic to your website.',
-    longDescription: `
-      <p>The Advanced SEO Content Generation System is a complete framework designed to help content creators, marketers, and SEO professionals create highly optimized content that ranks well in search engines.</p>
-      
-      <h3>What's Included:</h3>
-      <ul>
-        <li>Master prompt framework for SEO-optimized blog posts</li>
-        <li>Keyword research and integration prompts</li>
-        <li>Title and meta description optimization system</li>
-        <li>Content structure templates for different content types</li>
-        <li>On-page SEO checklist and implementation guide</li>
-        <li>Semantic SEO enhancement prompts</li>
-      </ul>
-      
-      <h3>Benefits:</h3>
-      <ul>
-        <li>Create SEO-optimized content in half the time</li>
-        <li>Improve your search engine rankings</li>
-        <li>Drive more organic traffic to your website</li>
-        <li>Ensure your content meets search intent</li>
-        <li>Maintain a consistent content quality standard</li>
-      </ul>
-      
-      <h3>Who This Is For:</h3>
-      <p>Content creators, digital marketers, SEO professionals, and business owners who want to improve their organic search visibility and create content that ranks.</p>
-    `,
-    price: 79,
-    category: 'Prompt Engineering',
-    useCase: 'Content Creation',
-    image: '/placeholder.svg?height=600&width=800',
-    gallery: [
-      '/placeholder.svg?height=600&width=800',
-      '/placeholder.svg?height=600&width=800',
-      '/placeholder.svg?height=600&width=800',
-    ],
-    creator: {
-      name: 'Sarah Johnson',
-      avatar: '/placeholder.svg?height=80&width=80',
-      username: 'sarahjohnson',
-      bio: 'SEO specialist and content strategist with 8+ years of experience helping businesses rank higher in search engines.',
-    },
-    rating: 4.9,
-    reviews: 124,
-    features: [
-      'Complete prompt system with 20+ templates',
-      'Detailed implementation guide',
-      'Regular updates as SEO best practices evolve',
-      'Email support for implementation questions',
-      'Compatible with GPT-4, Claude, and other LLMs',
-    ],
-    requirements: [
-      'Access to ChatGPT Plus, Claude, or similar LLM',
-      'Basic understanding of content creation',
-      'No coding knowledge required',
-    ],
-    created: '2023-11-15',
-    updated: '2024-02-20',
-    sales: 856,
-  }
-
-  return asset
-}
-
-export const generateMetadata = ({
+export async function generateMetadata({
   params,
 }: {
   params: { id: string }
-}): Metadata => {
-  const asset = getAsset(params.id)
+}): Promise<Metadata> {
+  const asset = await prisma.asset.findUnique({
+    where: { id: params.id },
+    include: {
+      category: true,
+    },
+  })
+
+  if (!asset) {
+    return {
+      title: 'Asset Not Found',
+      description: 'The requested asset could not be found',
+    }
+  }
 
   return {
     title: asset.title,
@@ -101,10 +46,11 @@ export const generateMetadata = ({
     openGraph: {
       title: asset.title,
       description: asset.description,
+      type: 'product',
       url: `/assets/${params.id}`,
       images: [
         {
-          url: asset.image,
+          url: asset.featuredImage,
           width: 800,
           height: 600,
           alt: asset.title,
@@ -115,23 +61,59 @@ export const generateMetadata = ({
       card: 'summary_large_image',
       title: asset.title,
       description: asset.description,
-      images: [asset.image],
-    },
-    other: {
-      type: 'product',
+      images: [asset.featuredImage],
     },
   }
 }
 
-export default function AssetPage({ params }: { params: { id: string } }) {
-  const asset = getAsset(params.id)
+export const AssetPage = async ({ params }: { params: { id: string } }) => {
+  const session = await getServerSession()
+
+  const asset = await prisma.asset.findUnique({
+    where: { id: params.id },
+    include: {
+      category: true,
+      creator: {
+        include: {
+          user: true,
+        },
+      },
+      reviews: {
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 5,
+      },
+    },
+  })
 
   if (!asset) {
     notFound()
   }
 
-  // In a real app, this would be determined by checking if the user has purchased the asset
-  const isPurchased = false
+  // Check if the user has purchased this asset
+  let isPurchased = false
+  if (session?.user) {
+    isPurchased = await checkUserPurchasedAsset(session.user.id, asset.id)
+  }
+
+  // Calculate average rating
+  const averageRating =
+    asset.reviews.length > 0
+      ? asset.reviews.reduce((sum, review) => sum + review.rating, 0) /
+        asset.reviews.length
+      : 0
+
+  // Parse features and requirements from JSON strings
+  const features = Array.isArray(asset.features)
+    ? asset.features
+    : JSON.parse((asset.features as string) || '[]')
+  const requirements = Array.isArray(asset.requirements)
+    ? asset.requirements
+    : JSON.parse((asset.requirements as string) || '[]')
 
   return (
     <>
@@ -139,10 +121,23 @@ export default function AssetPage({ params }: { params: { id: string } }) {
         id='product-schema'
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateProductJsonLd(asset)),
+          __html: JSON.stringify(
+            generateProductJsonLd({
+              id: asset.id,
+              title: asset.title,
+              description: asset.description,
+              price: asset.price,
+              image: asset.featuredImage,
+              category: asset.category.name,
+              rating: averageRating,
+              reviews: asset.reviews.length,
+              creator: {
+                name: asset.creator.name || 'Unknown Creator',
+              },
+            }),
+          ),
         }}
       />
-
       <div className='container py-8'>
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           <div className='lg:col-span-2'>
@@ -151,7 +146,7 @@ export default function AssetPage({ params }: { params: { id: string } }) {
               <div>
                 <div className='flex items-center space-x-2 mb-2'>
                   <Badge variant='secondary' className='bg-secondary/80'>
-                    {asset.category}
+                    {asset.category.name}
                   </Badge>
                   <Badge variant='outline'>{asset.useCase}</Badge>
                 </div>
@@ -162,16 +157,21 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                   <div className='flex items-center space-x-2'>
                     <Avatar className='h-8 w-8'>
                       <AvatarImage
-                        src={asset.creator.avatar}
-                        alt={asset.creator.name}
+                        src={
+                          asset.creator.avatarUrl ||
+                          '/placeholder.svg?height=40&width=40'
+                        }
+                        alt={asset.creator.name || 'Creator'}
                       />
                       <AvatarFallback>
-                        {asset.creator.name.charAt(0)}
+                        {(asset.creator.name || 'C').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <span className='text-sm'>
                       by{' '}
-                      <span className='font-medium'>{asset.creator.name}</span>
+                      <span className='font-medium'>
+                        {asset.creator.name || 'Unknown Creator'}
+                      </span>
                     </span>
                   </div>
                   <div className='flex items-center'>
@@ -188,9 +188,11 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                         clipRule='evenodd'
                       />
                     </svg>
-                    <span className='text-sm font-medium'>{asset.rating}</span>
+                    <span className='text-sm font-medium'>
+                      {averageRating.toFixed(1)}
+                    </span>
                     <span className='text-xs text-muted-foreground ml-1'>
-                      ({asset.reviews} reviews)
+                      ({asset.reviews.length} reviews)
                     </span>
                   </div>
                   <div className='text-sm text-muted-foreground'>
@@ -202,7 +204,10 @@ export default function AssetPage({ params }: { params: { id: string } }) {
               {/* Asset Gallery */}
               <div className='relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border/50'>
                 <Image
-                  src={asset.image || '/placeholder.svg'}
+                  src={
+                    asset.featuredImage ||
+                    '/placeholder.svg?height=600&width=800'
+                  }
                   alt={asset.title}
                   fill
                   className='object-cover'
@@ -210,13 +215,13 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                 />
               </div>
               <div className='grid grid-cols-3 gap-4'>
-                {asset.gallery.map((image, index) => (
+                {asset.galleryImages.map((image, index) => (
                   <div
                     key={index}
                     className='relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border/50'
                   >
                     <Image
-                      src={image || '/placeholder.svg'}
+                      src={image || '/placeholder.svg?height=300&width=400'}
                       alt={`${asset.title} preview ${index + 1}`}
                       fill
                       className='object-cover'
@@ -243,7 +248,7 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                     <div>
                       <h3 className='text-xl font-semibold mb-3'>Features</h3>
                       <ul className='space-y-2'>
-                        {asset.features.map((feature, index) => (
+                        {features.map((feature: string, index: number) => (
                           <li key={index} className='flex items-start'>
                             <svg
                               xmlns='http://www.w3.org/2000/svg'
@@ -268,30 +273,35 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                         Requirements
                       </h3>
                       <ul className='space-y-2'>
-                        {asset.requirements.map((requirement, index) => (
-                          <li key={index} className='flex items-start'>
-                            <svg
-                              xmlns='http://www.w3.org/2000/svg'
-                              viewBox='0 0 24 24'
-                              fill='currentColor'
-                              className='w-5 h-5 text-muted-foreground mr-2 flex-shrink-0 mt-0.5'
-                              aria-hidden='true'
-                            >
-                              <path
-                                fillRule='evenodd'
-                                d='M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z'
-                                clipRule='evenodd'
-                              />
-                            </svg>
-                            <span>{requirement}</span>
-                          </li>
-                        ))}
+                        {requirements.map(
+                          (requirement: string, index: number) => (
+                            <li key={index} className='flex items-start'>
+                              <svg
+                                xmlns='http://www.w3.org/2000/svg'
+                                viewBox='0 0 24 24'
+                                fill='currentColor'
+                                className='w-5 h-5 text-muted-foreground mr-2 flex-shrink-0 mt-0.5'
+                                aria-hidden='true'
+                              >
+                                <path
+                                  fillRule='evenodd'
+                                  d='M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z'
+                                  clipRule='evenodd'
+                                />
+                              </svg>
+                              <span>{requirement}</span>
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
                   </div>
                 </TabsContent>
                 <TabsContent value='reviews' className='pt-6'>
-                  <AssetReviews assetId={asset.id} />
+                  <AssetReviews
+                    assetId={asset.id}
+                    initialReviews={asset.reviews}
+                  />
                 </TabsContent>
               </Tabs>
 
@@ -301,21 +311,30 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                   <div className='flex items-center space-x-4 mb-4'>
                     <Avatar className='h-12 w-12'>
                       <AvatarImage
-                        src={asset.creator.avatar}
-                        alt={asset.creator.name}
+                        src={
+                          asset.creator.avatarUrl ||
+                          '/placeholder.svg?height=40&width=40'
+                        }
+                        alt={asset.creator.name || 'Creator'}
                       />
                       <AvatarFallback>
-                        {asset.creator.name.charAt(0)}
+                        {(asset.creator.name || 'C').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className='font-semibold'>{asset.creator.name}</h3>
+                      <h3 className='font-semibold'>
+                        {asset.creator.name || 'Unknown Creator'}
+                      </h3>
                       <p className='text-sm text-muted-foreground'>Creator</p>
                     </div>
                   </div>
-                  <p className='text-sm mb-4'>{asset.creator.bio}</p>
-                  <Button variant='outline' className='w-full'>
-                    View Profile
+                  <p className='text-sm mb-4'>
+                    {asset.creator.bio || 'No bio available'}
+                  </p>
+                  <Button variant='outline' className='w-full' asChild>
+                    <Link href={`/creators/${asset.creator.id}`}>
+                      View Profile
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -325,7 +344,10 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                 <h2 className='text-2xl font-bold tracking-tight mb-6'>
                   You May Also Like
                 </h2>
-                <RelatedAssets currentAssetId={asset.id} />
+                <RelatedAssets
+                  currentAssetId={asset.id}
+                  categoryId={asset.categoryId}
+                />
               </div>
             </div>
           </div>
@@ -340,7 +362,11 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                   isPurchased={true}
                 />
               ) : (
-                <PurchaseOptions asset={asset} />
+                <PurchaseOptions
+                  id={asset.id}
+                  standardPrice={asset.standardPrice}
+                  extendedPrice={asset.extendedPrice}
+                />
               )}
 
               {/* Creator Info (Desktop) */}
@@ -349,21 +375,30 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                   <div className='flex items-center space-x-4 mb-4'>
                     <Avatar className='h-12 w-12'>
                       <AvatarImage
-                        src={asset.creator.avatar}
-                        alt={asset.creator.name}
+                        src={
+                          asset.creator.avatarUrl ||
+                          '/placeholder.svg?height=40&width=40'
+                        }
+                        alt={asset.creator.name || 'Creator'}
                       />
                       <AvatarFallback>
-                        {asset.creator.name.charAt(0)}
+                        {(asset.creator.name || 'C').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className='font-semibold'>{asset.creator.name}</h3>
+                      <h3 className='font-semibold'>
+                        {asset.creator.name || 'Unknown Creator'}
+                      </h3>
                       <p className='text-sm text-muted-foreground'>Creator</p>
                     </div>
                   </div>
-                  <p className='text-sm mb-4'>{asset.creator.bio}</p>
-                  <Button variant='outline' className='w-full'>
-                    View Profile
+                  <p className='text-sm mb-4'>
+                    {asset.creator.bio || 'No bio available'}
+                  </p>
+                  <Button variant='outline' className='w-full' asChild>
+                    <Link href={`/creators/${asset.creator.id}`}>
+                      View Profile
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -375,17 +410,17 @@ export default function AssetPage({ params }: { params: { id: string } }) {
                   <div className='space-y-3 text-sm'>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Created</span>
-                      <span>{asset.created}</span>
+                      <span>{formatDate(asset.createdAt)}</span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>
                         Last updated
                       </span>
-                      <span>{asset.updated}</span>
+                      <span>{formatDate(asset.updatedAt)}</span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Category</span>
-                      <span>{asset.category}</span>
+                      <span>{asset.category.name}</span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Use Case</span>

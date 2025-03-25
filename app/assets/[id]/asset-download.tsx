@@ -1,6 +1,5 @@
 'use client'
 
-import { useSupabase } from '@/app/supabase-provider'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -10,25 +9,49 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
 import { AlertCircle, Check, Download } from 'lucide-react'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 
 interface Props {
-  assetId: number
+  assetId: string
   assetTitle: string
-  isPurchased: boolean
 }
 
-export const AssetDownload: FC<Props> = ({
-  assetId,
-  assetTitle,
-  isPurchased,
-}) => {
+export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadComplete, setDownloadComplete] = useState(false)
+  const [isPurchased, setIsPurchased] = useState<boolean | null>(null)
   const { toast } = useToast()
-  const { user } = useSupabase()
+  const { data: session } = useAuth()
+  const user = session?.user
+
+  // Check if user has purchased this asset
+  useEffect(() => {
+    const checkPurchase = async () => {
+      if (!user) {
+        setIsPurchased(false)
+        return
+      }
+
+      try {
+        const response = await fetch(`/api/assets/${assetId}/check-purchase`)
+
+        if (response.ok) {
+          const { purchased } = await response.json()
+          setIsPurchased(purchased)
+        } else {
+          setIsPurchased(false)
+        }
+      } catch (error) {
+        console.error('Error checking purchase:', error)
+        setIsPurchased(false)
+      }
+    }
+
+    checkPurchase()
+  }, [user, assetId])
 
   const handleDownload = async () => {
     if (!user) {
@@ -51,28 +74,23 @@ export const AssetDownload: FC<Props> = ({
 
     setIsDownloading(true)
 
-    // Simulate download process
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const response = await fetch(`/api/assets/${assetId}/download`)
 
-      // In a real app, this would be a call to download the asset file
-      // const { data, error } = await supabase.storage
-      //   .from('assets')
-      //   .download(`assets/${assetId}/asset-file.zip`)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Download failed')
+      }
 
-      // if (error) throw error
+      const { downloadUrl, assetName } = await response.json()
 
       // Create a download link
-      const dummyData = new Blob(['Dummy asset content'], {
-        type: 'application/octet-stream',
-      })
-      const url = URL.createObjectURL(dummyData)
       const a = document.createElement('a')
-      a.href = url
-      a.download = `${assetTitle.toLowerCase().replace(/\s+/g, '-')}.zip`
+      a.href = downloadUrl
+      a.download = `${assetName.toLowerCase().replace(/\s+/g, '-')}.zip`
       document.body.appendChild(a)
       a.click()
-      URL.revokeObjectURL(url)
+      URL.revokeObjectURL(downloadUrl)
       document.body.removeChild(a)
 
       setDownloadComplete(true)
@@ -89,12 +107,24 @@ export const AssetDownload: FC<Props> = ({
       toast({
         title: 'Download failed',
         description:
-          'There was a problem downloading your asset. Please try again.',
+          error instanceof Error
+            ? error.message
+            : 'There was a problem downloading your asset. Please try again.',
         variant: 'destructive',
       })
     } finally {
       setIsDownloading(false)
     }
+  }
+
+  if (isPurchased === null) {
+    return (
+      <Card>
+        <CardContent className='p-6 flex items-center justify-center'>
+          <div className='animate-pulse'>Loading...</div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (

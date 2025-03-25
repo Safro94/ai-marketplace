@@ -12,17 +12,19 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
+import { authClient } from '@/lib/auth-client'
+import { ROUTES } from '@/lib/constants'
+import { USER_TYPES } from '@/lib/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import googleIcon from '../public/google-icon.svg'
-import { useSupabase } from '../supabase-provider'
 
 const formSchema = z
   .object({
+    name: z.string(),
     email: z.string().email({ message: 'Please enter a valid email address' }),
     password: z
       .string()
@@ -39,13 +41,12 @@ const formSchema = z
 
 export const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { supabase } = useSupabase()
   const { toast } = useToast()
-  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -57,29 +58,34 @@ export const SignupForm = () => {
     setIsLoading(true)
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+      await authClient.signUp.email(
+        {
+          email: values.email,
+          password: values.password,
+          name: values.name,
+          role: USER_TYPES.USER,
+          callbackURL: ROUTES.home(),
         },
-      })
-
-      if (error) {
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive',
-        })
-        return
-      }
-
-      toast({
-        title: 'Success',
-        description: 'Check your email for the confirmation link.',
-      })
-
-      router.push('/login')
+        {
+          onRequest: () => {
+            setIsLoading(true)
+          },
+          onSuccess: () => {
+            setIsLoading(false)
+            toast({
+              title: 'Success',
+              description: 'You have successfully registered.',
+            })
+          },
+          onError: (ctx) => {
+            toast({
+              title: 'Error',
+              description: ctx.error.message,
+              variant: 'destructive',
+            })
+          },
+        },
+      )
     } catch (error) {
       console.error(error)
       toast({
@@ -96,6 +102,20 @@ export const SignupForm = () => {
     <div className='grid gap-6'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+          <FormField
+            control={form.control}
+            name='name'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full name</FormLabel>
+                <FormControl>
+                  <Input placeholder='John Doe' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name='email'

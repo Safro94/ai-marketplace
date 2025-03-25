@@ -4,43 +4,75 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-const testimonials = [
-  {
-    id: 1,
-    content:
-      "The prompt engineering systems I purchased have completely transformed my content creation process. I'm saving hours each week and producing better results.",
-    author: {
-      name: 'David Wilson',
-      role: 'Content Marketing Manager',
-      avatar: '/placeholder.svg?height=80&width=80',
-    },
-  },
-  {
-    id: 2,
-    content:
-      'As a financial advisor, the custom GPT I bought has become an invaluable assistant. It helps me analyze data and generate reports in a fraction of the time.',
-    author: {
-      name: 'Jennifer Lee',
-      role: 'Financial Advisor',
-      avatar: '/placeholder.svg?height=80&width=80',
-    },
-  },
-  {
-    id: 3,
-    content:
-      'The industry-specific AI solutions available here are exceptional. I found exactly what I needed for my healthcare practice, and implementation was seamless.',
-    author: {
-      name: 'Dr. Michael Brown',
-      role: 'Healthcare Professional',
-      avatar: '/placeholder.svg?height=80&width=80',
-    },
-  },
-]
+interface Testimonial {
+  id: number
+  content: string
+  author: {
+    name: string
+    role: string
+    avatar: string
+  }
+}
 
-export default function TestimonialSection() {
+export const TestimonialSection = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch('/api/testimonials')
+        if (response.ok) {
+          const data = await response.json()
+          setTestimonials(data)
+        } else {
+          throw new Error('Failed to fetch testimonials')
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error)
+        // Fallback to default testimonials if API fails
+        setTestimonials([
+          {
+            id: 1,
+            content:
+              "The prompt engineering systems I purchased have completely transformed my content creation process. I'm saving hours each week and producing better results.",
+            author: {
+              name: 'David Wilson',
+              role: 'Content Marketing Manager',
+              avatar: '/placeholder.svg?height=80&width=80',
+            },
+          },
+          {
+            id: 2,
+            content:
+              'As a financial advisor, the custom GPT I bought has become an invaluable assistant. It helps me analyze data and generate reports in a fraction of the time.',
+            author: {
+              name: 'Jennifer Lee',
+              role: 'Financial Advisor',
+              avatar: '/placeholder.svg?height=80&width=80',
+            },
+          },
+          {
+            id: 3,
+            content:
+              'The industry-specific AI solutions available here are exceptional. I found exactly what I needed for my healthcare practice, and implementation was seamless.',
+            author: {
+              name: 'Dr. Michael Brown',
+              role: 'Healthcare Professional',
+              avatar: '/placeholder.svg?height=80&width=80',
+            },
+          },
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTestimonials()
+  }, [])
 
   const nextTestimonial = () => {
     setCurrentIndex((prevIndex) =>
@@ -52,6 +84,33 @@ export default function TestimonialSection() {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1,
     )
+  }
+
+  if (loading) {
+    return (
+      <section className='py-16'>
+        <div className='container'>
+          <div className='text-center mb-12'>
+            <h2 className='text-3xl font-bold tracking-tight'>
+              What Our Users Say
+            </h2>
+            <p className='text-muted-foreground mt-2 max-w-2xl mx-auto'>
+              Hear from professionals who have transformed their work with our
+              AI assets
+            </p>
+          </div>
+          <div className='relative max-w-4xl mx-auto'>
+            <div className='animate-pulse'>
+              <div className='h-64 bg-secondary/50 rounded-lg'></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (testimonials.length === 0) {
+    return null
   }
 
   return (
@@ -96,7 +155,7 @@ export default function TestimonialSection() {
             </CardContent>
           </Card>
 
-          <div className='flex items-center justify-center mt-6 space-x-2'>
+          <div className='flex justify-center mt-6 space-x-2'>
             <Button
               variant='outline'
               size='icon'

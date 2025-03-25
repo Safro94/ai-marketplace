@@ -1,6 +1,5 @@
 'use client'
 
-import { useSupabase } from '@/app/supabase-provider'
 import { Button, LoadingButton } from '@/components/ui/button'
 import {
   Form,
@@ -12,9 +11,10 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
+import { authClient } from '@/lib/auth-client'
+import { ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -29,9 +29,7 @@ const formSchema = z.object({
 
 export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { supabase } = useSupabase()
   const { toast } = useToast()
-  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,30 +40,33 @@ export const LoginForm = () => {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true)
-
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      })
-
-      if (error) {
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive',
-        })
-        return
-      }
-
-      toast({
-        title: 'Success',
-        description: 'You have successfully logged in.',
-      })
-
-      router.push('/')
-      router.refresh()
+      await authClient.signIn.email(
+        {
+          email: values.email,
+          password: values.password,
+          callbackURL: ROUTES.home(),
+        },
+        {
+          onRequest: () => {
+            setIsLoading(true)
+          },
+          onSuccess: () => {
+            setIsLoading(false)
+            toast({
+              title: 'Success',
+              description: 'You have successfully logged in.',
+            })
+          },
+          onError: (ctx) => {
+            toast({
+              title: 'Error',
+              description: ctx.error.message,
+              variant: 'destructive',
+            })
+          },
+        },
+      )
     } catch (error) {
       console.error(error)
       toast({
@@ -73,8 +74,6 @@ export const LoginForm = () => {
         description: 'Something went wrong. Please try again.',
         variant: 'destructive',
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -129,7 +128,35 @@ export const LoginForm = () => {
         </div>
       </div>
 
-      <Button variant='outline' type='button' disabled={isLoading}>
+      <Button
+        variant='outline'
+        type='button'
+        disabled={isLoading}
+        onClick={async () => {
+          setIsLoading(true)
+
+          const { error } = await authClient.signIn.social({
+            provider: 'google',
+            callbackURL: ROUTES.home(),
+          })
+
+          if (error) {
+            toast({
+              title: 'Error',
+              description: error.message,
+              variant: 'destructive',
+            })
+            return
+          }
+
+          setIsLoading(false)
+
+          toast({
+            title: 'Success',
+            description: 'You have successfully logged in.',
+          })
+        }}
+      >
         <Image
           src={googleIcon}
           width={16}

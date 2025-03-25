@@ -1,14 +1,15 @@
 'use client'
 
-import { useSupabase } from '@/app/supabase-provider'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
+import { createReview } from '@/lib/db/reviews'
 import { StarIcon } from 'lucide-react'
 import { FC, useState } from 'react'
 
 interface Props {
-  assetId: number
+  assetId: string
   onReviewSubmitted?: () => void
 }
 
@@ -19,7 +20,8 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
-  const { user } = useSupabase()
+  const { data: session } = useAuth()
+  const user = session?.user
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -63,22 +65,13 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
     setIsSubmitting(true)
 
     try {
-      // In a real app, this would be a call to submit the review
-      // const { error } = await supabase
-      //   .from('reviews')
-      //   .insert({
-      //     asset_id: assetId,
-      //     user_id: user.id,
-      //     rating,
-      //     title,
-      //     content,
-      //     created_at: new Date().toISOString(),
-      //   })
-
-      // if (error) throw error
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await createReview({
+        asset: { connect: { id: assetId } },
+        user: { connect: { userId: user.id } },
+        rating,
+        title,
+        content,
+      })
 
       toast({
         title: 'Review submitted',
@@ -95,6 +88,7 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
         onReviewSubmitted()
       }
     } catch (error) {
+      console.error('Review submission error:', error)
       toast({
         title: 'Error',
         description:

@@ -1,7 +1,7 @@
 'use client'
 
 import { FC, PropsWithChildren } from 'react'
-import { SupabaseProvider } from './supabase-provider'
+import { SessionProvider } from './session-provider'
 import { ThemeProvider } from './theme-provider'
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
@@ -12,7 +12,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
       enableSystem={false}
       disableTransitionOnChange
     >
-      <SupabaseProvider>{children}</SupabaseProvider>
+      <SessionProvider>{children}</SessionProvider>
     </ThemeProvider>
   )
 }
