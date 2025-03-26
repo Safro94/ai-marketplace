@@ -1,6 +1,6 @@
 'use client'
 
-import { Logo } from '@/components/logo'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,24 +13,29 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
+import { authClient } from '@/lib/auth-client'
+import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { Menu, Search, X } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { Logo } from './logo'
+import { toast } from './ui/toast'
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session } = useAuth()
+  const router = useRouter()
+  const { data: session, isPending } = useAuth()
   const user = session?.user
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Explore', href: '/explore' },
-    { name: 'Categories', href: '/categories' },
-    { name: 'For Creators', href: '/creators' },
+    { name: 'Home', href: ROUTES.home() },
+    { name: 'Explore', href: ROUTES.explore() },
+    { name: 'Categories', href: ROUTES.categories() },
+    { name: 'For Creators', href: ROUTES.creators() },
   ]
 
   return (
@@ -86,8 +91,11 @@ export const Header = () => {
             </Button>
           )}
 
+          <ThemeToggle />
+
           {user ? (
             <>
+              {/* <Notifications /> */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -95,19 +103,21 @@ export const Header = () => {
                     className='relative h-8 w-8 rounded-full'
                   >
                     <Avatar className='h-8 w-8'>
-                      <AvatarImage src='' alt={user.email || ''} />
+                      <AvatarImage
+                        src={user.image || ''}
+                        alt={user.name || ''}
+                      />
                       <AvatarFallback>
-                        {user.email?.charAt(0).toUpperCase()}
+                        {user.name?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-
                 <DropdownMenuContent className='w-56' align='end' forceMount>
                   <DropdownMenuLabel className='font-normal'>
                     <div className='flex flex-col space-y-1'>
                       <p className='text-sm font-medium leading-none'>
-                        {user.email}
+                        {user.name}
                       </p>
                       <p className='text-xs leading-none text-muted-foreground'>
                         {user.email}
@@ -129,7 +139,7 @@ export const Header = () => {
                     <Link href='/purchases'>Purchases</Link>
                   </DropdownMenuItem>
 
-                  {/* {user.creator && (
+                  {/* {user.isCreator && (
                     <DropdownMenuItem asChild>
                       <Link href='/creator-dashboard'>Creator Dashboard</Link>
                     </DropdownMenuItem>
@@ -137,8 +147,23 @@ export const Header = () => {
 
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem asChild>
-                    <Link href='/api/auth/signout'>Log out</Link>
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      await authClient.signOut({
+                        fetchOptions: {
+                          onSuccess() {
+                            router.push(ROUTES.home())
+                          },
+                          onError(context) {
+                            toast.error('Error', {
+                              description: context.error.message,
+                            })
+                          },
+                        },
+                      })
+                    }}
+                  >
+                    Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -183,6 +208,11 @@ export const Header = () => {
               />
             </div>
 
+            <div className='flex items-center justify-between'>
+              <span className='text-sm font-medium'>Theme</span>
+              <ThemeToggle />
+            </div>
+
             <nav className='flex flex-col space-y-4'>
               {navigation.map((item) => (
                 <Link
@@ -203,14 +233,18 @@ export const Header = () => {
               {!user && (
                 <>
                   <Link
-                    href='/login'
+                    href={ROUTES.login()}
                     className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Log in
                   </Link>
+
                   <Button asChild className='w-full'>
-                    <Link href='/signup' onClick={() => setIsMenuOpen(false)}>
+                    <Link
+                      href={ROUTES.signUp()}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       Sign up
                     </Link>
                   </Button>

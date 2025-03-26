@@ -20,8 +20,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
-import { useToast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -62,7 +62,6 @@ const formSchema = z.object({
 export const CreatorApplicationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { data: session } = useAuth()
-  const { toast } = useToast()
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -82,11 +81,10 @@ export const CreatorApplicationForm = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!session?.user) {
-      toast({
-        title: 'Authentication required',
+      toast.error('Authentication required', {
         description: 'Please log in to submit your application.',
-        variant: 'destructive',
       })
+
       router.push('/login')
       return
     }
@@ -111,21 +109,18 @@ export const CreatorApplicationForm = () => {
         throw new Error(data.error || 'Failed to submit application')
       }
 
-      toast({
-        title: 'Application submitted',
+      toast.success('Application submitted', {
         description:
           "We've received your application and will review it shortly.",
       })
 
       router.push('/creators/thank-you')
     } catch (error) {
-      toast({
-        title: 'Error',
+      toast.error('Error', {
         description:
           error instanceof Error
             ? error.message
             : 'Something went wrong. Please try again.',
-        variant: 'destructive',
       })
     } finally {
       setIsLoading(false)

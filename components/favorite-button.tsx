@@ -2,10 +2,11 @@
 
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
-import { useToast } from '@/hooks/use-toast'
+import { ROUTES } from '@/lib/constants'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
+import { toast } from './ui/toast'
 
 interface Props {
   assetId: string
@@ -22,7 +23,6 @@ export const FavoriteButton: FC<Props> = ({
 }) => {
   const [isFavorited, setIsFavorited] = useState(initialFavorited)
   const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
   const { data: session } = useAuth()
   const router = useRouter()
 
@@ -48,13 +48,12 @@ export const FavoriteButton: FC<Props> = ({
 
   const toggleFavorite = async () => {
     if (!session?.user) {
-      toast({
-        title: 'Authentication required',
+      toast.error('Authentication required', {
         description: 'Please log in to save assets to favorites',
-        variant: 'destructive',
       })
+
       router.push(
-        `/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+        `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
       )
       return
     }
@@ -77,18 +76,19 @@ export const FavoriteButton: FC<Props> = ({
       const { favorited } = await response.json()
       setIsFavorited(favorited)
 
-      toast({
-        title: favorited ? 'Added to favorites' : 'Removed from favorites',
-        description: favorited
-          ? 'This asset has been added to your favorites'
-          : 'This asset has been removed from your favorites',
-      })
+      toast.success(
+        favorited ? 'Added to favorites' : 'Removed from favorites',
+        {
+          description: favorited
+            ? 'This asset has been added to your favorites'
+            : 'This asset has been removed from your favorites',
+        },
+      )
     } catch (error) {
       console.error('Error toggling favorite:', error)
-      toast({
-        title: 'Error',
+
+      toast.error('Error', {
         description: 'Failed to update favorites. Please try again.',
-        variant: 'destructive',
       })
     } finally {
       setIsLoading(false)

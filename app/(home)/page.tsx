@@ -1,10 +1,10 @@
-import CreatorCTASection from '@/app/(home)/creator-cta-section'
-import TestimonialSection from '@/app/(home)/testimonial-section'
 import type { Metadata } from 'next'
 import { BenefitsSection } from './benefits-section'
 import { CategoriesSection } from './categories-section'
+import { CreatorCTASection } from './creator-cta-section'
 import { FeaturedSection } from './featured-section'
 import { HeroSection } from './hero-section'
+import { TestimonialSection } from './testimonial-section'
 
 export const metadata: Metadata = {
   title: 'Premium AI Assets Marketplace | Buy and Sell AI Tools and Templates',

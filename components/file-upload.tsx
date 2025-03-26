@@ -2,9 +2,9 @@
 
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { useToast } from '@/hooks/use-toast'
 import { FileText, ImageIcon, Upload, X } from 'lucide-react'
 import { FC, useState } from 'react'
+import { toast } from './ui/toast'
 
 interface Props {
   onUploadComplete: (url: string, key: string) => void
@@ -24,7 +24,6 @@ export const FileUpload: FC<Props> = ({
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [fileName, setFileName] = useState<string | null>(null)
-  const { toast } = useToast()
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return
@@ -33,11 +32,10 @@ export const FileUpload: FC<Props> = ({
 
     // Validate file size
     if (file.size > maxSize) {
-      toast({
-        title: 'File too large',
+      toast.error('File too large', {
         description: `The file size should not exceed ${maxSize / (1024 * 1024)}MB`,
-        variant: 'destructive',
       })
+
       return
     }
 
@@ -82,19 +80,16 @@ export const FileUpload: FC<Props> = ({
       // Call the onUploadComplete callback with the file URL
       onUploadComplete(url, key)
 
-      toast({
-        title: 'Upload complete',
+      toast.success('Upload complete', {
         description: 'Your file has been uploaded successfully',
       })
     } catch (error) {
       console.error('Upload error:', error)
       onUploadError(error instanceof Error ? error.message : 'Upload failed')
 
-      toast({
-        title: 'Upload failed',
+      toast.error('Upload failed', {
         description:
           error instanceof Error ? error.message : 'Failed to upload file',
-        variant: 'destructive',
       })
     } finally {
       setIsUploading(false)

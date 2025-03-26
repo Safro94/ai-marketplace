@@ -1,18 +1,14 @@
 export const ROUTES = {
   home: () => '/',
-  newOrder: () => '/order/new',
-  orderCreated: (orderSlug: string) => `/order/${orderSlug}/created`,
-  orderPreview: (orderSlug: string) => `/order/${orderSlug}/preview`,
-  orderSuccess: (orderSlug: string, email?: string) =>
-    `/order/${orderSlug}/success${email ? `?clientEmail=${email}` : ''}`,
-  integrations: () => '/integrations',
   privacyPolicy: () => '/privacy-policy',
   terms: () => '/terms-of-service',
-  signIn: () => '/sign-in',
-  signUp: () => '/sign-up',
-  myProfile: () => '/my-profile',
-  myOrders: () => '/my-orders',
+  login: () => '/login',
+  signUp: () => '/signup',
   resetPassword: () => '/reset-password',
+  explore: () => '/explore',
+  categories: () => '/categories',
+  creators: () => '/creators',
+  creatorDashboard: () => '/creator-dashboard',
 }
 
 export const API_ROUTES = {}

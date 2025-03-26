@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
-export default function CreatorCTASection() {
+export const CreatorCTASection = () => {
   return (
     <section className='py-16 bg-secondary/30'>
       <div className='container'>

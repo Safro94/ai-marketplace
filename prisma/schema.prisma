@@ -10,65 +10,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// You'll define the User model with authentication fields
-
 model Profile {
-  id             String          @id @default(cuid())
-  userId         String          @unique
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name           String?
-  bio            String?         @db.Text
-  website        String?
-  twitterHandle  String?
-  githubHandle   String?
-  avatarUrl      String?
-  isCreator      Boolean         @default(false)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String?
+  bio             String?  @db.Text
+  website         String?
+  twitterHandle   String?
+  githubHandle    String?
+  avatarUrl       String?
+  isCreator       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
   // Relations
-  assets         Asset[]
-  reviews        Review[]
-  purchases      Purchase[]
-  creatorProfile CreatorProfile?
-  notifications  Notification[]
+  assets          Asset[]
+  reviews         Review[]
+  purchases       Purchase[]
+  creatorProfile  CreatorProfile?
+  notifications   Notification[]
 }
 
 model CreatorProfile {
-  id                 String              @id @default(cuid())
-  profileId          String              @unique
-  profile            Profile             @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  expertise          String
-  experience         String
-  portfolio          String?
-  paymentDetails     Json?
-  commissionRate     Float               @default(15.0) // Default 15%
-  isExclusive        Boolean             @default(false)
-  totalSales         Int                 @default(0)
-  totalRevenue       Float               @default(0)
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
+  id                String   @id @default(cuid())
+  profileId         String   @unique
+  profile           Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  expertise         String
+  experience        String
+  portfolio         String?
+  paymentDetails    Json?
+  commissionRate    Float    @default(15.0) // Default 15%
+  isExclusive       Boolean  @default(false)
+  totalSales        Int      @default(0)
+  totalRevenue      Float    @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
   // Relations
   creatorApplication CreatorApplication?
-  analytics          CreatorAnalytics?
+  analytics         CreatorAnalytics?
 }
 
 model CreatorApplication {
-  id               String            @id @default(cuid())
-  creatorProfileId String            @unique
-  creatorProfile   CreatorProfile    @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
-  status           ApplicationStatus @default(PENDING)
-  fullName         String
-  email            String
-  website          String?
-  expertise        String
-  experience       String
-  bio              String            @db.Text
-  assetTypes       String            @db.Text
-  portfolio        String?
-  submittedAt      DateTime          @default(now())
-  reviewedAt       DateTime?
-  reviewNotes      String?           @db.Text
-
+  id              String   @id @default(cuid())
+  creatorProfileId String   @unique
+  creatorProfile  CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  status          ApplicationStatus @default(PENDING)
+  fullName        String
+  email           String
+  website         String?
+  expertise       String
+  experience      String
+  bio             String   @db.Text
+  assetTypes      String   @db.Text
+  portfolio       String?
+  submittedAt     DateTime @default(now())
+  reviewedAt      DateTime?
+  reviewNotes     String?  @db.Text
+  
   @@index([status])
 }
 
@@ -88,43 +88,45 @@ model Category {
   count       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
   // Relations
   assets      Asset[]
 }
 
 model Asset {
-  id              String          @id @default(cuid())
+  id              String   @id @default(cuid())
   title           String
-  slug            String          @unique
-  description     String          @db.Text
-  longDescription String          @db.Text
+  slug            String   @unique
+  description     String   @db.Text
+  longDescription String   @db.Text
   price           Float
   standardPrice   Float
   extendedPrice   Float?
   categoryId      String
-  category        Category        @relation(fields: [categoryId], references: [id])
+  category        Category @relation(fields: [categoryId], references: [id])
   useCase         String?
   creatorId       String
-  creator         Profile         @relation(fields: [creatorId], references: [id])
-  status          AssetStatus     @default(PENDING_REVIEW)
+  creator         Profile  @relation(fields: [creatorId], references: [id])
+  status          AssetStatus @default(PENDING_REVIEW)
   featuredImage   String
   galleryImages   String[]
   assetFile       String
-  features        String[]        @db.Text
-  requirements    String[]        @db.Text
+  features        String[] @db.Text
+  requirements    String[] @db.Text
   tags            String[]
-  sales           Int             @default(0)
-  revenue         Float           @default(0)
-  averageRating   Float           @default(0)
-  reviewCount     Int             @default(0)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  sales           Int      @default(0)
+  revenue         Float    @default(0)
+  averageRating   Float    @default(0)
+  reviewCount     Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
   // Relations
   reviews         Review[]
   purchases       Purchase[]
   downloads       Download[]
   assetAnalytics  AssetAnalytics?
-
+  
   @@index([categoryId])
   @@index([creatorId])
   @@index([status])
@@ -140,20 +142,21 @@ enum AssetStatus {
 }
 
 model Purchase {
-  id            String         @id @default(cuid())
-  assetId       String
-  asset         Asset          @relation(fields: [assetId], references: [id])
-  buyerId       String
-  buyer         Profile        @relation(fields: [buyerId], references: [id])
-  amount        Float
-  licenseType   LicenseType
-  transactionId String?
-  status        PurchaseStatus @default(COMPLETED)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id              String   @id @default(cuid())
+  assetId         String
+  asset           Asset    @relation(fields: [assetId], references: [id])
+  buyerId         String
+  buyer           Profile  @relation(fields: [buyerId], references: [id])
+  amount          Float
+  licenseType     LicenseType
+  transactionId   String?
+  status          PurchaseStatus @default(COMPLETED)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
   // Relations
-  downloads     Download[]
-
+  downloads       Download[]
+  
   @@index([assetId])
   @@index([buyerId])
   @@index([status])
@@ -172,49 +175,49 @@ enum PurchaseStatus {
 }
 
 model Download {
-  id         String   @id @default(cuid())
-  assetId    String
-  asset      Asset    @relation(fields: [assetId], references: [id])
-  purchaseId String
-  purchase   Purchase @relation(fields: [purchaseId], references: [id])
-  userId     String
-  ipAddress  String?
-  userAgent  String?
-  createdAt  DateTime @default(now())
-
+  id          String   @id @default(cuid())
+  assetId     String
+  asset       Asset    @relation(fields: [assetId], references: [id])
+  purchaseId  String
+  purchase    Purchase @relation(fields: [purchaseId], references: [id])
+  userId      String
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
   @@index([assetId])
   @@index([purchaseId])
   @@index([userId])
 }
 
 model Review {
-  id         String   @id @default(cuid())
-  assetId    String
-  asset      Asset    @relation(fields: [assetId], references: [id])
-  userId     String
-  user       Profile  @relation(fields: [userId], references: [id])
-  rating     Int
-  title      String
-  content    String   @db.Text
-  isVerified Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
+  id          String   @id @default(cuid())
+  assetId     String
+  asset       Asset    @relation(fields: [assetId], references: [id])
+  userId      String
+  user        Profile  @relation(fields: [userId], references: [id])
+  rating      Int
+  title       String
+  content     String   @db.Text
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
   @@index([assetId])
   @@index([userId])
 }
 
 model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  user      Profile          @relation(fields: [userId], references: [id])
-  title     String
-  message   String           @db.Text
-  type      NotificationType
-  read      Boolean          @default(false)
-  data      Json?
-  createdAt DateTime         @default(now())
-
+  id          String   @id @default(cuid())
+  userId      String
+  user        Profile  @relation(fields: [userId], references: [id])
+  title       String
+  message     String   @db.Text
+  type        NotificationType
+  read        Boolean  @default(false)
+  data        Json?
+  createdAt   DateTime @default(now())
+  
   @@index([userId])
   @@index([read])
 }
@@ -227,69 +230,69 @@ enum NotificationType {
 }
 
 model AssetAnalytics {
-  id             String   @id @default(cuid())
-  assetId        String   @unique
-  asset          Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  views          Int      @default(0)
-  uniqueViews    Int      @default(0)
-  conversionRate Float    @default(0)
-  dailyStats     Json?
-  weeklyStats    Json?
-  monthlyStats   Json?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id          String   @id @default(cuid())
+  assetId     String   @unique
+  asset       Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  views       Int      @default(0)
+  uniqueViews Int      @default(0)
+  conversionRate Float  @default(0)
+  dailyStats  Json?
+  weeklyStats Json?
+  monthlyStats Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model CreatorAnalytics {
-  id               String         @id @default(cuid())
-  creatorProfileId String         @unique
-  creatorProfile   CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
-  totalViews       Int            @default(0)
-  totalSales       Int            @default(0)
-  totalRevenue     Float          @default(0)
-  dailyStats       Json?
-  weeklyStats      Json?
-  monthlyStats     Json?
+  id              String   @id @default(cuid())
+  creatorProfileId String   @unique
+  creatorProfile  CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  totalViews      Int      @default(0)
+  totalSales      Int      @default(0)
+  totalRevenue    Float    @default(0)
+  dailyStats      Json?
+  weeklyStats     Json?
+  monthlyStats    Json?
   assetPerformance Json?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Favorite {
-  id        String   @id @default(cuid())
-  userId    String
-  assetId   String
-  createdAt DateTime @default(now())
-
+  id          String   @id @default(cuid())
+  userId      String
+  assetId     String
+  createdAt   DateTime @default(now())
+  
   @@unique([userId, assetId])
   @@index([userId])
   @@index([assetId])
 }
 
 model PageVisit {
-  id        String   @id @default(cuid())
-  path      String
-  userId    String?
-  sessionId String
-  referrer  String?
-  userAgent String?
-  ipAddress String?
-  createdAt DateTime @default(now())
-
+  id          String   @id @default(cuid())
+  path        String
+  userId      String?
+  sessionId   String
+  referrer    String?
+  userAgent   String?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+  
   @@index([path])
   @@index([userId])
   @@index([sessionId])
 }
 
 model Testimonial {
-  id           String   @id @default(cuid())
-  content      String   @db.Text
-  authorName   String
-  authorRole   String
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  authorName String
+  authorRole String
   authorAvatar String?
-  isPublished  Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isPublished Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([isPublished])
 }

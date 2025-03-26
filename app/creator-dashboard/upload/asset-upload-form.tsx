@@ -22,8 +22,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
-import { useToast } from '@/hooks/use-toast'
+import { ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
 import Image from 'next/image'
@@ -88,7 +89,6 @@ export default function AssetUploadForm() {
   const [previewImages, setPreviewImages] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
   const { data: session } = useAuth()
-  const { toast } = useToast()
   const router = useRouter()
 
   // Add these state variables at the top of the component:
@@ -116,21 +116,17 @@ export default function AssetUploadForm() {
       const file = e.target.files[0]
 
       if (file.size > MAX_FILE_SIZE) {
-        toast({
-          title: 'File too large',
+        toast.error('File too large', {
           description: `The file size should not exceed ${
             MAX_FILE_SIZE / (1024 * 1024)
           }MB`,
-          variant: 'destructive',
         })
         return
       }
 
       if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
-        toast({
-          title: 'Invalid file type',
+        toast.error('Invalid file type', {
           description: 'Please upload a valid file type',
-          variant: 'destructive',
         })
         return
       }
@@ -146,21 +142,18 @@ export default function AssetUploadForm() {
       // Validate each file
       const validFiles = files.filter((file) => {
         if (file.size > MAX_IMAGE_SIZE) {
-          toast({
-            title: 'Image too large',
+          toast.error('Image too large', {
             description: `Image "${file.name}" exceeds ${
               MAX_IMAGE_SIZE / (1024 * 1024)
             }MB limit`,
-            variant: 'destructive',
           })
-          return false
+
+          return
         }
 
         if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-          toast({
-            title: 'Invalid image type',
+          toast.error('Invalid image type', {
             description: `Image "${file.name}" is not a supported format`,
-            variant: 'destructive',
           })
           return false
         }
@@ -169,11 +162,10 @@ export default function AssetUploadForm() {
       })
 
       if (previewImages.length + validFiles.length > 5) {
-        toast({
-          title: 'Too many images',
+        toast.error('Too many images', {
           description: 'You can upload a maximum of 5 preview images',
-          variant: 'destructive',
         })
+
         return
       }
 
@@ -196,30 +188,27 @@ export default function AssetUploadForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!session?.user) {
-      toast({
-        title: 'Authentication required',
+      toast.error('Authentication required', {
         description: 'Please log in to upload assets',
-        variant: 'destructive',
       })
-      router.push('/login')
+
+      router.push(ROUTES.login())
       return
     }
 
     if (!assetFileUrl || !assetFileKey) {
-      toast({
-        title: 'Asset file required',
+      toast.error('Asset file required', {
         description: 'Please upload your asset file',
-        variant: 'destructive',
       })
+
       return
     }
 
     if (previewUrls.length === 0) {
-      toast({
-        title: 'Preview images required',
+      toast.error('Preview images required', {
         description: 'Please upload at least one preview image',
-        variant: 'destructive',
       })
+
       return
     }
 
@@ -250,20 +239,17 @@ export default function AssetUploadForm() {
         throw new Error(error.error || 'Failed to create asset')
       }
 
-      toast({
-        title: 'Asset submitted',
+      toast.success('Asset submitted', {
         description: 'Your asset has been submitted for review',
       })
 
       router.push('/creator-dashboard')
     } catch (error) {
-      toast({
-        title: 'Error',
+      toast.error('Error', {
         description:
           error instanceof Error
             ? error.message
             : 'Something went wrong. Please try again.',
-        variant: 'destructive',
       })
     } finally {
       setIsLoading(false)
@@ -441,10 +427,8 @@ export default function AssetUploadForm() {
                   setAssetFileKey(key)
                 }}
                 onUploadError={(error) => {
-                  toast({
-                    title: 'Upload error',
+                  toast.error('Upload error', {
                     description: error,
-                    variant: 'destructive',
                   })
                 }}
               />
@@ -464,10 +448,8 @@ export default function AssetUploadForm() {
                     setPreviewImageKeys((prev) => [...prev, key])
                   }}
                   onUploadError={(error) => {
-                    toast({
-                      title: 'Upload error',
+                    toast.error('Upload error', {
                       description: error,
-                      variant: 'destructive',
                     })
                   }}
                 />

@@ -2,8 +2,8 @@
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
-import { useToast } from '@/hooks/use-toast'
 import { createReview } from '@/lib/db/reviews'
 import { StarIcon } from 'lucide-react'
 import { FC, useState } from 'react'
@@ -19,7 +19,6 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast } = useToast()
   const { data: session } = useAuth()
   const user = session?.user
 
@@ -27,37 +26,29 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
     e.preventDefault()
 
     if (!user) {
-      toast({
-        title: 'Authentication required',
+      toast.error('Authentication required', {
         description: 'Please log in to submit a review',
-        variant: 'destructive',
       })
       return
     }
 
     if (rating === 0) {
-      toast({
-        title: 'Rating required',
+      toast.error('Rating required', {
         description: 'Please select a rating',
-        variant: 'destructive',
       })
       return
     }
 
     if (!title.trim()) {
-      toast({
-        title: 'Title required',
+      toast.error('Title required', {
         description: 'Please provide a review title',
-        variant: 'destructive',
       })
       return
     }
 
     if (!content.trim()) {
-      toast({
-        title: 'Review content required',
+      toast.error('Review content required', {
         description: 'Please provide review content',
-        variant: 'destructive',
       })
       return
     }
@@ -73,8 +64,7 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
         content,
       })
 
-      toast({
-        title: 'Review submitted',
+      toast.success('Review submitted', {
         description: 'Thank you for your feedback!',
       })
 
@@ -89,11 +79,10 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
       }
     } catch (error) {
       console.error('Review submission error:', error)
-      toast({
-        title: 'Error',
+
+      toast.error('Error', {
         description:
           'There was a problem submitting your review. Please try again.',
-        variant: 'destructive',
       })
     } finally {
       setIsSubmitting(false)

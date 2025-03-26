@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
-import { useToast } from '@/hooks/use-toast'
 import { AlertCircle, Check, Download } from 'lucide-react'
 import { FC, useEffect, useState } from 'react'
 
@@ -23,7 +23,6 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadComplete, setDownloadComplete] = useState(false)
   const [isPurchased, setIsPurchased] = useState<boolean | null>(null)
-  const { toast } = useToast()
   const { data: session } = useAuth()
   const user = session?.user
 
@@ -55,19 +54,15 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
 
   const handleDownload = async () => {
     if (!user) {
-      toast({
-        title: 'Authentication required',
+      toast.error('Authentication required', {
         description: 'Please log in to download this asset',
-        variant: 'destructive',
       })
       return
     }
 
     if (!isPurchased) {
-      toast({
-        title: 'Purchase required',
+      toast.error('Purchase required', {
         description: 'You need to purchase this asset before downloading',
-        variant: 'destructive',
       })
       return
     }
@@ -94,8 +89,8 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
       document.body.removeChild(a)
 
       setDownloadComplete(true)
-      toast({
-        title: 'Download successful',
+
+      toast.success('Download successful', {
         description: 'Your asset has been downloaded successfully',
       })
 
@@ -104,13 +99,11 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
         setDownloadComplete(false)
       }, 3000)
     } catch (error) {
-      toast({
-        title: 'Download failed',
+      toast.error('Download failed', {
         description:
           error instanceof Error
             ? error.message
             : 'There was a problem downloading your asset. Please try again.',
-        variant: 'destructive',
       })
     } finally {
       setIsDownloading(false)

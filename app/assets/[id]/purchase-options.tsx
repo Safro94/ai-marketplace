@@ -1,11 +1,11 @@
 'use client'
 
-import { FavoriteButton } from '@/components/favorite-button'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
-import { useToast } from '@/hooks/use-toast'
+import { ROUTES } from '@/lib/constants'
 import { createPurchase } from '@/lib/db/purchases'
 import { Check, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -31,20 +31,18 @@ export const PurchaseOptions: FC<Props> = ({
   const [licenseType, setLicenseType] = useState<'STANDARD' | 'EXTENDED'>(
     'STANDARD',
   )
-  const { toast } = useToast()
   const { data: session } = useAuth()
   const router = useRouter()
   const user = session?.user
 
   const handlePurchase = async () => {
     if (!user) {
-      toast({
-        title: 'Authentication required',
+      toast.error('Authentication required', {
         description: 'Please log in to purchase this asset.',
-        variant: 'destructive',
       })
+
       router.push(
-        `/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+        `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
       )
       return
     }
@@ -64,8 +62,7 @@ export const PurchaseOptions: FC<Props> = ({
         status: 'COMPLETED',
       })
 
-      toast({
-        title: 'Purchase successful!',
+      toast.success('Purchase successful!', {
         description: 'You now have access to this asset.',
       })
 
@@ -73,11 +70,10 @@ export const PurchaseOptions: FC<Props> = ({
       router.refresh()
     } catch (error) {
       console.error('Purchase error:', error)
-      toast({
-        title: 'Purchase failed',
+
+      toast.error('Purchase failed', {
         description:
           'There was an error processing your purchase. Please try again.',
-        variant: 'destructive',
       })
     } finally {
       setIsLoading(false)
@@ -176,13 +172,13 @@ export const PurchaseOptions: FC<Props> = ({
           )}
         </Button>
 
-        <FavoriteButton assetId={id} />
+        {/* <FavoriteButton assetId={id} /> */}
       </CardFooter>
     </Card>
   )
 }
 
-function Feature({ text, isIncluded = true }: FeatureProps) {
+const Feature: FC<FeatureProps> = ({ text, isIncluded = true }) => {
   return (
     <div className='flex items-start'>
       {isIncluded ? (

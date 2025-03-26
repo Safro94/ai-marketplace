@@ -1,3 +1,4 @@
+import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -9,7 +10,7 @@ interface LogoProps {
 
 export const Logo: FC<LogoProps> = ({ className, variant = 'default' }) => {
   return (
-    <Link href='/' className={cn('flex items-center', className)}>
+    <Link href={ROUTES.home()} className={cn('flex items-center', className)}>
       <div className='relative'>
         <div className='flex items-center'>
           <svg

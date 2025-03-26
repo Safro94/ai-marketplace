@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
-import { Clock, Download, FileText, Star } from 'lucide-react'
+import { Clock, Download, FileText } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const DashboardPage = async () => {
+export default async function DashboardPage() {
   const session = await getServerSession()
 
   if (!session?.user) {
@@ -74,23 +74,6 @@ export const DashboardPage = async () => {
     },
   })
 
-  // Get user's favorites
-  const favorites = await prisma.favorite.findMany({
-    where: {
-      userId: profile.id,
-    },
-    include: {
-      asset: {
-        include: {
-          category: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
-
   // Get user's reviews
   const reviews = await prisma.review.findMany({
     where: {
@@ -123,7 +106,7 @@ export const DashboardPage = async () => {
         <TabsList className='mb-6'>
           <TabsTrigger value='assets'>My Assets</TabsTrigger>
           <TabsTrigger value='downloads'>Download History</TabsTrigger>
-          <TabsTrigger value='favorites'>Favorites</TabsTrigger>
+          {/* <TabsTrigger value='favorites'>Favorites</TabsTrigger> */}
           <TabsTrigger value='reviews'>My Reviews</TabsTrigger>
         </TabsList>
 
@@ -186,8 +169,8 @@ export const DashboardPage = async () => {
                 <FileText className='h-12 w-12 text-muted-foreground mb-4' />
                 <h3 className='text-lg font-medium mb-2'>No assets yet</h3>
                 <p className='text-muted-foreground max-w-md mb-6'>
-                  You haven't purchased any assets yet. Browse our marketplace
-                  to find AI assets that can help you.
+                  You haven&apos;t purchased any assets yet. Browse our
+                  marketplace to find AI assets that can help you.
                 </p>
                 <Button asChild>
                   <Link href='/explore'>Browse Marketplace</Link>
@@ -245,8 +228,8 @@ export const DashboardPage = async () => {
                 <Download className='h-12 w-12 text-muted-foreground mb-4' />
                 <h3 className='text-lg font-medium mb-2'>No downloads yet</h3>
                 <p className='text-muted-foreground max-w-md mb-6'>
-                  You haven't downloaded any assets yet. Visit your purchased
-                  assets to download them.
+                  You haven&apos;t downloaded any assets yet. Visit your
+                  purchased assets to download them.
                 </p>
                 <Button asChild>
                   <Link href='/dashboard?tab=assets'>View My Assets</Link>
@@ -256,7 +239,7 @@ export const DashboardPage = async () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value='favorites'>
+        {/* <TabsContent value='favorites'>
           <Card>
             {favorites.length > 0 ? (
               <CardContent className='py-6'>
@@ -314,7 +297,7 @@ export const DashboardPage = async () => {
               </CardContent>
             )}
           </Card>
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value='reviews'>
           <Card>

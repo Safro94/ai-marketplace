@@ -1,3 +1,6 @@
+import prisma from '@/lib/prisma'
+import { getServerSession } from '@/lib/session'
+import { AlertCircle } from 'lucide-react'
 import type { Metadata } from 'next'
 import { CreatorsBenefitsSection } from './creators-benefits-section'
 import { CreatorsCTASection } from './creators-cta-section'
@@ -21,15 +24,66 @@ export const metadata: Metadata = {
   },
 }
 
-export default function CreatorsPage() {
-  return (
-    <div className='flex flex-col min-h-screen'>
-      <CreatorsHeroSection />
-      <CreatorsBenefitsSection />
-      <CreatorsHowItWorksSection />
-      <CreatorsTypesSection />
-      <CreatorsFAQSection />
-      <CreatorsCTASection />
-    </div>
-  )
+export default async function CreatorsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
+  const session = await getServerSession()
+  let profile
+
+  if (session?.user) {
+    // Check if user is already a creator
+    profile = await prisma.profile.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        creatorProfile: {
+          include: {
+            creatorApplication: true,
+          },
+        },
+      },
+    })
+
+    const isCreator = !!profile?.isCreator
+    const hasPendingApplication =
+      profile?.creatorProfile?.creatorApplication?.status === 'PENDING'
+
+    const error = (await searchParams).error
+
+    return (
+      <div className='flex flex-col min-h-screen'>
+        {/* Error message if needed */}
+        {error === 'not-creator' && (
+          <div className='bg-destructive/15 border-l-4 border-destructive p-4'>
+            <div className='flex'>
+              <div className='flex-shrink-0'>
+                <AlertCircle
+                  className='h-5 w-5 text-destructive'
+                  aria-hidden='true'
+                />
+              </div>
+
+              <div className='ml-3'>
+                <p className='text-sm text-destructive'>
+                  You need to be an approved creator to access the creator
+                  dashboard. Please apply below.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <CreatorsHeroSection
+          isCreator={isCreator}
+          hasPendingApplication={hasPendingApplication}
+        />
+        <CreatorsBenefitsSection />
+        <CreatorsHowItWorksSection />
+        <CreatorsTypesSection />
+        <CreatorsFAQSection />
+        <CreatorsCTASection />
+      </div>
+    )
+  }
 }

@@ -13,6 +13,7 @@ import {
   Briefcase,
   Database,
   FileText,
+  LucideIcon,
   MessageSquare,
   Workflow,
 } from 'lucide-react'
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   },
 }
 
-const iconMap = {
+const iconMap: Record<string, LucideIcon> = {
   MessageSquare: MessageSquare,
   Bot: Bot,
   Workflow: Workflow,
@@ -36,7 +37,7 @@ const iconMap = {
   Database: Database,
 }
 
-export const CategoriesPage = async () => {
+export default async function CategoriesPage() {
   // Fetch categories from the database
   const categories = await prisma.category.findMany({
     orderBy: {

@@ -14,13 +14,20 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          // Create a profile for the user
-          await prisma.profile.create({
-            data: {
-              userId: user.id ?? '',
-              name: user.name,
-            },
+          const profileExists = await prisma.profile.findUnique({
+            where: { userId: user.id },
           })
+
+          if (!profileExists) {
+            // Create a profile for the user
+            await prisma.profile.create({
+              data: {
+                userId: user.id ?? '',
+                name: user.name,
+                avatarUrl: user.image,
+              },
+            })
+          }
         },
       },
     },

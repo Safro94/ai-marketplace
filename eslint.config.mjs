@@ -16,7 +16,27 @@ const eslintConfig = [
       'no-console': 'warn',
       'no-unused-vars': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@radix-ui/*'],
+              message:
+                'Importing from @radix-ui/* is only supported in the components ui folder',
+            },
+          ],
+        },
+      ],
     },
+    overrides: [
+      {
+        files: ['./src/components/ui/**/*.tsx'],
+        rules: {
+          'no-restricted-imports': 'off',
+        },
+      },
+    ],
   }),
 ]
 

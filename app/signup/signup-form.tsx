@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from '@/components/ui/toast'
 import { authClient } from '@/lib/auth-client'
 import { ROUTES } from '@/lib/constants'
 import { USER_TYPES } from '@/lib/types'
@@ -20,7 +20,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import googleIcon from '../public/google-icon.svg'
+import googleIcon from '../../public/google-icon.svg'
 
 const formSchema = z
   .object({
@@ -41,7 +41,6 @@ const formSchema = z
 
 export const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,26 +71,22 @@ export const SignupForm = () => {
           },
           onSuccess: () => {
             setIsLoading(false)
-            toast({
-              title: 'Success',
+            toast.success('Success', {
               description: 'You have successfully registered.',
             })
           },
           onError: (ctx) => {
-            toast({
-              title: 'Error',
+            toast.error('Error', {
               description: ctx.error.message,
-              variant: 'destructive',
             })
           },
         },
       )
     } catch (error) {
       console.error(error)
-      toast({
-        title: 'Error',
+
+      toast.error('Error', {
         description: 'Something went wrong. Please try again.',
-        variant: 'destructive',
       })
     } finally {
       setIsLoading(false)
@@ -213,7 +208,29 @@ export const SignupForm = () => {
         </div>
       </div>
 
-      <Button variant='outline' type='button' disabled={isLoading}>
+      <Button
+        variant='outline'
+        type='button'
+        disabled={isLoading}
+        onClick={async (e) => {
+          e.preventDefault()
+          setIsLoading(true)
+
+          await authClient.signIn.social(
+            {
+              provider: 'google',
+              callbackURL: ROUTES.home(),
+            },
+            {
+              onError(context) {
+                toast.error('Error', {
+                  description: context.error.message,
+                })
+              },
+            },
+          )
+        }}
+      >
         <Image
           src={googleIcon}
           width={16}

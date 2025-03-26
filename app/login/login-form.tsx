@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from '@/components/ui/toast'
 import { authClient } from '@/lib/auth-client'
 import { ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,7 +18,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import googleIcon from '../public/google-icon.svg'
+import googleIcon from '../../public/google-icon.svg'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -29,7 +29,6 @@ const formSchema = z.object({
 
 export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,26 +52,22 @@ export const LoginForm = () => {
           },
           onSuccess: () => {
             setIsLoading(false)
-            toast({
-              title: 'Success',
+            toast.success('Success', {
               description: 'You have successfully logged in.',
             })
           },
           onError: (ctx) => {
-            toast({
-              title: 'Error',
+            toast.error('Error', {
               description: ctx.error.message,
-              variant: 'destructive',
             })
           },
         },
       )
     } catch (error) {
       console.error(error)
-      toast({
-        title: 'Error',
+
+      toast.error('Error', {
         description: 'Something went wrong. Please try again.',
-        variant: 'destructive',
       })
     }
   }
@@ -133,28 +128,19 @@ export const LoginForm = () => {
         type='button'
         disabled={isLoading}
         onClick={async () => {
-          setIsLoading(true)
-
-          const { error } = await authClient.signIn.social({
-            provider: 'google',
-            callbackURL: ROUTES.home(),
-          })
-
-          if (error) {
-            toast({
-              title: 'Error',
-              description: error.message,
-              variant: 'destructive',
-            })
-            return
-          }
-
-          setIsLoading(false)
-
-          toast({
-            title: 'Success',
-            description: 'You have successfully logged in.',
-          })
+          await authClient.signIn.social(
+            {
+              provider: 'google',
+              callbackURL: ROUTES.home(),
+            },
+            {
+              onError(context) {
+                toast.error('Error', {
+                  description: context.error.message,
+                })
+              },
+            },
+          )
         }}
       >
         <Image

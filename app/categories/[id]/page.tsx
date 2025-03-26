@@ -6,6 +6,7 @@ import {
   Briefcase,
   Database,
   FileText,
+  LucideIcon,
   MessageSquare,
   Workflow,
 } from 'lucide-react'
@@ -16,7 +17,7 @@ interface Props {
   params: { id: string }
 }
 
-const iconMap = {
+const iconMap: Record<string, LucideIcon> = {
   MessageSquare: MessageSquare,
   Bot: Bot,
   Workflow: Workflow,
@@ -48,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export const CategoryPage = async ({ params }: Props) => {
+export default async function Category({ params }: Props) {
   const category = await prisma.category.findUnique({
     where: { slug: params.id },
   })

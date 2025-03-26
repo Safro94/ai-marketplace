@@ -59,7 +59,7 @@ const PENDING_ASSETS = [
   },
 ]
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
   return (
     <div className='container py-8'>
       <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-8'>

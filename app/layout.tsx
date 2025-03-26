@@ -1,6 +1,6 @@
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from '@/components/ui/toast'
 import { generateOrganizationJsonLd, siteConfig } from '@/lib/seo-config'
 import { cn } from '@/lib/utils'
 import type { Metadata, Viewport } from 'next'
@@ -96,7 +96,7 @@ export default function RootLayout({
             <Footer />
           </div>
 
-          <Toaster />
+          <Toaster richColors />
         </Providers>
       </body>
     </html>

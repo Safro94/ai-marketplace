@@ -13,7 +13,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from '@/components/ui/toast'
 import { useEffect, useState } from 'react'
 import {
   Bar,
@@ -32,7 +32,6 @@ export default function CreatorAnalytics() {
   const [visitsData, setVisitsData] = useState([])
   const [assetPerformance, setAssetPerformance] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const { toast } = useToast()
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -60,10 +59,9 @@ export default function CreatorAnalytics() {
         }
       } catch (error) {
         console.error('Error fetching analytics:', error)
-        toast({
-          title: 'Error',
+
+        toast.error('Error', {
           description: 'Failed to load analytics data. Please try again later.',
-          variant: 'destructive',
         })
       } finally {
         setIsLoading(false)
@@ -71,7 +69,7 @@ export default function CreatorAnalytics() {
     }
 
     fetchAnalytics()
-  }, [toast])
+  }, [])
 
   // If data is loading or empty, show placeholder data
   const placeholderSalesData = [
