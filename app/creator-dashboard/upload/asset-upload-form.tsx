@@ -88,7 +88,7 @@ export default function AssetUploadForm() {
   const [assetFile, setAssetFile] = useState<File | null>(null)
   const [previewImages, setPreviewImages] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
-  const { data: session } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
 
   // Add these state variables at the top of the component:
@@ -187,7 +187,7 @@ export default function AssetUploadForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!session?.user) {
+    if (!user) {
       toast.error('Authentication required', {
         description: 'Please log in to upload assets',
       })

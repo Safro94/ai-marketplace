@@ -23,8 +23,7 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadComplete, setDownloadComplete] = useState(false)
   const [isPurchased, setIsPurchased] = useState<boolean | null>(null)
-  const { data: session } = useAuth()
-  const user = session?.user
+  const { user } = useAuth()
 
   // Check if user has purchased this asset
   useEffect(() => {

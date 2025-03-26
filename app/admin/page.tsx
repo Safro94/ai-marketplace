@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import prisma from '@/lib/prisma'
+import { ApplicationStatus } from '@prisma/client'
 import { DollarSign, FileText, ShoppingBag, Users } from 'lucide-react'
 import type { Metadata } from 'next'
 
@@ -17,7 +18,7 @@ export default async function AdminDashboardPage() {
   const assetCount = await prisma.asset.count()
   const salesCount = await prisma.purchase.count()
   const pendingApplicationsCount = await prisma.creatorApplication.count({
-    where: { status: 'PENDING' },
+    where: { status: ApplicationStatus.PENDING },
   })
 
   // Calculate total revenue

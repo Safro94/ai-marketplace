@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { ApplicationStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
         creatorProfile: {
           profileId: profile.id,
         },
-        status: 'PENDING',
+        status: ApplicationStatus.PENDING,
       },
     })
 
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
         bio: data.bio,
         assetTypes: data.assetTypes,
         portfolio: data.portfolio || null,
-        status: 'PENDING',
+        status: ApplicationStatus.PENDING,
       },
     })
 

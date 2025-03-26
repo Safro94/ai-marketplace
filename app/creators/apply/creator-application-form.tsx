@@ -61,14 +61,14 @@ const formSchema = z.object({
 
 export const CreatorApplicationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { data: session } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: '',
-      email: session?.user?.email || '',
+      email: user?.email || '',
       website: '',
       expertise: '',
       experience: '',
@@ -80,7 +80,7 @@ export const CreatorApplicationForm = () => {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!session?.user) {
+    if (!user) {
       toast.error('Authentication required', {
         description: 'Please log in to submit your application.',
       })
@@ -100,7 +100,7 @@ export const CreatorApplicationForm = () => {
         },
         body: JSON.stringify({
           ...values,
-          userId: session.user.id,
+          userId: user.id,
         }),
       })
 

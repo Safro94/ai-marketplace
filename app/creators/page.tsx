@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { ApplicationStatus } from '@prisma/client'
 import { AlertCircle } from 'lucide-react'
 import type { Metadata } from 'next'
 import { CreatorsBenefitsSection } from './creators-benefits-section'
@@ -47,7 +48,8 @@ export default async function CreatorsPage({
 
     const isCreator = !!profile?.isCreator
     const hasPendingApplication =
-      profile?.creatorProfile?.creatorApplication?.status === 'PENDING'
+      profile?.creatorProfile?.creatorApplication?.status ===
+      ApplicationStatus.PENDING
 
     const error = (await searchParams).error
 

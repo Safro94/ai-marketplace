@@ -31,9 +31,8 @@ export const PurchaseOptions: FC<Props> = ({
   const [licenseType, setLicenseType] = useState<'STANDARD' | 'EXTENDED'>(
     'STANDARD',
   )
-  const { data: session } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
-  const user = session?.user
 
   const handlePurchase = async () => {
     if (!user) {

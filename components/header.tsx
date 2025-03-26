@@ -14,13 +14,14 @@ import {
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
 import { authClient } from '@/lib/auth-client'
-import { ROUTES } from '@/lib/constants'
+import { HEADER_LINKS, ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { Menu, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Logo } from './logo'
+import { MobileMenu } from './mobile-menu'
 import { toast } from './ui/toast'
 
 export const Header = () => {
@@ -28,15 +29,7 @@ export const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const { data: session, isPending } = useAuth()
-  const user = session?.user
-
-  const navigation = [
-    { name: 'Home', href: ROUTES.home() },
-    { name: 'Explore', href: ROUTES.explore() },
-    { name: 'Categories', href: ROUTES.categories() },
-    { name: 'For Creators', href: ROUTES.creators() },
-  ]
+  const { user } = useAuth()
 
   return (
     <header className='sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
@@ -45,7 +38,7 @@ export const Header = () => {
           <Logo />
 
           <nav className='hidden md:flex gap-6'>
-            {navigation.map((item) => (
+            {HEADER_LINKS.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
@@ -113,6 +106,7 @@ export const Header = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent className='w-56' align='end' forceMount>
                   <DropdownMenuLabel className='font-normal'>
                     <div className='flex flex-col space-y-1'>
@@ -128,22 +122,16 @@ export const Header = () => {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem asChild>
-                    <Link href='/dashboard'>Dashboard</Link>
+                    <Link href={ROUTES.dashboard()}>Dashboard</Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem asChild>
-                    <Link href='/account'>Account</Link>
+                    <Link href={ROUTES.account()}>Account</Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem asChild>
-                    <Link href='/purchases'>Purchases</Link>
+                    <Link href={ROUTES.purchases()}>Purchases</Link>
                   </DropdownMenuItem>
-
-                  {/* {user.isCreator && (
-                    <DropdownMenuItem asChild>
-                      <Link href='/creator-dashboard'>Creator Dashboard</Link>
-                    </DropdownMenuItem>
-                  )} */}
 
                   <DropdownMenuSeparator />
 
@@ -197,62 +185,11 @@ export const Header = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className='md:hidden border-t border-border/40'>
-          <div className='container py-4 space-y-4'>
-            <div className='relative'>
-              <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
-              <Input
-                type='search'
-                placeholder='Search assets...'
-                className='w-full pl-8'
-              />
-            </div>
-
-            <div className='flex items-center justify-between'>
-              <span className='text-sm font-medium'>Theme</span>
-              <ThemeToggle />
-            </div>
-
-            <nav className='flex flex-col space-y-4'>
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    'text-sm font-medium transition-colors hover:text-primary',
-                    pathname === item.href
-                      ? 'text-foreground'
-                      : 'text-muted-foreground',
-                  )}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-
-              {!user && (
-                <>
-                  <Link
-                    href={ROUTES.login()}
-                    className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Log in
-                  </Link>
-
-                  <Button asChild className='w-full'>
-                    <Link
-                      href={ROUTES.signUp()}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Sign up
-                    </Link>
-                  </Button>
-                </>
-              )}
-            </nav>
-          </div>
-        </div>
+        <MobileMenu
+          onLinkClick={() => {
+            setIsMenuOpen(false)
+          }}
+        />
       )}
     </header>
   )

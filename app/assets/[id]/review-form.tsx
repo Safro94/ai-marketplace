@@ -19,8 +19,7 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { data: session } = useAuth()
-  const user = session?.user
+  const { user } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
