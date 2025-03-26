@@ -9,7 +9,15 @@ export async function PATCH(
   const session = await getServerSession()
 
   // Check if user is admin
-  if (!session?.user || session.user.role !== 'ADMIN') {
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const profile = await prisma.profile.findUnique({
+    where: { userId: session.user.id },
+  })
+
+  if (!profile?.isAdmin) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -62,9 +70,10 @@ export async function PATCH(
       })
 
       // Create notification for the user
+      // TODO: uncomment
       await prisma.notification.create({
         data: {
-          userId: application.creatorProfile.profileId,
+          userId: application.creatorProfile.profile.userId,
           title: 'Creator Application Approved',
           message:
             'Congratulations! Your application to become a creator has been approved. You can now start uploading assets.',
@@ -76,7 +85,7 @@ export async function PATCH(
       // Create rejection notification
       await prisma.notification.create({
         data: {
-          userId: application.creatorProfile.profileId,
+          userId: application.creatorProfile.profile.userId,
           title: 'Creator Application Rejected',
           message:
             "We're sorry, but your creator application has been rejected. Please see the review notes for more information.",

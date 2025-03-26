@@ -9,8 +9,18 @@ export const ROUTES = {
   categories: () => '/categories',
   creators: () => '/creators',
   creatorDashboard: () => '/creator-dashboard',
+  creatorDashboardUpload: () => '/creator-dashboard/upload',
+  creatorDashboardThankYou: () => '/creator-dashboard/thank-you',
+  admin: () => '/admin',
+  adminUsers: () => '/admin/users',
+  adminAssets: () => '/admin/assets',
+  adminCreatorApplications: () => '/admin/creator-applications',
+  adminAnalytics: () => '/admin/analytics',
+  adminSettings: () => '/admin/settings',
 }
 
-export const API_ROUTES = {}
+export const API_ROUTES = {
+  adminCreatorApplications: () => '/api/admin/creator-applications',
+}
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
 export const PAYPAL_EMAIL = process.env.NEXT_PUBLIC_PAYPAL_EMAIL

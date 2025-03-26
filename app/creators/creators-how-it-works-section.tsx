@@ -35,7 +35,7 @@ export const CreatorsHowItWorksSection = () => {
           {STEPS.map(({ title, description }, i) => (
             <div key={i} className='flex flex-col items-center text-center'>
               <div className='h-12 w-12 rounded-full bg-secondary flex items-center justify-center mb-4 relative'>
-                <span className='text-lg font-bold'>{i}</span>
+                <span className='text-lg font-bold'>{i + 1}</span>
                 <div className='absolute hidden md:block h-1 bg-secondary w-full right-0 top-1/2 -z-10 translate-x-1/2' />
               </div>
 
