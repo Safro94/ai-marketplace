@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
+import { Favorite } from '@prisma/client'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
@@ -23,18 +24,18 @@ export const FavoriteButton: FC<Props> = ({
 }) => {
   const [isFavorited, setIsFavorited] = useState(initialFavorited)
   const [isLoading, setIsLoading] = useState(false)
-  const { data: session } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
 
   // Check if asset is favorited on mount
   useEffect(() => {
     const checkFavoriteStatus = async () => {
-      if (!session?.user) return
+      if (!user) return
 
       try {
         const response = await fetch('/api/favorites')
         if (response.ok) {
-          const favorites = await response.json()
+          const favorites: Favorite[] = await response.json()
           const isFav = favorites.some((fav) => fav.assetId === assetId)
           setIsFavorited(isFav)
         }
@@ -44,10 +45,10 @@ export const FavoriteButton: FC<Props> = ({
     }
 
     checkFavoriteStatus()
-  }, [assetId, session?.user])
+  }, [assetId, user])
 
   const toggleFavorite = async () => {
-    if (!session?.user) {
+    if (!user) {
       toast.error('Authentication required', {
         description: 'Please log in to save assets to favorites',
       })
