@@ -1,8 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { API_ROUTES } from '@/lib/constants'
-import { FilterOption } from '@/lib/types'
+import { toast } from '@/components/ui/toast'
+import { API_ROUTES, EXPLORE_PARAMS } from '@/lib/constants'
 import { Category } from '@prisma/client'
 import { X } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -13,37 +13,35 @@ interface Props {
   initialCategory?: string
 }
 
-// Update the component to use URL search params
 export const AssetFilters: FC<Props> = ({ initialCategory }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [categories, setCategories] = useState<FilterOption[]>([])
-  const [useCases, setUseCases] = useState<FilterOption[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [useCases, setUseCases] = useState<Category[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
 
   const [priceRange, setPriceRange] = useState([
-    Number(searchParams.get('minPrice') || 0),
-    Number(searchParams.get('maxPrice') || 300),
+    Number(searchParams.get(EXPLORE_PARAMS.MIN_PRICE) || 0),
+    Number(searchParams.get(EXPLORE_PARAMS.MAX_PRICE) || 300), //TODO: get dynamic max price
   ])
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialCategory
       ? [initialCategory]
-      : searchParams.get('category')?.split(',') || [],
+      : searchParams.get(EXPLORE_PARAMS.CATEGORY)?.split(',') || [],
   )
 
   const [selectedUseCases, setSelectedUseCases] = useState<string[]>(
-    searchParams.get('useCase')?.split(',') || [],
+    searchParams.get(EXPLORE_PARAMS.USE_CASES)?.split(',') || [],
   )
 
   const [selectedRatings, setSelectedRatings] = useState<string[]>(
-    searchParams.get('minRating')
-      ? [searchParams.get('minRating') as string]
+    searchParams.get(EXPLORE_PARAMS.MIN_RATING)
+      ? [searchParams.get(EXPLORE_PARAMS.MIN_RATING) as string]
       : [],
   )
-
-  const [showMobileFilters, setShowMobileFilters] = useState(false)
 
   // Fetch categories and use cases from API
   useEffect(() => {
@@ -51,7 +49,6 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
       setIsLoading(true)
 
       try {
-        // Fetch categories
         const categoriesResponse = await fetch(API_ROUTES.categories())
 
         if (categoriesResponse.ok) {
@@ -59,8 +56,7 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
           setCategories(categoriesData)
         }
 
-        // Fetch use cases
-        const useCasesResponse = await fetch('/api/use-cases')
+        const useCasesResponse = await fetch(API_ROUTES.cases())
 
         if (useCasesResponse.ok) {
           const useCasesData = await useCasesResponse.json()
@@ -68,6 +64,11 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
         }
       } catch (error) {
         console.error('Error fetching filter data:', error)
+
+        toast.error('Error', {
+          description:
+            'There was an error while fetching the categories and use cases',
+        })
       } finally {
         setIsLoading(false)
       }
@@ -81,52 +82,42 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
     const params = new URLSearchParams(searchParams.toString())
 
     // Update category param
-    if (selectedCategories.length > 0) {
-      params.set('category', selectedCategories.join(','))
+    if (!!selectedCategories.length) {
+      params.set(EXPLORE_PARAMS.CATEGORY, selectedCategories.join(','))
     } else {
-      params.delete('category')
+      params.delete(EXPLORE_PARAMS.CATEGORY)
     }
 
     // Update useCase param
-    if (selectedUseCases.length > 0) {
-      params.set('useCase', selectedUseCases.join(','))
+    if (!!selectedUseCases.length) {
+      params.set(EXPLORE_PARAMS.USE_CASES, selectedUseCases.join(','))
     } else {
-      params.delete('useCase')
+      params.delete(EXPLORE_PARAMS.USE_CASES)
     }
 
     // Update rating param
-    if (selectedRatings.length > 0) {
+    if (!!selectedRatings.length) {
       // Extract the numeric value from the rating (e.g., "4-up" -> 4)
       const minRating = selectedRatings[0].split('-')[0]
-      params.set('minRating', minRating)
+      params.set(EXPLORE_PARAMS.MIN_RATING, minRating)
     } else {
-      params.delete('minRating')
+      params.delete(EXPLORE_PARAMS.MIN_RATING)
     }
 
     // Update price range params
-    if (priceRange[0] > 0) {
-      params.set('minPrice', priceRange[0].toString())
+    if (!!priceRange[0]) {
+      params.set(EXPLORE_PARAMS.MIN_PRICE, priceRange[0].toString())
     } else {
-      params.delete('minPrice')
+      params.delete(EXPLORE_PARAMS.MIN_PRICE)
     }
 
     if (priceRange[1] < 300) {
-      params.set('maxPrice', priceRange[1].toString())
+      params.set(EXPLORE_PARAMS.MAX_PRICE, priceRange[1].toString())
     } else {
-      params.delete('maxPrice')
+      params.delete(EXPLORE_PARAMS.MAX_PRICE)
     }
 
-    // Only update the URL if filters have changed
-    const hasActiveFilters =
-      selectedCategories.length > 0 ||
-      selectedUseCases.length > 0 ||
-      selectedRatings.length > 0 ||
-      priceRange[0] > 0 ||
-      priceRange[1] < 300
-
-    if (hasActiveFilters) {
-      router.push(`?${params.toString()}`)
-    }
+    router.push(`?${params.toString()}`)
   }, [
     selectedCategories,
     selectedUseCases,
@@ -145,7 +136,9 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
     // Clear URL params and navigate to base URL
     if (initialCategory) {
       // If we have an initial category, keep it in the URL
-      router.push(`?${initialCategory ? `category=${initialCategory}` : ''}`)
+      router.push(
+        `?${initialCategory ? `${EXPLORE_PARAMS.CATEGORY}=${initialCategory}` : ''}`,
+      )
     } else {
       router.push(window.location.pathname)
     }
@@ -154,10 +147,10 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
   const hasActiveFilters =
     (initialCategory
       ? selectedCategories.length > 1
-      : selectedCategories.length > 0) ||
-    selectedUseCases.length > 0 ||
-    selectedRatings.length > 0 ||
-    priceRange[0] > 0 ||
+      : !!selectedCategories.length) ||
+    !!selectedUseCases.length ||
+    !!selectedRatings.length ||
+    !!priceRange[0] ||
     priceRange[1] < 300
 
   return (
@@ -197,7 +190,7 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
                 : selectedCategories.length) +
                 selectedUseCases.length +
                 selectedRatings.length +
-                (priceRange[0] > 0 || priceRange[1] < 300 ? 1 : 0)}
+                (!!priceRange[0] || priceRange[1] < 300 ? 1 : 0)}
             </span>
           )}
         </Button>

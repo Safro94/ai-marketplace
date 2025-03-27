@@ -11,15 +11,17 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
-import { FilterOption } from '@/lib/types'
+import { EXPLORE_FITLERS } from '@/lib/constants'
+
+import { Category } from '@prisma/client'
 import Image from 'next/image'
 import { Dispatch, FC, ReactNode, SetStateAction } from 'react'
 import reviewStar from '../../public/review-star.svg'
 
 interface Props {
   initialCategory?: string
-  categories: FilterOption[]
-  useCases: FilterOption[]
+  categories: Category[]
+  useCases: Category[]
   isLoading: boolean
   hasActiveFilters: boolean
   priceRange: number[]
@@ -55,11 +57,11 @@ export const FiltersContent: FC<Props> = ({
   clearAllFilters,
   isLoading,
 }) => {
-  const handleCategoryChange = (categoryId: string) => {
+  const handleCategoryChange = (categorySlug: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId],
+      prev.includes(categorySlug)
+        ? prev.filter((slug) => slug !== categorySlug)
+        : [...prev, categorySlug],
     )
   }
 
@@ -98,28 +100,31 @@ export const FiltersContent: FC<Props> = ({
 
       {isLoading ? (
         <div className='py-4 space-y-4'>
-          <div className='h-4 bg-muted rounded animate-pulse'></div>
-          <div className='h-4 bg-muted rounded animate-pulse w-3/4'></div>
-          <div className='h-4 bg-muted rounded animate-pulse w-1/2'></div>
+          <div className='h-4 bg-muted rounded animate-pulse' />
+          <div className='h-4 bg-muted rounded animate-pulse w-3/4' />
+          <div className='h-4 bg-muted rounded animate-pulse w-1/2' />
         </div>
       ) : (
         <Accordion
           type='multiple'
-          defaultValue={['categories', 'price', 'use-cases', 'ratings']}
+          defaultValue={Object.values(EXPLORE_FITLERS).map((value) => value)}
           className='space-y-2'
         >
-          <Filter value='categories' title='Categories' items={categories}>
+          <Filter
+            value={EXPLORE_FITLERS.CATEGORIES}
+            title='Categories'
+            items={categories}
+          >
             {(item) => (
               <>
                 <Checkbox
-                  id={`category-${item.id}`}
-                  checked={selectedCategories.includes(item.id)}
-                  onCheckedChange={() => handleCategoryChange(item.id)}
-                  disabled={initialCategory === item.id} // Disable the checkbox if it's the initial category
+                  id={`category-${item.slug}`}
+                  checked={selectedCategories.includes(item.slug)}
+                  onCheckedChange={() => handleCategoryChange(item.slug)}
                 />
 
                 <Label
-                  htmlFor={`category-${item.id}`}
+                  htmlFor={`category-${item.slug}`}
                   className='text-sm font-normal cursor-pointer'
                 >
                   {item.name}
@@ -128,7 +133,7 @@ export const FiltersContent: FC<Props> = ({
             )}
           </Filter>
 
-          <AccordionItem value='price' className='border-b-0'>
+          <AccordionItem value={EXPLORE_FITLERS.PRICE} className='border-b-0'>
             <AccordionTrigger className='py-3 text-sm font-medium'>
               Price Range
             </AccordionTrigger>
@@ -181,7 +186,11 @@ export const FiltersContent: FC<Props> = ({
             </AccordionContent>
           </AccordionItem>
 
-          <Filter value='use-cases' title='Use Cases' items={useCases}>
+          <Filter
+            value={EXPLORE_FITLERS.USE_CASES}
+            title='Use Cases'
+            items={useCases}
+          >
             {(item) => (
               <>
                 <Checkbox
@@ -200,7 +209,11 @@ export const FiltersContent: FC<Props> = ({
             )}
           </Filter>
 
-          <Filter value='ratings' title='Ratings' items={RATINGS}>
+          <Filter
+            value={EXPLORE_FITLERS.RATINGS}
+            title='Ratings'
+            items={RATINGS}
+          >
             {(item) => (
               <>
                 <Checkbox

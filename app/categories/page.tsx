@@ -6,8 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ROUTES } from '@/lib/constants'
+import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { AssetStatus } from '@prisma/client'
 import {
   ArrowRight,
   Bot,
@@ -53,7 +54,7 @@ export default async function CategoriesPage() {
       const count = await prisma.asset.count({
         where: {
           categoryId: category.id,
-          status: 'PUBLISHED',
+          status: AssetStatus.PUBLISHED,
         },
       })
 
@@ -61,7 +62,7 @@ export default async function CategoriesPage() {
       const featuredAssets = await prisma.asset.findMany({
         where: {
           categoryId: category.id,
-          status: 'PUBLISHED',
+          status: AssetStatus.PUBLISHED,
         },
         orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
         select: {
@@ -84,6 +85,7 @@ export default async function CategoriesPage() {
         <h1 className='text-3xl font-bold tracking-tight mb-2'>
           Browse by Category
         </h1>
+
         <p className='text-muted-foreground max-w-2xl mx-auto'>
           Explore our curated categories of AI assets designed for specific use
           cases and industries
@@ -110,6 +112,7 @@ export default async function CategoriesPage() {
                   >
                     <IconComponent className='h-6 w-6' />
                   </div>
+
                   <div>
                     <CardTitle className='text-xl'>{category.name}</CardTitle>
                     <CardDescription className='mt-1'>
@@ -138,7 +141,9 @@ export default async function CategoriesPage() {
                   </div>
 
                   <Button variant='outline' className='w-full' asChild>
-                    <Link href={`${ROUTES.categories()}/${category.slug}`}>
+                    <Link
+                      href={`${ROUTES.explore()}?${EXPLORE_PARAMS.CATEGORY}=${category.slug}`}
+                    >
                       Browse {category.name}
                       <ArrowRight className='ml-2 h-4 w-4' />
                     </Link>

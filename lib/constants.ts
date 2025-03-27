@@ -36,6 +36,7 @@ export const API_ROUTES = {
   assetDownload: (assetId: string) => `/api/assets/${assetId}/download`,
   search: () => `/api/search`,
   categories: () => `/api/categories`,
+  cases: () => `/api/use-cases`,
 }
 
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
@@ -47,3 +48,20 @@ export const HEADER_LINKS = [
   { name: 'Categories', href: ROUTES.categories() },
   { name: 'For Creators', href: ROUTES.creators() },
 ]
+
+export enum EXPLORE_PARAMS {
+  CATEGORY = 'category',
+  USE_CASES = 'useCase',
+  MIN_RATING = 'minRating',
+  MIN_PRICE = 'minPrice',
+  MAX_PRICE = 'maxPrice',
+  SORT_BY = 'sortBy',
+  PAGE = 'page',
+}
+
+export enum EXPLORE_FITLERS {
+  CATEGORIES = 'categories',
+  PRICE = 'price',
+  USE_CASES = 'use-cases',
+  RATINGS = 'ratings',
+}

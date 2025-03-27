@@ -1,3 +1,4 @@
+import { EXPLORE_PARAMS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { AssetStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
@@ -6,19 +7,19 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
 
   const query = searchParams.get('q') || ''
-  const category = searchParams.get('category')
-  const useCase = searchParams.get('useCase')
-  const minPrice = searchParams.has('minPrice')
-    ? Number(searchParams.get('minPrice'))
+  const category = searchParams.get(EXPLORE_PARAMS.CATEGORY)
+  const useCase = searchParams.get(EXPLORE_PARAMS.USE_CASES)
+  const minPrice = searchParams.has(EXPLORE_PARAMS.MIN_PRICE)
+    ? Number(searchParams.get(EXPLORE_PARAMS.MIN_PRICE))
     : undefined
-  const maxPrice = searchParams.has('maxPrice')
-    ? Number(searchParams.get('maxPrice'))
+  const maxPrice = searchParams.has(EXPLORE_PARAMS.MAX_PRICE)
+    ? Number(searchParams.get(EXPLORE_PARAMS.MAX_PRICE))
     : undefined
-  const minRating = searchParams.has('minRating')
-    ? Number(searchParams.get('minRating'))
+  const minRating = searchParams.has(EXPLORE_PARAMS.MIN_RATING)
+    ? Number(searchParams.get(EXPLORE_PARAMS.MIN_RATING))
     : undefined
-  const sortBy = searchParams.get('sortBy') || 'featured'
-  const page = Number(searchParams.get('page') || '1')
+  const sortBy = searchParams.get(EXPLORE_PARAMS.SORT_BY) || 'featured'
+  const page = Number(searchParams.get(EXPLORE_PARAMS.PAGE) || '1')
   const limit = Number(searchParams.get('limit') || '12')
   const skip = (page - 1) * limit
 

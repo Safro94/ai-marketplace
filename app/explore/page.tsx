@@ -1,7 +1,12 @@
 import { ROUTES } from '@/lib/constants'
+import prisma from '@/lib/prisma'
 import type { Metadata } from 'next'
 import { AssetFilters } from './asset-filters'
 import { AssetGrid } from './asset-grid'
+
+interface Props {
+  searchParams: Promise<{ category: string }>
+}
 
 export const metadata: Metadata = {
   title: 'Explore AI Assets | Browse Our Marketplace',
@@ -14,16 +19,25 @@ export const metadata: Metadata = {
     title: 'Explore AI Assets | Browse Our Marketplace',
     description:
       'Browse and discover high-quality AI assets for your projects. Filter by category, price, and more to find the perfect AI tools and templates.',
-    url: '/explore',
+    url: ROUTES.explore(),
   },
 }
 
-export default function ExplorePage() {
+export default async function ExplorePage({ searchParams }: Props) {
+  let category
+  const categorySlug = (await searchParams).category
+
+  if (categorySlug) {
+    category = await prisma.category.findUnique({
+      where: { slug: categorySlug },
+    })
+  }
+
   return (
     <div className='container py-8'>
       <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6'>
         <aside className='w-full md:w-64 lg:w-72 shrink-0'>
-          <AssetFilters />
+          <AssetFilters initialCategory={category?.slug} />
         </aside>
 
         <main className='flex-1'>
@@ -37,7 +51,7 @@ export default function ExplorePage() {
             </p>
           </div>
 
-          <AssetGrid />
+          <AssetGrid initialCategory={category?.slug} />
         </main>
       </div>
     </div>

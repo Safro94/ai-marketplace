@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { API_ROUTES, EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
 import { Category, Asset as PrismaAsset, Profile, User } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -30,9 +30,6 @@ interface Asset extends PrismaAsset {
   }
 }
 
-const SORT_BY_PARAM = 'sortBy'
-const CATEGORY_PARAM = 'category'
-
 export const AssetGrid: FC<Props> = ({ initialCategory }) => {
   const searchParams = useSearchParams()
   const [assets, setAssets] = useState<Asset[]>([])
@@ -46,7 +43,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
   })
 
   const [sortOption, setSortOption] = useState(
-    searchParams.get(SORT_BY_PARAM) || 'featured',
+    searchParams.get(EXPLORE_PARAMS.SORT_BY) || 'featured',
   )
 
   // Fetch assets when search params change
@@ -60,13 +57,13 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
         const params = new URLSearchParams(searchParams.toString())
 
         // Add sort option if not already in params
-        if (!params.has(SORT_BY_PARAM)) {
-          params.set(SORT_BY_PARAM, sortOption)
+        if (!params.has(EXPLORE_PARAMS.SORT_BY)) {
+          params.set(EXPLORE_PARAMS.SORT_BY, sortOption)
         }
 
         // Add initial category if provided and not already in params
-        if (initialCategory && !params.has(CATEGORY_PARAM)) {
-          params.set(CATEGORY_PARAM, initialCategory)
+        if (initialCategory && !params.has(EXPLORE_PARAMS.CATEGORY)) {
+          params.set(EXPLORE_PARAMS.CATEGORY, initialCategory)
         }
 
         const response = await fetch(
@@ -96,7 +93,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
     setSortOption(value)
 
     const params = new URLSearchParams(searchParams.toString())
-    params.set(SORT_BY_PARAM, value)
+    params.set(EXPLORE_PARAMS.SORT_BY, value)
 
     // Update URL without full page reload
     window.history.pushState({}, '', `?${params.toString()}`)
@@ -105,7 +102,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
   // Handle pagination
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set('page', newPage.toString())
+    params.set(EXPLORE_PARAMS.PAGE, newPage.toString())
 
     // Update URL with new page
     window.location.search = params.toString()
@@ -131,7 +128,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
   const clearAllFilters = () => {
     // If we have an initial category, keep it in the URL
     if (initialCategory) {
-      window.location.search = `category=${initialCategory}`
+      window.location.search = `${EXPLORE_PARAMS.CATEGORY}=${initialCategory}`
     } else {
       window.location.search = ''
     }
