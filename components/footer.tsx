@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/lib/constants'
 import Link from 'next/link'
 import { Logo } from './logo'
 
@@ -62,127 +63,34 @@ export const Footer = () => {
             </div>
           </div>
 
-          <div className='space-y-4'>
-            <h3 className='text-sm font-medium'>Marketplace</h3>
-            <ul className='space-y-2 text-sm'>
-              <li>
-                <Link
-                  href='/explore'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Explore
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/categories'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/featured'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Featured
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/new'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  New Releases
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <Section
+            title='Marketplace'
+            items={[
+              { text: 'Explore', link: ROUTES.explore() },
+              { text: 'Categories', link: ROUTES.categories() },
+              { text: 'Featured', link: ROUTES.featured() },
+              { text: 'New Releases', link: ROUTES.newReleases() },
+            ]}
+          />
 
-          <div className='space-y-4'>
-            <h3 className='text-sm font-medium'>For Creators</h3>
-            <ul className='space-y-2 text-sm'>
-              <li>
-                <Link
-                  href='/creators'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Sell on AIAssets
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/creator-terms'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Terms for Creators
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/creator-resources'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Resources
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/creator-faq'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  FAQ
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <Section
+            title='For Creators'
+            items={[
+              { text: 'Sell on AIAssets', link: ROUTES.creators() },
+              { text: 'Terms for Creators', link: ROUTES.creatorTerms() },
+              { text: 'FAQ', link: ROUTES.creatorFAQ() },
+            ]}
+          />
 
-          <div className='space-y-4'>
-            <h3 className='text-sm font-medium'>Company</h3>
-            <ul className='space-y-2 text-sm'>
-              <li>
-                <Link
-                  href='/about'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/blog'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/contact'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/privacy'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/terms'
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <Section
+            title='Company'
+            items={[
+              { text: 'About', link: ROUTES.about() },
+              { text: 'Contact', link: ROUTES.contact() },
+              { text: 'Privacy Policy', link: ROUTES.privacyPolicy() },
+              { text: 'Terms of Service', link: ROUTES.terms() },
+            ]}
+          />
         </div>
 
         <div className='mt-8 border-t border-border/40 pt-8 text-center text-sm text-muted-foreground'>
@@ -192,3 +100,27 @@ export const Footer = () => {
     </footer>
   )
 }
+
+const Section = ({
+  title,
+  items,
+}: {
+  title: string
+  items: { text: string; link: string }[]
+}) => (
+  <div className='space-y-4'>
+    <h3 className='text-sm font-medium'>{title}</h3>
+    <ul className='space-y-2 text-sm'>
+      {items.map(({ text, link }) => (
+        <li key={text}>
+          <Link
+            href={link}
+            className='text-muted-foreground hover:text-foreground'
+          >
+            {text}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </div>
+)

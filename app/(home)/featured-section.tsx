@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
@@ -38,7 +39,7 @@ export const FeaturedSection = async () => {
           </div>
 
           <Button variant='ghost' className='mt-4 md:mt-0' asChild>
-            <Link href='/explore'>
+            <Link href={ROUTES.explore()}>
               View all assets
               <ArrowRight className='ml-2 h-4 w-4' />
             </Link>
@@ -47,7 +48,7 @@ export const FeaturedSection = async () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {featuredAssets.map((asset, index) => (
-            <Link href={`/assets/${asset.id}`} key={asset.id}>
+            <Link href={`${ROUTES.assets()}/${asset.id}`} key={asset.id}>
               <Card className='h-full overflow-hidden border-border/50 card-hover'>
                 <CardHeader className='p-0'>
                   <div className='relative aspect-[4/3] w-full overflow-hidden'>

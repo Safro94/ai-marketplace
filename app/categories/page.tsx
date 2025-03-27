@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import {
   ArrowRight,
@@ -117,11 +118,13 @@ export default async function CategoriesPage() {
                   </div>
                 </div>
               </CardHeader>
+
               <CardContent>
                 <div className='mt-2'>
                   <p className='text-sm font-medium mb-2'>
                     {category.count} assets
                   </p>
+
                   <div className='space-y-1 mb-4'>
                     {category.featured.map((item, index) => (
                       <p
@@ -133,8 +136,9 @@ export default async function CategoriesPage() {
                       </p>
                     ))}
                   </div>
+
                   <Button variant='outline' className='w-full' asChild>
-                    <Link href={`/categories/${category.slug}`}>
+                    <Link href={`${ROUTES.categories()}/${category.slug}`}>
                       Browse {category.name}
                       <ArrowRight className='ml-2 h-4 w-4' />
                     </Link>

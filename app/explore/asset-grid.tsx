@@ -11,19 +11,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { Category, Asset as PrismaAsset, Profile, User } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
+import reviewStar from '../../public/review-star.svg'
 
 interface Props {
   initialCategory?: string
 }
 
+interface Asset extends PrismaAsset {
+  category: Category
+  creator: Profile & {
+    user: User
+  }
+}
+
+const SORT_BY_PARAM = 'sortBy'
+const CATEGORY_PARAM = 'category'
+
 export const AssetGrid: FC<Props> = ({ initialCategory }) => {
   const searchParams = useSearchParams()
-  const [assets, setAssets] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [assets, setAssets] = useState<Asset[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pagination, setPagination] = useState({
     page: 1,
@@ -33,13 +46,13 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
   })
 
   const [sortOption, setSortOption] = useState(
-    searchParams.get('sortBy') || 'featured',
+    searchParams.get(SORT_BY_PARAM) || 'featured',
   )
 
   // Fetch assets when search params change
   useEffect(() => {
     const fetchAssets = async () => {
-      setLoading(true)
+      setIsLoading(true)
       setError(null)
 
       try {
@@ -47,16 +60,18 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
         const params = new URLSearchParams(searchParams.toString())
 
         // Add sort option if not already in params
-        if (!params.has('sortBy')) {
-          params.set('sortBy', sortOption)
+        if (!params.has(SORT_BY_PARAM)) {
+          params.set(SORT_BY_PARAM, sortOption)
         }
 
         // Add initial category if provided and not already in params
-        if (initialCategory && !params.has('category')) {
-          params.set('category', initialCategory)
+        if (initialCategory && !params.has(CATEGORY_PARAM)) {
+          params.set(CATEGORY_PARAM, initialCategory)
         }
 
-        const response = await fetch(`/api/search?${params.toString()}`)
+        const response = await fetch(
+          `${API_ROUTES.search()}?${params.toString()}`,
+        )
 
         if (!response.ok) {
           throw new Error('Failed to fetch assets')
@@ -69,7 +84,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
         console.error('Error fetching assets:', err)
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {
-        setLoading(false)
+        setIsLoading(false)
       }
     }
 
@@ -81,7 +96,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
     setSortOption(value)
 
     const params = new URLSearchParams(searchParams.toString())
-    params.set('sortBy', value)
+    params.set(SORT_BY_PARAM, value)
 
     // Update URL without full page reload
     window.history.pushState({}, '', `?${params.toString()}`)
@@ -96,10 +111,10 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
     window.location.search = params.toString()
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className='flex justify-center items-center py-12'>
-        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary' />
       </div>
     )
   }
@@ -130,12 +145,15 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
           <span className='font-medium text-foreground'>{assets.length}</span>{' '}
           results
         </p>
+
         <div className='flex items-center space-x-2'>
           <p className='text-sm text-muted-foreground mr-2'>Sort by:</p>
+
           <Select value={sortOption} onValueChange={handleSortChange}>
             <SelectTrigger className='w-[180px]'>
               <SelectValue placeholder='Sort by' />
             </SelectTrigger>
+
             <SelectContent>
               <SelectItem value='featured'>Featured</SelectItem>
               <SelectItem value='price-low'>Price: Low to High</SelectItem>
@@ -151,7 +169,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
         <>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
             {assets.map((asset) => (
-              <Link href={`/assets/${asset.id}`} key={asset.id}>
+              <Link href={`${ROUTES.assets()}/${asset.id}`} key={asset.id}>
                 <Card className='h-full overflow-hidden border-border/50 card-hover'>
                   <CardHeader className='p-0'>
                     <div className='relative aspect-[4/3] w-full overflow-hidden'>
@@ -166,19 +184,24 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
                       />
                     </div>
                   </CardHeader>
+
                   <CardContent className='p-6'>
                     <div className='flex items-center justify-between mb-3'>
                       <Badge variant='secondary' className='bg-secondary/80'>
                         {asset.category.name}
                       </Badge>
+
                       <span className='text-lg font-bold'>${asset.price}</span>
                     </div>
+
                     <h3 className='text-xl font-semibold mb-2 line-clamp-1'>
                       {asset.title}
                     </h3>
+
                     <p className='text-muted-foreground text-sm line-clamp-2 mb-4'>
                       {asset.description}
                     </p>
+
                     <div className='flex items-center justify-between'>
                       <div className='flex items-center space-x-2'>
                         <Avatar className='h-6 w-6'>
@@ -189,30 +212,29 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
                             }
                             alt={asset.creator.name || 'Creator'}
                           />
+
                           <AvatarFallback>
                             {asset.creator.name?.charAt(0) || 'U'}
                           </AvatarFallback>
                         </Avatar>
+
                         <span className='text-sm text-muted-foreground'>
                           {asset.creator.name || 'Unknown Creator'}
                         </span>
                       </div>
+
                       <div className='flex items-center'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                          className='w-4 h-4 text-yellow-500 mr-1'
-                        >
-                          <path
-                            fillRule='evenodd'
-                            d='M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z'
-                            clipRule='evenodd'
-                          />
-                        </svg>
+                        <Image
+                          src={reviewStar}
+                          width={16}
+                          height={16}
+                          alt='Review star'
+                        />
+
                         <span className='text-sm font-medium'>
                           {asset.averageRating.toFixed(1)}
                         </span>
+
                         <span className='text-xs text-muted-foreground ml-1'>
                           ({asset.reviewCount})
                         </span>
@@ -268,6 +290,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
           <p className='text-muted-foreground mb-4'>
             No assets found matching your criteria
           </p>
+
           <Button onClick={clearAllFilters}>Clear Filters</Button>
         </div>
       )}

@@ -11,8 +11,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
-import { Dispatch, FC, SetStateAction } from 'react'
-import { FilterOption } from './asset-filters'
+import { FilterOption } from '@/lib/types'
+import Image from 'next/image'
+import { Dispatch, FC, ReactNode, SetStateAction } from 'react'
+import reviewStar from '../../public/review-star.svg'
 
 interface Props {
   initialCategory?: string
@@ -81,6 +83,7 @@ export const FiltersContent: FC<Props> = ({
     <>
       <div className='flex items-center justify-between mb-4'>
         <h2 className='text-lg font-semibold'>Filters</h2>
+
         {hasActiveFilters && (
           <Button
             variant='ghost'
@@ -105,40 +108,31 @@ export const FiltersContent: FC<Props> = ({
           defaultValue={['categories', 'price', 'use-cases', 'ratings']}
           className='space-y-2'
         >
-          <AccordionItem value='categories' className='border-b-0'>
-            <AccordionTrigger className='py-3 text-sm font-medium'>
-              Categories
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className='space-y-2 pt-1'>
-                {categories.map((category) => (
-                  <div
-                    key={category.id}
-                    className='flex items-center space-x-2'
-                  >
-                    <Checkbox
-                      id={`category-${category.id}`}
-                      checked={selectedCategories.includes(category.id)}
-                      onCheckedChange={() => handleCategoryChange(category.id)}
-                      disabled={initialCategory === category.id} // Disable the checkbox if it's the initial category
-                    />
+          <Filter value='categories' title='Categories' items={categories}>
+            {(item) => (
+              <>
+                <Checkbox
+                  id={`category-${item.id}`}
+                  checked={selectedCategories.includes(item.id)}
+                  onCheckedChange={() => handleCategoryChange(item.id)}
+                  disabled={initialCategory === item.id} // Disable the checkbox if it's the initial category
+                />
 
-                    <Label
-                      htmlFor={`category-${category.id}`}
-                      className='text-sm font-normal cursor-pointer'
-                    >
-                      {category.label}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+                <Label
+                  htmlFor={`category-${item.id}`}
+                  className='text-sm font-normal cursor-pointer'
+                >
+                  {item.name}
+                </Label>
+              </>
+            )}
+          </Filter>
 
           <AccordionItem value='price' className='border-b-0'>
             <AccordionTrigger className='py-3 text-sm font-medium'>
               Price Range
             </AccordionTrigger>
+
             <AccordionContent>
               <div className='space-y-4 pt-1'>
                 <Slider
@@ -149,6 +143,7 @@ export const FiltersContent: FC<Props> = ({
                   onValueChange={setPriceRange}
                   className='py-4'
                 />
+
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center space-x-2'>
                     <span className='text-xs text-muted-foreground'>$</span>
@@ -164,7 +159,9 @@ export const FiltersContent: FC<Props> = ({
                       className='h-8 w-16 text-xs'
                     />
                   </div>
+
                   <span className='text-xs text-muted-foreground'>to</span>
+
                   <div className='flex items-center space-x-2'>
                     <span className='text-xs text-muted-foreground'>$</span>
                     <Input
@@ -184,69 +181,83 @@ export const FiltersContent: FC<Props> = ({
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value='use-cases' className='border-b-0'>
-            <AccordionTrigger className='py-3 text-sm font-medium'>
-              Use Cases
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className='space-y-2 pt-1'>
-                {useCases.map((useCase) => (
-                  <div key={useCase.id} className='flex items-center space-x-2'>
-                    <Checkbox
-                      id={`usecase-${useCase.id}`}
-                      checked={selectedUseCases.includes(useCase.id)}
-                      onCheckedChange={() => handleUseCaseChange(useCase.id)}
-                    />
-                    <Label
-                      htmlFor={`usecase-${useCase.id}`}
-                      className='text-sm font-normal cursor-pointer'
-                    >
-                      {useCase.label}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+          <Filter value='use-cases' title='Use Cases' items={useCases}>
+            {(item) => (
+              <>
+                <Checkbox
+                  id={`usecase-${item.id}`}
+                  checked={selectedUseCases.includes(item.id)}
+                  onCheckedChange={() => handleUseCaseChange(item.id)}
+                />
 
-          <AccordionItem value='ratings' className='border-b-0'>
-            <AccordionTrigger className='py-3 text-sm font-medium'>
-              Ratings
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className='space-y-2 pt-1'>
-                {RATINGS.map((rating) => (
-                  <div key={rating.id} className='flex items-center space-x-2'>
-                    <Checkbox
-                      id={`rating-${rating.id}`}
-                      checked={selectedRatings.includes(rating.id)}
-                      onCheckedChange={() => handleRatingChange(rating.id)}
-                    />
-                    <Label
-                      htmlFor={`rating-${rating.id}`}
-                      className='text-sm font-normal cursor-pointer flex items-center'
-                    >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        viewBox='0 0 24 24'
-                        fill='currentColor'
-                        className='w-4 h-4 text-yellow-500 mr-1'
-                      >
-                        <path
-                          fillRule='evenodd'
-                          d='M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z'
-                          clipRule='evenodd'
-                        />
-                      </svg>
-                      {rating.label}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+                <Label
+                  htmlFor={`usecase-${item.id}`}
+                  className='text-sm font-normal cursor-pointer'
+                >
+                  {item.name}
+                </Label>
+              </>
+            )}
+          </Filter>
+
+          <Filter value='ratings' title='Ratings' items={RATINGS}>
+            {(item) => (
+              <>
+                <Checkbox
+                  id={`rating-${item.id}`}
+                  checked={selectedRatings.includes(item.id)}
+                  onCheckedChange={() => handleRatingChange(item.id)}
+                />
+
+                <Label
+                  htmlFor={`rating-${item.id}`}
+                  className='text-sm font-normal cursor-pointer flex items-center'
+                >
+                  <Image
+                    src={reviewStar}
+                    width={16}
+                    height={16}
+                    alt='Review star'
+                    className='mr-1'
+                  />
+
+                  {item.label}
+                </Label>
+              </>
+            )}
+          </Filter>
         </Accordion>
       )}
     </>
+  )
+}
+
+const Filter = <T extends { id: string }>({
+  items,
+  title,
+  value,
+  children,
+}: {
+  items: T[]
+  title: string
+  value: string
+  children: (item: T) => ReactNode
+}) => {
+  return (
+    <AccordionItem value={value} className='border-b-0'>
+      <AccordionTrigger className='py-3 text-sm font-medium'>
+        {title}
+      </AccordionTrigger>
+
+      <AccordionContent>
+        <div className='space-y-2 pt-1'>
+          {items.map((item) => (
+            <div key={item.id} className='flex items-center space-x-2'>
+              {children(item)}
+            </div>
+          ))}
+        </div>
+      </AccordionContent>
+    </AccordionItem>
   )
 }

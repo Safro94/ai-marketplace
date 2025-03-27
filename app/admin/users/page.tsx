@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { formatDistanceToNow } from 'date-fns'
@@ -123,7 +124,9 @@ export default async function UsersPage() {
 
                     <TableCell>
                       <Button asChild size='sm'>
-                        <Link href={`/admin/users/${user.id}`}>View</Link>
+                        <Link href={`${ROUTES.adminUsers()}/${user.id}`}>
+                          View
+                        </Link>
                       </Button>
                     </TableCell>
                   </TableRow>

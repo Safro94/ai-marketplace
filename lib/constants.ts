@@ -1,16 +1,24 @@
 export const ROUTES = {
   home: () => '/',
-  privacyPolicy: () => '/privacy-policy',
-  terms: () => '/terms-of-service',
+  privacyPolicy: () => '/privacy',
+  terms: () => '/terms',
   login: () => '/login',
   signUp: () => '/signup',
+  about: () => '/about',
+  contact: () => '/contact',
   resetPassword: () => '/reset-password',
   dashboard: () => '/dashboard',
+  assets: () => '/assets',
   account: () => '/account',
   purchases: () => '/purchases',
   explore: () => '/explore',
+  featured: () => '/featured',
+  newReleases: () => '/new-releases',
   categories: () => '/categories',
   creators: () => '/creators',
+  creatorsApply: () => '/creators/apply',
+  creatorTerms: () => '/creator-terms',
+  creatorFAQ: () => '/creator-faq',
   creatorDashboard: () => '/creator-dashboard',
   creatorDashboardUpload: () => '/creator-dashboard/upload',
   creatorDashboardThankYou: () => '/creator-dashboard/thank-you',
@@ -24,7 +32,12 @@ export const ROUTES = {
 
 export const API_ROUTES = {
   adminCreatorApplications: () => '/api/admin/creator-applications',
+  userProfile: () => '/api/user/profile',
+  assetDownload: (assetId: string) => `/api/assets/${assetId}/download`,
+  search: () => `/api/search`,
+  categories: () => `/api/categories`,
 }
+
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
 export const PAYPAL_EMAIL = process.env.NEXT_PUBLIC_PAYPAL_EMAIL
 

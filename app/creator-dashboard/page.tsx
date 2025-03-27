@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { AssetStatus } from '@prisma/client'
 import { BarChart3, Clock, DollarSign, Upload } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -29,7 +30,7 @@ export default async function CreatorDashboardPage() {
   const session = await getServerSession()
 
   if (!session?.user) {
-    redirect(`/${ROUTES.login()}?callbackUrl=/creator-dashboard`)
+    redirect(`/${ROUTES.login()}?callbackUrl=${ROUTES.creatorDashboard()}`)
   }
 
   // Check if user is a creator
@@ -72,7 +73,7 @@ export default async function CreatorDashboardPage() {
         </div>
 
         <Button className='mt-4 md:mt-0' asChild>
-          <Link href={`${ROUTES.creatorDashboard}/upload`}>
+          <Link href={`${ROUTES.creatorDashboardUpload()}`}>
             <Upload className='mr-2 h-4 w-4' />
             Upload New Asset
           </Link>
@@ -127,8 +128,9 @@ export default async function CreatorDashboardPage() {
               <Clock className='h-4 w-4 text-muted-foreground mr-2' />
               <div className='text-2xl font-bold'>
                 {
-                  assets.filter((asset) => asset.status === 'PENDING_REVIEW')
-                    .length
+                  assets.filter(
+                    (asset) => asset.status === AssetStatus.PENDING_REVIEW,
+                  ).length
                 }
               </div>
             </div>
@@ -153,12 +155,14 @@ export default async function CreatorDashboardPage() {
               <CardContent className='flex flex-col items-center justify-center py-12 text-center'>
                 <Upload className='h-12 w-12 text-muted-foreground mb-4' />
                 <h3 className='text-lg font-medium mb-2'>No assets yet</h3>
+
                 <p className='text-muted-foreground max-w-md mb-6'>
                   You haven&apos;t uploaded any assets yet. Start sharing your
                   AI expertise with the world!
                 </p>
+
                 <Button asChild>
-                  <Link href='/creator-dashboard/upload'>
+                  <Link href={ROUTES.creatorDashboardUpload()}>
                     <Upload className='mr-2 h-4 w-4' />
                     Upload Your First Asset
                   </Link>
@@ -181,6 +185,7 @@ export default async function CreatorDashboardPage() {
               <div className='flex flex-col items-center justify-center py-12 text-center'>
                 <DollarSign className='h-12 w-12 text-muted-foreground mb-4' />
                 <h3 className='text-lg font-medium mb-2'>No sales yet</h3>
+
                 <p className='text-muted-foreground max-w-md'>
                   Once you start selling assets, your sales history will appear
                   here.

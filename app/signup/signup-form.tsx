@@ -17,6 +17,7 @@ import { ROUTES } from '@/lib/constants'
 import { USER_TYPES } from '@/lib/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -167,19 +168,19 @@ export const SignupForm = () => {
                 <div className='space-y-1 leading-none'>
                   <FormLabel>
                     I agree to the{' '}
-                    <a
-                      href='/terms'
+                    <Link
+                      href={ROUTES.terms()}
                       className='text-primary underline underline-offset-4'
                     >
                       terms of service
-                    </a>{' '}
+                    </Link>{' '}
                     and{' '}
-                    <a
-                      href='/privacy'
+                    <Link
+                      href={ROUTES.privacyPolicy()}
                       className='text-primary underline underline-offset-4'
                     >
                       privacy policy
-                    </a>
+                    </Link>
                   </FormLabel>
                   <FormMessage />
                 </div>

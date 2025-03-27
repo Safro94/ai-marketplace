@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/lib/constants'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -32,14 +33,14 @@ export const HeroSection = () => {
 
           <div className='flex flex-col sm:flex-row gap-4 pt-4'>
             <Button size='lg' asChild>
-              <Link href='/explore'>
+              <Link href={ROUTES.explore()}>
                 Explore Marketplace
                 <ArrowRight className='ml-2 h-4 w-4' />
               </Link>
             </Button>
 
             <Button size='lg' variant='outline' asChild>
-              <Link href='/creators'>Become a Creator</Link>
+              <Link href={ROUTES.creators()}>Become a Creator</Link>
             </Button>
           </div>
         </div>

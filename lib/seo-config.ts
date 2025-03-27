@@ -29,7 +29,7 @@ export const siteConfig = {
 
 // Generate structured data for the marketplace
 export function generateProductJsonLd(product: {
-  id: number
+  id: string
   title: string
   description: string
   price: number

@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/lib/constants'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -12,18 +13,21 @@ export const CreatorCTASection = () => {
           <h2 className='text-3xl font-bold tracking-tight'>
             Become a Creator and Share Your AI Assets
           </h2>
+
           <p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
             Join our marketplace and start selling your AI assets to
             professionals worldwide. Turn your expertise into a revenue stream.
           </p>
+
           <div className='pt-4'>
             <Button size='lg' asChild>
-              <Link href='/creators'>
+              <Link href={ROUTES.creators()}>
                 Start Selling Today
                 <ArrowRight className='ml-2 h-4 w-4' />
               </Link>
             </Button>
           </div>
+
           <p className='text-sm text-muted-foreground'>
             No technical setup required. We handle payments, delivery, and
             platform maintenance.

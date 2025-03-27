@@ -11,8 +11,8 @@ interface Review {
   id: string
   userId: string
   user: {
-    name: string
-    avatarUrl: string
+    name: string | null
+    avatarUrl: string | null
   }
   rating: number
   title: string

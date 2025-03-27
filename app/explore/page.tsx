@@ -1,3 +1,4 @@
+import { ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import { AssetFilters } from './asset-filters'
 import { AssetGrid } from './asset-grid'
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
   description:
     'Browse and discover high-quality AI assets for your projects. Filter by category, price, and more to find the perfect AI tools and templates.',
   alternates: {
-    canonical: '/explore',
+    canonical: ROUTES.explore(),
   },
   openGraph: {
     title: 'Explore AI Assets | Browse Our Marketplace',

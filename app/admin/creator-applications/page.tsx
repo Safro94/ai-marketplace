@@ -126,7 +126,7 @@ export default async function CreatorApplicationsPage() {
                     <TableCell>
                       <Button asChild size='sm'>
                         <Link
-                          href={`/admin/creator-applications/${application.id}`}
+                          href={`${ROUTES.adminCreatorApplications()}/${application.id}`}
                         >
                           Review
                         </Link>

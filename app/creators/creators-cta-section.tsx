@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/lib/constants'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -18,7 +19,7 @@ export const CreatorsCTASection = () => {
 
           <div className='pt-4'>
             <Button size='lg' asChild>
-              <Link href='/creators/apply'>
+              <Link href={ROUTES.creatorsApply()}>
                 Apply as Creator
                 <ArrowRight className='ml-2 h-4 w-4' />
               </Link>

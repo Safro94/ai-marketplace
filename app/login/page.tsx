@@ -1,3 +1,4 @@
+import { ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LoginForm } from './login-form'
@@ -21,7 +22,7 @@ export default function LoginPage() {
       <div className='relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r'>
         <div className='absolute inset-0 bg-secondary/80' />
         <div className='relative z-20 flex items-center text-lg font-medium'>
-          <Link href='/' className='flex items-center space-x-2'>
+          <Link href={ROUTES.home()} className='flex items-center space-x-2'>
             <span className='text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600'>
               AIAssets
             </span>
@@ -46,6 +47,7 @@ export default function LoginPage() {
             <h1 className='text-2xl font-semibold tracking-tight'>
               Welcome back
             </h1>
+
             <p className='text-sm text-muted-foreground'>
               Enter your email to sign in to your account
             </p>
@@ -56,7 +58,7 @@ export default function LoginPage() {
           <p className='px-8 text-center text-sm text-muted-foreground'>
             Don&apos;t have an account?{' '}
             <Link
-              href='/signup'
+              href={ROUTES.signUp()}
               className='underline underline-offset-4 hover:text-primary'
             >
               Sign up

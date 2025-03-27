@@ -2,7 +2,9 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { Asset, AssetStatus, Category } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -11,6 +13,10 @@ import reviewStar from '../../../public/review-star.svg'
 interface Props {
   currentAssetId: string
   categoryId: string
+}
+
+interface AssetWithCategory extends Asset {
+  category: Category
 }
 
 export const RelatedAssets: FC<Props> = async ({
@@ -22,7 +28,7 @@ export const RelatedAssets: FC<Props> = async ({
     where: {
       id: { not: currentAssetId },
       categoryId: categoryId,
-      status: 'PUBLISHED',
+      status: AssetStatus.PUBLISHED,
     },
     include: {
       category: true,
@@ -31,12 +37,12 @@ export const RelatedAssets: FC<Props> = async ({
     take: 3,
   })
 
-  if (relatedAssets.length === 0) {
+  if (!relatedAssets.length) {
     // If no assets in the same category, get top-rated assets
     const topAssets = await prisma.asset.findMany({
       where: {
         id: { not: currentAssetId },
-        status: 'PUBLISHED',
+        status: AssetStatus.PUBLISHED,
       },
       include: {
         category: true,
@@ -51,11 +57,11 @@ export const RelatedAssets: FC<Props> = async ({
   return <RelatedAssetsList assets={relatedAssets} />
 }
 
-const RelatedAssetsList: FC<{ assets: unknown[] }> = ({ assets }) => {
+const RelatedAssetsList: FC<{ assets: AssetWithCategory[] }> = ({ assets }) => {
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
       {assets.map((asset) => (
-        <Link href={`/assets/${asset.id}`} key={asset.id}>
+        <Link href={`${ROUTES.assets()}/${asset.id}`} key={asset.id}>
           <Card className='h-full overflow-hidden border-border/50 card-hover'>
             <CardHeader className='p-0'>
               <div className='relative aspect-[4/3] w-full overflow-hidden'>
@@ -76,6 +82,7 @@ const RelatedAssetsList: FC<{ assets: unknown[] }> = ({ assets }) => {
                 <Badge variant='secondary' className='bg-secondary/80 text-xs'>
                   {asset.category.name}
                 </Badge>
+
                 <span className='text-sm font-bold'>${asset.price}</span>
               </div>
 

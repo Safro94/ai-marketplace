@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { ROUTES } from '@/lib/constants'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -30,7 +31,7 @@ export const CreatorsHeroSection: FC<Props> = ({
           <div className='flex flex-col sm:flex-row gap-4 pt-4'>
             {isCreator ? (
               <Button size='lg' asChild>
-                <Link href='/creator-dashboard'>
+                <Link href={ROUTES.creatorDashboard()}>
                   Go to Creator Dashboard
                   <ArrowRight className='ml-2 h-4 w-4' />
                 </Link>
@@ -46,7 +47,7 @@ export const CreatorsHeroSection: FC<Props> = ({
               </Card>
             ) : (
               <Button size='lg' asChild>
-                <Link href='/creators/apply'>
+                <Link href={ROUTES.creatorsApply()}>
                   Apply as Creator
                   <ArrowRight className='ml-2 h-4 w-4' />
                 </Link>

@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ROUTES } from '@/lib/constants'
 import { checkUserPurchasedAsset } from '@/lib/db/purchases'
 import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
@@ -13,6 +14,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
+import reviewStar from '../../../public/review-star.svg'
 import { AssetDownload } from './asset-download'
 import { AssetReviews } from './asset-reviews'
 import { PurchaseOptions } from './purchase-options'
@@ -46,8 +48,7 @@ export async function generateMetadata({
     openGraph: {
       title: asset.title,
       description: asset.description,
-      type: 'product',
-      url: `/assets/${params.id}`,
+      url: `${ROUTES.assets()}/${params.id}`,
       images: [
         {
           url: asset.featuredImage,
@@ -62,6 +63,9 @@ export async function generateMetadata({
       title: asset.title,
       description: asset.description,
       images: [asset.featuredImage],
+    },
+    other: {
+      type: 'product',
     },
   }
 }
@@ -90,9 +94,7 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
     },
   })
 
-  if (!asset) {
-    notFound()
-  }
+  if (!asset) notFound()
 
   // Check if the user has purchased this asset
   let isPurchased = false
@@ -111,6 +113,7 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
   const features = Array.isArray(asset.features)
     ? asset.features
     : JSON.parse((asset.features as string) || '[]')
+
   const requirements = Array.isArray(asset.requirements)
     ? asset.requirements
     : JSON.parse((asset.requirements as string) || '[]')
@@ -148,11 +151,14 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                   <Badge variant='secondary' className='bg-secondary/80'>
                     {asset.category.name}
                   </Badge>
+
                   <Badge variant='outline'>{asset.useCase}</Badge>
                 </div>
+
                 <h1 className='text-3xl font-bold tracking-tight mb-3'>
                   {asset.title}
                 </h1>
+
                 <div className='flex items-center space-x-4'>
                   <div className='flex items-center space-x-2'>
                     <Avatar className='h-8 w-8'>
@@ -163,10 +169,12 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                         }
                         alt={asset.creator.name || 'Creator'}
                       />
+
                       <AvatarFallback>
                         {(asset.creator.name || 'C').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
+
                     <span className='text-sm'>
                       by{' '}
                       <span className='font-medium'>
@@ -174,27 +182,24 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                       </span>
                     </span>
                   </div>
+
                   <div className='flex items-center'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      viewBox='0 0 24 24'
-                      fill='currentColor'
-                      className='w-4 h-4 text-yellow-500 mr-1'
-                      aria-hidden='true'
-                    >
-                      <path
-                        fillRule='evenodd'
-                        d='M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z'
-                        clipRule='evenodd'
-                      />
-                    </svg>
+                    <Image
+                      src={reviewStar}
+                      width={16}
+                      height={16}
+                      alt='Review star'
+                    />
+
                     <span className='text-sm font-medium'>
                       {averageRating.toFixed(1)}
                     </span>
+
                     <span className='text-xs text-muted-foreground ml-1'>
                       ({asset.reviews.length} reviews)
                     </span>
                   </div>
+
                   <div className='text-sm text-muted-foreground'>
                     {asset.sales} sales
                   </div>
@@ -214,6 +219,7 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                   priority
                 />
               </div>
+
               <div className='grid grid-cols-3 gap-4'>
                 {asset.galleryImages.map((image, index) => (
                   <div
@@ -237,16 +243,19 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                   <TabsTrigger value='features'>Features</TabsTrigger>
                   <TabsTrigger value='reviews'>Reviews</TabsTrigger>
                 </TabsList>
+
                 <TabsContent value='description' className='pt-6'>
                   <div
                     className='prose prose-invert max-w-none'
                     dangerouslySetInnerHTML={{ __html: asset.longDescription }}
                   />
                 </TabsContent>
+
                 <TabsContent value='features' className='pt-6'>
                   <div className='space-y-6'>
                     <div>
                       <h3 className='text-xl font-semibold mb-3'>Features</h3>
+
                       <ul className='space-y-2'>
                         {features.map((feature: string, index: number) => (
                           <li key={index} className='flex items-start'>
@@ -268,10 +277,12 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                         ))}
                       </ul>
                     </div>
+
                     <div>
                       <h3 className='text-xl font-semibold mb-3'>
                         Requirements
                       </h3>
+
                       <ul className='space-y-2'>
                         {requirements.map(
                           (requirement: string, index: number) => (
@@ -297,6 +308,7 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                     </div>
                   </div>
                 </TabsContent>
+
                 <TabsContent value='reviews' className='pt-6'>
                   <AssetReviews
                     assetId={asset.id}
@@ -317,10 +329,12 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                         }
                         alt={asset.creator.name || 'Creator'}
                       />
+
                       <AvatarFallback>
                         {(asset.creator.name || 'C').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
+
                     <div>
                       <h3 className='font-semibold'>
                         {asset.creator.name || 'Unknown Creator'}
@@ -328,11 +342,13 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                       <p className='text-sm text-muted-foreground'>Creator</p>
                     </div>
                   </div>
+
                   <p className='text-sm mb-4'>
                     {asset.creator.bio || 'No bio available'}
                   </p>
+
                   <Button variant='outline' className='w-full' asChild>
-                    <Link href={`/creators/${asset.creator.id}`}>
+                    <Link href={`${ROUTES.creators()}/${asset.creator.id}`}>
                       View Profile
                     </Link>
                   </Button>
@@ -344,6 +360,7 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                 <h2 className='text-2xl font-bold tracking-tight mb-6'>
                   You May Also Like
                 </h2>
+
                 <RelatedAssets
                   currentAssetId={asset.id}
                   categoryId={asset.categoryId}
@@ -356,11 +373,7 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
             <div className='space-y-6 lg:sticky lg:top-20'>
               {/* Purchase Options or Download */}
               {isPurchased ? (
-                <AssetDownload
-                  assetId={asset.id}
-                  assetTitle={asset.title}
-                  isPurchased={true}
-                />
+                <AssetDownload assetId={asset.id} isPurchased />
               ) : (
                 <PurchaseOptions
                   id={asset.id}
@@ -381,10 +394,12 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                         }
                         alt={asset.creator.name || 'Creator'}
                       />
+
                       <AvatarFallback>
                         {(asset.creator.name || 'C').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
+
                     <div>
                       <h3 className='font-semibold'>
                         {asset.creator.name || 'Unknown Creator'}
@@ -392,11 +407,13 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                       <p className='text-sm text-muted-foreground'>Creator</p>
                     </div>
                   </div>
+
                   <p className='text-sm mb-4'>
                     {asset.creator.bio || 'No bio available'}
                   </p>
+
                   <Button variant='outline' className='w-full' asChild>
-                    <Link href={`/creators/${asset.creator.id}`}>
+                    <Link href={`${ROUTES.creators()}/${asset.creator.id}`}>
                       View Profile
                     </Link>
                   </Button>
@@ -407,25 +424,31 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
               <Card className='border-border/50'>
                 <CardContent className='p-6'>
                   <h3 className='font-semibold mb-4'>Asset Information</h3>
+
                   <div className='space-y-3 text-sm'>
-                    <div className='flex justify-between'>
-                      <span className='text-muted-foreground'>Created</span>
-                      <span>{formatDate(asset.createdAt)}</span>
-                    </div>
-                    <div className='flex justify-between'>
-                      <span className='text-muted-foreground'>
-                        Last updated
-                      </span>
-                      <span>{formatDate(asset.updatedAt)}</span>
-                    </div>
-                    <div className='flex justify-between'>
-                      <span className='text-muted-foreground'>Category</span>
-                      <span>{asset.category.name}</span>
-                    </div>
-                    <div className='flex justify-between'>
-                      <span className='text-muted-foreground'>Use Case</span>
-                      <span>{asset.useCase}</span>
-                    </div>
+                    {[
+                      {
+                        title: 'Created',
+                        subtitle: formatDate(asset.createdAt),
+                      },
+                      {
+                        title: 'Last updated',
+                        subtitle: formatDate(asset.updatedAt),
+                      },
+                      {
+                        title: 'Category',
+                        subtitle: asset.category.name,
+                      },
+                      {
+                        title: 'Use Case',
+                        subtitle: asset.useCase,
+                      },
+                    ].map(({ title, subtitle }) => (
+                      <div key={title} className='flex justify-between'>
+                        <span className='text-muted-foreground'>{title}</span>
+                        <span>{subtitle}</span>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>

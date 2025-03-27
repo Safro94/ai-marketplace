@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { LoadingButton } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -11,45 +11,19 @@ import {
 } from '@/components/ui/card'
 import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
+import { API_ROUTES } from '@/lib/constants'
 import { AlertCircle, Check, Download } from 'lucide-react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 
 interface Props {
   assetId: string
-  assetTitle: string
+  isPurchased: boolean
 }
 
-export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
+export const AssetDownload: FC<Props> = ({ assetId, isPurchased }) => {
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadComplete, setDownloadComplete] = useState(false)
-  const [isPurchased, setIsPurchased] = useState<boolean | null>(null)
   const { user } = useAuth()
-
-  // Check if user has purchased this asset
-  useEffect(() => {
-    const checkPurchase = async () => {
-      if (!user) {
-        setIsPurchased(false)
-        return
-      }
-
-      try {
-        const response = await fetch(`/api/assets/${assetId}/check-purchase`)
-
-        if (response.ok) {
-          const { purchased } = await response.json()
-          setIsPurchased(purchased)
-        } else {
-          setIsPurchased(false)
-        }
-      } catch (error) {
-        console.error('Error checking purchase:', error)
-        setIsPurchased(false)
-      }
-    }
-
-    checkPurchase()
-  }, [user, assetId])
 
   const handleDownload = async () => {
     if (!user) {
@@ -69,7 +43,7 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
     setIsDownloading(true)
 
     try {
-      const response = await fetch(`/api/assets/${assetId}/download`)
+      const response = await fetch(API_ROUTES.assetDownload(assetId))
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -129,6 +103,7 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
             : 'Purchase this asset to download it.'}
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         {isPurchased ? (
           <div className='text-sm space-y-2'>
@@ -136,10 +111,12 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
               <Check className='h-4 w-4 text-green-500 mr-2' />
               Unlimited downloads
             </p>
+
             <p className='flex items-center'>
               <Check className='h-4 w-4 text-green-500 mr-2' />
               Access to future updates
             </p>
+
             <p className='flex items-center'>
               <Check className='h-4 w-4 text-green-500 mr-2' />
               Usage according to license terms
@@ -154,37 +131,15 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
           </div>
         )}
       </CardContent>
+
       <CardFooter>
-        <Button
+        <LoadingButton
           className='w-full'
           onClick={handleDownload}
+          isLoading={isDownloading}
           disabled={isDownloading || !isPurchased}
         >
-          {isDownloading ? (
-            <span className='flex items-center'>
-              <svg
-                className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-              >
-                <circle
-                  className='opacity-25'
-                  cx='12'
-                  cy='12'
-                  r='10'
-                  stroke='currentColor'
-                  strokeWidth='4'
-                ></circle>
-                <path
-                  className='opacity-75'
-                  fill='currentColor'
-                  d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                ></path>
-              </svg>
-              Downloading...
-            </span>
-          ) : downloadComplete ? (
+          {downloadComplete ? (
             <span className='flex items-center'>
               <Check className='mr-2 h-4 w-4' />
               Downloaded
@@ -195,7 +150,7 @@ export const AssetDownload: FC<Props> = ({ assetId, assetTitle }) => {
               Download Asset
             </span>
           )}
-        </Button>
+        </LoadingButton>
       </CardFooter>
     </Card>
   )

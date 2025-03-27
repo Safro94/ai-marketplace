@@ -1,3 +1,4 @@
+import { ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { CreatorApplicationForm } from './creator-application-form'
@@ -27,14 +28,14 @@ export default function CreatorApplicationPage() {
           <p>
             By submitting this application, you agree to our{' '}
             <Link
-              href='/creator-terms'
+              href={ROUTES.creatorTerms()}
               className='text-primary underline underline-offset-4'
             >
               Creator Terms
             </Link>{' '}
             and{' '}
             <Link
-              href='/privacy'
+              href={ROUTES.privacyPolicy()}
               className='text-primary underline underline-offset-4'
             >
               Privacy Policy

@@ -1,17 +1,13 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { API_ROUTES } from '@/lib/constants'
+import { FilterOption } from '@/lib/types'
+import { Category } from '@prisma/client'
 import { X } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { FiltersContent } from './filters-content'
-
-export interface FilterOption {
-  id: string
-  label: string
-  colorClass?: string
-  iconName?: string
-}
 
 interface Props {
   initialCategory?: string
@@ -56,19 +52,11 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
 
       try {
         // Fetch categories
-        const categoriesResponse = await fetch('/api/categories')
+        const categoriesResponse = await fetch(API_ROUTES.categories())
 
         if (categoriesResponse.ok) {
-          const categoriesData = await categoriesResponse.json()
-
-          setCategories(
-            categoriesData.map((cat) => ({
-              id: cat.id,
-              label: cat.name,
-              colorClass: cat.colorClass,
-              iconName: cat.iconName,
-            })),
-          )
+          const categoriesData: Category[] = await categoriesResponse.json()
+          setCategories(categoriesData)
         }
 
         // Fetch use cases
@@ -221,6 +209,7 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
           <div className='p-4'>
             <div className='flex items-center justify-between mb-4'>
               <h2 className='text-lg font-semibold'>Filters</h2>
+
               <Button
                 variant='ghost'
                 size='icon'
@@ -251,6 +240,7 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
               <Button variant='outline' onClick={clearAllFilters}>
                 Clear all
               </Button>
+
               <Button onClick={() => setShowMobileFilters(false)}>
                 Apply filters
               </Button>

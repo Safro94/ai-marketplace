@@ -159,10 +159,11 @@ export const Header = () => {
           ) : (
             <div className='hidden md:flex gap-2'>
               <Button variant='ghost' asChild>
-                <Link href='/login'>Log in</Link>
+                <Link href={ROUTES.login()}>Log in</Link>
               </Button>
+
               <Button asChild>
-                <Link href='/signup'>Sign up</Link>
+                <Link href={ROUTES.signUp()}>Sign up</Link>
               </Button>
             </div>
           )}

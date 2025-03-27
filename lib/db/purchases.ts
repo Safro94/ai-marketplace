@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import type { Prisma } from '@prisma/client'
+import { PurchaseStatus, type Prisma } from '@prisma/client'
 
 // Used in purchase-options.tsx
 export async function createPurchase(data: Prisma.PurchaseCreateInput) {
@@ -50,7 +50,7 @@ export async function checkUserPurchasedAsset(userId: string, assetId: string) {
     where: {
       buyerId: profile.id,
       assetId,
-      status: 'COMPLETED',
+      status: PurchaseStatus.COMPLETED,
     },
   })
 

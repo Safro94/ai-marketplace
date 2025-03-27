@@ -1,16 +1,18 @@
 import { Card, CardContent } from '@/components/ui/card'
+import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import {
   Bot,
   Briefcase,
   Database,
   FileText,
+  LucideIcon,
   MessageSquare,
   Workflow,
 } from 'lucide-react'
 import Link from 'next/link'
 
-const iconMap = {
+const iconMap: Record<string, LucideIcon> = {
   MessageSquare: MessageSquare,
   Bot: Bot,
   Workflow: Workflow,
@@ -50,7 +52,10 @@ export const CategoryShowcase = async () => {
             : MessageSquare
 
         return (
-          <Link href={`/categories/${category.slug}`} key={category.id}>
+          <Link
+            href={`${ROUTES.categories()}/${category.slug}`}
+            key={category.id}
+          >
             <Card className='h-full border-border/50 hover:border-primary/50 transition-colors'>
               <CardContent className='p-6 flex items-start space-x-4'>
                 <div
@@ -58,11 +63,13 @@ export const CategoryShowcase = async () => {
                 >
                   <IconComponent className='h-6 w-6' />
                 </div>
+
                 <div className='space-y-1'>
                   <h3 className='font-medium text-lg'>{category.name}</h3>
                   <p className='text-sm text-muted-foreground'>
                     {category.description}
                   </p>
+
                   <p className='text-sm font-medium'>{category.count} assets</p>
                 </div>
               </CardContent>

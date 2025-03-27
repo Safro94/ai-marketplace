@@ -1,10 +1,10 @@
 import prisma from '@/lib/prisma'
+import { AssetStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
 
-  // Extract search parameters
   const query = searchParams.get('q') || ''
   const category = searchParams.get('category')
   const useCase = searchParams.get('useCase')
@@ -23,9 +23,9 @@ export async function GET(request: Request) {
   const skip = (page - 1) * limit
 
   try {
-    // Build the where clause for filtering
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {
-      status: 'PUBLISHED',
+      status: AssetStatus.PUBLISHED,
     }
 
     // Text search
@@ -50,9 +50,11 @@ export async function GET(request: Request) {
     // Price range filter
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.price = {}
+
       if (minPrice !== undefined) {
         where.price.gte = minPrice
       }
+
       if (maxPrice !== undefined) {
         where.price.lte = maxPrice
       }
@@ -64,7 +66,7 @@ export async function GET(request: Request) {
     }
 
     // Determine sort order
-    let orderBy: any = {}
+    let orderBy = {}
     switch (sortBy) {
       case 'price-low':
         orderBy = { price: 'asc' }
