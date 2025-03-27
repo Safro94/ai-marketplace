@@ -1,12 +1,14 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { FavoriteButton } from '@/components/favorite-button'
+import { LoadingButton } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
 import { createPurchase } from '@/lib/db/purchases'
+import { LicenseType, PurchaseStatus } from '@prisma/client'
 import { Check, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
@@ -28,8 +30,8 @@ export const PurchaseOptions: FC<Props> = ({
   extendedPrice,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [licenseType, setLicenseType] = useState<'STANDARD' | 'EXTENDED'>(
-    'STANDARD',
+  const [licenseType, setLicenseType] = useState<LicenseType>(
+    LicenseType.STANDARD,
   )
   const { user } = useAuth()
   const router = useRouter()
@@ -51,14 +53,14 @@ export const PurchaseOptions: FC<Props> = ({
     try {
       // Create purchase record
       await createPurchase({
+        licenseType,
         asset: { connect: { id: id } },
         buyer: { connect: { userId: user.id } },
         amount:
-          licenseType === 'STANDARD'
+          licenseType === LicenseType.STANDARD
             ? standardPrice
             : extendedPrice || standardPrice * 2,
-        licenseType,
-        status: 'COMPLETED',
+        status: PurchaseStatus.COMPLETED,
       })
 
       toast.success('Purchase successful!', {
@@ -83,99 +85,91 @@ export const PurchaseOptions: FC<Props> = ({
     <Card className='border-border/50'>
       <CardContent className='p-6'>
         <Tabs
-          defaultValue='standard'
-          onValueChange={(value) =>
-            setLicenseType(value === 'standard' ? 'STANDARD' : 'EXTENDED')
-          }
+          defaultValue={LicenseType.STANDARD}
+          onValueChange={(value) => setLicenseType(value as LicenseType)}
         >
           <TabsList className='grid w-full grid-cols-2'>
-            <TabsTrigger value='standard'>Standard</TabsTrigger>
-            <TabsTrigger value='extended'>Extended</TabsTrigger>
+            <TabsTrigger value={LicenseType.STANDARD}>Standard</TabsTrigger>
+            <TabsTrigger value={LicenseType.EXTENDED}>Extended</TabsTrigger>
           </TabsList>
-          <TabsContent value='standard' className='pt-4'>
-            <div className='space-y-4'>
-              <div className='flex items-center justify-between'>
-                <span className='text-2xl font-bold'>${standardPrice}</span>
-                <Badge variant='outline' className='text-xs'>
-                  Most Popular
-                </Badge>
-              </div>
-              <div className='space-y-2'>
-                <Feature text='Single user license' />
-                <Feature text='All templates included' />
-                <Feature text='6 months of updates' />
-                <Feature text='Basic implementation guide' />
-                <Feature text='Community support' isIncluded={false} />
-                <Feature text='Priority email support' isIncluded={false} />
-              </div>
-            </div>
+
+          <TabsContent value={LicenseType.STANDARD} className='pt-4'>
+            <License
+              price={standardPrice}
+              badgeText='Most Popular'
+              features={[
+                { text: 'Single user license' },
+                { text: 'All templates included' },
+                { text: '6 months of updates' },
+                { text: 'Basic implementation guide' },
+                { text: 'Community support', isIncluded: false },
+                { text: 'Priority email support', isIncluded: false },
+              ]}
+            />
           </TabsContent>
-          <TabsContent value='extended' className='pt-4'>
-            <div className='space-y-4'>
-              <div className='flex items-center justify-between'>
-                <span className='text-2xl font-bold'>
-                  ${extendedPrice || standardPrice * 2}
-                </span>
-                <Badge variant='outline' className='text-xs'>
-                  Best Value
-                </Badge>
-              </div>
-              <div className='space-y-2'>
-                <Feature text='Team license (up to 5 users)' />
-                <Feature text='All templates included' />
-                <Feature text='Lifetime updates' />
-                <Feature text='Advanced implementation guide' />
-                <Feature text='Community support' />
-                <Feature text='Priority email support' />
-              </div>
-            </div>
+
+          <TabsContent value={LicenseType.EXTENDED} className='pt-4'>
+            <License
+              price={extendedPrice || standardPrice * 2}
+              badgeText='Best Value'
+              features={[
+                { text: 'Team license (up to 5 users)' },
+                { text: 'All templates included' },
+                { text: 'Lifetime updates' },
+                { text: 'Advanced implementation guide' },
+                { text: 'Community support' },
+                { text: 'Priority email support' },
+              ]}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>
+
       <CardFooter className='px-6 pb-6 pt-0 flex justify-between'>
-        <Button
+        <LoadingButton
           className='flex-1 mr-2'
           size='lg'
           onClick={handlePurchase}
           disabled={isLoading}
+          isLoading={isLoading}
         >
-          {isLoading ? (
-            <span className='flex items-center'>
-              <svg
-                className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-              >
-                <circle
-                  className='opacity-25'
-                  cx='12'
-                  cy='12'
-                  r='10'
-                  stroke='currentColor'
-                  strokeWidth='4'
-                ></circle>
-                <path
-                  className='opacity-75'
-                  fill='currentColor'
-                  d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                ></path>
-              </svg>
-              Processing...
-            </span>
-          ) : (
-            <span className='flex items-center'>
-              <ShoppingCart className='mr-2 h-5 w-5' />
-              Buy Now
-            </span>
-          )}
-        </Button>
+          <span className='flex items-center'>
+            <ShoppingCart className='mr-2 h-5 w-5' />
+            Buy Now
+          </span>
+        </LoadingButton>
 
-        {/* <FavoriteButton assetId={id} /> */}
+        <FavoriteButton assetId={id} />
       </CardFooter>
     </Card>
   )
 }
+
+const License = ({
+  price,
+  badgeText,
+  features,
+}: {
+  price: number
+  badgeText: string
+  features: { text: string; isIncluded?: boolean }[]
+}) => (
+  <div className='space-y-4'>
+    <div className='flex items-center justify-between'>
+      <span className='text-2xl font-bold'>${price}</span>
+
+      <Badge variant='outline' className='text-xs'>
+        {badgeText}
+      </Badge>
+    </div>
+
+    <div className='space-y-2'>
+      {features.map(({ text, isIncluded = true }) => (
+        <Feature key={text} text={text} isIncluded={isIncluded} />
+      ))}
+    </div>
+  </div>
+)
 
 const Feature: FC<FeatureProps> = ({ text, isIncluded = true }) => {
   return (
@@ -185,6 +179,7 @@ const Feature: FC<FeatureProps> = ({ text, isIncluded = true }) => {
       ) : (
         <div className='h-4 w-4 border-2 border-muted rounded-full mr-2 mt-0.5' />
       )}
+
       <span className={isIncluded ? '' : 'text-muted-foreground'}>{text}</span>
     </div>
   )

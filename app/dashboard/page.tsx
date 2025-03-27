@@ -15,7 +15,7 @@ import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
-import { Clock, Download, FileText } from 'lucide-react'
+import { Clock, Download, FileText, Star } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -25,6 +25,7 @@ import reviewStar from '../../public/review-star.svg'
 enum TabsEnum {
   ASSETS = 'assets',
   DOWNLOADS = 'downloads',
+  FAVORITES = 'favorites',
   REVIEWS = 'reviews',
 }
 
@@ -53,7 +54,6 @@ export default async function DashboardPage() {
     redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.dashboard()}`)
   }
 
-  // Get user's purchased assets
   const purchasedAssets = await prisma.purchase.findMany({
     where: {
       buyerId: profile.id,
@@ -71,7 +71,6 @@ export default async function DashboardPage() {
     },
   })
 
-  // Get user's download history
   const downloadHistory = await prisma.download.findMany({
     where: {
       userId: profile.id,
@@ -84,13 +83,28 @@ export default async function DashboardPage() {
     },
   })
 
-  // Get user's reviews
   const reviews = await prisma.review.findMany({
     where: {
       userId: profile.id,
     },
     include: {
       asset: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+
+  const favorites = await prisma.favorite.findMany({
+    where: {
+      userId: profile.id,
+    },
+    include: {
+      asset: {
+        include: {
+          category: true,
+        },
+      },
     },
     orderBy: {
       createdAt: 'desc',
@@ -116,7 +130,7 @@ export default async function DashboardPage() {
         <TabsList className='mb-6'>
           <TabsTrigger value={TabsEnum.ASSETS}>My Purchased Assets</TabsTrigger>
           <TabsTrigger value={TabsEnum.DOWNLOADS}>Download History</TabsTrigger>
-          {/* <TabsTrigger value='favorites'>Favorites</TabsTrigger> */}
+          <TabsTrigger value={TabsEnum.FAVORITES}>Favorites</TabsTrigger>
           <TabsTrigger value={TabsEnum.REVIEWS}>My Reviews</TabsTrigger>
         </TabsList>
 
@@ -176,8 +190,7 @@ export default async function DashboardPage() {
           ) : (
             <NotFound
               title='No assets yet'
-              description="You haven't purchased any assets yet. Browse our
-                  marketplace to find AI assets that can help you."
+              description="You haven't purchased any assets yet. Browse our marketplace to find AI assets that can help you."
               icon={FileText}
               btnLink={ROUTES.explore()}
               btnText='Browse Marketplace'
@@ -207,15 +220,18 @@ export default async function DashboardPage() {
                             className='object-cover'
                           />
                         </div>
+
                         <div>
                           <h4 className='font-medium'>
                             {download.asset.title}
                           </h4>
+
                           <p className='text-xs text-muted-foreground'>
                             Downloaded on {formatDate(download.createdAt)}
                           </p>
                         </div>
                       </div>
+
                       <Button size='sm' asChild>
                         <Link
                           href={API_ROUTES.assetDownload(download.asset.id)}
@@ -231,15 +247,14 @@ export default async function DashboardPage() {
             ) : (
               <NotFound
                 title='No downloads yet'
-                description="You haven't downloaded any assets yet. Visit your
-                  purchased assets to download them."
+                description="You haven't downloaded any assets yet. Visit your purchased assets to download them."
                 icon={Download}
               />
             )}
           </Card>
         </TabsContent>
 
-        {/* <TabsContent value='favorites'>
+        <TabsContent value={TabsEnum.FAVORITES}>
           <Card>
             {favorites.length > 0 ? (
               <CardContent className='py-6'>
@@ -257,22 +272,29 @@ export default async function DashboardPage() {
                           className='object-cover'
                         />
                       </div>
+
                       <CardContent className='p-4'>
                         <Badge variant='secondary' className='mb-2'>
                           {favorite.asset.category.name}
                         </Badge>
+
                         <h3 className='font-medium mb-1'>
                           {favorite.asset.title}
                         </h3>
+
                         <p className='text-sm text-muted-foreground line-clamp-2 mb-4'>
                           {favorite.asset.description}
                         </p>
+
                         <div className='flex justify-between items-center'>
                           <span className='font-bold'>
                             ${favorite.asset.price}
                           </span>
+
                           <Button size='sm' asChild>
-                            <Link href={`/assets/${favorite.asset.id}`}>
+                            <Link
+                              href={`${ROUTES.assets()}/${favorite.asset.id}`}
+                            >
                               View Details
                             </Link>
                           </Button>
@@ -283,21 +305,16 @@ export default async function DashboardPage() {
                 </div>
               </CardContent>
             ) : (
-              <CardContent className='flex flex-col items-center justify-center py-12 text-center'>
-                <Star className='h-12 w-12 text-muted-foreground mb-4' />
-                <h3 className='text-lg font-medium mb-2'>No favorites yet</h3>
-                <p className='text-muted-foreground max-w-md mb-6'>
-                  You haven&apos;t added any assets to your favorites yet.
-                  Browse the marketplace and save assets you&apos;re interested
-                  in.
-                </p>
-                <Button asChild>
-                  <Link href='/explore'>Browse Marketplace</Link>
-                </Button>
-              </CardContent>
+              <NotFound
+                title='No favorites yet'
+                description="You haven't added any assets to your favorites yet. Browse the marketplace and save assets you're interested in."
+                icon={Star}
+                btnLink={ROUTES.explore()}
+                btnText='Browse Marketplace'
+              />
             )}
           </Card>
-        </TabsContent> */}
+        </TabsContent>
 
         <TabsContent value={TabsEnum.REVIEWS}>
           <Card>
@@ -342,8 +359,7 @@ export default async function DashboardPage() {
             ) : (
               <NotFound
                 title='No reviews yet'
-                description="You haven't written any reviews yet. Share your
-                  experience with assets you've purchased."
+                description="You haven't written any reviews yet. Share your experience with assets you've purchased."
                 icon={FileText}
               />
             )}

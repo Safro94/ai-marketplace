@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET() {
   const session = await getServerSession()
 
   if (!session?.user) {
@@ -76,19 +76,19 @@ export async function POST(request: Request) {
     })
 
     if (existingFavorite) {
-      // Remove from favorites
       await prisma.favorite.delete({
         where: { id: existingFavorite.id },
       })
+
       return NextResponse.json({ favorited: false })
     } else {
-      // Add to favorites
       await prisma.favorite.create({
         data: {
           userId: profile.id,
           assetId,
         },
       })
+
       return NextResponse.json({ favorited: true })
     }
   } catch (error) {
