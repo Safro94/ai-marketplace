@@ -101,10 +101,7 @@ export default async function CategoriesPage() {
               : MessageSquare
 
           return (
-            <Card
-              key={category.id}
-              className='border-border/50 overflow-hidden'
-            >
+            <Card key={category.id} className='overflow-hidden card-hover'>
               <CardHeader className='pb-2'>
                 <div className='flex items-start'>
                   <div

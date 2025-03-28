@@ -49,7 +49,7 @@ export const FeaturedSection = async () => {
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {featuredAssets.map((asset, index) => (
             <Link href={`${ROUTES.assets()}/${asset.id}`} key={asset.id}>
-              <Card className='h-full overflow-hidden border-border/50 card-hover'>
+              <Card className='h-full overflow-hidden card-hover'>
                 <CardHeader className='p-0'>
                   <div className='relative aspect-[4/3] w-full overflow-hidden'>
                     <Image

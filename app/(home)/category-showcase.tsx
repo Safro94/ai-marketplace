@@ -56,7 +56,7 @@ export const CategoryShowcase = async () => {
             href={`${ROUTES.categories()}/${category.slug}`}
             key={category.id}
           >
-            <Card className='h-full border-border/50 hover:border-primary/50 transition-colors'>
+            <Card className='h-full transition-colors card-hover'>
               <CardContent className='p-6 flex items-start space-x-4'>
                 <div
                   className={`p-3 rounded-lg ${category.colorClass || 'bg-primary/10 text-primary'}`}

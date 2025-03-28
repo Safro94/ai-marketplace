@@ -130,14 +130,19 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
 
         <div className='space-y-2'>
           {[5, 4, 3, 2, 1].map((rating) => (
-            <div key={rating} className='flex items-center space-x-2'>
+            <div
+              key={rating}
+              className='grid grid-cols-[max-content_1fr_max-content] items-center space-x-2'
+            >
               <div className='w-12 text-sm text-muted-foreground'>
-                {rating} stars
+                {rating} {rating === 1 ? 'star' : 'stars'}
               </div>
+
               <Progress
                 value={(ratingCounts[rating - 1] / totalReviews) * 100 || 0}
                 className='h-2'
               />
+
               <div className='w-12 text-sm text-right text-muted-foreground'>
                 {ratingCounts[rating - 1]}
               </div>

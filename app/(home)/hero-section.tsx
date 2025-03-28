@@ -1,9 +1,18 @@
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants'
+import prisma from '@/lib/prisma'
+import { getServerSession } from '@/lib/session'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
-export const HeroSection = () => {
+export const HeroSection = async () => {
+  const session = await getServerSession()
+
+  const profile = await prisma.profile.findUnique({
+    where: { userId: session?.user.id },
+    include: { creatorProfile: true },
+  })
+
   return (
     <section className='relative py-20 md:py-28 overflow-hidden'>
       <div className='hero-gradient absolute inset-0 z-0 opacity-20' />
@@ -40,7 +49,14 @@ export const HeroSection = () => {
             </Button>
 
             <Button size='lg' variant='outline' asChild>
-              <Link href={ROUTES.creators()}>Become a Creator</Link>
+              {profile?.isCreator ? (
+                <Link href={ROUTES.creatorDashboard()}>
+                  Go to Creator Dashboard
+                  <ArrowRight className='ml-2 h-4 w-4' />
+                </Link>
+              ) : (
+                <Link href={ROUTES.creators()}>Become a Creator</Link>
+              )}
             </Button>
           </div>
         </div>

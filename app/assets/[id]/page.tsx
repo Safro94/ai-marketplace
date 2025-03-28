@@ -23,10 +23,12 @@ import { RelatedAssets } from './related-assets'
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }): Promise<Metadata> {
+  const id = (await params).id
+
   const asset = await prisma.asset.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       category: true,
     },
@@ -43,12 +45,12 @@ export async function generateMetadata({
     title: asset.title,
     description: asset.description,
     alternates: {
-      canonical: `/assets/${params.id}`,
+      canonical: `/assets/${id}`,
     },
     openGraph: {
       title: asset.title,
       description: asset.description,
-      url: `${ROUTES.assets()}/${params.id}`,
+      url: `${ROUTES.assets()}/${id}`,
       images: [
         {
           url: asset.featuredImage,
@@ -70,11 +72,16 @@ export async function generateMetadata({
   }
 }
 
-export const AssetPage = async ({ params }: { params: { id: string } }) => {
+export default async function AssetPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   const session = await getServerSession()
+  const id = (await params).id
 
   const asset = await prisma.asset.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       category: true,
       creator: {
@@ -412,11 +419,11 @@ export const AssetPage = async ({ params }: { params: { id: string } }) => {
                     {asset.creator.bio || 'No bio available'}
                   </p>
 
-                  <Button variant='outline' className='w-full' asChild>
+                  {/* <Button variant='outline' className='w-full' asChild>
                     <Link href={`${ROUTES.creators()}/${asset.creator.id}`}>
                       View Profile
                     </Link>
-                  </Button>
+                  </Button> */}
                 </CardContent>
               </Card>
 

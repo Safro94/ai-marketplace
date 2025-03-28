@@ -40,7 +40,7 @@ export const BenefitsSection = () => {
           {BENEFITS.map(({ Icon, title, description }) => (
             <div
               key={title}
-              className='bg-background rounded-lg p-6 border border-border/50 flex flex-col items-center text-center'
+              className='bg-background rounded-lg p-6 border flex flex-col items-center text-center card-hover'
             >
               <div className='h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4'>
                 <Icon className='h-6 w-6 text-primary' aria-hidden='true' />
