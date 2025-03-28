@@ -1,23 +1,21 @@
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { API_ROUTES } from '@/lib/constants'
 import { formatDate } from '@/lib/utils'
+import { Review as PrismaReview } from '@prisma/client'
+import { StarIcon } from 'lucide-react'
 import { FC, useEffect, useState } from 'react'
 import { ReviewForm } from './review-form'
 
-interface Review {
-  id: string
-  userId: string
+interface Review extends PrismaReview {
   user: {
     name: string | null
     avatarUrl: string | null
   }
-  rating: number
-  title: string
-  content: string
-  createdAt: Date
 }
 
 interface Props {
@@ -35,7 +33,8 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
     if (!initialReviews?.length) {
       const fetchReviews = async () => {
         try {
-          const response = await fetch(`/api/assets/${assetId}/reviews`)
+          const response = await fetch(API_ROUTES.assetsReview(assetId))
+
           if (response.ok) {
             const data = await response.json()
             setReviews(data)
@@ -58,7 +57,7 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
   const handleReviewSubmitted = async () => {
     // Refresh reviews after a new one is submitted
     try {
-      const response = await fetch(`/api/assets/${assetId}/reviews`)
+      const response = await fetch(API_ROUTES.assetsReview(assetId))
       if (response.ok) {
         const data = await response.json()
         setReviews(data)
@@ -97,30 +96,17 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
             <div>
               <div className='flex'>
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <svg
+                  <StarIcon
                     key={star}
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill={
-                      star <= Math.round(averageRating)
-                        ? 'currentColor'
-                        : 'none'
-                    }
-                    stroke='currentColor'
-                    className={`w-5 h-5 ${
-                      star <= Math.round(averageRating)
-                        ? 'text-yellow-500'
-                        : 'text-muted-foreground'
+                    className={`h-4 w-4 ${
+                      star <= Math.round(averageRating || 0)
+                        ? 'text-yellow-400 fill-yellow-400'
+                        : 'text-gray-300'
                     }`}
-                  >
-                    <path
-                      fillRule='evenodd'
-                      d='M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
+                  />
                 ))}
               </div>
+
               <p className='text-sm text-muted-foreground mt-1'>
                 Based on {totalReviews} reviews
               </p>
@@ -152,7 +138,7 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
       </div>
 
       <div className='space-y-6'>
-        {reviews.length > 0 ? (
+        {!!reviews.length ? (
           <>
             {reviews.slice(0, visibleReviews).map((review) => (
               <div
@@ -169,41 +155,51 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
                         }
                         alt={review.user.name || 'User'}
                       />
+
                       <AvatarFallback>
                         {(review.user.name || 'U').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
+
                     <div>
                       <div className='font-medium'>
                         {review.user.name || 'Anonymous User'}
                       </div>
+
                       <div className='text-xs text-muted-foreground'>
                         {formatDate(review.createdAt)}
                       </div>
                     </div>
                   </div>
-                  <div className='flex'>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg
-                        key={star}
-                        xmlns='http://www.w3.org/2000/svg'
-                        viewBox='0 0 24 24'
-                        fill={star <= review.rating ? 'currentColor' : 'none'}
-                        stroke='currentColor'
-                        className={`w-4 h-4 ${star <= review.rating ? 'text-yellow-500' : 'text-muted-foreground'}`}
-                      >
-                        <path
-                          fillRule='evenodd'
-                          d='M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z'
-                          clipRule='evenodd'
+
+                  <div className='flex items-center space-x-2'>
+                    <div className='flex'>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <StarIcon
+                          key={star}
+                          className={`h-4 w-4 ${
+                            star <= review.rating
+                              ? 'text-yellow-400 fill-yellow-400'
+                              : 'text-gray-300'
+                          }`}
                         />
-                      </svg>
-                    ))}
+                      ))}
+                    </div>
+
+                    {review.isVerified && (
+                      <Badge
+                        variant='outline'
+                        className='text-xs bg-green-50 text-green-700 border-green-200'
+                      >
+                        Verified Purchase
+                      </Badge>
+                    )}
                   </div>
                 </div>
+
                 <h4 className='font-medium mb-1'>{review.title}</h4>
                 <p className='text-sm text-muted-foreground'>
-                  {review.content}
+                  {review.comment}
                 </p>
               </div>
             ))}

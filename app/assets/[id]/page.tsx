@@ -109,13 +109,6 @@ export default async function AssetPage({
     isPurchased = await checkUserPurchasedAsset(session.user.id, asset.id)
   }
 
-  // Calculate average rating
-  const averageRating =
-    asset.reviews.length > 0
-      ? asset.reviews.reduce((sum, review) => sum + review.rating, 0) /
-        asset.reviews.length
-      : 0
-
   // Parse features and requirements from JSON strings
   const features = Array.isArray(asset.features)
     ? asset.features
@@ -139,7 +132,7 @@ export default async function AssetPage({
               price: asset.price,
               image: asset.featuredImage,
               category: asset.category.name,
-              rating: averageRating,
+              rating: asset.averageRating,
               reviews: asset.reviews.length,
               creator: {
                 name: asset.creator.name || 'Unknown Creator',
@@ -199,7 +192,7 @@ export default async function AssetPage({
                     />
 
                     <span className='text-sm font-medium'>
-                      {averageRating.toFixed(1)}
+                      {asset.averageRating.toFixed(1)}
                     </span>
 
                     <span className='text-xs text-muted-foreground ml-1'>
@@ -382,11 +375,7 @@ export default async function AssetPage({
               {isPurchased ? (
                 <AssetDownload assetId={asset.id} isPurchased />
               ) : (
-                <PurchaseOptions
-                  id={asset.id}
-                  standardPrice={asset.standardPrice}
-                  extendedPrice={asset.extendedPrice}
-                />
+                <PurchaseOptions assetId={asset.id} />
               )}
 
               {/* Creator Info (Desktop) */}

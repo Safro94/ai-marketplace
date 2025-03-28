@@ -23,6 +23,7 @@ export const auth = betterAuth({
             await prisma.profile.create({
               data: {
                 userId: user.id ?? '',
+                email: user.email,
                 name: user.name,
                 avatarUrl: user.image,
               },

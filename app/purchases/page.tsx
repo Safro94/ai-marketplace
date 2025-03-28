@@ -19,6 +19,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { LicenseCard } from './license-card'
 
 export const metadata: Metadata = {
   title: 'My Purchases | AIAssets Marketplace',
@@ -37,7 +38,7 @@ export default async function PurchasesPage({
   const session = await getServerSession()
 
   if (!session?.user) {
-    redirect('/login?callbackUrl=/purchases')
+    redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.purchases()}`)
   }
 
   // Get user profile
@@ -51,6 +52,7 @@ export default async function PurchasesPage({
       data: {
         userId: session.user.id,
         name: session.user.name || '',
+        email: session.user.email,
         avatarUrl: session.user.image || '',
       },
     })
@@ -80,6 +82,11 @@ export default async function PurchasesPage({
       asset: {
         include: {
           creator: true,
+        },
+      },
+      assetLicense: {
+        include: {
+          license: true,
         },
       },
     },
@@ -177,6 +184,8 @@ export default async function PurchasesPage({
                         <span>{purchase.asset.creator.name}</span>
                       </div>
                     </div>
+
+                    <LicenseCard purchase={purchase} />
                   </CardContent>
 
                   <CardFooter className='flex gap-2'>

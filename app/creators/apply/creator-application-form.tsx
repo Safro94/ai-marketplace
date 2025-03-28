@@ -22,6 +22,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
+import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -85,7 +86,7 @@ export const CreatorApplicationForm = () => {
         description: 'Please log in to submit your application.',
       })
 
-      router.push('/login')
+      router.push(ROUTES.login())
       return
     }
 
@@ -93,7 +94,7 @@ export const CreatorApplicationForm = () => {
 
     try {
       // Submit the creator application
-      const response = await fetch('/api/creators/apply', {
+      const response = await fetch(API_ROUTES.creatorsApply(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ export const CreatorApplicationForm = () => {
           "We've received your application and will review it shortly.",
       })
 
-      router.push('/creators/thank-you')
+      router.push(ROUTES.creatorsThankYou())
     } catch (error) {
       toast.error('Error', {
         description:
@@ -167,6 +168,7 @@ export const CreatorApplicationForm = () => {
               <FormControl>
                 <Input placeholder='https://yourwebsite.com' {...field} />
               </FormControl>
+
               <FormDescription>
                 Share your personal website, LinkedIn, or other professional
                 profile
@@ -192,23 +194,30 @@ export const CreatorApplicationForm = () => {
                       <SelectValue placeholder='Select your expertise' />
                     </SelectTrigger>
                   </FormControl>
+
                   <SelectContent>
                     <SelectItem value='prompt-engineering'>
                       Prompt Engineering
                     </SelectItem>
+
                     <SelectItem value='custom-gpts'>
                       Custom GPTs & AI Agents
                     </SelectItem>
+
                     <SelectItem value='ai-workflows'>
                       AI Workflow Automation
                     </SelectItem>
+
                     <SelectItem value='content-creation'>
                       Content Creation
                     </SelectItem>
+
                     <SelectItem value='data-analysis'>Data Analysis</SelectItem>
+
                     <SelectItem value='industry-expert'>
                       Industry Expert
                     </SelectItem>
+
                     <SelectItem value='other'>Other</SelectItem>
                   </SelectContent>
                 </Select>
@@ -232,13 +241,16 @@ export const CreatorApplicationForm = () => {
                       <SelectValue placeholder='Select your experience level' />
                     </SelectTrigger>
                   </FormControl>
+
                   <SelectContent>
                     <SelectItem value='beginner'>
                       Beginner (&lt; 1 year)
                     </SelectItem>
+
                     <SelectItem value='intermediate'>
                       Intermediate (1-3 years)
                     </SelectItem>
+
                     <SelectItem value='advanced'>
                       Advanced (3-5 years)
                     </SelectItem>
@@ -264,6 +276,7 @@ export const CreatorApplicationForm = () => {
                   {...field}
                 />
               </FormControl>
+
               <FormDescription>
                 This will be displayed on your creator profile
               </FormDescription>
@@ -280,6 +293,7 @@ export const CreatorApplicationForm = () => {
               <FormLabel>
                 What types of AI assets do you plan to sell?
               </FormLabel>
+
               <FormControl>
                 <Textarea
                   placeholder='Describe the AI assets you plan to create and sell on our marketplace...'
@@ -301,6 +315,7 @@ export const CreatorApplicationForm = () => {
               <FormControl>
                 <Input placeholder='https://yourportfolio.com' {...field} />
               </FormControl>
+
               <FormDescription>
                 Share a link to examples of your work (GitHub, portfolio site,
                 etc.)
@@ -321,10 +336,12 @@ export const CreatorApplicationForm = () => {
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
+
               <div className='space-y-1 leading-none'>
                 <FormLabel>
                   I agree to the Creator Terms and Conditions
                 </FormLabel>
+
                 <FormDescription>
                   By checking this box, you agree to our creator terms,
                   including our commission structure and content guidelines.

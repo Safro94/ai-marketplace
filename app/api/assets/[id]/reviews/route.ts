@@ -36,9 +36,9 @@ export async function POST(
 ) {
   try {
     const assetId = params.id
-    const { userId, rating, title, content } = await request.json()
+    const { userId, rating, title, comment } = await request.json()
 
-    if (!userId || !rating || !title || !content) {
+    if (!userId || !rating || !title || !comment) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 },
@@ -52,7 +52,7 @@ export async function POST(
         user: { connect: { id: userId } },
         rating,
         title,
-        content,
+        comment,
       },
     })
 
@@ -71,7 +71,7 @@ export async function POST(
       where: { id: assetId },
       data: {
         averageRating,
-        reviewCount: assetReviews.length,
+        totalReviews: assetReviews.length,
       },
     })
 

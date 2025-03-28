@@ -16,6 +16,7 @@ export default function CreatorApplicationPage() {
           <h1 className='text-3xl font-bold tracking-tight mb-2'>
             Creator Application
           </h1>
+
           <p className='text-muted-foreground'>
             Fill out the form below to apply as a creator on AIAssets
             Marketplace

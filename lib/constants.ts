@@ -16,6 +16,7 @@ export const ROUTES = {
   newReleases: () => '/new-releases',
   categories: () => '/categories',
   creators: () => '/creators',
+  creatorsThankYou: () => '/creators/thank-you',
   creatorsApply: () => '/creators/apply',
   creatorTerms: () => '/creator-terms',
   creatorFAQ: () => '/creator-faq',
@@ -37,6 +38,12 @@ export const API_ROUTES = {
   search: () => `/api/search`,
   categories: () => `/api/categories`,
   cases: () => `/api/use-cases`,
+  licenses: () => '/api/licenses',
+  assets: () => '/api/assets',
+  assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
+  assetsReview: (assetId: string) => `/api/assets/${assetId}/reviews`,
+  assetAdminModeration: (assetId: string) => `/api/admin/moderation/${assetId}`,
+  creatorsApply: () => '/api/creators/apply',
 }
 
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
@@ -64,4 +71,9 @@ export enum EXPLORE_FITLERS {
   PRICE = 'price',
   USE_CASES = 'use-cases',
   RATINGS = 'ratings',
+}
+
+export enum LICENSE_TYPE {
+  STANDARD = 'standard-license',
+  EXTENDED = 'extended-license',
 }

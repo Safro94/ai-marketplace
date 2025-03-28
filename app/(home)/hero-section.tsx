@@ -7,11 +7,14 @@ import Link from 'next/link'
 
 export const HeroSection = async () => {
   const session = await getServerSession()
+  let profile
 
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session?.user.id },
-    include: { creatorProfile: true },
-  })
+  if (session?.user) {
+    profile = await prisma.profile.findUnique({
+      where: { userId: session.user.id },
+      include: { creatorProfile: true },
+    })
+  }
 
   return (
     <section className='relative py-20 md:py-28 overflow-hidden'>
