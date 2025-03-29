@@ -1,6 +1,6 @@
 export const ROUTES = {
   home: () => '/',
-  privacyPolicy: () => '/privacy',
+  privacy: () => '/privacy',
   terms: () => '/terms',
   login: () => '/login',
   signUp: () => '/signup',
@@ -13,8 +13,6 @@ export const ROUTES = {
   purchases: () => '/purchases',
   cart: () => '/cart',
   explore: () => '/explore',
-  featured: () => '/featured',
-  newReleases: () => '/new-releases',
   categories: () => '/categories',
   creators: () => '/creators',
   creatorsThankYou: () => '/creators/thank-you',
@@ -49,6 +47,9 @@ export const API_ROUTES = {
 
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
 export const PAYPAL_EMAIL = process.env.NEXT_PUBLIC_PAYPAL_EMAIL
+export const SUPPORT_EMAIL = 'support@aiassetsmarketplace.com'
+export const INFO_EMAIL = 'info@aiassetsmarketplace.com'
+export const PRIVACY_EMAIL = 'privacy@aiassetsmarketplace.com'
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },

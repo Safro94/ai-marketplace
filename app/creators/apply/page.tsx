@@ -36,7 +36,7 @@ export default function CreatorApplicationPage() {
             </Link>{' '}
             and{' '}
             <Link
-              href={ROUTES.privacyPolicy()}
+              href={ROUTES.privacy()}
               className='text-primary underline underline-offset-4'
             >
               Privacy Policy

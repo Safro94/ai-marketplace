@@ -47,6 +47,7 @@ export default async function CreatorsPage({
     })
   }
 
+  const isCreator = !!profile?.isCreator
   const hasPendingApplication =
     profile?.creatorProfile?.creatorApplication?.status ===
     ApplicationStatus.PENDING
@@ -76,12 +77,15 @@ export default async function CreatorsPage({
         </div>
       )}
 
-      <CreatorsHeroSection hasPendingApplication={hasPendingApplication} />
+      <CreatorsHeroSection
+        isCreator={isCreator}
+        hasPendingApplication={hasPendingApplication}
+      />
       <CreatorsBenefitsSection />
       <CreatorsHowItWorksSection />
       <CreatorsTypesSection />
       <CreatorsFAQSection />
-      <CreatorsCTASection />
+      {!isCreator && <CreatorsCTASection />}
     </div>
   )
 }

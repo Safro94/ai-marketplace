@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Slider } from '@/components/ui/slider'
 import { EXPLORE_FITLERS } from '@/lib/constants'
 
@@ -96,10 +97,29 @@ export const FiltersContent: FC<Props> = ({
       </div>
 
       {isLoading ? (
-        <div className='py-4 space-y-4'>
-          <div className='h-4 bg-muted rounded animate-pulse' />
-          <div className='h-4 bg-muted rounded animate-pulse w-3/4' />
-          <div className='h-4 bg-muted rounded animate-pulse w-1/2' />
+        <div className='flex flex-col gap-12'>
+          <div className='h-44 flex flex-col gap-4'>
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+          </div>
+
+          <div className='h-40 flex flex-col gap-4'>
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-10 w-full' />
+            <Skeleton className='h-4 w-full' />
+          </div>
+
+          <div className='h-36 flex flex-col gap-4'>
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-full' />
+          </div>
         </div>
       ) : (
         <Accordion

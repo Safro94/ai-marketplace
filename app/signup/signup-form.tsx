@@ -176,7 +176,7 @@ export const SignupForm = () => {
                     </Link>{' '}
                     and{' '}
                     <Link
-                      href={ROUTES.privacyPolicy()}
+                      href={ROUTES.privacy()}
                       className='text-primary underline underline-offset-4'
                     >
                       privacy policy

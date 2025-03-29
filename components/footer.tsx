@@ -17,11 +17,7 @@ export const Footer = () => {
 
             <div className='flex space-x-4'>
               <Button variant='ghost' size='icon' asChild>
-                <Link
-                  href='https://twitter.com'
-                  target='_blank'
-                  rel='noreferrer'
-                >
+                <a href='https://twitter.com' target='_blank' rel='noreferrer'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -35,15 +31,11 @@ export const Footer = () => {
                     <path d='M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z' />
                   </svg>
                   <span className='sr-only'>Twitter</span>
-                </Link>
+                </a>
               </Button>
 
               <Button variant='ghost' size='icon' asChild>
-                <Link
-                  href='https://github.com'
-                  target='_blank'
-                  rel='noreferrer'
-                >
+                <a href='https://github.com' target='_blank' rel='noreferrer'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -58,7 +50,7 @@ export const Footer = () => {
                     <path d='M9 18c-4.51 2-5-2-7-2' />
                   </svg>
                   <span className='sr-only'>GitHub</span>
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -68,8 +60,6 @@ export const Footer = () => {
             items={[
               { text: 'Explore', link: ROUTES.explore() },
               { text: 'Categories', link: ROUTES.categories() },
-              { text: 'Featured', link: ROUTES.featured() },
-              { text: 'New Releases', link: ROUTES.newReleases() },
             ]}
           />
 
@@ -87,7 +77,7 @@ export const Footer = () => {
             items={[
               { text: 'About', link: ROUTES.about() },
               { text: 'Contact', link: ROUTES.contact() },
-              { text: 'Privacy Policy', link: ROUTES.privacyPolicy() },
+              { text: 'Privacy Policy', link: ROUTES.privacy() },
               { text: 'Terms of Service', link: ROUTES.terms() },
             ]}
           />

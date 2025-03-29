@@ -18,6 +18,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
+import { AssetGridSkeleton } from './asset-grid-skeleton'
 
 interface Props {
   initialCategory?: string
@@ -109,11 +110,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
   }
 
   if (isLoading) {
-    return (
-      <div className='flex justify-center items-center py-12'>
-        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary' />
-      </div>
-    )
+    return <AssetGridSkeleton />
   }
 
   if (error) {
@@ -164,10 +161,10 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
 
       {assets.length > 0 ? (
         <>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6'>
             {assets.map((asset) => (
               <Link href={`${ROUTES.assets()}/${asset.id}`} key={asset.id}>
-                <Card className='h-full overflow-hidden border-border/50 card-hover'>
+                <Card className='overflow-hidden border-border/50 card-hover'>
                   <CardHeader className='p-0'>
                     <div className='relative aspect-[4/3] w-full overflow-hidden'>
                       <Image
