@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { Asset, AssetStatus, Category } from '@prisma/client'
+import { StarIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
-import reviewStar from '../../../public/review-star.svg'
 
 interface Props {
   currentAssetId: string
@@ -89,13 +89,8 @@ const RelatedAssetsList: FC<{ assets: AssetWithCategory[] }> = ({ assets }) => {
               </h3>
 
               <div className='flex items-center text-xs'>
-                <Image
-                  src={reviewStar}
-                  width={16}
-                  height={16}
-                  alt='Review star'
-                  className='mr-1'
-                />
+                <StarIcon className='h-4 w-4 fill-yellow-400 text-yellow-400' />
+
                 <span className='font-medium'>
                   {asset.averageRating.toFixed(1)}
                 </span>

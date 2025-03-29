@@ -131,7 +131,7 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
     setSelectedCategories(initialCategory ? [initialCategory] : [])
     setSelectedUseCases([])
     setSelectedRatings([])
-    setPriceRange([0, 300])
+    setPriceRange([0, 300]) //TODO: use dynamic price
 
     // Clear URL params and navigate to base URL
     if (initialCategory) {
@@ -151,14 +151,13 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
     !!selectedUseCases.length ||
     !!selectedRatings.length ||
     !!priceRange[0] ||
-    priceRange[1] < 300
+    priceRange[1] < 300 //TODO: use dynamic price
 
   return (
     <>
       {/* Desktop filters */}
       <div className='hidden md:block sticky top-20'>
         <FiltersContent
-          initialCategory={initialCategory}
           isLoading={isLoading}
           categories={categories}
           useCases={useCases}
@@ -185,6 +184,7 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
           Filters
           {hasActiveFilters && (
             <span className='ml-2 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-white'>
+              {/* //TODO: use dynamic price */}
               {(initialCategory
                 ? selectedCategories.length - 1
                 : selectedCategories.length) +
@@ -213,7 +213,6 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
             </div>
 
             <FiltersContent
-              initialCategory={initialCategory}
               isLoading={isLoading}
               categories={categories}
               useCases={useCases}

@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, StarIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import reviewStar from '../../public/review-star.svg'
 
 export const FeaturedSection = async () => {
   const featuredAssets = await prisma.asset.findMany({
@@ -105,20 +104,14 @@ export const FeaturedSection = async () => {
                     </div>
 
                     <div className='flex items-center'>
-                      <Image
-                        src={reviewStar}
-                        width={16}
-                        height={16}
-                        alt='Review star'
-                        className='mr-1'
-                      />
+                      <StarIcon className='h-4 w-4 fill-yellow-400 text-yellow-400' />
 
                       <span className='text-sm font-medium'>
                         {asset.averageRating.toFixed(1)}
                       </span>
 
                       <span className='text-xs text-muted-foreground ml-1'>
-                        ({asset.reviewCount})
+                        ({asset.totalReviews})
                       </span>
                     </div>
                   </div>

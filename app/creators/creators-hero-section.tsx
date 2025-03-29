@@ -6,14 +6,10 @@ import Link from 'next/link'
 import { FC } from 'react'
 
 interface Props {
-  isCreator: boolean
   hasPendingApplication: boolean
 }
 
-export const CreatorsHeroSection: FC<Props> = ({
-  isCreator,
-  hasPendingApplication,
-}) => {
+export const CreatorsHeroSection: FC<Props> = ({ hasPendingApplication }) => {
   return (
     <section className='relative py-20 md:py-28 overflow-hidden'>
       <div className='hero-gradient absolute inset-0 z-0 opacity-20'></div>
@@ -29,14 +25,7 @@ export const CreatorsHeroSection: FC<Props> = ({
           </p>
 
           <div className='flex flex-col sm:flex-row gap-4 pt-4'>
-            {isCreator ? (
-              <Button size='lg' asChild>
-                <Link href={ROUTES.creatorDashboard()}>
-                  Go to Creator Dashboard
-                  <ArrowRight className='ml-2 h-4 w-4' />
-                </Link>
-              </Button>
-            ) : hasPendingApplication ? (
+            {hasPendingApplication ? (
               <Card className='p-4 bg-secondary/30'>
                 <CardContent className='p-0'>
                   <p className='text-center'>
@@ -54,7 +43,7 @@ export const CreatorsHeroSection: FC<Props> = ({
               </Button>
             )}
 
-            {!isCreator && !hasPendingApplication && (
+            {!hasPendingApplication && (
               <Button size='lg' variant='outline' asChild>
                 <Link href='#benefits'>Learn More</Link>
               </Button>

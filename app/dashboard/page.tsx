@@ -15,12 +15,11 @@ import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
-import { Clock, Download, FileText, Star } from 'lucide-react'
+import { Clock, Download, FileText, Star, StarIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import reviewStar from '../../public/review-star.svg'
 
 enum TabsEnum {
   ASSETS = 'assets',
@@ -331,12 +330,9 @@ export default async function DashboardPage() {
                           <h4 className='font-medium'>{review.asset.title}</h4>
                           <div className='flex mt-1'>
                             {[1, 2, 3, 4, 5].map((star) => (
-                              <Image
+                              <StarIcon
                                 key={star}
-                                src={reviewStar}
-                                width={16}
-                                height={16}
-                                alt='Review star'
+                                className='h-4 w-4 fill-yellow-400 text-yellow-400'
                               />
                             ))}
                           </div>
@@ -350,7 +346,7 @@ export default async function DashboardPage() {
                       <h5 className='font-medium mb-1'>{review.title}</h5>
 
                       <p className='text-sm text-muted-foreground'>
-                        {review.content}
+                        {review.comment}
                       </p>
                     </div>
                   ))}

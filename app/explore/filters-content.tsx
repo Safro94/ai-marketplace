@@ -14,12 +14,10 @@ import { Slider } from '@/components/ui/slider'
 import { EXPLORE_FITLERS } from '@/lib/constants'
 
 import { Category } from '@prisma/client'
-import Image from 'next/image'
+import { StarIcon } from 'lucide-react'
 import { Dispatch, FC, ReactNode, SetStateAction } from 'react'
-import reviewStar from '../../public/review-star.svg'
 
 interface Props {
-  initialCategory?: string
   categories: Category[]
   useCases: Category[]
   isLoading: boolean
@@ -42,7 +40,6 @@ const RATINGS = [
 ]
 
 export const FiltersContent: FC<Props> = ({
-  initialCategory,
   categories,
   useCases,
   hasActiveFilters,
@@ -77,7 +74,7 @@ export const FiltersContent: FC<Props> = ({
     setSelectedRatings((prev) =>
       prev.includes(ratingId)
         ? prev.filter((id) => id !== ratingId)
-        : [ratingId],
+        : [...prev, ratingId],
     )
   }
 
@@ -226,14 +223,7 @@ export const FiltersContent: FC<Props> = ({
                   htmlFor={`rating-${item.id}`}
                   className='text-sm font-normal cursor-pointer flex items-center'
                 >
-                  <Image
-                    src={reviewStar}
-                    width={16}
-                    height={16}
-                    alt='Review star'
-                    className='mr-1'
-                  />
-
+                  <StarIcon className='h-4 w-4 fill-yellow-400 text-yellow-400 mr-1' />
                   {item.label}
                 </Label>
               </>

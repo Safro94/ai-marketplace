@@ -9,12 +9,12 @@ import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { getServerSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
+import { StarIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
-import reviewStar from '../../../public/review-star.svg'
 import { AssetDownload } from './asset-download'
 import { AssetReviews } from './asset-reviews'
 import { PurchaseOptions } from './purchase-options'
@@ -184,12 +184,7 @@ export default async function AssetPage({
                   </div>
 
                   <div className='flex items-center'>
-                    <Image
-                      src={reviewStar}
-                      width={16}
-                      height={16}
-                      alt='Review star'
-                    />
+                    <StarIcon className='h-4 w-4 fill-yellow-400 text-yellow-400' />
 
                     <span className='text-sm font-medium'>
                       {asset.averageRating.toFixed(1)}

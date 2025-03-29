@@ -13,11 +13,11 @@ import {
 } from '@/components/ui/select'
 import { API_ROUTES, EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
 import { Category, Asset as PrismaAsset, Profile, User } from '@prisma/client'
+import { StarIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
-import reviewStar from '../../public/review-star.svg'
 
 interface Props {
   initialCategory?: string
@@ -182,7 +182,7 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
                     </div>
                   </CardHeader>
 
-                  <CardContent className='p-6'>
+                  <CardContent className='p-4'>
                     <div className='flex items-center justify-between mb-3'>
                       <Badge variant='secondary' className='bg-secondary/80'>
                         {asset.category.name}
@@ -221,19 +221,14 @@ export const AssetGrid: FC<Props> = ({ initialCategory }) => {
                       </div>
 
                       <div className='flex items-center'>
-                        <Image
-                          src={reviewStar}
-                          width={16}
-                          height={16}
-                          alt='Review star'
-                        />
+                        <StarIcon className='h-4 w-4 fill-yellow-400 text-yellow-400' />
 
                         <span className='text-sm font-medium'>
                           {asset.averageRating.toFixed(1)}
                         </span>
 
                         <span className='text-xs text-muted-foreground ml-1'>
-                          ({asset.reviewCount})
+                          ({asset.totalReviews})
                         </span>
                       </div>
                     </div>
