@@ -19,11 +19,12 @@ import { StarIcon } from 'lucide-react'
 import { Dispatch, FC, ReactNode, SetStateAction } from 'react'
 
 interface Props {
-  categories: Category[]
-  useCases: Category[]
+  categories: Category[] | null
+  useCases: { label?: string; id: string | null }[] | null
   isLoading: boolean
   hasActiveFilters: boolean
   priceRange: number[]
+  maxPrice: number
   selectedCategories: string[]
   selectedRatings: string[]
   selectedUseCases: string[]
@@ -54,6 +55,7 @@ export const FiltersContent: FC<Props> = ({
   setPriceRange,
   clearAllFilters,
   isLoading,
+  maxPrice,
 }) => {
   const handleCategoryChange = (categorySlug: string) => {
     setSelectedCategories((prev) =>
@@ -156,46 +158,47 @@ export const FiltersContent: FC<Props> = ({
             </AccordionTrigger>
 
             <AccordionContent>
-              <div className='space-y-4 pt-1'>
+              <div className='space-y-4 px-1'>
                 <Slider
-                  defaultValue={[0, 300]}
-                  max={300}
+                  defaultValue={[priceRange[0], priceRange[1]]}
+                  max={priceRange[1]}
+                  min={0}
                   step={1}
-                  value={priceRange}
+                  value={[priceRange[0], priceRange[1]]}
                   onValueChange={setPriceRange}
                   className='py-4'
                 />
 
-                <div className='flex items-center justify-between'>
-                  <div className='flex items-center space-x-2'>
+                <div className='grid grid-cols-3 items-center justify-between'>
+                  <div className='flex items-center gap-2'>
                     <span className='text-xs text-muted-foreground'>$</span>
                     <Input
                       type='number'
+                      min={0}
+                      max={maxPrice}
                       value={priceRange[0]}
-                      onChange={(e) =>
-                        setPriceRange([
-                          Number.parseInt(e.target.value),
-                          priceRange[1],
-                        ])
-                      }
-                      className='h-8 w-16 text-xs'
+                      onChange={(e) => {
+                        const price = Number.parseInt(e.target.value)
+                        if (price > maxPrice) return
+
+                        setPriceRange([price, priceRange[1]])
+                      }}
+                      className='h-8 text-xs'
                     />
                   </div>
 
-                  <span className='text-xs text-muted-foreground'>to</span>
+                  <span className='text-xs text-muted-foreground text-center'>
+                    to
+                  </span>
 
-                  <div className='flex items-center space-x-2'>
+                  <div className='flex items-center gap-2'>
                     <span className='text-xs text-muted-foreground'>$</span>
                     <Input
                       type='number'
                       value={priceRange[1]}
-                      onChange={(e) =>
-                        setPriceRange([
-                          priceRange[0],
-                          Number.parseInt(e.target.value),
-                        ])
-                      }
-                      className='h-8 w-16 text-xs'
+                      max={priceRange[1]}
+                      disabled
+                      className='h-8 text-xs'
                     />
                   </div>
                 </div>
@@ -212,15 +215,15 @@ export const FiltersContent: FC<Props> = ({
               <>
                 <Checkbox
                   id={`usecase-${item.id}`}
-                  checked={selectedUseCases.includes(item.id)}
-                  onCheckedChange={() => handleUseCaseChange(item.id)}
+                  checked={selectedUseCases.includes(item.id ?? '')}
+                  onCheckedChange={() => handleUseCaseChange(item.id ?? '')}
                 />
 
                 <Label
                   htmlFor={`usecase-${item.id}`}
                   className='text-sm font-normal cursor-pointer'
                 >
-                  {item.name}
+                  {item.label}
                 </Label>
               </>
             )}
@@ -255,13 +258,13 @@ export const FiltersContent: FC<Props> = ({
   )
 }
 
-const Filter = <T extends { id: string }>({
+const Filter = <T extends { id: string | null }>({
   items,
   title,
   value,
   children,
 }: {
-  items: T[]
+  items: T[] | null
   title: string
   value: string
   children: (item: T) => ReactNode
@@ -274,7 +277,7 @@ const Filter = <T extends { id: string }>({
 
       <AccordionContent>
         <div className='space-y-2 pt-1'>
-          {items.map((item) => (
+          {items?.map((item) => (
             <div key={item.id} className='flex items-center space-x-2'>
               {children(item)}
             </div>

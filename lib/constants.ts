@@ -34,9 +34,6 @@ export const API_ROUTES = {
   adminCreatorApplications: () => '/api/admin/creator-applications',
   userProfile: () => '/api/user/profile',
   assetDownload: (assetId: string) => `/api/assets/${assetId}/download`,
-  search: () => `/api/search`,
-  categories: () => `/api/categories`,
-  cases: () => `/api/use-cases`,
   licenses: () => '/api/licenses',
   assets: () => '/api/assets',
   assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
@@ -63,7 +60,6 @@ export enum EXPLORE_PARAMS {
   USE_CASES = 'useCase',
   MIN_RATING = 'minRating',
   MIN_PRICE = 'minPrice',
-  MAX_PRICE = 'maxPrice',
   SORT_BY = 'sortBy',
   PAGE = 'page',
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
+import { AssetGrid } from '../explore/(grid)/asset-grid'
 import { AssetFilters } from '../explore/asset-filters'
-import { AssetGrid } from '../explore/asset-grid'
 import { SearchBar } from './search-bar'
 
 interface SearchPageProps {

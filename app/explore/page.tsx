@@ -1,8 +1,11 @@
+import { toast } from '@/components/ui/toast'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { tryCatch } from '@/lib/utils'
 import type { Metadata } from 'next'
+import { AssetGrid } from './(grid)/asset-grid'
 import { AssetFilters } from './asset-filters'
-import { AssetGrid } from './asset-grid'
+import { getCategories, getExploreAssets, getUseCases } from './explore-utils'
 
 interface Props {
   searchParams: Promise<{ category: string }>
@@ -33,11 +36,56 @@ export default async function ExplorePage({ searchParams }: Props) {
     })
   }
 
+  //       // Add sort option if not already in params
+  //       if (!params.has(EXPLORE_PARAMS.SORT_BY)) {
+  //         params.set(EXPLORE_PARAMS.SORT_BY, sortOption)
+  //       }
+
+  //       // Add initial category if provided and not already in params
+  //       if (initialCategory && !params.has(EXPLORE_PARAMS.CATEGORY)) {
+  //         params.set(EXPLORE_PARAMS.CATEGORY, initialCategory)
+  //       }
+  const { data: assetData, error: assetsError } = await tryCatch(
+    getExploreAssets(searchParams, category?.id),
+  )
+
+  if (assetsError) {
+    toast.error('An error occurred', {
+      description: 'There was an error while fetching the assets',
+    })
+  }
+
+  const { data: categories, error: categoriesError } =
+    await tryCatch(getCategories())
+
+  if (categoriesError) {
+    toast.error('An error occurred', {
+      description: 'There was an error while fetching the categories',
+    })
+  }
+
+  const { data: useCases, error: useCasesError } = await tryCatch(getUseCases())
+
+  if (useCasesError) {
+    toast.error('An error occurred', {
+      description: 'There was an error while fetching the use cases',
+    })
+  }
+
   return (
     <div className='container py-8'>
       <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6'>
         <aside className='w-full md:w-64 lg:w-72 shrink-0'>
-          <AssetFilters initialCategory={category?.slug} />
+          <AssetFilters
+            categories={categories}
+            useCases={useCases}
+            initialCategory={category?.slug}
+            maxPrice={
+              assetData?.assets.length
+                ? Math.max(...assetData?.assets.map((asset) => asset.price))
+                : 0
+            }
+          />
         </aside>
 
         <main className='flex-1'>
@@ -51,7 +99,10 @@ export default async function ExplorePage({ searchParams }: Props) {
             </p>
           </div>
 
-          <AssetGrid initialCategory={category?.slug} />
+          <AssetGrid
+            assets={assetData?.assets}
+            pagination={assetData?.pagination}
+          />
         </main>
       </div>
     </div>

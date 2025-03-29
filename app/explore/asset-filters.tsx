@@ -1,8 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { toast } from '@/components/ui/toast'
-import { API_ROUTES, EXPLORE_PARAMS } from '@/lib/constants'
+import { EXPLORE_PARAMS } from '@/lib/constants'
 import { Category } from '@prisma/client'
 import { X } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -10,21 +9,27 @@ import { FC, useEffect, useState } from 'react'
 import { FiltersContent } from './filters-content'
 
 interface Props {
+  categories: Category[] | null
+  useCases: { label?: string; id: string | null }[] | null
   initialCategory?: string
+  maxPrice: number
 }
 
-export const AssetFilters: FC<Props> = ({ initialCategory }) => {
+export const AssetFilters: FC<Props> = ({
+  categories,
+  useCases,
+  initialCategory,
+  maxPrice,
+}) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [categories, setCategories] = useState<Category[]>([])
-  const [useCases, setUseCases] = useState<Category[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
 
   const [priceRange, setPriceRange] = useState([
-    Number(searchParams.get(EXPLORE_PARAMS.MIN_PRICE) || 0),
-    Number(searchParams.get(EXPLORE_PARAMS.MAX_PRICE) || 300), //TODO: get dynamic max price
+    Number(searchParams.get(EXPLORE_PARAMS.MIN_PRICE)) || 0,
+    maxPrice,
   ])
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
@@ -42,40 +47,6 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
       ? [searchParams.get(EXPLORE_PARAMS.MIN_RATING) as string]
       : [],
   )
-
-  // Fetch categories and use cases from API
-  useEffect(() => {
-    const fetchFilterData = async () => {
-      setIsLoading(true)
-
-      try {
-        const categoriesResponse = await fetch(API_ROUTES.categories())
-
-        if (categoriesResponse.ok) {
-          const categoriesData: Category[] = await categoriesResponse.json()
-          setCategories(categoriesData)
-        }
-
-        const useCasesResponse = await fetch(API_ROUTES.cases())
-
-        if (useCasesResponse.ok) {
-          const useCasesData = await useCasesResponse.json()
-          setUseCases(useCasesData)
-        }
-      } catch (error) {
-        console.error('Error fetching filter data:', error)
-
-        toast.error('Error', {
-          description:
-            'There was an error while fetching the categories and use cases',
-        })
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchFilterData()
-  }, [])
 
   // Update URL when filters change
   useEffect(() => {
@@ -111,12 +82,6 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
       params.delete(EXPLORE_PARAMS.MIN_PRICE)
     }
 
-    if (priceRange[1] < 300) {
-      params.set(EXPLORE_PARAMS.MAX_PRICE, priceRange[1].toString())
-    } else {
-      params.delete(EXPLORE_PARAMS.MAX_PRICE)
-    }
-
     router.push(`?${params.toString()}`)
   }, [
     selectedCategories,
@@ -125,13 +90,14 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
     priceRange,
     router,
     searchParams,
+    maxPrice,
   ])
 
   const clearAllFilters = () => {
     setSelectedCategories(initialCategory ? [initialCategory] : [])
     setSelectedUseCases([])
     setSelectedRatings([])
-    setPriceRange([0, 300]) //TODO: use dynamic price
+    setPriceRange([0, maxPrice])
 
     // Clear URL params and navigate to base URL
     if (initialCategory) {
@@ -151,13 +117,14 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
     !!selectedUseCases.length ||
     !!selectedRatings.length ||
     !!priceRange[0] ||
-    priceRange[1] < 300 //TODO: use dynamic price
+    priceRange[1] < maxPrice
 
   return (
     <>
       {/* Desktop filters */}
       <div className='hidden md:block sticky top-20'>
         <FiltersContent
+          maxPrice={maxPrice}
           isLoading={isLoading}
           categories={categories}
           useCases={useCases}
@@ -184,13 +151,12 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
           Filters
           {hasActiveFilters && (
             <span className='ml-2 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-white'>
-              {/* //TODO: use dynamic price */}
               {(initialCategory
                 ? selectedCategories.length - 1
                 : selectedCategories.length) +
                 selectedUseCases.length +
                 selectedRatings.length +
-                (!!priceRange[0] || priceRange[1] < 300 ? 1 : 0)}
+                (!!priceRange[0] || priceRange[1] < maxPrice ? 1 : 0)}
             </span>
           )}
         </Button>
@@ -213,6 +179,7 @@ export const AssetFilters: FC<Props> = ({ initialCategory }) => {
             </div>
 
             <FiltersContent
+              maxPrice={maxPrice}
               isLoading={isLoading}
               categories={categories}
               useCases={useCases}

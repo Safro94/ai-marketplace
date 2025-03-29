@@ -12,3 +12,10 @@ export interface LicenseOption {
   features: string[]
   price: number
 }
+
+export interface Pagination {
+  page: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
