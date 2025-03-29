@@ -44,7 +44,7 @@ export default async function ModerationPage() {
           <TabsTrigger value='pending'>
             Pending Review ({pendingAssets.length})
           </TabsTrigger>
-          <TabsTrigger value='history'>Moderation History</TabsTrigger>
+          {/* <TabsTrigger value='history'>Moderation History</TabsTrigger> */}
         </TabsList>
 
         <TabsContent value='pending'>
@@ -69,7 +69,8 @@ export default async function ModerationPage() {
                           {format(new Date(asset.createdAt), 'PPP')}
                         </CardDescription>
                       </div>
-                      <Badge variant='outline' className='bg-yellow-50'>
+
+                      <Badge variant='outline' className='border-yellow-300'>
                         Pending Review
                       </Badge>
                     </div>
@@ -129,7 +130,10 @@ export default async function ModerationPage() {
 
                   <CardFooter className='flex justify-between'>
                     <Button variant='outline' asChild>
-                      <Link href={`/assets/${asset.slug}`} target='_blank'>
+                      <Link
+                        href={`${ROUTES.assets()}/${asset.slug}`}
+                        target='_blank'
+                      >
                         View Details
                       </Link>
                     </Button>
@@ -142,13 +146,13 @@ export default async function ModerationPage() {
           )}
         </TabsContent>
 
-        <TabsContent value='history'>
+        {/* <TabsContent value='history'>
           <div className='text-center py-12 bg-muted rounded-lg'>
             <p className='text-muted-foreground'>
               Moderation history will be available in a future update.
             </p>
           </div>
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </div>
   )

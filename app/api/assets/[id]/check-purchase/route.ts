@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession()
 
@@ -13,7 +13,10 @@ export async function GET(
   }
 
   try {
-    const purchased = await checkUserPurchasedAsset(session.user.id, params.id)
+    const purchased = await checkUserPurchasedAsset(
+      session.user.id,
+      (await params).id,
+    )
     return NextResponse.json({ purchased })
   } catch (error) {
     console.error('Error checking purchase:', error)

@@ -6,9 +6,10 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession()
+  const assetId = (await params).id
 
   if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -16,10 +17,7 @@ export async function GET(
 
   try {
     // Check if user has purchased the asset
-    const hasPurchased = await checkUserPurchasedAsset(
-      session.user.id,
-      params.id,
-    )
+    const hasPurchased = await checkUserPurchasedAsset(session.user.id, assetId)
 
     if (!hasPurchased) {
       return NextResponse.json(
@@ -30,7 +28,7 @@ export async function GET(
 
     // Get asset details
     const asset = await prisma.asset.findUnique({
-      where: { id: params.id },
+      where: { id: assetId },
     })
 
     if (!asset) {
@@ -49,7 +47,7 @@ export async function GET(
     // Find the purchase
     const purchase = await prisma.purchase.findFirst({
       where: {
-        assetId: params.id,
+        assetId,
         buyerId: profile.id,
         status: 'COMPLETED',
       },
@@ -68,7 +66,7 @@ export async function GET(
     // Record the download
     await prisma.download.create({
       data: {
-        assetId: params.id,
+        assetId,
         purchaseId: purchase.id,
         userId: profile.id,
         ipAddress: request.headers.get('x-forwarded-for') || 'unknown',

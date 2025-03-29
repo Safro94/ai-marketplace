@@ -20,6 +20,7 @@ import { Menu, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
+import CartButton from './cart-button'
 import { Logo } from './logo'
 import { MobileMenu } from './mobile-menu'
 import { toast } from './ui/toast'
@@ -88,6 +89,7 @@ export const Header = () => {
 
           {user ? (
             <>
+              <CartButton />
               {/* <Notifications /> */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

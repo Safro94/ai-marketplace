@@ -3,10 +3,10 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const assetId = params.id
+    const assetId = (await params).id
 
     const reviews = await prisma.review.findMany({
       where: {
@@ -32,10 +32,10 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const assetId = params.id
+    const assetId = (await params).id
     const { userId, rating, title, comment } = await request.json()
 
     if (!userId || !rating || !title || !comment) {

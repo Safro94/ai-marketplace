@@ -375,7 +375,11 @@ export default async function AssetPage({
               {isPurchased ? (
                 <AssetDownload assetId={asset.id} isPurchased />
               ) : (
-                <PurchaseOptions assetId={asset.id} />
+                <PurchaseOptions
+                  assetId={asset.id}
+                  assetImage={asset.featuredImage}
+                  assetTitle={asset.title}
+                />
               )}
 
               {/* Creator Info (Desktop) */}

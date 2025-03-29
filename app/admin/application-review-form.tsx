@@ -12,6 +12,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { API_ROUTES } from '@/lib/constants'
+import { ApplicationStatus } from '@prisma/client'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
@@ -38,7 +39,7 @@ export const ApplicationReviewForm: FC<Props> = ({ applicationId }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            status: 'APPROVED',
+            status: ApplicationStatus.APPROVED,
             reviewNotes,
           }),
         },

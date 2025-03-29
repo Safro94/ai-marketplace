@@ -4,11 +4,11 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const asset = await prisma.asset.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         category: true,
         creator: {
@@ -43,7 +43,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession()
 
@@ -56,7 +56,7 @@ export async function PATCH(
 
     // Check if user is the creator or an admin
     const asset = await prisma.asset.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         creator: true,
       },
@@ -85,7 +85,7 @@ export async function PATCH(
     }
 
     const updatedAsset = await prisma.asset.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data,
     })
 
@@ -101,7 +101,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession()
 
@@ -112,7 +112,7 @@ export async function DELETE(
   try {
     // Check if user is the creator or an admin
     const asset = await prisma.asset.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         creator: true,
       },
@@ -141,7 +141,7 @@ export async function DELETE(
     }
 
     await prisma.asset.delete({
-      where: { id: params.id },
+      where: { id: (await params).id },
     })
 
     return NextResponse.json({ success: true })

@@ -11,6 +11,7 @@ export const ROUTES = {
   assets: () => '/assets',
   account: () => '/account',
   purchases: () => '/purchases',
+  cart: () => '/cart',
   explore: () => '/explore',
   featured: () => '/featured',
   newReleases: () => '/new-releases',
@@ -42,7 +43,7 @@ export const API_ROUTES = {
   assets: () => '/api/assets',
   assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
   assetsReview: (assetId: string) => `/api/assets/${assetId}/reviews`,
-  assetAdminModeration: (assetId: string) => `/api/admin/moderation/${assetId}`,
+  assetAdminModeration: (assetId: string) => `/api/admin/assets/${assetId}`,
   creatorsApply: () => '/api/creators/apply',
 }
 

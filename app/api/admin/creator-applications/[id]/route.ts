@@ -1,10 +1,11 @@
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { ApplicationStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession()
 
@@ -24,7 +25,9 @@ export async function PATCH(
   try {
     const { status, reviewNotes } = await request.json()
 
-    if (!['APPROVED', 'REJECTED'].includes(status)) {
+    if (
+      ![ApplicationStatus.APPROVED, ApplicationStatus.REJECTED].includes(status)
+    ) {
       return NextResponse.json(
         { error: 'Invalid status. Must be APPROVED or REJECTED' },
         { status: 400 },
@@ -33,7 +36,7 @@ export async function PATCH(
 
     // Get the application
     const application = await prisma.creatorApplication.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         creatorProfile: {
           include: {
@@ -61,7 +64,7 @@ export async function PATCH(
     })
 
     // If approved, update the user's profile to mark them as a creator
-    if (status === 'APPROVED') {
+    if (status === ApplicationStatus.APPROVED) {
       await prisma.profile.update({
         where: { id: application.creatorProfile.profileId },
         data: {

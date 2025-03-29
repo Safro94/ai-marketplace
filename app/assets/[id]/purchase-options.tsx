@@ -4,11 +4,10 @@ import { FavoriteButton } from '@/components/favorite-button'
 import { LoadingButton } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { toast } from '@/components/ui/toast'
+import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
 import { API_ROUTES, LICENSE_TYPE, ROUTES } from '@/lib/constants'
-import { createPurchase } from '@/lib/db/purchases'
 import { LicenseOption } from '@/lib/types'
-import { PurchaseStatus } from '@prisma/client'
 import { ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
@@ -16,11 +15,18 @@ import { LicenseSelector } from './license-selector'
 
 interface Props {
   assetId: string
+  assetTitle: string
+  assetImage: string
 }
 
-export const PurchaseOptions: FC<Props> = ({ assetId }) => {
+export const PurchaseOptions: FC<Props> = ({
+  assetId,
+  assetImage,
+  assetTitle,
+}) => {
   const { user } = useAuth()
   const router = useRouter()
+  const { addItem } = useCart()
 
   const [licenseOptions, setLicenseOptions] = useState<LicenseOption[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -58,7 +64,48 @@ export const PurchaseOptions: FC<Props> = ({ assetId }) => {
     fetchLicenseOptions()
   }, [assetId])
 
-  const handlePurchase = async () => {
+  // const handlePurchase = async () => {
+  //   if (!user) {
+  //     toast.error('Authentication required', {
+  //       description: 'Please log in to purchase this asset.',
+  //     })
+
+  //     router.push(
+  //       `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+  //     )
+  //     return
+  //   }
+
+  //   setIsLoading(true)
+
+  //   try {
+  //     // Create purchase record
+  //     await createPurchase({
+  //       asset: { connect: { id: assetId } },
+  //       buyer: { connect: { userId: user.id } },
+  //       amount: licenseType!.price,
+  //       status: PurchaseStatus.COMPLETED,
+  //     })
+
+  //     toast.success('Purchase successful!', {
+  //       description: 'You now have access to this asset.',
+  //     })
+
+  //     // Refresh the page to show download option
+  //     router.refresh()
+  //   } catch (error) {
+  //     console.error('Purchase error:', error)
+
+  //     toast.error('Purchase failed', {
+  //       description:
+  //         'There was an error processing your purchase. Please try again.',
+  //     })
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
+  const handleAddToCart = () => {
     if (!user) {
       toast.error('Authentication required', {
         description: 'Please log in to purchase this asset.',
@@ -70,33 +117,27 @@ export const PurchaseOptions: FC<Props> = ({ assetId }) => {
       return
     }
 
-    setIsLoading(true)
+    if (!licenseType) return
 
-    try {
-      // Create purchase record
-      await createPurchase({
-        asset: { connect: { id: assetId } },
-        buyer: { connect: { userId: user.id } },
-        amount: licenseType!.price,
-        status: PurchaseStatus.COMPLETED,
+    const selectedOption = licenseOptions.find(
+      (option) => option.licenseId === licenseType?.licenseId,
+    )
+
+    if (!selectedOption) {
+      toast.error('Error', {
+        description: 'No license found',
       })
-
-      toast.success('Purchase successful!', {
-        description: 'You now have access to this asset.',
-      })
-
-      // Refresh the page to show download option
-      router.refresh()
-    } catch (error) {
-      console.error('Purchase error:', error)
-
-      toast.error('Purchase failed', {
-        description:
-          'There was an error processing your purchase. Please try again.',
-      })
-    } finally {
-      setIsLoading(false)
+      return
     }
+
+    addItem({
+      assetId,
+      assetLicenseId: selectedOption.id,
+      title: assetTitle,
+      price: selectedOption.price,
+      licenseName: selectedOption.name,
+      image: assetImage,
+    })
   }
 
   return (
@@ -115,13 +156,13 @@ export const PurchaseOptions: FC<Props> = ({ assetId }) => {
         <LoadingButton
           className='flex-1 mr-2'
           size='lg'
-          onClick={handlePurchase}
-          disabled={isLoading}
+          onClick={handleAddToCart}
+          disabled={!licenseType}
           isLoading={isLoading}
         >
           <span className='flex items-center'>
             <ShoppingCart className='mr-2 h-5 w-5' />
-            Buy Now
+            Add to Cart
           </span>
         </LoadingButton>
 
