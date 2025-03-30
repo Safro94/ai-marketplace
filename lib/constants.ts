@@ -9,6 +9,7 @@ export const ROUTES = {
   resetPassword: () => '/reset-password',
   dashboard: () => '/dashboard',
   assets: () => '/assets',
+  assetsDetail: (id: string) => `/assets/${id}`,
   account: () => '/account',
   purchases: () => '/purchases',
   cart: () => '/cart',

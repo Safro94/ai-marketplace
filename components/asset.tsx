@@ -21,7 +21,7 @@ export const Asset: FC<ExploreAsset> = ({
 }) => {
   return (
     <Card className='overflow-hidden border-0 shadow-none rounded-none'>
-      <Link href={`${ROUTES.assets()}/${id}`} key={id}>
+      <Link href={ROUTES.assetsDetail(id)} key={id}>
         <CardHeader className='p-0'>
           <div className='relative aspect-video w-full overflow-hidden '>
             <Image

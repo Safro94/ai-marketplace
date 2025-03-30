@@ -92,7 +92,9 @@ export default function CartPage() {
                   </div>
 
                   <div className='flex-1 min-w-0'>
-                    <h3 className='font-medium truncate'>{item.title}</h3>
+                    <Link href={ROUTES.assetsDetail(item.assetId)}>
+                      <h3 className='font-medium truncate'>{item.title}</h3>
+                    </Link>
                     <p className='text-sm text-muted-foreground'>
                       {item.licenseName}
                     </p>
