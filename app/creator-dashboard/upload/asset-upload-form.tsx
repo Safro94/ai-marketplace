@@ -5,10 +5,10 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { UploadDropzone } from '@/components/ui/file-upload'
 import {
   Form,
   FormControl,
@@ -24,20 +24,16 @@ import { toast } from '@/components/ui/toast'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AssetStatus } from '@prisma/client'
-import { Upload } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
+import { twMerge } from 'tailwind-merge'
 import { z } from 'zod'
+import { assetUploadSchema } from './asset-upload-schema'
 import { LicensePricing } from './license-pricing'
 
-const formSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters'),
-  description: z.string().min(50, 'Description must be at least 50 characters'),
-  features: z.string().min(10, 'Features must be at least 10 characters'),
-  requirements: z.string().optional(),
-})
+type FormData = z.infer<typeof assetUploadSchema>
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
@@ -66,21 +62,26 @@ const ACCEPTED_IMAGE_TYPES = [
 
 export default function AssetUploadForm() {
   const [isUploading, setIsUploading] = useState(false)
-  const [featuredImage, setFeaturedImage] = useState<string | null>(null)
-  const [galleryImages, setGalleryImages] = useState<string[]>([])
-  const [assetFile, setAssetFile] = useState<string | null>(null)
+  // const [featuredImage, setFeaturedImage] = useState<string | null>(null)
+  // const [galleryImages, setGalleryImages] = useState<string[]>([])
+  // const [assetFile, setAssetFile] = useState<string | null>(null)
   const [licenses, setLicenses] = useState<
     { licenseId: string; price: number }[]
   >([])
-  const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter()
+  const form = useForm<FormData>({
+    resolver: zodResolver(assetUploadSchema),
     defaultValues: {
       title: '',
       description: '',
       features: '',
       requirements: '',
+      featuredImage: '',
+      assetFile: '',
+      galleryImages: [],
+      licenses: [],
+      slug: '',
     },
   })
 
@@ -161,7 +162,8 @@ export default function AssetUploadForm() {
   //   setAssetFile(null)
   // }
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof assetUploadSchema>) => {
+    console.log(values)
     if (!licenses.length) {
       toast.error('License required', {
         description: 'Please set up at least one license type',
@@ -170,7 +172,7 @@ export default function AssetUploadForm() {
       return
     }
 
-    if (!featuredImage) {
+    if (!values.featuredImage) {
       toast.error('Featured image required', {
         description: 'Please upload a featured image for your asset',
       })
@@ -178,7 +180,7 @@ export default function AssetUploadForm() {
       return
     }
 
-    if (!assetFile) {
+    if (!values.assetFile) {
       toast.error('Asset file required', {
         description: 'Please upload your asset file',
       })
@@ -189,23 +191,23 @@ export default function AssetUploadForm() {
     try {
       setIsUploading(true)
 
-      const response = await fetch(API_ROUTES.assets(), {
+      const body: FormData = {
+        ...values,
+        featuredImage: values.featuredImage,
+        galleryImages: values.galleryImages,
+        assetFile: values.assetFile,
+        features: values.features,
+        requirements: values.requirements,
+        slug: values.title.toLowerCase().replace(/\s+/g, '-'),
+        licenses,
+      }
+
+      const response = await fetch(API_ROUTES.assetsUpload(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...values,
-          featuredImage,
-          galleryImages,
-          assetFile,
-          features: values.features.split('\n').filter((f) => f.trim()),
-          requirements: values.requirements
-            ? values.requirements.split('\n').filter((r) => r.trim())
-            : [],
-          slug: values.title.toLowerCase().replace(/\s+/g, '-'),
-          licenses,
-        }),
+        body: JSON.stringify(body),
       })
 
       if (!response.ok) throw new Error('Failed to create asset')
@@ -264,34 +266,31 @@ export default function AssetUploadForm() {
                 </CardHeader>
 
                 <CardContent>
-                  {featuredImage ? (
-                    <div className='relative aspect-video rounded-md overflow-hidden'>
-                      <Image
-                        layout='fill'
-                        objectFit='cover'
-                        src={featuredImage || '/placeholder.svg'}
-                        alt='Featured'
-                        className='w-full h-full'
+                  <Controller
+                    control={form.control}
+                    name='featuredImage'
+                    render={({ field }) => (
+                      <UploadDropzone
+                        {...field}
+                        config={{ cn: twMerge, mode: 'auto' }}
+                        className='ut-button:bg-primary ut-label:text-primary'
+                        endpoint='imageUploader'
+                        onClientUploadComplete={(res) => {
+                          toast.success('File uploaded successfully')
+                          form.setValue('featuredImage', res[0].ufsUrl)
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast.error(
+                            'An error occurred while uploading your file',
+                            {
+                              description: error.message,
+                            },
+                          )
+                        }}
                       />
-                    </div>
-                  ) : (
-                    <div className='aspect-video bg-muted rounded-md flex items-center justify-center'>
-                      <Upload className='h-8 w-8 text-muted-foreground' />
-                    </div>
-                  )}
-                </CardContent>
-
-                <CardFooter>
-                  <Input
-                    type='file'
-                    // variant='outline'
-                    onChange={handleFeaturedAndGalleryImageUpload}
-                    className='w-full'
-                    placeholder={
-                      featuredImage ? 'Change Image' : 'Upload Image'
-                    }
+                    )}
                   />
-                </CardFooter>
+                </CardContent>
               </Card>
 
               <Card>
@@ -303,29 +302,31 @@ export default function AssetUploadForm() {
                 </CardHeader>
 
                 <CardContent>
-                  {assetFile ? (
-                    <div className='p-4 border rounded-md'>
-                      <p className='font-medium'>File uploaded</p>
-                      <p className='text-sm text-muted-foreground mt-1'>
-                        Your asset file is ready for distribution
-                      </p>
-                    </div>
-                  ) : (
-                    <div className='aspect-video bg-muted rounded-md flex items-center justify-center'>
-                      <Upload className='h-8 w-8 text-muted-foreground' />
-                    </div>
-                  )}
-                </CardContent>
-
-                <CardFooter>
-                  <Input
-                    type='button'
-                    // variant='outline'
-                    onChange={handleAssetFileUpload}
-                    className='w-full'
-                    placeholder={assetFile ? 'Replace File' : 'Upload File'}
+                  <Controller
+                    control={form.control}
+                    name='assetFile'
+                    render={({ field }) => (
+                      <UploadDropzone
+                        {...field}
+                        config={{ cn: twMerge, mode: 'auto' }}
+                        className='ut-button:bg-primary ut-label:text-primary'
+                        endpoint='imageUploader'
+                        onClientUploadComplete={(res) => {
+                          toast.success('File uploaded successfully')
+                          form.setValue('assetFile', res[0].ufsUrl)
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast.error(
+                            'An error occurred while uploading your file',
+                            {
+                              description: error.message,
+                            },
+                          )
+                        }}
+                      />
+                    )}
                   />
-                </CardFooter>
+                </CardContent>
               </Card>
             </div>
           </div>
@@ -333,7 +334,7 @@ export default function AssetUploadForm() {
           <div>
             <h3 className='text-lg font-medium mb-2'>Gallery Images</h3>
             <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-              {galleryImages.map((img, index) => (
+              {form.getValues('galleryImages').map((img, index) => (
                 <div
                   key={index}
                   className='relative aspect-video rounded-md overflow-hidden'
@@ -380,22 +381,21 @@ export default function AssetUploadForm() {
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name='features'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Features</FormLabel>
               <FormControl>
-                <Textarea
+                <Input
                   {...field}
-                  className='min-h-[150px]'
                   placeholder='Enter each feature on a new line'
                 />
               </FormControl>
 
               <FormDescription>
-                List the key features of your asset, one per line
+                List the key features of your asset, comma separated
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -417,7 +417,7 @@ export default function AssetUploadForm() {
               </FormControl>
 
               <FormDescription>
-                List any requirements or dependencies, one per line
+                List any requirements or dependencies, comma separated
               </FormDescription>
               <FormMessage />
             </FormItem>

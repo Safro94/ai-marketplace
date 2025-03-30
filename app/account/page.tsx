@@ -54,6 +54,7 @@ export default async function AccountPage() {
         userId: session.user.id,
         name: session.user.name || '',
         avatarUrl: session.user.image || '',
+        email: session.user.email,
       },
     })
   }

@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
-import { formatDate } from '@/lib/utils'
+import { formatDate, getBasePrice } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
 import { Clock, Download, FileText, Star, StarIcon } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -102,6 +102,11 @@ export default async function DashboardPage() {
       asset: {
         include: {
           category: true,
+          assetLicenses: {
+            select: {
+              price: true,
+            },
+          },
         },
       },
     },
@@ -173,7 +178,7 @@ export default async function DashboardPage() {
 
                   <CardFooter className='flex justify-between'>
                     <Button variant='outline' size='sm' asChild>
-                      <Link href={`${ROUTES.assets()}/${purchase.asset.id}`}>
+                      <Link href={ROUTES.assetsDetail(purchase.asset.id)}>
                         View Details
                       </Link>
                     </Button>
@@ -255,52 +260,54 @@ export default async function DashboardPage() {
 
         <TabsContent value={TabsEnum.FAVORITES}>
           <Card>
-            {favorites.length > 0 ? (
+            {!!favorites.length ? (
               <CardContent className='py-6'>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                  {favorites.map((favorite) => (
-                    <Card key={favorite.id} className='overflow-hidden'>
-                      <div className='relative aspect-[4/3] w-full'>
-                        <Image
-                          src={
-                            favorite.asset.featuredImage ||
-                            '/placeholder.svg?height=400&width=600'
-                          }
-                          alt={favorite.asset.title}
-                          fill
-                          className='object-cover'
-                        />
-                      </div>
+                  {favorites.map((favorite) => {
+                    const basePrice = getBasePrice(favorite.asset.assetLicenses)
 
-                      <CardContent className='p-4'>
-                        <Badge variant='secondary' className='mb-2'>
-                          {favorite.asset.category.name}
-                        </Badge>
-
-                        <h3 className='font-medium mb-1'>
-                          {favorite.asset.title}
-                        </h3>
-
-                        <p className='text-sm text-muted-foreground line-clamp-2 mb-4'>
-                          {favorite.asset.description}
-                        </p>
-
-                        <div className='flex justify-between items-center'>
-                          <span className='font-bold'>
-                            ${favorite.asset.price}
-                          </span>
-
-                          <Button size='sm' asChild>
-                            <Link
-                              href={`${ROUTES.assets()}/${favorite.asset.id}`}
-                            >
-                              View Details
-                            </Link>
-                          </Button>
+                    return (
+                      <Card key={favorite.id} className='overflow-hidden'>
+                        <div className='relative aspect-[4/3] w-full'>
+                          <Image
+                            src={
+                              favorite.asset.featuredImage ||
+                              '/placeholder.svg?height=400&width=600'
+                            }
+                            alt={favorite.asset.title}
+                            fill
+                            className='object-cover'
+                          />
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+
+                        <CardContent className='p-4'>
+                          <Badge variant='secondary' className='mb-2'>
+                            {favorite.asset.category.name}
+                          </Badge>
+
+                          <h3 className='font-medium mb-1'>
+                            {favorite.asset.title}
+                          </h3>
+
+                          <p className='text-sm text-muted-foreground line-clamp-2 mb-4'>
+                            {favorite.asset.description}
+                          </p>
+
+                          <div className='flex justify-between items-center'>
+                            <span className='font-bold'>${basePrice}</span>
+
+                            <Button size='sm' asChild>
+                              <Link
+                                href={`${ROUTES.assets()}/${favorite.asset.id}`}
+                              >
+                                View Details
+                              </Link>
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
                 </div>
               </CardContent>
             ) : (

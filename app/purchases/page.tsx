@@ -197,7 +197,7 @@ export default async function PurchasesPage({
                     </Button>
 
                     <Button variant='outline' size='icon' asChild>
-                      <Link href={`${ROUTES.assets()}/${purchase.asset.slug}`}>
+                      <Link href={ROUTES.assetsDetail(purchase.asset.id)}>
                         <ExternalLink className='h-4 w-4' />
                       </Link>
                     </Button>
@@ -262,9 +262,7 @@ export default async function PurchasesPage({
                           </Button>
 
                           <Button size='sm' variant='outline' asChild>
-                            <Link
-                              href={`${ROUTES.assets()}/${purchase.asset.slug}`}
-                            >
+                            <Link href={ROUTES.assetsDetail(purchase.asset.id)}>
                               View Details
                             </Link>
                           </Button>

@@ -131,7 +131,7 @@ export default async function ModerationPage() {
                   <CardFooter className='flex justify-between'>
                     <Button variant='outline' asChild>
                       <Link
-                        href={`${ROUTES.assets()}/${asset.id}`}
+                        href={ROUTES.assetsDetail(asset.id)}
                         target='_blank'
                       >
                         View Details

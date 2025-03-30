@@ -3,10 +3,13 @@ import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/toast'
 import { generateOrganizationJsonLd, siteConfig } from '@/lib/seo-config'
 import { cn } from '@/lib/utils'
+import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import type React from 'react'
+import { extractRouterConfig } from 'uploadthing/server'
+import { fileRouter } from './api/uploadthing/core'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -89,6 +92,16 @@ export default function RootLayout({
           inter.className,
         )}
       >
+        <NextSSRPlugin
+          /**
+           * The `extractRouterConfig` will extract **only** the route configs
+           * from the router to prevent additional information from being
+           * leaked to the client. The data passed to the client is the same
+           * as if you were to fetch `/api/uploadthing` directly.
+           */
+          routerConfig={extractRouterConfig(fileRouter)}
+        />
+
         <Providers>
           <div className='flex min-h-screen flex-col'>
             <Header />

@@ -19,6 +19,11 @@ export const FeaturedSection = async () => {
           user: true,
         },
       },
+      assetLicenses: {
+        select: {
+          price: true,
+        },
+      },
     },
     orderBy: [{ featuredOrder: 'asc' }, { createdAt: 'desc' }],
     take: 4,
@@ -50,7 +55,7 @@ export const FeaturedSection = async () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {featuredAssets.map((asset) => (
-            <Asset key={asset.id} {...asset} />
+            <Asset key={asset.id} asset={asset} />
           ))}
         </div>
       </div>

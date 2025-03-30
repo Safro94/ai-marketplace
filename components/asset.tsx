@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
+import { getBasePrice } from '@/lib/utils'
 import { StarIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -9,16 +10,23 @@ import { FC } from 'react'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
 import { FavoriteButton } from './favorite-button'
 
-export const Asset: FC<ExploreAsset> = ({
-  id,
-  featuredImage,
-  title,
-  category,
-  price,
-  creator,
-  averageRating,
-  totalReviews,
-}) => {
+interface Props {
+  asset: ExploreAsset
+}
+
+export const Asset: FC<Props> = ({ asset }) => {
+  const basePrice = getBasePrice(asset)
+
+  const {
+    id,
+    featuredImage,
+    title,
+    category,
+    creator,
+    averageRating,
+    totalReviews,
+  } = asset
+
   return (
     <Card className='overflow-hidden border-0 shadow-none rounded-none'>
       <Link href={ROUTES.assetsDetail(id)} key={id}>
@@ -52,7 +60,9 @@ export const Asset: FC<ExploreAsset> = ({
               </span>
             </div>
 
-            <span className='text-lg font-bold'>${price}</span>
+            {basePrice && (
+              <span className='text-lg font-bold'>${basePrice.toFixed(2)}</span>
+            )}
           </div>
 
           <div className='flex items-center justify-between mb-3'>
@@ -81,7 +91,7 @@ export const Asset: FC<ExploreAsset> = ({
       <AssetAddToCartButton
         id={id}
         title={title}
-        price={price}
+        price={basePrice}
         featuredImage={featuredImage}
         isLoading={false}
         variant='outline'

@@ -21,7 +21,7 @@ interface Props {
     amount: number
     asset: {
       title: string
-      slug: string
+      id: string
       assetFile: string
     }
     assetLicense: {
@@ -70,7 +70,7 @@ export const LicenseCard: FC<Props> = ({ purchase }) => {
 
       <CardFooter className='flex justify-between'>
         <Button variant='outline' size='sm' asChild>
-          <Link href={`${ROUTES.assets()}/${purchase.asset.slug}`}>
+          <Link href={ROUTES.assetsDetail(purchase.asset.id)}>
             <ExternalLink className='h-4 w-4 mr-2' />
             View Asset
           </Link>

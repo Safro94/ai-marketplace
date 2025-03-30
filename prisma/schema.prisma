@@ -108,10 +108,7 @@ model Asset {
   featuredImage   String
   galleryImages   String[]
   assetFile       String
-  price           Float
   status          AssetStatus @default(PENDING_REVIEW)
-  standardPrice   Float
-  extendedPrice   Float?
   categoryId      String
   category        Category    @relation(fields: [categoryId], references: [id])
   useCase         String?

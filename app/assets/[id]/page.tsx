@@ -8,7 +8,7 @@ import { checkUserPurchasedAsset } from '@/lib/db/purchases'
 import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { getServerSession } from '@/lib/session'
-import { formatDate } from '@/lib/utils'
+import { formatDate, getBasePrice } from '@/lib/utils'
 import { StarIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -45,12 +45,12 @@ export async function generateMetadata({
     title: asset.title,
     description: asset.description,
     alternates: {
-      canonical: `/assets/${id}`,
+      canonical: ROUTES.assetsDetail(id),
     },
     openGraph: {
       title: asset.title,
       description: asset.description,
-      url: `${ROUTES.assets()}/${id}`,
+      url: ROUTES.assetsDetail(id),
       images: [
         {
           url: asset.featuredImage,
@@ -98,6 +98,12 @@ export default async function AssetPage({
         },
         take: 5,
       },
+      assetLicenses: {
+        include: {
+          license: true,
+        },
+        take: 1, // Just to get the base price
+      },
     },
   })
 
@@ -118,6 +124,8 @@ export default async function AssetPage({
     ? asset.requirements
     : JSON.parse((asset.requirements as string) || '[]')
 
+  const basePrice = getBasePrice(asset.assetLicenses)
+
   return (
     <>
       <Script
@@ -129,7 +137,7 @@ export default async function AssetPage({
               id: asset.id,
               title: asset.title,
               description: asset.description,
-              price: asset.price,
+              price: basePrice ?? 0,
               image: asset.featuredImage,
               category: asset.category.name,
               rating: asset.averageRating,
