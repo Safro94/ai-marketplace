@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Asset" ADD COLUMN     "basePrice" DOUBLE PRECISION NOT NULL DEFAULT 0;

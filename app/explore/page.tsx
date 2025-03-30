@@ -1,7 +1,7 @@
 import { toast } from '@/components/ui/toast'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
-import { getBasePrice, tryCatch } from '@/lib/utils'
+import { tryCatch } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { AssetGrid } from './(grid)/asset-grid'
 import { AssetFilters } from './asset-filters'
@@ -82,11 +82,7 @@ export default async function ExplorePage({ searchParams }: Props) {
             initialCategory={category?.slug}
             maxPrice={
               assetData?.assets.length
-                ? Math.max(
-                    ...assetData?.assets.map(
-                      (asset) => getBasePrice(asset) ?? 0,
-                    ),
-                  )
+                ? Math.max(...assetData?.assets.map((asset) => asset.basePrice))
                 : 0
             }
           />

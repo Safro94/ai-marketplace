@@ -1,4 +1,3 @@
-import { ExploreAsset } from '@/lib/types'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { HEADER_LINKS, ROUTES } from './constants'
@@ -40,14 +39,4 @@ export async function tryCatch<T, E = Error>(promise: Promise<T>) {
     console.error(error)
     return { data: null, error: error as E }
   }
-}
-
-// Helper function to get the base price of an asset
-export const getBasePrice = (assetLicenses: ExploreAsset['assetLicenses']) => {
-  // Otherwise calculate from assetLicenses
-  if (!!assetLicenses?.length) {
-    return Math.min(...assetLicenses.map((license) => license.price))
-  }
-
-  return null
 }

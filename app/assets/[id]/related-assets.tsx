@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { ExploreAsset } from '@/lib/types'
-import { getBasePrice } from '@/lib/utils'
 import { AssetStatus } from '@prisma/client'
 import { StarIcon } from 'lucide-react'
 import Image from 'next/image'
@@ -28,11 +27,6 @@ export const RelatedAssets: FC<Props> = async ({
     },
     include: {
       category: true,
-      assetLicenses: {
-        select: {
-          price: true,
-        },
-      },
     },
     orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
     take: 3,
@@ -47,11 +41,6 @@ export const RelatedAssets: FC<Props> = async ({
       },
       include: {
         category: true,
-        assetLicenses: {
-          select: {
-            price: true,
-          },
-        },
       },
       orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
       take: 3,
@@ -69,8 +58,6 @@ const RelatedAssetsList: FC<{ assets: Omit<ExploreAsset, 'creator'>[] }> = ({
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
       {assets.map((asset) => {
-        const basePrice = getBasePrice(asset.assetLicenses)
-
         return (
           <Link href={ROUTES.assetsDetail(asset.id)} key={asset.id}>
             <Card className='h-full overflow-hidden border-border/50 card-hover'>
@@ -97,7 +84,7 @@ const RelatedAssetsList: FC<{ assets: Omit<ExploreAsset, 'creator'>[] }> = ({
                     {asset.category.name}
                   </Badge>
 
-                  <span className='text-sm font-bold'>${basePrice}</span>
+                  <span className='text-sm font-bold'>${asset.basePrice}</span>
                 </div>
 
                 <h3 className='text-sm font-semibold mb-1 line-clamp-1'>

@@ -2,7 +2,6 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
-import { getBasePrice } from '@/lib/utils'
 import { StarIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,23 +9,16 @@ import { FC } from 'react'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
 import { FavoriteButton } from './favorite-button'
 
-interface Props {
-  asset: ExploreAsset
-}
-
-export const Asset: FC<Props> = ({ asset }) => {
-  const basePrice = getBasePrice(asset)
-
-  const {
-    id,
-    featuredImage,
-    title,
-    category,
-    creator,
-    averageRating,
-    totalReviews,
-  } = asset
-
+export const Asset: FC<ExploreAsset> = ({
+  id,
+  featuredImage,
+  title,
+  category,
+  creator,
+  averageRating,
+  totalReviews,
+  basePrice,
+}) => {
   return (
     <Card className='overflow-hidden border-0 shadow-none rounded-none'>
       <Link href={ROUTES.assetsDetail(id)} key={id}>

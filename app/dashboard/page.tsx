@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
-import { formatDate, getBasePrice } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
 import { Clock, Download, FileText, Star, StarIcon } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -102,11 +102,6 @@ export default async function DashboardPage() {
       asset: {
         include: {
           category: true,
-          assetLicenses: {
-            select: {
-              price: true,
-            },
-          },
         },
       },
     },
@@ -264,8 +259,6 @@ export default async function DashboardPage() {
               <CardContent className='py-6'>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                   {favorites.map((favorite) => {
-                    const basePrice = getBasePrice(favorite.asset.assetLicenses)
-
                     return (
                       <Card key={favorite.id} className='overflow-hidden'>
                         <div className='relative aspect-[4/3] w-full'>
@@ -294,7 +287,9 @@ export default async function DashboardPage() {
                           </p>
 
                           <div className='flex justify-between items-center'>
-                            <span className='font-bold'>${basePrice}</span>
+                            <span className='font-bold'>
+                              ${favorite.asset.basePrice}
+                            </span>
 
                             <Button size='sm' asChild>
                               <Link

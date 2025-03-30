@@ -129,12 +129,6 @@ export const getExploreAssets = async (
             user: true,
           },
         },
-        assetLicenses: {
-          include: {
-            license: true,
-          },
-          take: 1, // Just to get the base price
-        },
       },
       orderBy,
       skip,

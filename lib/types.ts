@@ -23,12 +23,8 @@ export interface Pagination {
 }
 
 export interface ExploreAsset extends Asset {
-  basePrice?: number | null
   category: Category
   creator: Profile & {
     user: User
   }
-  assetLicenses: {
-    price: number
-  }[]
 }

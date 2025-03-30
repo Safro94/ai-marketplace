@@ -104,6 +104,7 @@ model Asset {
   features        String[]    @db.Text
   requirements    String[]    @db.Text
   creatorId       String
+  basePrice       Float       @default(0)
   creator         Profile     @relation(fields: [creatorId], references: [id])
   featuredImage   String
   galleryImages   String[]

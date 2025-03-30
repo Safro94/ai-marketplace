@@ -8,7 +8,7 @@ import { checkUserPurchasedAsset } from '@/lib/db/purchases'
 import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { getServerSession } from '@/lib/session'
-import { formatDate, getBasePrice } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import { StarIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -98,12 +98,6 @@ export default async function AssetPage({
         },
         take: 5,
       },
-      assetLicenses: {
-        include: {
-          license: true,
-        },
-        take: 1, // Just to get the base price
-      },
     },
   })
 
@@ -124,8 +118,6 @@ export default async function AssetPage({
     ? asset.requirements
     : JSON.parse((asset.requirements as string) || '[]')
 
-  const basePrice = getBasePrice(asset.assetLicenses)
-
   return (
     <>
       <Script
@@ -137,7 +129,7 @@ export default async function AssetPage({
               id: asset.id,
               title: asset.title,
               description: asset.description,
-              price: basePrice ?? 0,
+              price: asset.basePrice,
               image: asset.featuredImage,
               category: asset.category.name,
               rating: asset.averageRating,

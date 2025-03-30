@@ -56,6 +56,7 @@ export async function POST(request: Request) {
     const asset = await prisma.asset.create({
       data: {
         ...assetData,
+        basePrice: Math.min(...licenses.map((license) => license.price)),
         features: features.split(',').filter((f) => f.trim()),
         requirements: requirements
           ? requirements.split(',').filter((r) => r.trim())
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
     })
 
     // Create license options for the asset
-    if (licenses && licenses.length > 0) {
+    if (!!licenses?.length) {
       for (const license of licenses) {
         await prisma.assetLicense.create({
           data: {
