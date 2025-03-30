@@ -39,6 +39,7 @@ const iconMap: Record<string, LucideIcon> = {
   Database: Database,
 }
 
+//TODO: remove page and move categories to explore
 export default async function CategoriesPage() {
   // Fetch categories from the database
   const categories = await prisma.category.findMany({
