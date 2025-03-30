@@ -125,6 +125,8 @@ model Asset {
   totalSales      Int         @default(0)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  featured        Boolean     @default(false)
+  featuredOrder   Int? // Optional field for controlling the order of featured assets
 
   // Relations
   assetLicenses  AssetLicense[]

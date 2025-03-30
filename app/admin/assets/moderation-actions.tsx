@@ -8,12 +8,14 @@ import { AssetStatus } from '@prisma/client'
 import { CheckCircle, XCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
+import { FeatureAssetButton } from './feature-asset-button'
 
 interface Props {
   assetId: string
+  isFeatured: boolean
 }
 
-export const ModerationActions: FC<Props> = ({ assetId }) => {
+export const ModerationActions: FC<Props> = ({ assetId, isFeatured }) => {
   const [notes, setNotes] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
@@ -84,6 +86,10 @@ export const ModerationActions: FC<Props> = ({ assetId }) => {
           <CheckCircle className='h-4 w-4 mr-2' />
           Approve
         </Button>
+
+        <div className='pt-2'>
+          <FeatureAssetButton assetId={assetId} isFeatured={isFeatured} />
+        </div>
       </div>
     </div>
   )

@@ -138,7 +138,10 @@ export default async function ModerationPage() {
                       </Link>
                     </Button>
 
-                    <ModerationActions assetId={asset.id} />
+                    <ModerationActions
+                      assetId={asset.id}
+                      isFeatured={asset.featured}
+                    />
                   </CardFooter>
                 </Card>
               ))}

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { AssetStatus } from '@prisma/client'
 import { ArrowRight, StarIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,14 +12,15 @@ import Link from 'next/link'
 export const FeaturedSection = async () => {
   const featuredAssets = await prisma.asset.findMany({
     where: {
-      status: 'PUBLISHED',
+      status: AssetStatus.PUBLISHED,
+      featured: true,
     },
     include: {
       category: true,
       creator: true,
     },
-    orderBy: [{ sales: 'desc' }, { averageRating: 'desc' }],
-    take: 3,
+    orderBy: [{ featuredOrder: 'asc' }, { createdAt: 'desc' }],
+    take: 4,
   })
 
   if (!featuredAssets.length) return null
