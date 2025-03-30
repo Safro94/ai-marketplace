@@ -42,6 +42,7 @@ export const API_ROUTES = {
   assetAdminFeature: (assetId: string) =>
     `/api/admin/assets/${assetId}/feature`,
   creatorsApply: () => '/api/creators/apply',
+  favorites: () => '/api/favorites',
 }
 
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`

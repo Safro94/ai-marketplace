@@ -1,3 +1,5 @@
+import { Asset, Category, Profile, User } from '@prisma/client'
+
 export enum USER_TYPES {
   ADMIN = 'ADMIN',
   CREATOR = 'CREATOR',
@@ -18,4 +20,11 @@ export interface Pagination {
   totalPages: number
   hasNextPage: boolean
   hasPrevPage: boolean
+}
+
+export interface ExploreAsset extends Asset {
+  category: Category
+  creator: Profile & {
+    user: User
+  }
 }

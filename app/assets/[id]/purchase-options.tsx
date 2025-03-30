@@ -29,7 +29,6 @@ export const PurchaseOptions: FC<Props> = ({
   const { addItem } = useCart()
 
   const [licenseOptions, setLicenseOptions] = useState<LicenseOption[]>([])
-  const [isLoading, setIsLoading] = useState(false)
   const [isLoadingLicenses, setIsLoadingLicenses] = useState(false)
   const [licenseType, setLicenseType] = useState<LicenseOption>()
 
@@ -158,7 +157,7 @@ export const PurchaseOptions: FC<Props> = ({
           size='lg'
           onClick={handleAddToCart}
           disabled={!licenseType}
-          isLoading={isLoading}
+          isLoading={false}
         >
           <span className='flex items-center'>
             <ShoppingCart className='mr-2 h-5 w-5' />

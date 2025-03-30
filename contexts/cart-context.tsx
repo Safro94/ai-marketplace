@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react'
 
-type CartItem = {
+interface CartItem {
   assetId: string
   assetLicenseId: string
   title: string
@@ -18,7 +18,7 @@ type CartItem = {
   image: string
 }
 
-type CartContextType = {
+interface CartContextType {
   items: CartItem[]
   addItem: (item: CartItem) => void
   removeItem: (assetLicenseId: string) => void
@@ -61,7 +61,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setItems(newItems)
 
       toast.success('Cart updated', {
-        description: `Updated license for ${item.title}`,
+        description: `Updated ${item.title}`,
       })
     } else {
       // Add new item
