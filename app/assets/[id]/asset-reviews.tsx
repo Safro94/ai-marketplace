@@ -4,11 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { API_ROUTES } from '@/lib/constants'
 import { formatDate } from '@/lib/utils'
 import { Review as PrismaReview } from '@prisma/client'
 import { StarIcon } from 'lucide-react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { ReviewForm } from './review-form'
 
 interface Review extends PrismaReview {
@@ -20,51 +19,15 @@ interface Review extends PrismaReview {
 
 interface Props {
   assetId: string
-  initialReviews?: Review[]
+  reviews: Review[]
+  isPurchased: boolean
 }
 
-export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
-  const [reviews, setReviews] = useState<Review[]>(initialReviews || [])
+export const AssetReviews: FC<Props> = ({ assetId, reviews, isPurchased }) => {
   const [visibleReviews, setVisibleReviews] = useState(3)
-  const [loading, setLoading] = useState(!initialReviews?.length || false)
-
-  // Fetch reviews if not provided initially
-  useEffect(() => {
-    if (!initialReviews?.length) {
-      const fetchReviews = async () => {
-        try {
-          const response = await fetch(API_ROUTES.assetsReview(assetId))
-
-          if (response.ok) {
-            const data = await response.json()
-            setReviews(data)
-          }
-        } catch (error) {
-          console.error('Error fetching reviews:', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-
-      fetchReviews()
-    }
-  }, [assetId, initialReviews])
 
   const loadMoreReviews = () => {
     setVisibleReviews(reviews.length)
-  }
-
-  const handleReviewSubmitted = async () => {
-    // Refresh reviews after a new one is submitted
-    try {
-      const response = await fetch(API_ROUTES.assetsReview(assetId))
-      if (response.ok) {
-        const data = await response.json()
-        setReviews(data)
-      }
-    } catch (error) {
-      console.error('Error refreshing reviews:', error)
-    }
   }
 
   // Calculate rating distribution
@@ -79,20 +42,15 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
       ? reviews.reduce((acc, review) => acc + review.rating, 0) / totalReviews
       : 0
 
-  if (loading) {
-    return (
-      <div className='flex justify-center py-8'>
-        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
-      </div>
-    )
-  }
-
   return (
     <div className='space-y-8'>
       <div className='grid  md:grid-cols-2 gap-8'>
         <div>
           <div className='flex items-center space-x-4 mb-6'>
-            <div className='text-4xl font-bold'>{averageRating.toFixed(1)}</div>
+            <span className='text-4xl font-bold'>
+              {averageRating.toFixed(1)}
+            </span>
+
             <div>
               <div className='flex'>
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -222,13 +180,12 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
         )}
       </div>
 
-      <div className='mt-8 pt-8 border-t'>
-        <h3 className='text-xl font-semibold mb-4'>Write a Review</h3>
-        <ReviewForm
-          assetId={assetId}
-          onReviewSubmitted={handleReviewSubmitted}
-        />
-      </div>
+      {isPurchased && (
+        <div className='mt-8 pt-8 border-t'>
+          <h3 className='text-xl font-semibold mb-4'>Write a Review</h3>
+          <ReviewForm assetId={assetId} />
+        </div>
+      )}
     </div>
   )
 }

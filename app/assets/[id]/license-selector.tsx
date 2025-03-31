@@ -1,5 +1,6 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -85,7 +86,10 @@ export const LicenseSelector: FC<Props> = ({
 
     return (
       <div className='space-y-4'>
-        <h2 className='text-xl font-semibold'>License</h2>
+        <div className='flex justify-between'>
+          <h2 className='text-xl font-semibold'>License</h2>
+          <Badge variant='outline'>non-refundable</Badge>
+        </div>
 
         <Card>
           <CardHeader>
@@ -114,9 +118,12 @@ export const LicenseSelector: FC<Props> = ({
 
   return (
     <div className='space-y-4'>
-      <h2 className='text-xl font-semibold'>Choose a License</h2>
+      <div className='flex justify-between'>
+        <h2 className='text-xl font-semibold'>Choose a License</h2>
+        <Badge variant='outline'>non-refundable</Badge>
+      </div>
 
-      <div className='grid  md:grid-cols-2 gap-4'>
+      <div className='grid md:grid-cols-2 gap-4'>
         {licenseOptions.map((option) => {
           const isExtended = option.licenseId === LICENSE_TYPE.EXTENDED
           const isSelected = selectedLicense === option.id

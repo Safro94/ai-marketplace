@@ -6,6 +6,7 @@ import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from 'embla-carousel-react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
 import {
   ComponentProps,
   createContext,
@@ -125,7 +126,7 @@ const Carousel: FC<ComponentProps<'div'> & CarouselProps> = ({
     <CarouselContext.Provider
       value={{
         carouselRef,
-        api: api,
+        api,
         opts,
         orientation:
           orientation || (opts?.axis === 'y' ? 'vertical' : 'horizontal'),
@@ -154,10 +155,10 @@ const CarouselContent: FC<ComponentProps<'div'>> = ({
   ref,
   ...props
 }) => {
-  const { carouselRef, orientation } = useCarousel()
+  const { carouselRef, orientation, api } = useCarousel()
 
   return (
-    <div ref={carouselRef} className='overflow-hidden'>
+    <div ref={carouselRef} className='overflow-hidden relative'>
       <div
         ref={ref}
         className={cn(
@@ -167,6 +168,24 @@ const CarouselContent: FC<ComponentProps<'div'>> = ({
         )}
         {...props}
       />
+
+      <div className='flex items-center justify-center gap-2 border-0 absolute left-0 right-0 bottom-[1.6rem]'>
+        {api?.scrollSnapList().map((item, i) => {
+          return (
+            <Button
+              key={`${item}-${i}`}
+              variant='ghost'
+              onClick={() => {
+                api.scrollTo(i, true)
+              }}
+              className={cn(
+                'transition-all h-1.5 p-0 w-12 bg-black hover:bg-primary',
+                i === api.selectedScrollSnap() && 'bg-primary',
+              )}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -210,7 +229,7 @@ const CarouselPrevious: FC<ComponentProps<typeof Button>> = ({
       className={cn(
         'absolute  h-8 w-8 rounded-full',
         orientation === 'horizontal'
-          ? '-left-12 top-1/2 -translate-y-1/2'
+          ? 'left-4 top-1/2 -translate-y-1/2'
           : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
         className,
       )}
@@ -241,7 +260,7 @@ const CarouselNext: FC<ComponentProps<typeof Button>> = ({
       className={cn(
         'absolute h-8 w-8 rounded-full',
         orientation === 'horizontal'
-          ? '-right-12 top-1/2 -translate-y-1/2'
+          ? 'right-4 top-1/2 -translate-y-1/2'
           : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
         className,
       )}
@@ -255,11 +274,45 @@ const CarouselNext: FC<ComponentProps<typeof Button>> = ({
   )
 }
 
+const CarouselThumbnails: FC<
+  ComponentProps<typeof Button> & { images: string[] }
+> = ({ images, ...props }) => {
+  const { api } = useCarousel()
+
+  return (
+    <div className='grid grid-cols-3 gap-2 mt-2'>
+      {images.map((image, i) => (
+        <Button
+          key={`${image}-${i}`}
+          onClick={() => api?.scrollTo(i + 1)}
+          type='button'
+          variant='ghost'
+          className='h-fit p-0'
+          {...props}
+        >
+          <div className='relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border/50'>
+            <Image
+              src={image || '/placeholder.svg?height=300&width=400'}
+              alt={`${image} preview ${i + 1}`}
+              fill
+              className={cn(
+                'object-cover transition-all hover:opacity-100',
+                api?.selectedScrollSnap() !== i + 1 && 'opacity-50',
+              )}
+            />
+          </div>
+        </Button>
+      ))}
+    </div>
+  )
+}
+
 export {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselThumbnails,
   type CarouselApi,
 }

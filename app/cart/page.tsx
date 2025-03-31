@@ -41,7 +41,7 @@ export default function CartPage() {
     // For the MVP, we'll just simulate a successful checkout
     setTimeout(() => {
       clearCart()
-      router.push('/purchases')
+      router.push(ROUTES.purchases())
     }, 2000)
   }
 
@@ -79,7 +79,7 @@ export default function CartPage() {
             <CardContent className='space-y-4'>
               {items.map((item) => (
                 <div
-                  key={item.assetLicenseId}
+                  key={`${item.assetId}-${item.assetLicenseId}`}
                   className='flex items-center space-x-4'
                 >
                   <div className='relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0'>
@@ -106,7 +106,7 @@ export default function CartPage() {
                       variant='ghost'
                       size='sm'
                       className='text-red-500'
-                      onClick={() => removeItem(item.assetLicenseId)}
+                      onClick={() => removeItem(item.assetId, item.title)}
                     >
                       <Trash2 className='h-4 w-4' />
                       <span className='sr-only'>Remove</span>

@@ -100,7 +100,6 @@ model Asset {
   title           String
   slug            String      @unique
   description     String      @db.Text
-  longDescription String      @db.Text
   features        String[]    @db.Text
   requirements    String[]    @db.Text
   creatorId       String

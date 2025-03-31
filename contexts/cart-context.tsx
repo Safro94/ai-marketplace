@@ -21,7 +21,7 @@ interface CartItem {
 interface CartContextType {
   items: CartItem[]
   addItem: (item: CartItem) => void
-  removeItem: (assetLicenseId: string) => void
+  removeItem: (assetId: string, title: string) => void
   clearCart: () => void
   totalItems: number
   totalPrice: number
@@ -73,11 +73,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const removeItem = (assetLicenseId: string) => {
-    const newItems = items.filter(
-      (item) => item.assetLicenseId !== assetLicenseId,
-    )
-    setItems(newItems)
+  const removeItem = (assetId: string, title: string) => {
+    // Check if the asset is already in the cart
+    const existingItem = items.find((i) => i.assetId === assetId)
+
+    if (existingItem) {
+      const newItems = items.filter((i) => i.assetId !== assetId)
+      setItems(newItems)
+
+      toast.success('Cart updated', {
+        description: `${title} has been removed from your cart`,
+      })
+    } else {
+      toast.success('Item not found')
+    }
   }
 
   const clearCart = () => {

@@ -87,7 +87,7 @@ export const Asset: FC<ExploreAsset> = ({
       <AssetAddToCartButton
         id={id}
         title={title}
-        price={basePrice}
+        basePrice={basePrice}
         featuredImage={featuredImage}
         isLoading={false}
         variant='outline'

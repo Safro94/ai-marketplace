@@ -4,7 +4,7 @@ import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
 import { LICENSE_TYPE, ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
-import { ShoppingCart } from 'lucide-react'
+import { ShoppingCart, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { ComponentProps, FC } from 'react'
 import { LoadingButton } from './ui/button'
@@ -12,11 +12,11 @@ import { toast } from './ui/toast'
 
 interface Props
   extends Omit<ComponentProps<typeof LoadingButton>, 'id' | 'title'>,
-    Pick<ExploreAsset, 'id' | 'title' | 'price' | 'featuredImage'> {}
+    Pick<ExploreAsset, 'id' | 'title' | 'basePrice' | 'featuredImage'> {}
 
 export const AssetAddToCartButton: FC<Props> = ({
   id,
-  price,
+  basePrice,
   title,
   featuredImage,
   variant = 'default',
@@ -24,9 +24,11 @@ export const AssetAddToCartButton: FC<Props> = ({
 }) => {
   const router = useRouter()
   const { user } = useAuth()
-  const { addItem, items } = useCart()
+  const { addItem, removeItem, items } = useCart()
 
-  const handleAddToCart = () => {
+  const isItemInCart = items.some((item) => item.assetId === id)
+
+  const handleCart = () => {
     if (!user) {
       toast.error('Authentication required', {
         description: 'Please log in to purchase this asset.',
@@ -38,28 +40,30 @@ export const AssetAddToCartButton: FC<Props> = ({
       return
     }
 
+    if (isItemInCart) {
+      removeItem(id, title)
+      return
+    }
+
     addItem({
       assetId: id,
       assetLicenseId: LICENSE_TYPE.STANDARD,
       title: title,
-      price: price,
+      price: basePrice,
       licenseName: 'Standard License',
       image: featuredImage,
     })
   }
 
-  const isDisabled = items.some((item) => item.assetId === id)
-
   return (
-    <LoadingButton
-      variant={variant}
-      onClick={handleAddToCart}
-      size='sm'
-      disabled={isDisabled}
-      {...rest}
-    >
-      <ShoppingCart className='mr-2 h-5 w-5' />
-      {isDisabled ? 'Added to cart' : 'Add to Cart'}
+    <LoadingButton variant={variant} onClick={handleCart} size='sm' {...rest}>
+      {isItemInCart ? (
+        <Trash2 className='mr-2 h-5 w-5' />
+      ) : (
+        <ShoppingCart className='mr-2 h-5 w-5' />
+      )}
+
+      {isItemInCart ? 'Remove from cart' : 'Add to Cart'}
     </LoadingButton>
   )
 }

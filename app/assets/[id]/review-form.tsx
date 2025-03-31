@@ -8,20 +8,21 @@ import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
 import { createReview } from '@/lib/db/reviews'
 import { StarIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 
 interface Props {
   assetId: string
-  onReviewSubmitted?: () => void
 }
 
-export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
+export const ReviewForm: FC<Props> = ({ assetId }) => {
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [title, setTitle] = useState('')
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { user } = useAuth()
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -74,10 +75,7 @@ export const ReviewForm: FC<Props> = ({ assetId, onReviewSubmitted }) => {
       setTitle('')
       setComment('')
 
-      // Notify parent component
-      if (onReviewSubmitted) {
-        onReviewSubmitted()
-      }
+      router.refresh()
     } catch (error) {
       console.error('Review submission error:', error)
 
