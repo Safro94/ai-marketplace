@@ -1,11 +1,12 @@
 import { toast } from '@/components/ui/toast'
 import { ROUTES } from '@/lib/constants'
+import { getCategories } from '@/lib/db/categories'
 import prisma from '@/lib/prisma'
 import { tryCatch } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { AssetGrid } from './(grid)/asset-grid'
 import { AssetFilters } from './asset-filters'
-import { getCategories, getExploreAssets, getUseCases } from './explore-utils'
+import { getExploreAssets, getUseCases } from './explore-utils'
 
 interface Props {
   searchParams: Promise<{ category: string }>

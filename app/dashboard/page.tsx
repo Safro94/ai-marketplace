@@ -135,7 +135,7 @@ export default async function DashboardPage() {
 
         <TabsContent value={TabsEnum.ASSETS}>
           {purchasedAssets.length > 0 ? (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            <div className='grid  md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {purchasedAssets.map((purchase) => (
                 <Card key={purchase.id} className='overflow-hidden'>
                   <div className='relative aspect-[4/3] w-full'>
@@ -257,7 +257,7 @@ export default async function DashboardPage() {
           <Card>
             {!!favorites.length ? (
               <CardContent className='py-6'>
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                <div className='grid  md:grid-cols-2 lg:grid-cols-3 gap-6'>
                   {favorites.map((favorite) => {
                     return (
                       <Card key={favorite.id} className='overflow-hidden'>

@@ -89,7 +89,7 @@ export const AssetReviews: FC<Props> = ({ assetId, initialReviews }) => {
 
   return (
     <div className='space-y-8'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+      <div className='grid  md:grid-cols-2 gap-8'>
         <div>
           <div className='flex items-center space-x-4 mb-6'>
             <div className='text-4xl font-bold'>{averageRating.toFixed(1)}</div>

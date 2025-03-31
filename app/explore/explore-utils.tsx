@@ -2,14 +2,6 @@ import { EXPLORE_PARAMS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { AssetStatus } from '@prisma/client'
 
-export const getCategories = async () => {
-  return await prisma.category.findMany({
-    orderBy: {
-      name: 'asc',
-    },
-  })
-}
-
 export const getUseCases = async () => {
   const useCases = await prisma.asset.findMany({
     where: {

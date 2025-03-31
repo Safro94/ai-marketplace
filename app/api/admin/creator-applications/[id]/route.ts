@@ -55,7 +55,7 @@ export async function PATCH(
 
     // Update application status
     const updatedApplication = await prisma.creatorApplication.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: {
         status,
         reviewedAt: new Date(),

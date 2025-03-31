@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { UploadDropzone } from '@/components/ui/file-upload'
 import {
   Form,
   FormControl,
@@ -19,55 +18,30 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AssetStatus } from '@prisma/client'
-import Image from 'next/image'
+import { AssetStatus, Category } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { twMerge } from 'tailwind-merge'
+import { FC, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { AssetImageUpload } from './asset-image-upload'
 import { assetUploadSchema } from './asset-upload-schema'
 import { LicensePricing } from './license-pricing'
 
 type FormData = z.infer<typeof assetUploadSchema>
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
-const ACCEPTED_FILE_TYPES = [
-  // Documents
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/plain',
-  'text/markdown',
-  // Code & JSON
-  'application/json',
-  'text/javascript',
-  'text/x-python',
-  // Archives
-  'application/zip',
-  'application/x-zip-compressed',
-]
+interface Props {
+  categories: Category[]
+}
 
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/svg+xml',
-  'image/gif',
-  'image/webp',
-]
+// const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
 
-export default function AssetUploadForm() {
+export const AssetUploadForm: FC<Props> = ({ categories }) => {
   const [isUploading, setIsUploading] = useState(false)
-  // const [featuredImage, setFeaturedImage] = useState<string | null>(null)
-  // const [galleryImages, setGalleryImages] = useState<string[]>([])
-  // const [assetFile, setAssetFile] = useState<string | null>(null)
-  const [licenses, setLicenses] = useState<
-    { licenseId: string; price: number }[]
-  >([])
 
   const router = useRouter()
   const form = useForm<FormData>({
@@ -77,94 +51,25 @@ export default function AssetUploadForm() {
       description: '',
       features: '',
       requirements: '',
-      featuredImage: '',
-      assetFile: '',
-      galleryImages: [],
+      // featuredImage: '',
+      // assetFile: '',
+      // galleryImages: [],
+      featuredImage:
+        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      assetFile:
+        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      galleryImages: [
+        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      ],
       licenses: [],
+      categoryId: '',
       slug: '',
     },
   })
 
-  const handleAssetFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-
-      if (file.size > MAX_FILE_SIZE) {
-        toast.error('File too large', {
-          description: `The file size should not exceed ${
-            MAX_FILE_SIZE / (1024 * 1024)
-          }MB`,
-        })
-        return
-      }
-
-      if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
-        toast.error('Invalid file type', {
-          description: 'Please upload a valid file type',
-        })
-        return
-      }
-
-      // setAssetFile(file)
-    }
-  }
-
-  const handleFeaturedAndGalleryImageUpload = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files)
-
-      // Validate each file
-      const validFiles = files.filter((file) => {
-        if (file.size > MAX_IMAGE_SIZE) {
-          toast.error('Image too large', {
-            description: `Image "${file.name}" exceeds ${
-              MAX_IMAGE_SIZE / (1024 * 1024)
-            }MB limit`,
-          })
-
-          return
-        }
-
-        if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-          toast.error('Invalid image type', {
-            description: `Image "${file.name}" is not a supported format`,
-          })
-          return false
-        }
-
-        return true
-      })
-
-      // if (previewImages.length + validFiles.length > 5) {
-      //   toast.error('Too many images', {
-      //     description: 'You can upload a maximum of 5 preview images',
-      //   })
-
-      //   return
-      // }
-
-      // // Create preview URLs
-      // const newPreviewUrls = validFiles.map((file) => URL.createObjectURL(file))
-
-      // setPreviewImages((prev) => [...prev, ...validFiles])
-      // setPreviewUrls((prev) => [...prev, ...newPreviewUrls])
-    }
-  }
-
-  // const removePreviewImage = (index: number) => {
-  //   setPreviewUrls((prev) => prev.filter((_, i) => i !== index))
-  //   setPreviewImageKeys((prev) => prev.filter((_, i) => i !== index))
-  // }
-
-  // const removeAssetFile = () => {
-  //   setAssetFile(null)
-  // }
-
   const onSubmit = async (values: z.infer<typeof assetUploadSchema>) => {
-    console.log(values)
-    if (!licenses.length) {
+    if (!values.licenses.length) {
       toast.error('License required', {
         description: 'Please set up at least one license type',
       })
@@ -199,7 +104,7 @@ export default function AssetUploadForm() {
         features: values.features,
         requirements: values.requirements,
         slug: values.title.toLowerCase().replace(/\s+/g, '-'),
-        licenses,
+        licenses: values.licenses,
       }
 
       const response = await fetch(API_ROUTES.assetsUpload(), {
@@ -256,8 +161,8 @@ export default function AssetUploadForm() {
         <div className='space-y-4'>
           <div>
             <h3 className='text-lg font-medium mb-2'>Asset Files</h3>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-              <Card>
+            <div className='grid md:grid-cols-2 gap-4'>
+              <Card className='grid grid-rows-[max-content_1fr]'>
                 <CardHeader>
                   <CardTitle>Featured Image</CardTitle>
                   <CardDescription>
@@ -266,34 +171,11 @@ export default function AssetUploadForm() {
                 </CardHeader>
 
                 <CardContent>
-                  <Controller
-                    control={form.control}
-                    name='featuredImage'
-                    render={({ field }) => (
-                      <UploadDropzone
-                        {...field}
-                        config={{ cn: twMerge, mode: 'auto' }}
-                        className='ut-button:bg-primary ut-label:text-primary'
-                        endpoint='imageUploader'
-                        onClientUploadComplete={(res) => {
-                          toast.success('File uploaded successfully')
-                          form.setValue('featuredImage', res[0].ufsUrl)
-                        }}
-                        onUploadError={(error: Error) => {
-                          toast.error(
-                            'An error occurred while uploading your file',
-                            {
-                              description: error.message,
-                            },
-                          )
-                        }}
-                      />
-                    )}
-                  />
+                  <AssetImageUpload formField='featuredImage' form={form} />
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className='grid grid-rows-[max-content_1fr]'>
                 <CardHeader>
                   <CardTitle>Asset File</CardTitle>
                   <CardDescription>
@@ -302,30 +184,7 @@ export default function AssetUploadForm() {
                 </CardHeader>
 
                 <CardContent>
-                  <Controller
-                    control={form.control}
-                    name='assetFile'
-                    render={({ field }) => (
-                      <UploadDropzone
-                        {...field}
-                        config={{ cn: twMerge, mode: 'auto' }}
-                        className='ut-button:bg-primary ut-label:text-primary'
-                        endpoint='imageUploader'
-                        onClientUploadComplete={(res) => {
-                          toast.success('File uploaded successfully')
-                          form.setValue('assetFile', res[0].ufsUrl)
-                        }}
-                        onUploadError={(error: Error) => {
-                          toast.error(
-                            'An error occurred while uploading your file',
-                            {
-                              description: error.message,
-                            },
-                          )
-                        }}
-                      />
-                    )}
-                  />
+                  <AssetImageUpload formField='assetFile' form={form} />
                 </CardContent>
               </Card>
             </div>
@@ -333,31 +192,8 @@ export default function AssetUploadForm() {
 
           <div>
             <h3 className='text-lg font-medium mb-2'>Gallery Images</h3>
-            <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-              {form.getValues('galleryImages').map((img, index) => (
-                <div
-                  key={index}
-                  className='relative aspect-video rounded-md overflow-hidden'
-                >
-                  <Image
-                    layout='fill'
-                    objectFit='cover'
-                    src={img || '/placeholder.svg'}
-                    alt={`Gallery ${index + 1}`}
-                    className='w-full h-full'
-                  />
-                </div>
-              ))}
-
-              <Input
-                type='file'
-                // variant='outline'
-                onChange={handleFeaturedAndGalleryImageUpload}
-                className='flex items-center justify-center gap-2 w-fit'
-              />
-              {/* <Upload className='h-4 w-4' />
-                Add Image
-              </Input> */}
+            <div className='flex flex-col gap-4'>
+              <AssetImageUpload formField='galleryImages' form={form} />
             </div>
           </div>
         </div>
@@ -381,15 +217,16 @@ export default function AssetUploadForm() {
           )}
         />
 
-        <Controller
+        <FormField
           control={form.control}
           name='features'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Features</FormLabel>
               <FormControl>
-                <Input
+                <Textarea
                   {...field}
+                  className='min-h-[100px]'
                   placeholder='Enter each feature on a new line'
                 />
               </FormControl>
@@ -424,9 +261,49 @@ export default function AssetUploadForm() {
           )}
         />
 
+        <div>
+          <FormField
+            control={form.control}
+            name='categoryId'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={categories[0].id}
+                    className='flex flex-col gap-2'
+                  >
+                    {categories.map((category) => (
+                      <FormItem
+                        key={category.id}
+                        className='flex items-center gap-2'
+                      >
+                        <FormControl>
+                          <RadioGroupItem value={category.id} />
+                        </FormControl>
+
+                        <FormLabel className='font-normal !mt-0'>
+                          {category.name}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <div className='mt-6'>
           <h3 className='text-lg font-medium mb-4'>License Options</h3>
-          <LicensePricing basePrice={20} onChange={setLicenses} />
+          <LicensePricing
+            basePrice={20}
+            onChange={(licenses) => {
+              form.setValue('licenses', licenses)
+            }}
+          />
         </div>
 
         <div className='pt-4 flex justify-end'>

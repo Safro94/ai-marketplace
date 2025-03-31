@@ -170,7 +170,7 @@ export const AssetLicenseSection: FC<Props> = ({
                 This is how your licensing options will appear to buyers:
               </p>
 
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+              <div className='grid  md:grid-cols-3 gap-4'>
                 {licenses
                   .filter((license) => assetLicenses[license.id]?.enabled)
                   .map((license) => (

@@ -31,7 +31,7 @@ export const CreatorsHowItWorksSection = () => {
           </p>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
+        <div className='grid  md:grid-cols-4 gap-8'>
           {STEPS.map(({ title, description }, i) => (
             <div key={i} className='flex flex-col items-center text-center'>
               <div className='h-12 w-12 rounded-full bg-secondary flex items-center justify-center mb-4 relative'>

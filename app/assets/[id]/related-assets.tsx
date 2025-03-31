@@ -56,7 +56,7 @@ const RelatedAssetsList: FC<{ assets: Omit<ExploreAsset, 'creator'>[] }> = ({
   assets,
 }) => {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+    <div className='grid  md:grid-cols-3 gap-6'>
       {assets.map((asset) => {
         return (
           <Link href={ROUTES.assetsDetail(asset.id)} key={asset.id}>

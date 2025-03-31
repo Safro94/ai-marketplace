@@ -8,6 +8,7 @@ import { ComponentProps, createContext, FC, useContext, useId } from 'react'
 import {
   Controller,
   ControllerProps,
+  FieldError,
   FieldPath,
   FieldValues,
   FormProvider,
@@ -133,18 +134,21 @@ const FormDescription: FC<ComponentProps<'p'>> = ({
   )
 }
 
-const FormMessage: FC<ComponentProps<'p'>> = ({
+const FormMessage: FC<ComponentProps<'p'> & { error?: FieldError }> = ({
   className,
   children,
   ref,
+  error,
   ...props
 }) => {
-  const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message) : children
+  const { error: formFieldError, formMessageId } = useFormField()
+  const body = error
+    ? String(error?.message)
+    : formFieldError
+      ? String(formFieldError?.message)
+      : children
 
-  if (!body) {
-    return null
-  }
+  if (!body) return null
 
   return (
     <p

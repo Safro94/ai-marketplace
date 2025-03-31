@@ -14,7 +14,7 @@ export const CreatorsBenefitsSection = () => {
             worldwide
           </p>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+        <div className='grid  md:grid-cols-3 gap-8'>
           <Card className='bg-background border-border/50'>
             <CardContent className='p-6 flex flex-col items-center text-center'>
               <div className='h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4'>

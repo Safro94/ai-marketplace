@@ -49,7 +49,7 @@ export const CreatorsTypesSection = () => {
           </p>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+        <div className='grid  md:grid-cols-2 gap-8'>
           {TYPES.map(({ title, items }) => (
             <div
               key={title}

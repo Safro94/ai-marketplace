@@ -93,7 +93,7 @@ export default async function CategoriesPage() {
         </p>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+      <div className='grid  md:grid-cols-2 gap-8'>
         {categoriesWithData.map((category) => {
           // Get the icon component or default to MessageSquare
           const IconComponent =

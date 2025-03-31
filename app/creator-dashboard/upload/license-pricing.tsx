@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { API_ROUTES, LICENSE_TYPE } from '@/lib/constants'
 import { CheckCircle } from 'lucide-react'
@@ -25,14 +26,9 @@ type License = {
 interface Props {
   basePrice: number
   onChange: (licenses: { licenseId: string; price: number }[]) => void
-  initialLicenses?: { licenseId: string; price: number }[]
 }
 
-export const LicensePricing: FC<Props> = ({
-  basePrice,
-  onChange,
-  initialLicenses,
-}) => {
+export const LicensePricing: FC<Props> = ({ basePrice, onChange }) => {
   const [licenses, setLicenses] = useState<License[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [offerExtended, setOfferExtended] = useState(false)
@@ -48,25 +44,6 @@ export const LicensePricing: FC<Props> = ({
         if (response.ok) {
           const data = await response.json()
           setLicenses(data)
-
-          // If initialLicenses is provided, use those values
-          if (!!initialLicenses?.length) {
-            const standardLicense = initialLicenses.find(
-              (l) => l.licenseId === LICENSE_TYPE.STANDARD,
-            )
-            const extendedLicense = initialLicenses.find(
-              (l) => l.licenseId === LICENSE_TYPE.EXTENDED,
-            )
-
-            if (standardLicense) {
-              setStandardPrice(standardLicense.price)
-            }
-
-            if (extendedLicense) {
-              setExtendedPrice(extendedLicense.price)
-              setOfferExtended(true)
-            }
-          }
         }
       } catch (error) {
         console.error('Error fetching licenses:', error)
@@ -76,15 +53,12 @@ export const LicensePricing: FC<Props> = ({
     }
 
     fetchLicenses()
-  }, [initialLicenses])
+  }, [])
 
   useEffect(() => {
-    // Update standard price when base price changes and no initialLicenses
-    if (!initialLicenses) {
-      setStandardPrice(basePrice)
-      setExtendedPrice(basePrice * 5)
-    }
-  }, [basePrice, initialLicenses])
+    setStandardPrice(basePrice)
+    setExtendedPrice(basePrice * 5)
+  }, [basePrice])
 
   useEffect(() => {
     // Notify parent component of license changes
@@ -102,7 +76,7 @@ export const LicensePricing: FC<Props> = ({
     onChange(enabledLicenses)
   }, [standardPrice, extendedPrice, offerExtended, onChange])
 
-  if (isLoading) return <div className='h-20 bg-muted animate-pulse rounded' />
+  if (isLoading) return <Skeleton className='h-20 rounded' />
 
   const standardLicense = licenses.find((l) => l.id === LICENSE_TYPE.STANDARD)
   const extendedLicense = licenses.find((l) => l.id === LICENSE_TYPE.EXTENDED)

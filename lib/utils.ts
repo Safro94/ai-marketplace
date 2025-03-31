@@ -40,3 +40,16 @@ export async function tryCatch<T, E = Error>(promise: Promise<T>) {
     return { data: null, error: error as E }
   }
 }
+
+export const formatCurrency = (
+  amount: number,
+  currency: string = 'USD',
+  decimalPrecision: number = 2,
+) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: decimalPrecision,
+    maximumFractionDigits: decimalPrecision,
+  }).format(isNaN(amount) ? 0 : amount)
+}

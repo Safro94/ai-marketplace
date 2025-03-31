@@ -1,5 +1,6 @@
+import { getCategories } from '@/lib/db/categories'
 import type { Metadata } from 'next'
-import AssetUploadForm from './asset-upload-form'
+import { AssetUploadForm } from './asset-upload-form'
 
 export const metadata: Metadata = {
   title: 'Upload Asset | Creator Dashboard',
@@ -10,7 +11,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default function UploadAssetPage() {
+export default async function UploadAssetPage() {
+  const categories = await getCategories()
+
   return (
     <div className='container py-12'>
       <div className='max-w-5xl mx-auto'>
@@ -23,7 +26,7 @@ export default function UploadAssetPage() {
           </p>
         </div>
 
-        <AssetUploadForm />
+        <AssetUploadForm categories={categories} />
 
         <div className='mt-8 text-center text-sm text-muted-foreground'>
           <p>

@@ -57,7 +57,7 @@ export default async function ModerationPage() {
               </p>
             </div>
           ) : (
-            <div className='grid grid-cols-1 gap-6'>
+            <div className='grid gap-6'>
               {pendingAssets.map((asset) => (
                 <Card key={asset.id}>
                   <CardHeader className='pb-2'>
@@ -77,7 +77,7 @@ export default async function ModerationPage() {
                   </CardHeader>
 
                   <CardContent>
-                    <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                    <div className='grid  md:grid-cols-3 gap-6'>
                       <div>
                         {asset.featuredImage ? (
                           <div className='relative aspect-video rounded-md overflow-hidden'>

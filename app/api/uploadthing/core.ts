@@ -5,12 +5,22 @@ import { UploadThingError } from 'uploadthing/server'
 const f = createUploadthing()
 
 export const fileRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
   imageUploader: f({
     'application/json': {
       maxFileCount: 1,
       maxFileSize: '4MB',
     },
+    'application/zip': {},
+    'application/gzip': {},
+    'application/pdf': {},
+    'text/plain': {},
+    'text/markdown': {},
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+      {},
+    //@ts-expect-error types not typed in the lib
+    'application/x-zip-compressed': {},
+    'text/x-python': {},
+    'text/javascript': {},
     image: {
       /**
        * For full list of options and defaults, see the File Route API reference

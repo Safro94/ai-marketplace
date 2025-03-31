@@ -56,14 +56,15 @@ export async function POST(request: Request) {
     const asset = await prisma.asset.create({
       data: {
         ...assetData,
-        basePrice: Math.min(...licenses.map((license) => license.price)),
+        creatorId: profile.id,
+        basePrice: Number(
+          Math.min(...licenses.map((license) => license.price)).toFixed(2),
+        ),
         features: features.split(',').filter((f) => f.trim()),
         requirements: requirements
           ? requirements.split(',').filter((r) => r.trim())
           : [],
-        categoryId: 'cm8td3o8y0000f5dmg21qpri6', //TODO: use selected category
         longDescription: '',
-        creatorId: profile.id,
         status: AssetStatus.PENDING_REVIEW,
         views: 0,
         totalSales: 0,
