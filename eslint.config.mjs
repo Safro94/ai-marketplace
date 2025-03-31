@@ -31,7 +31,7 @@ const eslintConfig = [
     },
     overrides: [
       {
-        files: ['./src/components/ui/**/*.tsx'],
+        files: ['./components/ui/*.tsx'],
         rules: {
           'no-restricted-imports': 'off',
         },

@@ -20,15 +20,19 @@ export const Asset: FC<ExploreAsset> = ({
   basePrice,
 }) => {
   return (
-    <Card className='overflow-hidden border-0 shadow-none rounded-none'>
-      <Link href={ROUTES.assetsDetail(id)} key={id}>
+    <Card className='overflow-hidden border-0 shadow-none rounded-none flex flex-col gap-2 h-[375px] lg:h-[400px]'>
+      <Link
+        href={ROUTES.assetsDetail(id)}
+        key={id}
+        className='flex-1 flex flex-col'
+      >
         <CardHeader className='p-0'>
-          <div className='relative aspect-video w-full overflow-hidden '>
+          <div className='relative w-full overflow-hidden'>
             <Image
+              fill
               src={featuredImage || '/placeholder.svg?height=400&width=600'}
               alt={title}
-              fill
-              className='object-cover transition-all'
+              className='object-cover !max-h-[200px] !relative'
             />
 
             <div className='absolute right-3 top-3'>
@@ -42,25 +46,25 @@ export const Asset: FC<ExploreAsset> = ({
           </div>
         </CardHeader>
 
-        <CardContent className='p-0'>
-          <div className='flex items-center justify-between mb-4'>
-            <div className='flex flex-col'>
-              <h3 className='text-xl font-semibold'>{title}</h3>
+        <CardContent className='p-0 py-2 flex-1 flex flex-col'>
+          <div className='flex justify-between gap-4'>
+            <div>
+              <h3 className='text-xl font-semibold mb-1'>{title}</h3>
 
               <span className='text-sm text-muted-foreground'>
                 By {creator.name || 'Unknown Creator'}
               </span>
             </div>
 
-            {basePrice && (
-              <span className='text-lg font-bold'>${basePrice.toFixed(2)}</span>
-            )}
+            <span className='text-lg font-bold justify-self-end'>
+              ${basePrice.toFixed(2)}
+            </span>
           </div>
 
-          <div className='flex items-center justify-between mb-3'>
+          <div className='flex justify-between mt-auto'>
             <Badge
               variant='secondary'
-              className='bg-secondary/80 rounded-sm px-1'
+              className='bg-secondary/80 rounded-sm w-fit px-1'
             >
               {category.name}
             </Badge>

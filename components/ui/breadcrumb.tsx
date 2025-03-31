@@ -1,7 +1,40 @@
 import { cn } from '@/lib/utils'
 import { Slot } from '@radix-ui/react-slot'
 import { ChevronRight, MoreHorizontal } from 'lucide-react'
-import { ComponentProps, FC } from 'react'
+import { ComponentProps, FC, Fragment } from 'react'
+
+interface Props {
+  items: {
+    text: string
+    link?: string
+  }[]
+}
+
+export const BreadcrumbNavigation: FC<Props> = ({ items }) => {
+  return (
+    <Breadcrumb className='mb-4'>
+      <BreadcrumbList>
+        {items.map((item, i) => {
+          const isLastItem = i === items.length - 1
+
+          return (
+            <Fragment key={i}>
+              <BreadcrumbItem>
+                {isLastItem ? (
+                  <BreadcrumbPage>{item.text}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink href={item.link}>{item.text}</BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+
+              {!isLastItem && <BreadcrumbSeparator />}
+            </Fragment>
+          )
+        })}
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
 
 const Breadcrumb: FC<ComponentProps<'nav'>> = ({ ref, ...props }) => (
   <nav ref={ref} aria-label='breadcrumb' {...props} />

@@ -38,8 +38,6 @@ interface Props {
   categories: Category[]
 }
 
-// const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
-
 export const AssetUploadForm: FC<Props> = ({ categories }) => {
   const [isUploading, setIsUploading] = useState(false)
 
@@ -51,17 +49,9 @@ export const AssetUploadForm: FC<Props> = ({ categories }) => {
       description: '',
       features: '',
       requirements: '',
-      // featuredImage: '',
-      // assetFile: '',
-      // galleryImages: [],
-      featuredImage:
-        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      assetFile:
-        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      galleryImages: [
-        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'https://plus.unsplash.com/premium_photo-1741996431660-3736cb7e238b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
+      featuredImage: '',
+      assetFile: '',
+      galleryImages: [],
       licenses: [],
       categoryId: '',
       slug: '',
@@ -115,7 +105,13 @@ export const AssetUploadForm: FC<Props> = ({ categories }) => {
         body: JSON.stringify(body),
       })
 
-      if (!response.ok) throw new Error('Failed to create asset')
+      if (!response.ok) {
+        toast.error('Error', {
+          description: 'Failed to create asset. Please try again.',
+        })
+
+        return
+      }
 
       const data = await response.json()
 

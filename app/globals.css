@@ -102,7 +102,7 @@ body {
   }
 
   .container {
-    @apply !max-w-none px-12;
+    @apply mx-auto !max-w-screen-2xl px-12;
   }
 }
 
