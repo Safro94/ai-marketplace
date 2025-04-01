@@ -40,7 +40,9 @@ export const AssetDetailsTabs: FC<Props> = ({
       </TabsList>
 
       <TabsContent value={TabsEnum.DESCRIPTION} className='pt-6'>
-        <p className='prose prose-invert max-w-none'>{description}</p>
+        <p className='prose prose-invert max-w-none break-anywhere'>
+          {description}
+        </p>
       </TabsContent>
 
       <TabsContent value={TabsEnum.FEATURES} className='pt-6'>

@@ -27,7 +27,7 @@ export default async function UsersPage() {
   const session = await getServerSession()
 
   if (!session?.user) {
-    redirect('/login?callbackUrl=/admin/users')
+    redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.adminUsers()}`)
   }
 
   // Check if user is an admin
@@ -72,7 +72,7 @@ export default async function UsersPage() {
             </TableHeader>
 
             <TableBody>
-              {users.length === 0 ? (
+              {!users.length ? (
                 <TableRow>
                   <TableCell
                     colSpan={6}

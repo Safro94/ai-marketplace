@@ -54,13 +54,13 @@ export const FeatureAssetButton: FC<Props> = ({ assetId, isFeatured }) => {
   return (
     <Button
       variant='outline'
+      onClick={handleToggleFeatured}
+      disabled={isSubmitting}
       className={
         isFeatured
           ? 'border-yellow-200 bg-yellow-50 text-yellow-600 hover:bg-yellow-100'
-          : 'border-gray-200 hover:bg-gray-50 hover:text-gray-600'
+          : 'border-gray-200 hover:bg-yellow-100 hover:text-yellow-600'
       }
-      onClick={handleToggleFeatured}
-      disabled={isSubmitting}
     >
       <StarIcon
         className={`h-4 w-4 mr-2 ${isFeatured ? 'fill-yellow-500' : ''}`}

@@ -169,23 +169,25 @@ const CarouselContent: FC<ComponentProps<'div'>> = ({
         {...props}
       />
 
-      <div className='flex items-center justify-center gap-2 border-0 absolute left-0 right-0 bottom-[1.6rem]'>
-        {api?.scrollSnapList().map((item, i) => {
-          return (
-            <Button
-              key={`${item}-${i}`}
-              variant='ghost'
-              onClick={() => {
-                api.scrollTo(i, true)
-              }}
-              className={cn(
-                'transition-all h-1.5 p-0 w-12 bg-black hover:bg-primary',
-                i === api.selectedScrollSnap() && 'bg-primary',
-              )}
-            />
-          )
-        })}
-      </div>
+      {api?.scrollSnapList && api.scrollSnapList.length > 1 && (
+        <div className='flex items-center justify-center gap-2 border-0 absolute left-0 right-0 bottom-[1.6rem]'>
+          {api.scrollSnapList().map((item, i) => {
+            return (
+              <Button
+                key={`${item}-${i}`}
+                variant='ghost'
+                onClick={() => {
+                  api.scrollTo(i, true)
+                }}
+                className={cn(
+                  'transition-all h-1.5 p-0 w-12 bg-black hover:bg-primary',
+                  i === api.selectedScrollSnap() && 'bg-primary',
+                )}
+              />
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

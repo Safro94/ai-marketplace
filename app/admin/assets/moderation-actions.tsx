@@ -3,9 +3,10 @@
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
-import { API_ROUTES } from '@/lib/constants'
+import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { AssetStatus } from '@prisma/client'
 import { CheckCircle, XCircle } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 import { FeatureAssetButton } from './feature-asset-button'
@@ -58,7 +59,7 @@ export const ModerationActions: FC<Props> = ({ assetId, isFeatured }) => {
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 w-full'>
       <Textarea
         placeholder='Add moderation notes (optional)'
         value={notes}
@@ -67,6 +68,14 @@ export const ModerationActions: FC<Props> = ({ assetId, isFeatured }) => {
       />
 
       <div className='flex space-x-2'>
+        <FeatureAssetButton assetId={assetId} isFeatured={isFeatured} />
+
+        <Button variant='secondary' asChild>
+          <Link href={ROUTES.assetsDetail(assetId)} target='_blank'>
+            View Details
+          </Link>
+        </Button>
+
         <Button
           variant='outline'
           className='flex-1 border-red-200 hover:bg-red-50 hover:text-red-600'
@@ -86,10 +95,6 @@ export const ModerationActions: FC<Props> = ({ assetId, isFeatured }) => {
           <CheckCircle className='h-4 w-4 mr-2' />
           Approve
         </Button>
-
-        <div className='pt-2'>
-          <FeatureAssetButton assetId={assetId} isFeatured={isFeatured} />
-        </div>
       </div>
     </div>
   )

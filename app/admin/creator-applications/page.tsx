@@ -43,6 +43,9 @@ export default async function CreatorApplicationsPage() {
 
   // Get all creator applications
   const applications = await prisma.creatorApplication.findMany({
+    where: {
+      status: ApplicationStatus.PENDING,
+    },
     include: {
       creatorProfile: {
         include: {

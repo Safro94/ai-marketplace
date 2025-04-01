@@ -13,6 +13,7 @@ import { toast } from './ui/toast'
 interface Props extends ButtonProps {
   assetId: string
   initialFavorited?: boolean
+  showText?: boolean
 }
 
 export const FavoriteButton: FC<Props> = ({
@@ -21,6 +22,7 @@ export const FavoriteButton: FC<Props> = ({
   variant = 'outline',
   size = 'icon',
   className,
+  showText = false,
 }) => {
   const [isFavorited, setIsFavorited] = useState(initialFavorited)
   const [isLoading, setIsLoading] = useState(false)
@@ -33,7 +35,8 @@ export const FavoriteButton: FC<Props> = ({
       if (!user) return
 
       try {
-        const response = await fetch('/api/favorites')
+        const response = await fetch(API_ROUTES.favorites())
+
         if (response.ok) {
           const favorites: Favorite[] = await response.json()
           const isFav = favorites.some((fav) => fav.assetId === assetId)
@@ -108,17 +111,24 @@ export const FavoriteButton: FC<Props> = ({
       disabled={isLoading}
       aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
       className={cn(
-        'hover:text-red-500',
-        isFavorited && 'text-red-500',
+        'group hover:text-[#FF385C]',
+        isFavorited && 'text-[#FF385C]',
         className,
       )}
     >
       <Heart
         className={cn(
-          'h-6 w-6 hover:fill-current',
+          'h-6 w-6 text-black hover:text-[#FF385C] group-hover:fill-[#FF385C]',
           isFavorited && 'fill-current',
+          showText && 'mr-2',
         )}
       />
+
+      {showText && (
+        <span>
+          {isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+        </span>
+      )}
     </Button>
   )
 }

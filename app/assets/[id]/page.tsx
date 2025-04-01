@@ -219,18 +219,6 @@ export default async function AssetPage({
                 </p>
               </CardContent>
             </Card>
-
-            {/* Related Assets */}
-            <div className='!mt-24'>
-              <h2 className='text-2xl font-bold tracking-tight mb-6'>
-                You May Also Like
-              </h2>
-
-              <RelatedAssets
-                currentAssetId={asset.id}
-                categoryId={asset.categoryId}
-              />
-            </div>
           </div>
 
           <div className='space-y-6 lg:sticky lg:top-20'>
@@ -309,6 +297,18 @@ export default async function AssetPage({
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Related Assets */}
+          <div>
+            <h2 className='text-2xl font-bold tracking-tight mb-6'>
+              You May Also Like
+            </h2>
+
+            <RelatedAssets
+              currentAssetId={asset.id}
+              categoryId={asset.categoryId}
+            />
           </div>
         </div>
       </div>

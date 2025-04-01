@@ -1,5 +1,4 @@
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -16,7 +15,6 @@ import { ModerationService } from '@/services/ModerationService'
 import { format } from 'date-fns'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ModerationActions } from './moderation-actions'
 
@@ -86,6 +84,7 @@ export default async function ModerationPage() {
                               alt={asset.title}
                               fill
                               className='object-cover'
+                              priority
                             />
                           </div>
                         ) : (
@@ -128,16 +127,7 @@ export default async function ModerationPage() {
                     </div>
                   </CardContent>
 
-                  <CardFooter className='flex justify-between'>
-                    <Button variant='outline' asChild>
-                      <Link
-                        href={ROUTES.assetsDetail(asset.id)}
-                        target='_blank'
-                      >
-                        View Details
-                      </Link>
-                    </Button>
-
+                  <CardFooter>
                     <ModerationActions
                       assetId={asset.id}
                       isFeatured={asset.featured}

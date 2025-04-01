@@ -83,16 +83,6 @@ export const AssetDownload: FC<Props> = ({ assetId, isPurchased }) => {
     }
   }
 
-  if (isPurchased === null) {
-    return (
-      <Card>
-        <CardContent className='p-6 flex items-center justify-center'>
-          <div className='animate-pulse'>Loading...</div>
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
     <Card>
       <CardHeader>

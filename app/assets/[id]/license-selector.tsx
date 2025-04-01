@@ -10,56 +10,91 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { LICENSE_TYPE } from '@/lib/constants'
+import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from '@/components/ui/toast'
+import { API_ROUTES, LICENSE_TYPE } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
 import { CheckCircle } from 'lucide-react'
-import { FC, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 
 interface Props {
-  isLoading: boolean
+  assetId: string
   licenseOptions: LicenseOption[]
-  onLicenseSelect: (licenseOption: LicenseOption) => void
+  onLicenseSelect: Dispatch<SetStateAction<LicenseOption | undefined>>
+  onLicensesFetch: Dispatch<SetStateAction<LicenseOption[]>>
 }
 
 export const LicenseSelector: FC<Props> = ({
-  isLoading,
+  assetId,
   licenseOptions,
   onLicenseSelect,
+  onLicensesFetch,
 }) => {
   const [selectedLicense, setSelectedLicense] = useState<string | null>(null)
+  const [isLoadingLicenses, setIsLoadingLicenses] = useState(
+    !licenseOptions.length,
+  )
+
+  useEffect(() => {
+    const fetchLicenseOptions = async () => {
+      try {
+        setIsLoadingLicenses(true)
+        const response = await fetch(API_ROUTES.assetsLicenses(assetId))
+
+        if (!response.ok) throw new Error('Failed to fetch license options')
+
+        const data = await response.json()
+        onLicensesFetch(data)
+
+        // Auto-select the standard license if available
+        const standardLicense = data.find(
+          (option: LicenseOption) => option.licenseId === LICENSE_TYPE.STANDARD,
+        )
+
+        if (standardLicense) {
+          onLicenseSelect(standardLicense)
+        }
+      } catch (error) {
+        toast.error('Error', {
+          description: 'Failed to load license options. Please try again.',
+        })
+      } finally {
+        setIsLoadingLicenses(false)
+      }
+    }
+
+    fetchLicenseOptions()
+  }, [assetId, onLicenseSelect, onLicensesFetch])
 
   const handleLicenseSelect = (licenseOption: LicenseOption) => {
     setSelectedLicense(licenseOption.id)
     onLicenseSelect(licenseOption)
   }
 
-  if (isLoading) {
+  if (isLoadingLicenses) {
     return (
       <div className='space-y-4'>
-        <div className='h-8 w-48 bg-muted animate-pulse rounded' />
+        <Skeleton className='h-8 w-48 bg-muted animate-pulse rounded' />
 
-        <div className='grid  md:grid-cols-2 gap-4'>
+        <div className='grid gap-4'>
           {[1, 2].map((i) => (
             <Card key={i} className='opacity-50'>
               <CardHeader>
-                <div className='h-6 w-24 bg-muted animate-pulse rounded mb-2' />
-                <div className='h-4 w-36 bg-muted animate-pulse rounded' />
-                <div className='h-8 w-16 bg-muted animate-pulse rounded mt-2' />
+                <Skeleton className='h-6 w-24 mb-2' />
+                <Skeleton className='h-4 w-36' />
+                <Skeleton className='h-8 w-16 mt-2' />
               </CardHeader>
 
               <CardContent>
                 <div className='space-y-2'>
                   {[1, 2, 3, 4].map((j) => (
-                    <div
-                      key={j}
-                      className='h-4 w-full bg-muted animate-pulse rounded'
-                    />
+                    <Skeleton key={j} className='h-4 w-full ' />
                   ))}
                 </div>
               </CardContent>
 
               <CardFooter>
-                <div className='h-10 w-full bg-muted animate-pulse rounded' />
+                <Skeleton className='h-10 w-full ' />
               </CardFooter>
             </Card>
           ))}
@@ -123,7 +158,7 @@ export const LicenseSelector: FC<Props> = ({
         <Badge variant='outline'>non-refundable</Badge>
       </div>
 
-      <div className='grid md:grid-cols-2 gap-4'>
+      <div className='grid gap-4'>
         {licenseOptions.map((option) => {
           const isExtended = option.licenseId === LICENSE_TYPE.EXTENDED
           const isSelected = selectedLicense === option.id
