@@ -1,12 +1,17 @@
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { toast } from '@/components/ui/toast'
-import { ROUTES } from '@/lib/constants'
-import { getCategories } from '@/lib/db/categories'
+import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { tryCatch } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { AssetGrid } from './(grid)/asset-grid'
 import { AssetFilters } from './asset-filters'
-import { getExploreAssets, getUseCases } from './explore-utils'
+import { ExploreCategoriesSelector } from './explore-categories-selector'
+import {
+  getCategoriesWithCount,
+  getExploreAssets,
+  getUseCases,
+} from './explore-utils'
 
 interface Props {
   searchParams: Promise<{ category: string }>
@@ -29,7 +34,7 @@ export const metadata: Metadata = {
 
 export default async function ExplorePage({ searchParams }: Props) {
   let category
-  const categorySlug = (await searchParams).category
+  const categorySlug = (await searchParams)[EXPLORE_PARAMS.CATEGORY]
 
   if (categorySlug) {
     category = await prisma.category.findUnique({
@@ -37,15 +42,6 @@ export default async function ExplorePage({ searchParams }: Props) {
     })
   }
 
-  //       // Add sort option if not already in params
-  //       if (!params.has(EXPLORE_PARAMS.SORT_BY)) {
-  //         params.set(EXPLORE_PARAMS.SORT_BY, sortOption)
-  //       }
-
-  //       // Add initial category if provided and not already in params
-  //       if (initialCategory && !params.has(EXPLORE_PARAMS.CATEGORY)) {
-  //         params.set(EXPLORE_PARAMS.CATEGORY, initialCategory)
-  //       }
   const { data: assetData, error: assetsError } = await tryCatch(
     getExploreAssets(searchParams, category?.id),
   )
@@ -56,20 +52,19 @@ export default async function ExplorePage({ searchParams }: Props) {
     })
   }
 
-  const { data: categories, error: categoriesError } =
-    await tryCatch(getCategories())
-
-  if (categoriesError) {
-    toast.error('An error occurred', {
-      description: 'There was an error while fetching the categories',
-    })
-  }
-
   const { data: useCases, error: useCasesError } = await tryCatch(getUseCases())
 
   if (useCasesError) {
     toast.error('An error occurred', {
       description: 'There was an error while fetching the use cases',
+    })
+  }
+
+  const { data, error } = await tryCatch(getCategoriesWithCount())
+
+  if (error) {
+    toast.error('An error occurred', {
+      description: 'There was an error while fetching the categories',
     })
   }
 
@@ -83,12 +78,24 @@ export default async function ExplorePage({ searchParams }: Props) {
         <p className='text-muted-foreground'>
           Browse our curated collection of high-quality AI assets
         </p>
+
+        {data?.length && (
+          <ScrollArea className='py-4'>
+            <div className='flex items-center gap-4'>
+              <ExploreCategoriesSelector
+                categories={data}
+                initialCategorySlug={category?.slug}
+              />
+            </div>
+
+            <ScrollBar orientation='horizontal' />
+          </ScrollArea>
+        )}
       </div>
 
       <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6'>
         <aside className='w-full md:w-64 lg:w-72 shrink-0'>
           <AssetFilters
-            categories={categories}
             useCases={useCases}
             initialCategory={category?.slug}
             maxPrice={

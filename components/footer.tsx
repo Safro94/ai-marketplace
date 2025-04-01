@@ -57,10 +57,7 @@ export const Footer = () => {
 
           <Section
             title='Marketplace'
-            items={[
-              { text: 'Explore', link: ROUTES.explore() },
-              { text: 'Categories', link: ROUTES.categories() },
-            ]}
+            items={[{ text: 'Explore', link: ROUTES.explore() }]}
           />
 
           <Section

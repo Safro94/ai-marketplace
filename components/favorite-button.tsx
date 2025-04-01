@@ -119,7 +119,7 @@ export const FavoriteButton: FC<Props> = ({
       <Heart
         className={cn(
           'h-6 w-6 text-black hover:text-[#FF385C] group-hover:fill-[#FF385C]',
-          isFavorited && 'fill-current',
+          isFavorited && 'fill-current text-[#FF385C]',
           showText && 'mr-2',
         )}
       />

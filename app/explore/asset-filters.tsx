@@ -2,21 +2,18 @@
 
 import { Button } from '@/components/ui/button'
 import { EXPLORE_PARAMS } from '@/lib/constants'
-import { Category } from '@prisma/client'
 import { X } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { FiltersContent } from './filters-content'
 
 interface Props {
-  categories: Category[] | null
   useCases: { label?: string; id: string | null }[] | null
   initialCategory?: string
   maxPrice: number
 }
 
 export const AssetFilters: FC<Props> = ({
-  categories,
   useCases,
   initialCategory,
   maxPrice,
@@ -24,19 +21,11 @@ export const AssetFilters: FC<Props> = ({
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [isLoading, setIsLoading] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
-
   const [priceRange, setPriceRange] = useState([
     Number(searchParams.get(EXPLORE_PARAMS.MIN_PRICE)) || 0,
     maxPrice,
   ])
-
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialCategory
-      ? [initialCategory]
-      : searchParams.get(EXPLORE_PARAMS.CATEGORY)?.split(',') || [],
-  )
 
   const [selectedUseCases, setSelectedUseCases] = useState<string[]>(
     searchParams.get(EXPLORE_PARAMS.USE_CASES)?.split(',') || [],
@@ -52,22 +41,15 @@ export const AssetFilters: FC<Props> = ({
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString())
 
-    // Update category param
-    if (!!selectedCategories.length) {
-      params.set(EXPLORE_PARAMS.CATEGORY, selectedCategories.join(','))
-    } else {
-      params.delete(EXPLORE_PARAMS.CATEGORY)
-    }
-
     // Update useCase param
-    if (!!selectedUseCases.length) {
+    if (selectedUseCases.length) {
       params.set(EXPLORE_PARAMS.USE_CASES, selectedUseCases.join(','))
     } else {
       params.delete(EXPLORE_PARAMS.USE_CASES)
     }
 
     // Update rating param
-    if (!!selectedRatings.length) {
+    if (selectedRatings.length) {
       // Extract the numeric value from the rating (e.g., "4-up" -> 4)
       const minRating = selectedRatings[0].split('-')[0]
       params.set(EXPLORE_PARAMS.MIN_RATING, minRating)
@@ -84,7 +66,6 @@ export const AssetFilters: FC<Props> = ({
 
     router.push(`?${params.toString()}`)
   }, [
-    selectedCategories,
     selectedUseCases,
     selectedRatings,
     priceRange,
@@ -94,7 +75,6 @@ export const AssetFilters: FC<Props> = ({
   ])
 
   const clearAllFilters = () => {
-    setSelectedCategories(initialCategory ? [initialCategory] : [])
     setSelectedUseCases([])
     setSelectedRatings([])
     setPriceRange([0, maxPrice])
@@ -111,9 +91,6 @@ export const AssetFilters: FC<Props> = ({
   }
 
   const hasActiveFilters =
-    (initialCategory
-      ? selectedCategories.length > 1
-      : !!selectedCategories.length) ||
     !!selectedUseCases.length ||
     !!selectedRatings.length ||
     !!priceRange[0] ||
@@ -125,15 +102,11 @@ export const AssetFilters: FC<Props> = ({
       <div className='hidden md:block sticky top-20'>
         <FiltersContent
           maxPrice={maxPrice}
-          isLoading={isLoading}
-          categories={categories}
           useCases={useCases}
           hasActiveFilters={hasActiveFilters}
           priceRange={priceRange}
-          selectedCategories={selectedCategories}
           selectedRatings={selectedRatings}
           selectedUseCases={selectedUseCases}
-          setSelectedCategories={setSelectedCategories}
           setSelectedRatings={setSelectedRatings}
           setSelectedUseCases={setSelectedUseCases}
           setPriceRange={setPriceRange}
@@ -151,10 +124,7 @@ export const AssetFilters: FC<Props> = ({
           Filters
           {hasActiveFilters && (
             <span className='ml-2 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-white'>
-              {(initialCategory
-                ? selectedCategories.length - 1
-                : selectedCategories.length) +
-                selectedUseCases.length +
+              {selectedUseCases.length +
                 selectedRatings.length +
                 (!!priceRange[0] || priceRange[1] < maxPrice ? 1 : 0)}
             </span>
@@ -180,15 +150,11 @@ export const AssetFilters: FC<Props> = ({
 
             <FiltersContent
               maxPrice={maxPrice}
-              isLoading={isLoading}
-              categories={categories}
               useCases={useCases}
               hasActiveFilters={hasActiveFilters}
               priceRange={priceRange}
-              selectedCategories={selectedCategories}
               selectedRatings={selectedRatings}
               selectedUseCases={selectedUseCases}
-              setSelectedCategories={setSelectedCategories}
               setSelectedRatings={setSelectedRatings}
               setSelectedUseCases={setSelectedUseCases}
               setPriceRange={setPriceRange}

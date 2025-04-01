@@ -14,7 +14,6 @@ export const ROUTES = {
   purchases: () => '/purchases',
   cart: () => '/cart',
   explore: () => '/explore',
-  categories: () => '/categories',
   creators: () => '/creators',
   creatorsThankYou: () => '/creators/thank-you',
   creatorsApply: () => '/creators/apply',
@@ -55,7 +54,6 @@ export const PRIVACY_EMAIL = 'privacy@aiassetsmarketplace.com'
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },
   { name: 'Explore', href: ROUTES.explore() },
-  { name: 'Categories', href: ROUTES.categories() },
   { name: 'For Creators', href: ROUTES.creators() },
 ]
 

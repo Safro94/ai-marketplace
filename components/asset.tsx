@@ -24,25 +24,23 @@ export const Asset: FC<ExploreAsset> = ({
       <Link
         href={ROUTES.assetsDetail(id)}
         key={id}
-        className='flex-1 flex flex-col'
+        className='flex-1 grid grid-rows-[200px,1fr]'
       >
-        <CardHeader className='p-0'>
-          <div className='relative w-full overflow-hidden'>
-            <Image
-              fill
-              src={featuredImage || '/placeholder.svg?height=400&width=600'}
-              alt={title}
-              className='object-cover !max-h-[200px] !relative'
-            />
+        <CardHeader className='p-0 block relative w-full overflow-hidden'>
+          <Image
+            fill
+            src={featuredImage || '/placeholder.svg?height=400&width=600'}
+            alt={title}
+            className='object-cover !max-h-[200px] !relative'
+          />
 
-            <div className='absolute right-3 top-3'>
-              <FavoriteButton
-                assetId={id}
-                variant='ghost'
-                size='icon'
-                className='z-10 !h-fit !w-fit'
-              />
-            </div>
+          <div className='absolute right-3 top-3'>
+            <FavoriteButton
+              assetId={id}
+              variant='ghost'
+              size='icon'
+              className='z-10 !h-fit !w-fit'
+            />
           </div>
         </CardHeader>
 
