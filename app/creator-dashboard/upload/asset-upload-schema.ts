@@ -1,3 +1,4 @@
+import { LicenseType } from '@prisma/client'
 import { z } from 'zod'
 
 export const assetUploadSchema = z.object({
@@ -14,7 +15,7 @@ export const assetUploadSchema = z.object({
   categoryId: z.string(),
   licenses: z.array(
     z.object({
-      licenseId: z.string(),
+      licenseId: z.enum([LicenseType.STANDARD, LicenseType.EXTENDED]),
       price: z.number().positive(),
     }),
   ),

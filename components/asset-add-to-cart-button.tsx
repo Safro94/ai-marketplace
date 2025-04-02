@@ -2,8 +2,9 @@
 
 import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
-import { LICENSE_TYPE, ROUTES } from '@/lib/constants'
+import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
+import { LicenseType } from '@prisma/client'
 import { ShoppingCart, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { ComponentProps, FC } from 'react'
@@ -47,7 +48,7 @@ export const AssetAddToCartButton: FC<Props> = ({
 
     addItem({
       assetId: id,
-      assetLicenseId: LICENSE_TYPE.STANDARD,
+      assetLicenseId: LicenseType.STANDARD,
       title: title,
       price: basePrice,
       licenseName: 'Standard License',

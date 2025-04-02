@@ -21,6 +21,8 @@ export const ROUTES = {
   creatorFAQ: () => '/creator-faq',
   creatorDashboard: () => '/creator-dashboard',
   creatorDashboardUpload: () => '/creator-dashboard/upload',
+  creatorDashboardAssetEdit: (assetId: string) =>
+    `/creator-dashboard/assets/${assetId}/edit`,
   creatorDashboardThankYou: () => '/creator-dashboard/thank-you',
   admin: () => '/admin',
   adminUsers: () => '/admin/users',
@@ -33,9 +35,10 @@ export const ROUTES = {
 export const API_ROUTES = {
   adminCreatorApplications: () => '/api/admin/creator-applications',
   userProfile: () => '/api/user/profile',
-  assetDownload: (assetId: string) => `/api/assets/${assetId}/download`,
   licenses: () => '/api/licenses',
   assetsUpload: () => '/api/assets/upload',
+  asset: (assetId: string) => `/api/assets/${assetId}`,
+  assetDownload: (assetId: string) => `/api/assets/${assetId}/download`,
   assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
   assetsReview: (assetId: string) => `/api/assets/${assetId}/reviews`,
   assetAdminModeration: (assetId: string) => `/api/admin/assets/${assetId}`,
@@ -71,9 +74,4 @@ export enum EXPLORE_FITLERS {
   PRICE = 'price',
   USE_CASES = 'use-cases',
   RATINGS = 'ratings',
-}
-
-export enum LICENSE_TYPE {
-  STANDARD = 'standard-license',
-  EXTENDED = 'extended-license',
 }

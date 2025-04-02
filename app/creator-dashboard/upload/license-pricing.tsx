@@ -11,11 +11,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
-import { API_ROUTES, LICENSE_TYPE } from '@/lib/constants'
+import { API_ROUTES } from '@/lib/constants'
+import { LicenseType } from '@prisma/client'
 import { CheckCircle } from 'lucide-react'
 import { FC, useEffect, useState } from 'react'
 
-type License = {
+interface License {
   id: string
   name: string
   description: string
@@ -23,17 +24,24 @@ type License = {
   isDefault: boolean
 }
 
+interface LicenseOption {
+  licenseId: LicenseType
+  price: number
+}
+
 interface Props {
   basePrice: number
-  onChange: (licenses: { licenseId: string; price: number }[]) => void
+  onChange: (licenses: LicenseOption[]) => void
 }
+
+const MULTIPLIER = 5
 
 export const LicensePricing: FC<Props> = ({ basePrice, onChange }) => {
   const [licenses, setLicenses] = useState<License[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [offerExtended, setOfferExtended] = useState(false)
   const [standardPrice, setStandardPrice] = useState(basePrice)
-  const [extendedPrice, setExtendedPrice] = useState(basePrice * 5)
+  const [extendedPrice, setExtendedPrice] = useState(basePrice * MULTIPLIER)
 
   useEffect(() => {
     const fetchLicenses = async () => {
@@ -56,19 +64,14 @@ export const LicensePricing: FC<Props> = ({ basePrice, onChange }) => {
   }, [])
 
   useEffect(() => {
-    setStandardPrice(basePrice)
-    setExtendedPrice(basePrice * 5)
-  }, [basePrice])
-
-  useEffect(() => {
     // Notify parent component of license changes
-    const enabledLicenses = [
-      { licenseId: LICENSE_TYPE.STANDARD, price: standardPrice },
+    const enabledLicenses: LicenseOption[] = [
+      { licenseId: LicenseType.STANDARD, price: standardPrice },
     ]
 
     if (offerExtended) {
       enabledLicenses.push({
-        licenseId: LICENSE_TYPE.EXTENDED,
+        licenseId: LicenseType.EXTENDED,
         price: extendedPrice,
       })
     }
@@ -78,8 +81,8 @@ export const LicensePricing: FC<Props> = ({ basePrice, onChange }) => {
 
   if (isLoading) return <Skeleton className='h-20 rounded' />
 
-  const standardLicense = licenses.find((l) => l.id === LICENSE_TYPE.STANDARD)
-  const extendedLicense = licenses.find((l) => l.id === LICENSE_TYPE.EXTENDED)
+  const standardLicense = licenses.find((l) => l.id === LicenseType.STANDARD)
+  const extendedLicense = licenses.find((l) => l.id === LicenseType.EXTENDED)
 
   if (!standardLicense || !extendedLicense) return null
 
@@ -116,8 +119,10 @@ export const LicensePricing: FC<Props> = ({ basePrice, onChange }) => {
                 className='pl-6 w-24'
                 value={standardPrice.toFixed(2)}
                 onChange={(e) => {
-                  const price = parseFloat(e.target.value)
-                  setStandardPrice(isNaN(price) ? 0 : price)
+                  const value = parseFloat(e.target.value)
+                  const price = isNaN(value) ? 0 : value
+                  setStandardPrice(price)
+                  setExtendedPrice(price * MULTIPLIER)
                 }}
               />
             </div>

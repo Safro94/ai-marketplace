@@ -23,7 +23,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AssetStatus, Category } from '@prisma/client'
+import { Asset, AssetLicense, AssetStatus, Category } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -36,25 +36,28 @@ type FormData = z.infer<typeof assetUploadSchema>
 
 interface Props {
   categories: Category[]
+  initialData?: Asset & {
+    assetLicenses: AssetLicense[]
+  }
 }
 
-export const AssetUploadForm: FC<Props> = ({ categories }) => {
+export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
   const [isUploading, setIsUploading] = useState(false)
 
   const router = useRouter()
   const form = useForm<FormData>({
     resolver: zodResolver(assetUploadSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      features: '',
-      requirements: '',
-      featuredImage: '',
-      assetFile: '',
-      galleryImages: [],
-      licenses: [],
-      categoryId: '',
-      slug: '',
+      title: initialData?.title || '',
+      description: initialData?.description || '',
+      features: initialData?.features.join(',') || '',
+      requirements: initialData?.requirements.join(',') || '',
+      featuredImage: initialData?.featuredImage || '',
+      assetFile: initialData?.assetFile || '',
+      galleryImages: initialData?.galleryImages || [],
+      licenses: initialData?.assetLicenses || [],
+      categoryId: initialData?.categoryId || '',
+      slug: initialData?.slug || '',
     },
   })
 
@@ -97,6 +100,7 @@ export const AssetUploadForm: FC<Props> = ({ categories }) => {
         licenses: values.licenses,
       }
 
+      //TODO: send patch request to update asset if initialData is provided
       const response = await fetch(API_ROUTES.assetsUpload(), {
         method: 'POST',
         headers: {

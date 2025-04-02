@@ -1,12 +1,12 @@
-import { LICENSE_TYPE } from '../constants'
+import { LicenseType } from '@prisma/client'
 import prisma from '../prisma'
 
 export const seedLicenses = async () => {
   await prisma.license.upsert({
-    where: { id: LICENSE_TYPE.STANDARD },
+    where: { id: LicenseType.STANDARD },
     update: {},
     create: {
-      id: LICENSE_TYPE.STANDARD,
+      id: LicenseType.STANDARD,
       name: 'Standard License',
       description: 'For personal use or single commercial project',
       features: [
@@ -20,10 +20,10 @@ export const seedLicenses = async () => {
   })
 
   await prisma.license.upsert({
-    where: { id: LICENSE_TYPE.EXTENDED },
+    where: { id: LicenseType.EXTENDED },
     update: {},
     create: {
-      id: LICENSE_TYPE.EXTENDED,
+      id: LicenseType.EXTENDED,
       name: 'Extended License',
       description: 'For commercial use across multiple projects',
       features: [

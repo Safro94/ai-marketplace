@@ -172,22 +172,22 @@ model Purchase {
 }
 
 model License {
-  id          String   @id @default(cuid())
+  id          LicenseType @id @unique
   name        String
   description String
   features    String[]
-  isDefault   Boolean  @default(false)
+  isDefault   Boolean     @default(false)
 
   // Relations
   assets AssetLicense[]
 }
 
 model AssetLicense {
-  id        String  @id @default(cuid())
+  id        String      @id @default(cuid())
   assetId   String
-  asset     Asset   @relation(fields: [assetId], references: [id])
-  licenseId String
-  license   License @relation(fields: [licenseId], references: [id])
+  asset     Asset       @relation(fields: [assetId], references: [id])
+  licenseId LicenseType
+  license   License     @relation(fields: [licenseId], references: [id])
   price     Float
 
   // Relations

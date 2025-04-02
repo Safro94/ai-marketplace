@@ -12,8 +12,9 @@ import {
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
-import { API_ROUTES, LICENSE_TYPE } from '@/lib/constants'
+import { API_ROUTES } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
+import { LicenseType } from '@prisma/client'
 import { CheckCircle } from 'lucide-react'
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 
@@ -48,7 +49,7 @@ export const LicenseSelector: FC<Props> = ({
 
         // Auto-select the standard license if available
         const standardLicense = data.find(
-          (option: LicenseOption) => option.licenseId === LICENSE_TYPE.STANDARD,
+          (option: LicenseOption) => option.licenseId === LicenseType.STANDARD,
         )
 
         if (standardLicense) {
@@ -160,7 +161,7 @@ export const LicenseSelector: FC<Props> = ({
 
       <div className='grid gap-4'>
         {licenseOptions.map((option) => {
-          const isExtended = option.licenseId === LICENSE_TYPE.EXTENDED
+          const isExtended = option.licenseId === LicenseType.EXTENDED
           const isSelected = selectedLicense === option.id
 
           return (

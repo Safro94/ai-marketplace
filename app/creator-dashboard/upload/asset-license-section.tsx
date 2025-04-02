@@ -11,8 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { LICENSE_TYPE } from '@/lib/constants'
-import { License } from '@prisma/client'
+import { License, LicenseType } from '@prisma/client'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import { Dispatch, FC, SetStateAction } from 'react'
 
@@ -112,20 +111,20 @@ export const AssetLicenseSection: FC<Props> = ({
                       />
                     </div>
 
-                    {license.id === LICENSE_TYPE.EXTENDED &&
-                      assetLicenses[LICENSE_TYPE.STANDARD]?.enabled &&
+                    {license.id === LicenseType.EXTENDED &&
+                      assetLicenses[LicenseType.STANDARD]?.enabled &&
                       assetLicenses[license.id]?.price <=
-                        assetLicenses[LICENSE_TYPE.STANDARD]?.price && (
+                        assetLicenses[LicenseType.STANDARD]?.price && (
                         <p className='text-sm text-yellow-600 mt-1'>
                           Extended license should be priced higher than Standard
                           license
                         </p>
                       )}
 
-                    {license.id === LICENSE_TYPE.EXTENDED &&
-                      assetLicenses[LICENSE_TYPE.EXTENDED]?.enabled &&
+                    {license.id === LicenseType.EXTENDED &&
+                      assetLicenses[LicenseType.EXTENDED]?.enabled &&
                       assetLicenses[license.id]?.price <=
-                        assetLicenses[LICENSE_TYPE.EXTENDED]?.price && (
+                        assetLicenses[LicenseType.EXTENDED]?.price && (
                         <p className='text-sm text-yellow-600 mt-1'>
                           Enterprise license should be priced higher than
                           Extended license
@@ -177,12 +176,12 @@ export const AssetLicenseSection: FC<Props> = ({
                     <Card
                       key={license.id}
                       className={
-                        license.id === LICENSE_TYPE.EXTENDED
+                        license.id === LicenseType.EXTENDED
                           ? 'border-primary'
                           : ''
                       }
                     >
-                      {license.id === LICENSE_TYPE.EXTENDED && (
+                      {license.id === LicenseType.EXTENDED && (
                         <div className='bg-primary text-primary-foreground text-center py-1 text-sm font-medium'>
                           RECOMMENDED
                         </div>

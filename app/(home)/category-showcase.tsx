@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { ROUTES } from '@/lib/constants'
+import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import {
   Bot,
@@ -53,7 +53,7 @@ export const CategoryShowcase = async () => {
 
         return (
           <Link
-            href={`${ROUTES.categories()}/${category.slug}`}
+            href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
             key={category.id}
           >
             <Card className='h-full transition-colors card-hover'>

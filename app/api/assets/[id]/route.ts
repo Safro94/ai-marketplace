@@ -92,10 +92,12 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const assetId = (await params).id
+
   try {
     // Check if user is the creator or an admin
     const asset = await prisma.asset.findUnique({
-      where: { id: (await params).id },
+      where: { id: assetId },
       include: {
         creator: true,
       },
@@ -123,8 +125,18 @@ export async function DELETE(
       )
     }
 
+    const licenses = await prisma.assetLicense.findMany({
+      where: { assetId },
+    })
+
+    for (const license of licenses) {
+      await prisma.assetLicense.deleteMany({
+        where: { assetId: license.assetId },
+      })
+    }
+
     await prisma.asset.delete({
-      where: { id: (await params).id },
+      where: { id: assetId },
     })
 
     return NextResponse.json({ success: true })

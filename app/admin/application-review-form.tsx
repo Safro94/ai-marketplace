@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { LoadingButton } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -140,24 +140,24 @@ export const ApplicationReviewForm: FC<Props> = ({ applicationId }) => {
       </CardContent>
 
       <CardFooter className='flex justify-between'>
-        <Button
+        <LoadingButton
           variant='outline'
           onClick={handleReject}
           disabled={isApproving || isRejecting}
-          className='flex items-center'
+          isLoading={isRejecting}
         >
           <AlertCircle className='mr-2 h-4 w-4' />
-          {isRejecting ? 'Rejecting...' : 'Reject Application'}
-        </Button>
+          Reject Application
+        </LoadingButton>
 
-        <Button
+        <LoadingButton
           onClick={handleApprove}
           disabled={isApproving || isRejecting}
-          className='flex items-center'
+          isLoading={isApproving}
         >
           <CheckCircle className='mr-2 h-4 w-4' />
-          {isApproving ? 'Approving...' : 'Approve Application'}
-        </Button>
+          Approve Application
+        </LoadingButton>
       </CardFooter>
     </Card>
   )
