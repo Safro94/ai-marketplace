@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { AlertCircle } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -30,22 +30,17 @@ export default async function CreatorsPage({
 }: {
   searchParams: Promise<{ error?: string }>
 }) {
-  const session = await getServerSession()
-  let profile
-
-  if (session?.user) {
-    // Check if user is already a creator
-    profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-      include: {
-        creatorProfile: {
-          include: {
-            creatorApplication: true,
-          },
+  const { user } = await validateSession()
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    include: {
+      creatorProfile: {
+        include: {
+          creatorApplication: true,
         },
       },
-    })
-  }
+    },
+  })
 
   const isCreator = !!profile?.isCreator
   const hasPendingApplication =

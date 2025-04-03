@@ -11,8 +11,9 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { getUserProfile } from '@/lib/db/users'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
 import { Clock, Download, FileText, Star, StarIcon } from 'lucide-react'
@@ -38,16 +39,8 @@ export const metadata: Metadata = {
 }
 
 export default async function DashboardPage() {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.dashboard()}`)
-  }
-
-  // Get user profile
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-  })
+  const { user } = await validateSession(ROUTES.dashboard())
+  const profile = await getUserProfile(user.id)
 
   if (!profile) {
     redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.dashboard()}`)

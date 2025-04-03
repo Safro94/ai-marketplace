@@ -1,20 +1,13 @@
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants'
-import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { getUserProfile } from '@/lib/db/users'
+import { validateSession } from '@/lib/session'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export const HeroSection = async () => {
-  const session = await getServerSession()
-  let profile
-
-  if (session?.user) {
-    profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-      include: { creatorProfile: true },
-    })
-  }
+  const { user } = await validateSession()
+  const profile = await getUserProfile(user.id)
 
   return (
     <section className='relative py-20 md:py-28 overflow-hidden'>

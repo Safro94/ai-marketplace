@@ -1,6 +1,6 @@
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
@@ -16,15 +16,11 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminLayout({ children }: PropsWithChildren) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.admin()}`)
-  }
+  const { user } = await validateSession(ROUTES.admin())
 
   // Check if user is an admin
   const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id, isAdmin: true },
+    where: { userId: user.id, isAdmin: true },
   })
 
   if (!profile?.isAdmin) {

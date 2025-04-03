@@ -48,6 +48,10 @@ export const API_ROUTES = {
   favorites: () => '/api/favorites',
 }
 
+export const CACHE_KEYS = {
+  profile: (profileId: string) => `profile-${profileId}`,
+}
+
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
 export const PAYPAL_EMAIL = process.env.NEXT_PUBLIC_PAYPAL_EMAIL
 export const SUPPORT_EMAIL = 'support@aiassetsmarketplace.com'

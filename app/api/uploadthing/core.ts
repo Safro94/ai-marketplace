@@ -10,22 +10,41 @@ export const fileRouter = {
       maxFileCount: 1,
       maxFileSize: '4MB',
     },
-    'application/zip': {},
-    'application/gzip': {},
-    'application/pdf': {},
-    'text/plain': {},
-    'text/markdown': {},
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-      {},
+    'application/zip': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
+    'application/gzip': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
+    'application/pdf': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
+    'text/plain': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
+    'text/markdown': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
     //@ts-expect-error types not typed in the lib
-    'application/x-zip-compressed': {},
-    'text/x-python': {},
-    'text/javascript': {},
+    'application/x-zip-compressed': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
+    'text/x-python': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
+    'text/javascript': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
     image: {
-      /**
-       * For full list of options and defaults, see the File Route API reference
-       * @see https://docs.uploadthing.com/file-routes#route-config
-       */
+      //ver tema de galeria y maxFileCount
       maxFileSize: '4MB',
       maxFileCount: 1,
     },

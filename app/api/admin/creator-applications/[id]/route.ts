@@ -1,6 +1,8 @@
+import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function PATCH(
@@ -71,6 +73,8 @@ export async function PATCH(
           isCreator: true,
         },
       })
+
+      revalidateTag(CACHE_KEYS.profile(application.creatorProfile.profileId))
 
       // Create notification for the user
       // TODO: uncomment

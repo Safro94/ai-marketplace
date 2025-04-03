@@ -15,4 +15,6 @@ export const validateSession = async (callbackUrl?: string) => {
   if (!session?.user) {
     redirect(`${ROUTES.login()}?callbackUrl=${callbackUrl}`)
   }
+
+  return { user: session.user }
 }

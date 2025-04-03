@@ -92,15 +92,7 @@ export default function RootLayout({
           inter.className,
         )}
       >
-        <NextSSRPlugin
-          /**
-           * The `extractRouterConfig` will extract **only** the route configs
-           * from the router to prevent additional information from being
-           * leaked to the client. The data passed to the client is the same
-           * as if you were to fetch `/api/uploadthing` directly.
-           */
-          routerConfig={extractRouterConfig(fileRouter)}
-        />
+        <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
 
         <Providers>
           <div className='flex min-h-screen flex-col'>

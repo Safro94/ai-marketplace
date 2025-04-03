@@ -11,8 +11,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
+import { getUserProfile } from '@/lib/db/users'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import { format, formatDistanceToNow } from 'date-fns'
 import { Download, ExternalLink, Search, ShoppingBag } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -35,25 +36,17 @@ export default async function PurchasesPage({
 }: {
   searchParams: Promise<{ query?: string }>
 }) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.purchases()}`)
-  }
-
-  // Get user profile
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-  })
+  const { user } = await validateSession(ROUTES.purchases())
+  const profile = await getUserProfile(user.id)
 
   if (!profile) {
     // Create profile if it doesn't exist
     await prisma.profile.create({
       data: {
-        userId: session.user.id,
-        name: session.user.name || '',
-        email: session.user.email,
-        avatarUrl: session.user.image || '',
+        userId: user.id,
+        name: user.name || '',
+        email: user.email,
+        avatarUrl: user.image || '',
       },
     })
 

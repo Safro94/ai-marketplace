@@ -1,6 +1,8 @@
+import { CACHE_KEYS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -61,6 +63,8 @@ export async function POST(request: Request) {
         totalRevenue: { increment: assetLicense.price },
       },
     })
+
+    revalidateTag(CACHE_KEYS.profile(assetLicense.asset.creatorId))
 
     // Create notification for the creator
     await prisma.notification.create({

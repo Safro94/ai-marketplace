@@ -11,7 +11,7 @@ import { ROUTES } from '@/lib/constants'
 import { checkUserPurchasedAsset } from '@/lib/db/purchases'
 import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -80,7 +80,7 @@ export default async function AssetPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const session = await getServerSession()
+  const { user } = await validateSession()
   const id = (await params).id
 
   const asset = await prisma.asset.findUnique({
@@ -108,8 +108,8 @@ export default async function AssetPage({
 
   // Check if the user has purchased this asset
   let isPurchased = false
-  if (session?.user) {
-    isPurchased = await checkUserPurchasedAsset(session.user.id, asset.id)
+  if (user) {
+    isPurchased = await checkUserPurchasedAsset(user.id, asset.id)
   }
 
   // Parse features and requirements from JSON strings

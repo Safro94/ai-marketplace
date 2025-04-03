@@ -1,8 +1,10 @@
 import { assetUploadSchema } from '@/app/creator-dashboard/upload/asset-upload-schema'
+import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { ModerationService } from '@/services/ModerationService'
 import { AssetStatus } from '@prisma/client'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -124,6 +126,8 @@ export async function POST(request: Request) {
         totalAssets: { increment: 1 },
       },
     })
+
+    revalidateTag(CACHE_KEYS.profile(profile.id))
 
     return NextResponse.json({
       success: true,
@@ -254,6 +258,8 @@ export async function PATCH(request: Request) {
         totalAssets: { increment: 1 },
       },
     })
+
+    revalidateTag(CACHE_KEYS.profile(profile.id))
 
     return NextResponse.json({
       success: true,

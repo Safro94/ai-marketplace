@@ -9,11 +9,10 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
-import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { getUserProfile } from '@/lib/db/users'
+import { validateSession } from '@/lib/session'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import UserProfileForm from './user-profile-form'
 
 enum TabsEnum {
@@ -32,32 +31,8 @@ export const metadata: Metadata = {
 }
 
 export default async function AccountPage() {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.account()}`)
-  }
-
-  // Get user profile
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-    include: {
-      user: true,
-      creatorProfile: true,
-    },
-  })
-
-  if (!profile) {
-    // Create profile if it doesn't exist
-    await prisma.profile.create({
-      data: {
-        userId: session.user.id,
-        name: session.user.name || '',
-        avatarUrl: session.user.image || '',
-        email: session.user.email,
-      },
-    })
-  }
+  const { user } = await validateSession(ROUTES.account())
+  const profile = await getUserProfile(user.id)
 
   //   // Get user's notifications
   //   const notifications = await prisma.notification.findMany({
@@ -90,23 +65,23 @@ export default async function AccountPage() {
                 <div className='flex flex-col items-center space-y-3'>
                   <Avatar className='h-24 w-24'>
                     <AvatarImage
-                      src={profile?.avatarUrl || session.user.image || ''}
-                      alt={profile?.name || session.user.name || ''}
+                      src={profile?.avatarUrl || user.image || ''}
+                      alt={profile?.name || user.name || ''}
                     />
                     <AvatarFallback>
                       {profile?.name?.charAt(0).toUpperCase() ||
-                        session.user.name?.charAt(0).toUpperCase() ||
+                        user.name?.charAt(0).toUpperCase() ||
                         'U'}
                     </AvatarFallback>
                   </Avatar>
 
                   <div className='text-center'>
                     <h3 className='font-medium text-lg'>
-                      {profile?.name || session.user.name}
+                      {profile?.name || user.name}
                     </h3>
 
                     <p className='text-sm text-muted-foreground'>
-                      {session.user.email}
+                      {user.email}
                     </p>
                   </div>
                 </div>
@@ -168,10 +143,10 @@ export default async function AccountPage() {
               <TabsContent value={TabsEnum.PROFILE}>
                 <UserProfileForm
                   initialData={{
-                    name: profile?.name || session.user.name || '',
-                    email: session.user.email || '',
+                    name: profile?.name || user.name || '',
+                    email: user.email || '',
                     bio: profile?.bio || '',
-                    avatarUrl: profile?.avatarUrl || session.user.image || '',
+                    avatarUrl: profile?.avatarUrl || user.image || '',
                   }}
                 />
               </TabsContent>

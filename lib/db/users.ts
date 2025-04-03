@@ -1,7 +1,17 @@
 import prisma from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
+import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
+import { CACHE_KEYS } from '../constants'
 
-export async function getUserProfile(userId: string) {
+export const getUserProfile = async (userId: string) => {
+  'use cache'
+  unstable_cacheLife({
+    stale: 3600 * 12, // 12 hours
+    revalidate: 3600 * 6, // 6 hours
+    expire: 86400, // 1 day
+  })
+  unstable_cacheTag(`${CACHE_KEYS.profile}-${userId}`)
+
   return prisma.profile.findUnique({
     where: { userId },
     include: {
@@ -11,23 +21,13 @@ export async function getUserProfile(userId: string) {
 }
 
 // Used in auth callback
-export async function createUserProfile(data: Prisma.ProfileCreateInput) {
+export const createUserProfile = async (data: Prisma.ProfileCreateInput) => {
   return prisma.profile.create({
     data,
   })
 }
 
-export async function updateUserProfile(
-  userId: string,
-  data: Prisma.ProfileUpdateInput,
-) {
-  return prisma.profile.update({
-    where: { userId },
-    data,
-  })
-}
-
-export async function getCreatorProfile(profileId: string) {
+export const getCreatorProfile = async (profileId: string) => {
   return prisma.creatorProfile.findUnique({
     where: { profileId },
     include: {
@@ -40,9 +40,9 @@ export async function getCreatorProfile(profileId: string) {
   })
 }
 
-export async function createCreatorApplication(
+export const createCreatorApplication = async (
   data: Prisma.CreatorApplicationCreateInput,
-) {
+) => {
   return prisma.creatorApplication.create({
     data,
   })

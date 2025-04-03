@@ -2,7 +2,7 @@ import { ThemeToggle } from '@/components/header/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import Link from 'next/link'
 import { Logo } from '../logo'
@@ -13,22 +13,17 @@ import { HeaderNav } from './header-nav'
 import { HeaderSearchbar } from './header-searchbar'
 
 export const Header = async () => {
-  const session = await getServerSession()
-  let profile
-
-  if (session?.user) {
-    // Check if user is already a creator
-    profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-      include: {
-        creatorProfile: {
-          include: {
-            creatorApplication: true,
-          },
+  const { user } = await validateSession()
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    include: {
+      creatorProfile: {
+        include: {
+          creatorApplication: true,
         },
       },
-    })
-  }
+    },
+  })
 
   const isCreator = !!profile?.isCreator
   const hasPendingApplication =
@@ -50,7 +45,7 @@ export const Header = async () => {
           <HeaderSearchbar />
           <ThemeToggle />
 
-          {session?.user ? (
+          {user ? (
             <>
               <CartButton />
               {/* <Notifications /> */}
