@@ -1,6 +1,5 @@
 'use client'
 
-import { FileUpload } from '@/components/file-upload'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LoadingButton } from '@/components/ui/button'
 import {
@@ -49,7 +48,6 @@ interface UserProfileFormProps {
 
 export default function UserProfileForm({ initialData }: UserProfileFormProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [avatarUrl, setAvatarUrl] = useState(initialData.avatarUrl || '')
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,7 +69,6 @@ export default function UserProfileForm({ initialData }: UserProfileFormProps) {
         },
         body: JSON.stringify({
           ...values,
-          avatarUrl,
         }),
       })
 
@@ -111,25 +108,14 @@ export default function UserProfileForm({ initialData }: UserProfileFormProps) {
           <CardContent className='space-y-6'>
             <div className='flex flex-col items-center space-y-4'>
               <Avatar className='h-24 w-24'>
-                <AvatarImage src={avatarUrl} alt={initialData.name} />
+                <AvatarImage
+                  src={initialData.avatarUrl}
+                  alt={initialData.name}
+                />
                 <AvatarFallback>
                   {initialData.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-
-              <FileUpload
-                fileType='image'
-                accept='image/*'
-                maxSize={2 * 1024 * 1024} // 2MB
-                onUploadComplete={(url) => {
-                  setAvatarUrl(url)
-                }}
-                onUploadError={(error) => {
-                  toast.error('Upload error', {
-                    description: error,
-                  })
-                }}
-              />
             </div>
 
             <div className='space-y-4'>

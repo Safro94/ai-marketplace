@@ -10,6 +10,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
 import { getUserProfile } from '@/lib/db/users'
+import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -35,11 +36,11 @@ export default async function AccountPage() {
   const profile = await getUserProfile(user.id)
 
   //   // Get user's notifications
-  //   const notifications = await prisma.notification.findMany({
-  //     where: { userId: profile?.id },
-  //     orderBy: { createdAt: 'desc' },
-  //     take: 5,
-  //   })
+  const notifications = await prisma.notification.findMany({
+    where: { userId: profile?.id },
+    orderBy: { createdAt: 'desc' },
+    take: 5,
+  })
 
   return (
     <div className='container py-12'>
@@ -137,7 +138,9 @@ export default async function AccountPage() {
             <Tabs defaultValue={TabsEnum.PROFILE}>
               <TabsList className='mb-6'>
                 <TabsTrigger value={TabsEnum.PROFILE}>Profile</TabsTrigger>
-                {/* <TabsTrigger value={TabsEnum.NOTIFICATIONS}>Notifications</TabsTrigger> */}
+                {/* <TabsTrigger value={TabsEnum.NOTIFICATIONS}>
+                  Notifications
+                </TabsTrigger> */}
               </TabsList>
 
               <TabsContent value={TabsEnum.PROFILE}>
@@ -157,6 +160,7 @@ export default async function AccountPage() {
                     <CardTitle>Notifications</CardTitle>
                     <CardDescription>Your recent notifications</CardDescription>
                   </CardHeader>
+
                   <CardContent>
                     {notifications && notifications.length > 0 ? (
                       <div className='space-y-4'>

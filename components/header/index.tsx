@@ -47,8 +47,8 @@ export const Header = async () => {
 
           {user ? (
             <>
+              {/* <NotificationsDropdown /> */}
               <CartButton />
-              {/* <Notifications /> */}
               <HeaderDropdown isCreator={isCreator} />
             </>
           ) : (

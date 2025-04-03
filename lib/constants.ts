@@ -46,10 +46,17 @@ export const API_ROUTES = {
     `/api/admin/assets/${assetId}/feature`,
   creatorsApply: () => '/api/creators/apply',
   favorites: () => '/api/favorites',
+  notifications: () => '/api/notifications',
+  notificationsReadAll: () => '/api/notifications/read-all',
+  notificationRead: (id: string) => `/api/notifications/${id}/read`,
 }
 
 export const CACHE_KEYS = {
   profile: (profileId: string) => `profile-${profileId}`,
+}
+
+export const WS_EVENTS = {
+  NEW_NOTIFICATION: 'NEW_NOTIFICATION',
 }
 
 export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
