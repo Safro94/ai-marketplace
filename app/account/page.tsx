@@ -9,9 +9,11 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import { getUserProfile } from '@/lib/db/users'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
+import { Role } from '@prisma/client'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import UserProfileForm from './user-profile-form'
@@ -94,9 +96,9 @@ export default async function AccountPage() {
                     </span>
 
                     <span className='text-sm font-medium'>
-                      {profile?.isAdmin
+                      {profile?.role === Role.ADMIN
                         ? 'Admin'
-                        : profile?.isCreator
+                        : profile?.role === Role.CREATOR
                           ? 'Creator'
                           : 'User'}
                     </span>
@@ -116,7 +118,7 @@ export default async function AccountPage() {
                 </div>
 
                 <div className='pt-2'>
-                  {profile?.isCreator ? (
+                  {isAdminOrCreator(profile) ? (
                     <Button className='w-full' asChild>
                       <Link href={ROUTES.creatorDashboard()}>
                         Creator Dashboard

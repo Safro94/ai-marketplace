@@ -1,33 +1,19 @@
 import { assetUploadSchema } from '@/app/creator-dashboard/upload/asset-upload-schema'
 import { CACHE_KEYS } from '@/lib/constants'
+import { validateRouteProfilePermissions } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
 import { ModerationService } from '@/services/ModerationService'
-import { AssetStatus } from '@prisma/client'
+import { AssetStatus, Role } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  // Check if user is a creator
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-  })
-
-  if (!profile || !profile.isCreator) {
-    return NextResponse.json(
-      { error: 'Only creators can upload assets' },
-      { status: 403 },
-    )
-  }
+  const result = await validateRouteProfilePermissions(Role.CREATOR)
+  if (result instanceof NextResponse) return result
+  const { profile } = result
 
   try {
-    const data = await request.json()
+    const data = (await request.json()) as typeof assetUploadSchema
 
     // Validate input data
     const validationResult = assetUploadSchema.safeParse(data)
@@ -103,7 +89,7 @@ export async function POST(request: Request) {
     if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
       // Create notification for admins
       const admins = await prisma.profile.findMany({
-        where: { isAdmin: true },
+        where: { role: Role.ADMIN },
       })
 
       for (const admin of admins) {
@@ -145,26 +131,12 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  // Check if user is a creator
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-  })
-
-  if (!profile || !profile.isCreator) {
-    return NextResponse.json(
-      { error: 'Only creators can upload assets' },
-      { status: 403 },
-    )
-  }
+  const result = await validateRouteProfilePermissions(Role.CREATOR)
+  if (result instanceof NextResponse) return result
+  const { profile } = result
 
   try {
-    const data = await request.json()
+    const data = (await request.json()) as typeof assetUploadSchema
 
     // Validate input data
     const validationResult = assetUploadSchema.safeParse(data)
@@ -235,7 +207,7 @@ export async function PATCH(request: Request) {
     if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
       // Create notification for admins
       const admins = await prisma.profile.findMany({
-        where: { isAdmin: true },
+        where: { role: Role.ADMIN },
       })
 
       for (const admin of admins) {

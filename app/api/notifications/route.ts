@@ -1,6 +1,7 @@
 import { getUserProfile } from '@/lib/db/users'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { Role } from '@prisma/client'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -58,11 +59,10 @@ export async function POST(request: Request) {
 
     // Check if user has admin privileges
     const profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-      select: { isAdmin: true },
+      where: { userId: session.user.id, role: Role.ADMIN },
     })
 
-    if (!profile?.isAdmin) {
+    if (!profile) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

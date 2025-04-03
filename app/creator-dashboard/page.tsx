@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { AssetStatus, PurchaseStatus } from '@prisma/client'
@@ -29,7 +30,7 @@ export default async function CreatorDashboard() {
     where: { userId: session.user.id },
   })
 
-  if (!profile || !profile.isCreator) {
+  if (!profile || !isAdminOrCreator(profile)) {
     redirect(ROUTES.creators())
   }
 

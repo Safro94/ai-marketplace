@@ -1,26 +1,12 @@
+import { validateRouteProfilePermissions } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } },
 ) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  // Check if user is an admin
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-    select: { isAdmin: true },
-  })
-
-  if (!profile?.isAdmin) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  }
+  await validateRouteProfilePermissions()
 
   try {
     const { featured } = await request.json()

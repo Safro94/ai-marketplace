@@ -7,10 +7,7 @@ export async function POST() {
     // Only allow seeding in development or with admin access
     const session = await getServerSession()
 
-    if (
-      process.env.NODE_ENV !== 'development' &&
-      (!session?.user || session.user.role !== 'ADMIN')
-    ) {
+    if (process.env.NODE_ENV !== 'development' && !session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

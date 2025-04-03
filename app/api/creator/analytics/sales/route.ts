@@ -1,3 +1,4 @@
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
@@ -16,7 +17,7 @@ export async function GET() {
       include: { creatorProfile: true },
     })
 
-    if (!profile || !profile.isCreator || !profile.creatorProfile) {
+    if (!profile || !isAdminOrCreator(profile) || !profile.creatorProfile) {
       return NextResponse.json(
         { error: 'Creator profile not found' },
         { status: 404 },

@@ -16,24 +16,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ROUTES } from '@/lib/constants'
+import { validateAdminProfile } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
-import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 export default async function CreatorApplicationsPage() {
-  const { user } = await validateSession(ROUTES.adminCreatorApplications())
-
-  // Check if user is an admin
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id, isAdmin: true },
-  })
-
-  if (!profile?.isAdmin) {
-    redirect('/?error=unauthorized')
-  }
+  await validateAdminProfile(ROUTES.adminCreatorApplications())
 
   // Get all creator applications
   const applications = await prisma.creatorApplication.findMany({

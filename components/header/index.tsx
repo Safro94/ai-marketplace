@@ -1,6 +1,7 @@
 import { ThemeToggle } from '@/components/header/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants'
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
@@ -25,7 +26,7 @@ export const Header = async () => {
     },
   })
 
-  const isCreator = !!profile?.isCreator
+  const isCreator = isAdminOrCreator(profile)
   const hasPendingApplication =
     profile?.creatorProfile?.creatorApplication?.status ===
     ApplicationStatus.PENDING

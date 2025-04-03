@@ -8,12 +8,12 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
+import { validateAdminProfile } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
-import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { format, formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { ElementType, ReactNode } from 'react'
 import { ApplicationReviewForm } from '../../application-review-form'
 
@@ -22,16 +22,7 @@ export default async function CreatorApplicationPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const { user } = await validateSession(ROUTES.adminCreatorApplications())
-
-  // Check if user is an admin
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id, isAdmin: true },
-  })
-
-  if (!profile?.isAdmin) {
-    redirect('/?error=unauthorized')
-  }
+  await validateAdminProfile(ROUTES.adminCreatorApplications())
 
   // Get the application
   const application = await prisma.creatorApplication.findUnique({

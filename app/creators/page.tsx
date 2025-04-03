@@ -1,3 +1,4 @@
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
@@ -42,7 +43,7 @@ export default async function CreatorsPage({
     },
   })
 
-  const isCreator = !!profile?.isCreator
+  const isCreator = isAdminOrCreator(profile)
   const hasPendingApplication =
     profile?.creatorProfile?.creatorApplication?.status ===
     ApplicationStatus.PENDING

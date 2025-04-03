@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants'
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import { getUserProfile } from '@/lib/db/users'
 import { validateSession } from '@/lib/session'
 import { ArrowRight } from 'lucide-react'
@@ -45,7 +46,7 @@ export const HeroSection = async () => {
             </Button>
 
             <Button size='lg' variant='outline' asChild>
-              {profile?.isCreator ? (
+              {isAdminOrCreator(profile) ? (
                 <Link href={ROUTES.creatorDashboard()}>
                   Go to Creator Dashboard
                   <ArrowRight className='ml-2 h-4 w-4' />

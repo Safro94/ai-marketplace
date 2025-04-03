@@ -1,6 +1,7 @@
 import { getAssetById } from '@/lib/db/assets'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { Role } from '@prisma/client'
 import { NextResponse } from 'next/server'
 
 export async function GET(
@@ -58,9 +59,8 @@ export async function PATCH(
     }
 
     const isCreator = asset.creator.userId === session.user.id
-    const isAdmin = session.user.role === 'ADMIN'
 
-    if (!isCreator && !isAdmin) {
+    if (!isCreator && profile.role !== Role.ADMIN) {
       return NextResponse.json(
         { error: 'Not authorized to update this asset' },
         { status: 403 },
@@ -116,9 +116,8 @@ export async function DELETE(
     }
 
     const isCreator = asset.creator.userId === session.user.id
-    const isAdmin = session.user.role === 'ADMIN'
 
-    if (!isCreator && !isAdmin) {
+    if (!isCreator && profile.role !== Role.ADMIN) {
       return NextResponse.json(
         { error: 'Not authorized to delete this asset' },
         { status: 403 },

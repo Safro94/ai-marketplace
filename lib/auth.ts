@@ -33,13 +33,6 @@ export const auth = betterAuth({
       },
     },
   },
-  user: {
-    additionalFields: {
-      role: {
-        type: 'string',
-      },
-    },
-  },
   emailAndPassword: {
     enabled: true,
     // async sendResetPassword({ user, url }) {

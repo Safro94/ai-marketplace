@@ -1,3 +1,4 @@
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { generatePresignedUploadUrl, generateS3Key } from '@/lib/s3-client'
 import { getServerSession } from '@/lib/session'
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
       where: { userId: session.user.id },
     })
 
-    if (!profile?.isCreator) {
+    if (!isAdminOrCreator(profile)) {
       return NextResponse.json(
         { error: 'Only creators can upload files' },
         { status: 403 },

@@ -1,8 +1,6 @@
 import { ROUTES } from '@/lib/constants'
-import prisma from '@/lib/prisma'
-import { validateSession } from '@/lib/session'
+import { validateAdminProfile } from '@/lib/db/permissions'
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 import { AdminSidebar } from './sidebar'
 
@@ -16,16 +14,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminLayout({ children }: PropsWithChildren) {
-  const { user } = await validateSession(ROUTES.admin())
-
-  // Check if user is an admin
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id, isAdmin: true },
-  })
-
-  if (!profile?.isAdmin) {
-    redirect('/?error=unauthorized')
-  }
+  await validateAdminProfile(ROUTES.admin())
 
   return (
     <div className='flex min-h-screen'>

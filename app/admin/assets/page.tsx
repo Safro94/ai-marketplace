@@ -8,28 +8,15 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ROUTES } from '@/lib/constants'
-import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { validateAdminProfile } from '@/lib/db/permissions'
 import { ModerationService } from '@/services/ModerationService'
 import { format } from 'date-fns'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import Image from 'next/image'
-import { redirect } from 'next/navigation'
 import { ModerationActions } from './moderation-actions'
 
 export default async function ModerationPage() {
-  const session = await getServerSession()
-
-  if (!session?.user) redirect(ROUTES.login())
-
-  // Check if user is an admin
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id, isAdmin: true },
-    select: { isAdmin: true },
-  })
-
-  if (!profile?.isAdmin) redirect(ROUTES.home())
+  await validateAdminProfile()
 
   const pendingAssets = await ModerationService.getPendingAssets(20, 0)
 

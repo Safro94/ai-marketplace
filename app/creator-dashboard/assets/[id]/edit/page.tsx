@@ -10,6 +10,7 @@ import {
 import { toast } from '@/components/ui/toast'
 import { ROUTES } from '@/lib/constants'
 import { getCategories } from '@/lib/db/categories'
+import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { tryCatch } from '@/lib/utils'
@@ -31,7 +32,7 @@ export default async function EditAssetPage({
     where: { userId: session.user.id },
   })
 
-  if (!profile || !profile.isCreator) {
+  if (!profile || !isAdminOrCreator(profile)) {
     redirect(ROUTES.creators())
   }
 

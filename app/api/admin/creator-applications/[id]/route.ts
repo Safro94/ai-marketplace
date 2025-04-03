@@ -1,7 +1,7 @@
 import { CACHE_KEYS } from '@/lib/constants'
+import { validateRouteProfilePermissions } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
-import { ApplicationStatus } from '@prisma/client'
+import { ApplicationStatus, Role } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
@@ -9,20 +9,7 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession()
-
-  // Check if user is admin
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-  })
-
-  if (!profile?.isAdmin) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  await validateRouteProfilePermissions()
 
   try {
     const { status, reviewNotes } = await request.json()
@@ -70,14 +57,13 @@ export async function PATCH(
       await prisma.profile.update({
         where: { id: application.creatorProfile.profileId },
         data: {
-          isCreator: true,
+          role: Role.CREATOR,
         },
       })
 
       revalidateTag(CACHE_KEYS.profile(application.creatorProfile.profileId))
 
       // Create notification for the user
-      // TODO: uncomment
       await prisma.notification.create({
         data: {
           userId: application.creatorProfile.profile.userId,

@@ -17,23 +17,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ROUTES } from '@/lib/constants'
+import { validateAdminProfile } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
-import { validateSession } from '@/lib/session'
+import { Role } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 export default async function UsersPage() {
-  const { user } = await validateSession(ROUTES.adminUsers())
-
-  // Check if user is an admin
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id, isAdmin: true },
-  })
-
-  if (!profile?.isAdmin) {
-    redirect('/?error=unauthorized')
-  }
+  await validateAdminProfile(ROUTES.adminUsers())
 
   // Get all users with their profiles
   const users = await prisma.user.findMany({
@@ -103,9 +94,9 @@ export default async function UsersPage() {
                     <TableCell>{user.email}</TableCell>
 
                     <TableCell>
-                      {user.profile?.isAdmin ? (
+                      {user.profile?.role === Role.ADMIN ? (
                         <Badge variant='default'>Admin</Badge>
-                      ) : user.profile?.isCreator ? (
+                      ) : user.profile?.role === Role.CREATOR ? (
                         <Badge variant='outline'>Creator</Badge>
                       ) : (
                         <Badge variant='secondary'>User</Badge>
