@@ -28,17 +28,6 @@ export default function LoginPage() {
             </span>
           </Link>
         </div>
-
-        <div className='relative z-20 mt-auto'>
-          <blockquote className='space-y-2'>
-            <p className='text-lg'>
-              &quot;This marketplace has completely transformed how I create
-              content. The AI assets are top-notch and save me hours of work
-              every week.&quot;
-            </p>
-            <footer className='text-sm'>Sofia Davis</footer>
-          </blockquote>
-        </div>
       </div>
 
       <div className='lg:p-8'>

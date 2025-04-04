@@ -2,13 +2,17 @@ import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/db/permissions'
 import { getUserProfile } from '@/lib/db/users'
-import { validateSession } from '@/lib/session'
+import { getServerSession } from '@/lib/session'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export const HeroSection = async () => {
-  const { user } = await validateSession()
-  const profile = await getUserProfile(user.id)
+  const session = await getServerSession()
+  let profile
+
+  if (session?.user) {
+    profile = await getUserProfile(session?.user.id)
+  }
 
   return (
     <section className='relative py-20 md:py-28 overflow-hidden'>

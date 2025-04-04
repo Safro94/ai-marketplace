@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
-import { validateSession } from '@/lib/session'
+import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import Link from 'next/link'
 import { Logo } from '../logo'
@@ -14,17 +14,21 @@ import { HeaderNav } from './header-nav'
 import { HeaderSearchbar } from './header-searchbar'
 
 export const Header = async () => {
-  const { user } = await validateSession()
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id },
-    include: {
-      creatorProfile: {
-        include: {
-          creatorApplication: true,
+  const session = await getServerSession()
+  let profile
+
+  if (session?.user) {
+    profile = await prisma.profile.findUnique({
+      where: { userId: session?.user.id },
+      include: {
+        creatorProfile: {
+          include: {
+            creatorApplication: true,
+          },
         },
       },
-    },
-  })
+    })
+  }
 
   const isCreator = isAdminOrCreator(profile)
   const hasPendingApplication =
@@ -46,7 +50,7 @@ export const Header = async () => {
           <HeaderSearchbar />
           <ThemeToggle />
 
-          {user ? (
+          {session?.user ? (
             <>
               {/* <NotificationsDropdown /> */}
               <CartButton />

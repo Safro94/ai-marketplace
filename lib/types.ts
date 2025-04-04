@@ -1,9 +1,8 @@
 import { Asset, Category, Profile, User } from '@prisma/client'
 
 export enum USER_TYPES {
-  ADMIN = 'ADMIN',
-  CREATOR = 'CREATOR',
-  USER = 'USER',
+  ADMIN = 'admin',
+  USER = 'user',
 }
 
 export interface LicenseOption {

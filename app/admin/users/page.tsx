@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -21,7 +20,7 @@ import { validateAdminProfile } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { Role } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
-import Link from 'next/link'
+import { DeleteUserButton } from './delete-user-button'
 
 export default async function UsersPage() {
   await validateAdminProfile(ROUTES.adminUsers())
@@ -109,13 +108,14 @@ export default async function UsersPage() {
                       })}
                     </TableCell>
 
-                    <TableCell>
-                      <Button asChild size='sm'>
-                        <Link href={`${ROUTES.adminUsers()}/${user.id}`}>
-                          View
-                        </Link>
-                      </Button>
-                    </TableCell>
+                    {user.profile && (
+                      <TableCell>
+                        <DeleteUserButton
+                          profile={user.profile}
+                          isBanned={user.banned}
+                        />
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               )}

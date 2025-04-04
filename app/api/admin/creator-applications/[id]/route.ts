@@ -63,32 +63,32 @@ export async function PATCH(
 
       revalidateTag(CACHE_KEYS.profile(application.creatorProfile.profileId))
 
-      // Create notification for the user
-      await prisma.notification.create({
-        data: {
-          userId: application.creatorProfile.profile.userId,
-          title: 'Creator Application Approved',
-          message:
-            'Congratulations! Your application to become a creator has been approved. You can now start uploading assets.',
-          type: 'SUCCESS',
-          data: JSON.stringify({ applicationId: application.id }),
-        },
-      })
-    } else {
-      // Create rejection notification
-      await prisma.notification.create({
-        data: {
-          userId: application.creatorProfile.profile.userId,
-          title: 'Creator Application Rejected',
-          message:
-            "We're sorry, but your creator application has been rejected. Please see the review notes for more information.",
-          type: 'ERROR',
-          data: JSON.stringify({
-            applicationId: application.id,
-            reviewNotes: reviewNotes || 'No additional information provided.',
-          }),
-        },
-      })
+      //   // Create notification for the user
+      //   await prisma.notification.create({
+      //     data: {
+      //       userId: application.creatorProfile.profile.id,
+      //       title: 'Creator Application Approved',
+      //       message:
+      //         'Congratulations! Your application to become a creator has been approved. You can now start uploading assets.',
+      //       type: 'SUCCESS',
+      //       data: JSON.stringify({ applicationId: application.id }),
+      //     },
+      //   })
+      // } else {
+      //   // Create rejection notification
+      //   await prisma.notification.create({
+      //     data: {
+      //       userId: application.creatorProfile.profile.id,
+      //       title: 'Creator Application Rejected',
+      //       message:
+      //         "We're sorry, but your creator application has been rejected. Please see the review notes for more information.",
+      //       type: 'ERROR',
+      //       data: JSON.stringify({
+      //         applicationId: application.id,
+      //         reviewNotes: reviewNotes || 'No additional information provided.',
+      //       }),
+      //     },
+      //   })
     }
 
     return NextResponse.json(updatedApplication)

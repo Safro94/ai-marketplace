@@ -4,8 +4,9 @@ import { NextResponse } from 'next/server'
 import { ROUTES } from '../constants'
 import prisma from '../prisma'
 import { getServerSession, validateSession } from '../session'
+import { USER_TYPES } from '../types'
 
-export const isAdminOrCreator = (profile: Profile | null) =>
+export const isAdminOrCreator = (profile?: Profile | null) =>
   profile?.role !== Role.USER
 
 export const validateAdminProfile = async (callbackUrl?: string) => {
@@ -16,7 +17,8 @@ export const validateAdminProfile = async (callbackUrl?: string) => {
     where: { userId: user.id, role: Role.ADMIN },
   })
 
-  if (!profile) redirect('/?error=unauthorized')
+  if (user.role !== USER_TYPES.ADMIN || !profile)
+    redirect('/?error=unauthorized')
 
   return { profile }
 }

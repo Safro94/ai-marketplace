@@ -11,12 +11,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/hooks/use-auth'
-import { authClient } from '@/lib/auth-client'
 import { ROUTES } from '@/lib/constants'
+import { tryCatch } from '@/lib/utils'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { FC } from 'react'
 import { toast } from '../ui/toast'
+import { signUserOut } from './sign-out-action'
 
 interface Props {
   isCreator: boolean
@@ -24,7 +24,6 @@ interface Props {
 
 export const HeaderDropdown: FC<Props> = ({ isCreator }) => {
   const { user } = useAuth()
-  const router = useRouter()
 
   if (!user) return null
 
@@ -77,18 +76,13 @@ export const HeaderDropdown: FC<Props> = ({ isCreator }) => {
 
         <DropdownMenuItem
           onClick={async () => {
-            await authClient.signOut({
-              fetchOptions: {
-                onSuccess() {
-                  router.push(ROUTES.home())
-                },
-                onError(context) {
-                  toast.error('Error', {
-                    description: context.error.message,
-                  })
-                },
-              },
-            })
+            const { error } = await tryCatch(signUserOut())
+
+            if (error) {
+              toast.error('Error', {
+                description: 'There was an error while signing you out.',
+              })
+            }
           }}
         >
           Log out

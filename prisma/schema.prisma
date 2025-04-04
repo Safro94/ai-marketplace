@@ -31,7 +31,6 @@ model Profile {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   totalAssets    Int             @default(0)
-  // Relations
   assets         Asset[]
   reviews        Review[]
   purchases      Purchase[]
@@ -353,6 +352,10 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
+  role          String    @default("user")
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
   sessions      Session[]
   accounts      Account[]
   profile       Profile?
@@ -362,15 +365,16 @@ model User {
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id
+  expiresAt      DateTime
+  token          String
+  createdAt      DateTime
+  updatedAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  impersonatedBy String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@map("session")

@@ -3,6 +3,7 @@ import { resend } from '@/lib/resend'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { nextCookies } from 'better-auth/next-js'
+import { admin } from 'better-auth/plugins/admin'
 import { EMAIL_FROM } from './constants'
 import { USER_TYPES } from './types'
 
@@ -10,6 +11,18 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        defaultValue: USER_TYPES.USER,
+      },
+      banned: {
+        type: 'boolean',
+        defaultValue: false,
+      },
+    },
+  },
   databaseHooks: {
     user: {
       create: {
@@ -74,5 +87,5 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [nextCookies()],
+  plugins: [nextCookies(), admin()],
 })

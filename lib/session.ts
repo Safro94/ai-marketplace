@@ -9,7 +9,7 @@ export const getServerSession = async () => {
   })
 }
 
-export const validateSession = async (callbackUrl?: string) => {
+export const validateSession = async (callbackUrl: string = ROUTES.home()) => {
   const session = await getServerSession()
 
   if (!session?.user) {

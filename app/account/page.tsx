@@ -11,7 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/db/permissions'
 import { getUserProfile } from '@/lib/db/users'
-import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import { Role } from '@prisma/client'
 import type { Metadata } from 'next'
@@ -37,12 +36,12 @@ export default async function AccountPage() {
   const { user } = await validateSession(ROUTES.account())
   const profile = await getUserProfile(user.id)
 
-  //   // Get user's notifications
-  const notifications = await prisma.notification.findMany({
-    where: { userId: profile?.id },
-    orderBy: { createdAt: 'desc' },
-    take: 5,
-  })
+  // Get user's notifications
+  // const notifications = await prisma.notification.findMany({
+  //   where: { userId: profile?.id },
+  //   orderBy: { createdAt: 'desc' },
+  //   take: 5,
+  // })
 
   return (
     <div className='container py-12'>
