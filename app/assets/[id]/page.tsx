@@ -1,12 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { Card, CardContent } from '@/components/ui/card'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselThumbnails,
-} from '@/components/ui/carousel'
 import { ROUTES } from '@/lib/constants'
 import { checkUserPurchasedAsset } from '@/lib/db/purchases'
 import prisma from '@/lib/prisma'
@@ -14,9 +8,9 @@ import { generateProductJsonLd } from '@/lib/seo-config'
 import { validateSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
+import { AssetDetailCarousel } from './asset-detail-carousel'
 import { AssetDetailHeader } from './asset-detail-header'
 import { AssetDetailsTabs } from './asset-details-tabs'
 import { AssetDownload } from './asset-download'
@@ -157,26 +151,11 @@ export default async function AssetPage({
 
         <div className='grid lg:grid-cols-[1fr_max-content] gap-8'>
           <div className='space-y-8'>
-            <Carousel className='w-full'>
-              <CarouselContent>
-                {[asset.featuredImage, ...asset.galleryImages].map(
-                  (image, index) => (
-                    <CarouselItem key={index}>
-                      <div className='relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border/50'>
-                        <Image
-                          src={image || '/placeholder.svg?height=600&width=800'}
-                          alt={asset.title}
-                          fill
-                          className='object-cover'
-                          priority
-                        />
-                      </div>
-                    </CarouselItem>
-                  ),
-                )}
-              </CarouselContent>
-              <CarouselThumbnails images={asset.galleryImages} />
-            </Carousel>
+            <AssetDetailCarousel
+              featuredImage={asset.featuredImage}
+              galleryImages={asset.galleryImages}
+              title={asset.title}
+            />
 
             {/* Asset Details */}
             <AssetDetailsTabs

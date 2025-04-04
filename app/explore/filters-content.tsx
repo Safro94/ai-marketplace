@@ -114,16 +114,17 @@ export const FiltersContent: FC<Props> = ({
           </AccordionTrigger>
 
           <AccordionContent>
-            <div className='space-y-4 px-1'>
-              <Slider
-                defaultValue={[priceRange[0], priceRange[1]]}
-                max={priceRange[1]}
-                min={0}
-                step={1}
-                value={[priceRange[0], priceRange[1]]}
-                onValueChange={setPriceRange}
-                className='py-4'
-              />
+            <div className='space-y-4'>
+              <div className='p-4'>
+                <Slider
+                  defaultValue={[priceRange[0], priceRange[1]]}
+                  max={priceRange[1]}
+                  min={0}
+                  step={1}
+                  value={[priceRange[0], priceRange[1]]}
+                  onValueChange={setPriceRange}
+                />
+              </div>
 
               <div className='grid grid-cols-3 items-center justify-between'>
                 <div className='flex items-center gap-2'>
