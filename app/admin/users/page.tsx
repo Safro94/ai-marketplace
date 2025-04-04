@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -36,7 +37,7 @@ export default async function UsersPage() {
   })
 
   return (
-    <div>
+    <PageContainer>
       <h1 className='text-3xl font-bold tracking-tight mb-8'>Users</h1>
 
       <Card>
@@ -123,6 +124,6 @@ export default async function UsersPage() {
           </Table>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   )
 }

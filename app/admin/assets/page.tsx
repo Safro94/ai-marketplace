@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Badge } from '@/components/ui/badge'
 import {
   Card,
@@ -21,7 +22,7 @@ export default async function ModerationPage() {
   const pendingAssets = await ModerationService.getPendingAssets(20, 0)
 
   return (
-    <div className='container py-10'>
+    <PageContainer>
       <h1 className='text-3xl font-bold mb-6'>Content Moderation</h1>
 
       <Tabs defaultValue='pending'>
@@ -134,6 +135,6 @@ export default async function ModerationPage() {
           </div>
         </TabsContent> */}
       </Tabs>
-    </div>
+    </PageContainer>
   )
 }

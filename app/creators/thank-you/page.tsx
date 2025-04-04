@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import { CheckCircle } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -17,7 +18,7 @@ const NEXT_STEPS = [
 
 export default function ThankYouPage() {
   return (
-    <div className='container py-20'>
+    <PageContainer>
       <div className='max-w-2xl mx-auto text-center'>
         <div className='flex justify-center mb-6'>
           <div className='h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center'>
@@ -56,6 +57,6 @@ export default function ThankYouPage() {
           </Button>
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }

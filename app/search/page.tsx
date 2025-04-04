@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import type { Metadata } from 'next'
 import { AssetGrid } from '../explore/(grid)/asset-grid'
 import { AssetFilters } from '../explore/asset-filters'
@@ -26,7 +27,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
   const query = searchParams.q || ''
 
   return (
-    <div className='container py-8'>
+    <PageContainer>
       <div className='mb-8'>
         <SearchBar className='max-w-2xl mx-auto mb-6' />
 
@@ -45,6 +46,6 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
           <AssetGrid />
         </main>
       </div>
-    </div>
+    </PageContainer>
   )
 }

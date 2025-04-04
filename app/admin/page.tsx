@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import prisma from '@/lib/prisma'
 import { ApplicationStatus } from '@prisma/client'
@@ -31,7 +32,7 @@ export default async function AdminDashboardPage() {
   const totalRevenue = sales.reduce((total, sale) => total + sale.amount, 0)
 
   return (
-    <div>
+    <PageContainer>
       <h1 className='text-3xl font-bold tracking-tight mb-8'>
         Admin Dashboard
       </h1>
@@ -122,6 +123,6 @@ export default async function AdminDashboardPage() {
           </Card>
         </TabsContent>
       </Tabs> */}
-    </div>
+    </PageContainer>
   )
 }

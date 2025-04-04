@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { Card, CardContent } from '@/components/ui/card'
@@ -139,7 +140,7 @@ export default async function AssetPage({
         }}
       />
 
-      <div className='container py-8'>
+      <PageContainer>
         <BreadcrumbNavigation
           items={[
             { text: 'Explore', link: ROUTES.explore() },
@@ -290,7 +291,7 @@ export default async function AssetPage({
             />
           </div>
         </div>
-      </div>
+      </PageContainer>
     </>
   )
 }

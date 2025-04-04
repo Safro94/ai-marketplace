@@ -1,11 +1,10 @@
 'use client'
 
 import { ThemeToggle } from '@/components/header/theme-toggle'
-import { Input } from '@/components/ui/input'
-import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
 import { cn, getCreatorsLinks } from '@/lib/utils'
-import { Menu, Search, X } from 'lucide-react'
+import { User } from 'better-auth'
+import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FC, useState } from 'react'
@@ -13,16 +12,17 @@ import { Button } from '../ui/button'
 
 interface Props {
   isCreator: boolean
+  user: User | undefined
   hasPendingApplication: boolean
 }
 
 export const HeaderMobileButton: FC<Props> = ({
+  user,
   isCreator,
   hasPendingApplication,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { user } = useAuth()
   const links = getCreatorsLinks(isCreator, hasPendingApplication)
 
   return (
@@ -41,15 +41,6 @@ export const HeaderMobileButton: FC<Props> = ({
       {isMenuOpen && (
         <div className='md:hidden absolute top-16 left-0 right-0 z-10 bg-background border-t border-border/40'>
           <div className='container py-4 space-y-4'>
-            <div className='relative'>
-              <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
-              <Input
-                type='search'
-                placeholder='Search assets...'
-                className='w-full pl-8'
-              />
-            </div>
-
             <div className='flex items-center justify-between'>
               <span className='text-sm font-medium'>Theme</span>
               <ThemeToggle />

@@ -87,17 +87,14 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={cn(
-          'min-h-screen bg-background font-sans antialiased',
-          inter.className,
-        )}
+        className={cn('bg-background font-sans antialiased', inter.className)}
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
 
         <Providers>
-          <div className='flex min-h-screen flex-col'>
+          <div className='min-h-screen grid grid-rows-[max-content_1fr_max-content]'>
             <Header />
-            <main className='flex-1'>{children}</main>
+            <main className='flex'>{children}</main>
             <Footer />
           </div>
 

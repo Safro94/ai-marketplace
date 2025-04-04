@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -100,7 +101,7 @@ export default async function CreatorDashboard() {
     : 0
 
   return (
-    <div className='container py-10'>
+    <PageContainer>
       <div className='flex justify-between items-center mb-8'>
         <h1 className='text-3xl font-bold'>Creator Dashboard</h1>
         <Button asChild>
@@ -246,6 +247,6 @@ export default async function CreatorDashboard() {
           </Card>
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }

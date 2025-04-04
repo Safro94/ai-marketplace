@@ -1,4 +1,5 @@
 import { NotFound } from '@/components/not-found'
+import { PageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -87,7 +88,7 @@ export default async function PurchasesPage({
   })
 
   return (
-    <div className='container py-12'>
+    <PageContainer>
       <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-8'>
         <div>
           <h1 className='text-3xl font-bold tracking-tight mb-2'>
@@ -269,6 +270,6 @@ export default async function PurchasesPage({
           )}
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContainer>
   )
 }

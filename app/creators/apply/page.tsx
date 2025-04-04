@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -10,40 +11,37 @@ export const metadata: Metadata = {
 
 export default function CreatorApplicationPage() {
   return (
-    <div className='container py-12'>
-      <div className='max-w-3xl mx-auto'>
-        <div className='mb-8'>
-          <h1 className='text-3xl font-bold tracking-tight mb-2'>
-            Creator Application
-          </h1>
+    <PageContainer>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold tracking-tight mb-2'>
+          Creator Application
+        </h1>
 
-          <p className='text-muted-foreground'>
-            Fill out the form below to apply as a creator on AIAssets
-            Marketplace
-          </p>
-        </div>
-
-        <CreatorApplicationForm />
-
-        <div className='mt-8 text-center text-sm text-muted-foreground'>
-          <p>
-            By submitting this application, you agree to our{' '}
-            <Link
-              href={ROUTES.creatorTerms()}
-              className='text-primary underline underline-offset-4'
-            >
-              Creator Terms
-            </Link>{' '}
-            and{' '}
-            <Link
-              href={ROUTES.privacy()}
-              className='text-primary underline underline-offset-4'
-            >
-              Privacy Policy
-            </Link>
-          </p>
-        </div>
+        <p className='text-muted-foreground'>
+          Fill out the form below to apply as a creator on AIAssets Marketplace
+        </p>
       </div>
-    </div>
+
+      <CreatorApplicationForm />
+
+      <div className='mt-8 text-center text-sm text-muted-foreground'>
+        <p>
+          By submitting this application, you agree to our{' '}
+          <Link
+            href={ROUTES.creatorTerms()}
+            className='text-primary underline underline-offset-4'
+          >
+            Creator Terms
+          </Link>{' '}
+          and{' '}
+          <Link
+            href={ROUTES.privacy()}
+            className='text-primary underline underline-offset-4'
+          >
+            Privacy Policy
+          </Link>
+        </p>
+      </div>
+    </PageContainer>
   )
 }

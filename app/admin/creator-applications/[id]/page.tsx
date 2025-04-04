@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -49,7 +50,7 @@ export default async function CreatorApplicationPage({
   if (!application) notFound()
 
   return (
-    <div>
+    <PageContainer>
       <div className='flex items-center justify-between mb-8'>
         <h1 className='text-3xl font-bold tracking-tight'>
           Creator Application
@@ -233,7 +234,7 @@ export default async function CreatorApplicationPage({
           </Card>
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }
 

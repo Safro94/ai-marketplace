@@ -54,7 +54,7 @@ export const Header = async () => {
             <>
               {/* <NotificationsDropdown /> */}
               <CartButton />
-              <HeaderDropdown isCreator={isCreator} />
+              <HeaderDropdown isCreator={isCreator} user={session.user} />
             </>
           ) : (
             <div className='hidden md:flex gap-2'>
@@ -71,6 +71,7 @@ export const Header = async () => {
           <HeaderMobileButton
             isCreator={isCreator}
             hasPendingApplication={hasPendingApplication}
+            user={session?.user}
           />
         </div>
       </div>

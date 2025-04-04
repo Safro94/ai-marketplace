@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { ROUTES } from '@/lib/constants'
 import { getCategories } from '@/lib/db/categories'
@@ -17,7 +18,7 @@ export default async function UploadAssetPage() {
   const categories = await getCategories()
 
   return (
-    <div className='container py-12'>
+    <PageContainer>
       <BreadcrumbNavigation
         items={[
           {
@@ -47,6 +48,6 @@ export default async function UploadAssetPage() {
           marketplace. This process typically takes 1-2 business days.
         </p>
       </div>
-    </div>
+    </PageContainer>
   )
 }

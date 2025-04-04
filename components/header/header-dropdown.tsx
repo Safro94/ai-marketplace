@@ -10,9 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
 import { tryCatch } from '@/lib/utils'
+import { User } from 'better-auth'
 import Link from 'next/link'
 import { FC } from 'react'
 import { toast } from '../ui/toast'
@@ -20,13 +20,10 @@ import { signUserOut } from './sign-out-action'
 
 interface Props {
   isCreator: boolean
+  user: User
 }
 
-export const HeaderDropdown: FC<Props> = ({ isCreator }) => {
-  const { user } = useAuth()
-
-  if (!user) return null
-
+export const HeaderDropdown: FC<Props> = ({ isCreator, user }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

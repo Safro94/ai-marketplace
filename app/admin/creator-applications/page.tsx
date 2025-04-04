@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -43,7 +44,7 @@ export default async function CreatorApplicationsPage() {
   })
 
   return (
-    <div>
+    <PageContainer>
       <h1 className='text-3xl font-bold tracking-tight mb-8'>
         Creator Applications
       </h1>
@@ -126,6 +127,6 @@ export default async function CreatorApplicationsPage() {
           </Table>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   )
 }

@@ -1,4 +1,5 @@
 import { AssetUploadForm } from '@/app/creator-dashboard/upload/asset-upload-form'
+import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import {
   Card,
@@ -65,7 +66,7 @@ export default async function EditAssetPage({
   }
 
   return (
-    <div className='container py-10'>
+    <PageContainer>
       <BreadcrumbNavigation
         items={[
           { text: 'Creator Dashboard', link: ROUTES.creatorDashboard() },
@@ -88,6 +89,6 @@ export default async function EditAssetPage({
           <AssetUploadForm categories={data} initialData={asset} />
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   )
 }

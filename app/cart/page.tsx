@@ -1,5 +1,6 @@
 'use client'
 
+import { PageContainer } from '@/components/page-container'
 import { Button, LoadingButton } from '@/components/ui/button'
 import {
   Card,
@@ -47,7 +48,7 @@ export default function CartPage() {
 
   if (!items.length) {
     return (
-      <div className='container py-10'>
+      <PageContainer>
         <h1 className='text-3xl font-bold mb-8'>Your Cart</h1>
 
         <div className='text-center py-12 border rounded-lg'>
@@ -61,12 +62,12 @@ export default function CartPage() {
             <Link href={ROUTES.explore()}>Browse Marketplace</Link>
           </Button>
         </div>
-      </div>
+      </PageContainer>
     )
   }
 
   return (
-    <div className='container py-10'>
+    <PageContainer>
       <h1 className='text-3xl font-bold mb-8'>Your Cart</h1>
 
       <div className='grid  md:grid-cols-3 gap-8'>
@@ -161,6 +162,6 @@ export default function CartPage() {
           </Card>
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }

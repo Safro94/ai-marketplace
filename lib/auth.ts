@@ -47,7 +47,7 @@ export const auth = betterAuth({
     },
   },
   emailAndPassword: {
-    enabled: true,
+    enabled: false,
     // async sendResetPassword({ user, url }) {
     //   await resend.emails.send({
     //     from: EMAIL_FROM,
@@ -79,6 +79,26 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_SECRET_ID as string,
+      mapProfileToUser: (profile) => {
+        return {
+          ...profile,
+          role: USER_TYPES.USER,
+        }
+      },
+    },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      mapProfileToUser: (profile) => {
+        return {
+          ...profile,
+          role: USER_TYPES.USER,
+        }
+      },
+    },
+    twitter: {
+      clientId: process.env.TWITTER_CLIENT_ID as string,
+      clientSecret: process.env.TWITTER_CLIENT_SECRET as string,
       mapProfileToUser: (profile) => {
         return {
           ...profile,

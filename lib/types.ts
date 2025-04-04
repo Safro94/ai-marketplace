@@ -1,5 +1,11 @@
 import { Asset, Category, Profile, User } from '@prisma/client'
 
+export enum OAuthProviders {
+  GOOGLE = 'google',
+  GITHUB = 'github',
+  TWITTER = 'twitter',
+}
+
 export enum USER_TYPES {
   ADMIN = 'admin',
   USER = 'user',

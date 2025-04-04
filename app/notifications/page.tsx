@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import {
   Card,
@@ -51,7 +52,7 @@ export default async function NotificationsPage() {
   }
 
   return (
-    <div className='container py-10'>
+    <PageContainer>
       <BreadcrumbNavigation
         items={[
           { text: 'Home', link: ROUTES.home() },
@@ -107,6 +108,6 @@ export default async function NotificationsPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   )
 }

@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/page-container'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { toast } from '@/components/ui/toast'
 import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
@@ -69,7 +70,7 @@ export default async function ExplorePage({ searchParams }: Props) {
   }
 
   return (
-    <div className='container py-8'>
+    <PageContainer>
       <div className='mb-6'>
         <h1 className='text-3xl font-bold tracking-tight mb-2'>
           Explore AI Assets
@@ -113,6 +114,6 @@ export default async function ExplorePage({ searchParams }: Props) {
           />
         </main>
       </div>
-    </div>
+    </PageContainer>
   )
 }

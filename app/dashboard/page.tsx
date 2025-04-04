@@ -1,4 +1,5 @@
 import { NotFound } from '@/components/not-found'
+import { PageContainer } from '@/components/page-container'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -104,7 +105,7 @@ export default async function DashboardPage() {
   })
 
   return (
-    <div className='container py-8'>
+    <PageContainer>
       <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-8'>
         <div>
           <h1 className='text-3xl font-bold tracking-tight'>Dashboard</h1>
@@ -357,6 +358,6 @@ export default async function DashboardPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContainer>
   )
 }
