@@ -46,7 +46,7 @@ export const AssetDetailCarousel: FC<Props> = ({
         <CarouselContent>
           {[featuredImage, ...galleryImages].map((image, index) => (
             <CarouselItem key={index}>
-              <div className='relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border/50'>
+              <div className='relative aspect-video w-full overflow-hidden rounded-lg border border-border/50'>
                 <Image
                   src={image || '/placeholder.svg?height=600&width=800'}
                   alt={title}

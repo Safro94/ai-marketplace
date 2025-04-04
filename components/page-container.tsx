@@ -5,5 +5,5 @@ export const PageContainer: FC<PropsWithChildren & { className?: string }> = ({
   children,
   className,
 }) => {
-  return <div className={cn('container py-12', className)}>{children}</div>
+  return <div className={cn('container py-8', className)}>{children}</div>
 }

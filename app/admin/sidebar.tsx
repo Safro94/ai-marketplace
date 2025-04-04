@@ -1,20 +1,10 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { toast } from '@/components/ui/toast'
-import { authClient } from '@/lib/auth-client'
 import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import {
-  FileText,
-  Home,
-  LogOut,
-  LucideIcon,
-  ShoppingBag,
-  Users,
-} from 'lucide-react'
+import { FileText, Home, LucideIcon, ShoppingBag, Users } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 const NAVIGATION_LINKS: {
   name: string
@@ -35,7 +25,6 @@ const NAVIGATION_LINKS: {
 
 export const AdminSidebar = () => {
   const pathname = usePathname()
-  const router = useRouter()
 
   return (
     <div className='flex flex-col w-64 bg-secondary/50 border-r border-border'>
@@ -72,30 +61,6 @@ export const AdminSidebar = () => {
             )
           })}
         </nav>
-      </div>
-
-      <div className='p-4 border-t border-border'>
-        <Button
-          variant='outline'
-          className='w-full justify-start'
-          onClick={async () => {
-            await authClient.signOut({
-              fetchOptions: {
-                onSuccess() {
-                  router.push(ROUTES.home())
-                },
-                onError(context) {
-                  toast.error('Error', {
-                    description: context.error.message,
-                  })
-                },
-              },
-            })
-          }}
-        >
-          <LogOut className='mr-3 h-5 w-5' />
-          Sign out
-        </Button>
       </div>
     </div>
   )

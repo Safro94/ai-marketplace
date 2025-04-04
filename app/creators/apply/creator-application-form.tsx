@@ -21,13 +21,19 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
-import { useAuth } from '@/hooks/use-auth'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { User } from 'better-auth'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+
+interface Props {
+  user: User | undefined
+}
+
+const BIO_MAX_LENGTH = 500
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name is required' }),
@@ -46,7 +52,9 @@ const formSchema = z.object({
   bio: z
     .string()
     .min(50, { message: 'Bio must be at least 50 characters' })
-    .max(500, { message: 'Bio cannot exceed 500 characters' }),
+    .max(BIO_MAX_LENGTH, {
+      message: `Bio cannot exceed ${BIO_MAX_LENGTH} characters`,
+    }),
   assetTypes: z.string().min(10, {
     message: 'Please describe the types of assets you plan to sell',
   }),
@@ -60,15 +68,14 @@ const formSchema = z.object({
   }),
 })
 
-export const CreatorApplicationForm = () => {
+export const CreatorApplicationForm: FC<Props> = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { user } = useAuth()
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: '',
+      fullName: user?.name || '',
       email: user?.email || '',
       website: '',
       expertise: '',
@@ -148,6 +155,7 @@ export const CreatorApplicationForm = () => {
         <FormField
           control={form.control}
           name='email'
+          disabled={!!user?.email}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email Address</FormLabel>
@@ -271,9 +279,11 @@ export const CreatorApplicationForm = () => {
               <FormLabel>Professional Bio</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder='Tell us about your background, skills, and experience with AI...'
-                  className='min-h-[120px]'
                   {...field}
+                  placeholder='Tell us about your background, skills, and experience with AI...'
+                  maxLength={BIO_MAX_LENGTH}
+                  currentLength={field.value.length}
+                  className='min-h-[120px]'
                 />
               </FormControl>
 

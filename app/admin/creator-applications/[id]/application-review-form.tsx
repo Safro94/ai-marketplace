@@ -22,10 +22,11 @@ interface Props {
 }
 
 export const ApplicationReviewForm: FC<Props> = ({ applicationId }) => {
+  const router = useRouter()
+
   const [reviewNotes, setReviewNotes] = useState('')
   const [isApproving, setIsApproving] = useState(false)
   const [isRejecting, setIsRejecting] = useState(false)
-  const router = useRouter()
 
   const handleApprove = async () => {
     setIsApproving(true)
@@ -53,7 +54,7 @@ export const ApplicationReviewForm: FC<Props> = ({ applicationId }) => {
         description: 'The creator application has been approved successfully.',
       })
 
-      router.refresh()
+      router.push(API_ROUTES.adminCreatorApplications())
     } catch (error) {
       toast.error('Error', {
         description:

@@ -70,7 +70,7 @@ export default async function ExplorePage({ searchParams }: Props) {
   }
 
   return (
-    <PageContainer>
+    <PageContainer className='min-h-screen'>
       <div className='mb-6'>
         <h1 className='text-3xl font-bold tracking-tight mb-2'>
           Explore AI Assets

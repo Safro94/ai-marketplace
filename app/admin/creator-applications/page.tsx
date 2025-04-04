@@ -22,6 +22,7 @@ import prisma from '@/lib/prisma'
 import { ApplicationStatus } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
+import { AllCaughtUp } from '../all-caught-up'
 
 export default async function CreatorApplicationsPage() {
   await validateAdminProfile(ROUTES.adminCreatorApplications())
@@ -48,41 +49,33 @@ export default async function CreatorApplicationsPage() {
       <h1 className='text-3xl font-bold tracking-tight mb-8'>
         Creator Applications
       </h1>
+      {!applications.length ? (
+        <AllCaughtUp />
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Applications</CardTitle>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Applications</CardTitle>
+            <CardDescription>
+              Review and manage creator applications
+            </CardDescription>
+          </CardHeader>
 
-          <CardDescription>
-            Review and manage creator applications
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Expertise</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Submitted</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {applications.length === 0 ? (
+          <CardContent>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className='text-center py-8 text-muted-foreground'
-                  >
-                    No applications found
-                  </TableCell>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Expertise</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Submitted</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ) : (
-                applications.map((application) => (
+              </TableHeader>
+
+              <TableBody>
+                {applications.map((application) => (
                   <TableRow key={application.id}>
                     <TableCell className='font-medium'>
                       {application.fullName}
@@ -121,12 +114,12 @@ export default async function CreatorApplicationsPage() {
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </PageContainer>
   )
 }

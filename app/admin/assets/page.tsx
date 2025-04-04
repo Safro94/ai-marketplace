@@ -12,8 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { validateAdminProfile } from '@/lib/db/permissions'
 import { ModerationService } from '@/services/ModerationService'
 import { format } from 'date-fns'
-import { AlertCircle, CheckCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
+import { AllCaughtUp } from '../all-caught-up'
 import { ModerationActions } from './moderation-actions'
 
 export default async function ModerationPage() {
@@ -35,13 +36,7 @@ export default async function ModerationPage() {
 
         <TabsContent value='pending'>
           {!pendingAssets.length ? (
-            <div className='text-center py-12 bg-muted rounded-lg'>
-              <CheckCircle className='h-12 w-12 text-green-500 mx-auto mb-4' />
-              <h2 className='text-xl font-medium mb-2'>All caught up!</h2>
-              <p className='text-muted-foreground'>
-                There are no assets pending review.
-              </p>
-            </div>
+            <AllCaughtUp />
           ) : (
             <div className='grid gap-6'>
               {pendingAssets.map((asset) => (

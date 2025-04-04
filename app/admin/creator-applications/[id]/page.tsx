@@ -1,6 +1,6 @@
 import { PageContainer } from '@/components/page-container'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import {
   Card,
   CardContent,
@@ -13,10 +13,9 @@ import { validateAdminProfile } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { ApplicationStatus } from '@prisma/client'
 import { format, formatDistanceToNow } from 'date-fns'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ElementType, ReactNode } from 'react'
-import { ApplicationReviewForm } from '../../application-review-form'
+import { ApplicationReviewForm } from './application-review-form'
 
 export default async function CreatorApplicationPage({
   params,
@@ -51,17 +50,19 @@ export default async function CreatorApplicationPage({
 
   return (
     <PageContainer>
-      <div className='flex items-center justify-between mb-8'>
-        <h1 className='text-3xl font-bold tracking-tight'>
-          Creator Application
-        </h1>
+      <BreadcrumbNavigation
+        items={[
+          {
+            text: 'Creator Applications',
+            link: ROUTES.adminCreatorApplications(),
+          },
+          { text: `${application.fullName} application` },
+        ]}
+      />
 
-        <Button variant='outline' asChild>
-          <Link href={ROUTES.adminCreatorApplications()}>
-            Back to Applications
-          </Link>
-        </Button>
-      </div>
+      <h1 className='text-3xl font-bold tracking-tight mb-8'>
+        Creator Application
+      </h1>
 
       <div className='grid md:grid-cols-3 gap-6'>
         <div className='md:col-span-2 space-y-6'>
@@ -250,7 +251,7 @@ const Item = ({
   as?: ElementType
 }) => {
   const className =
-    Tag === 'div' ? 'p-4 bg-muted rounded-md whitespace-pre-wrap' : 'mt-1'
+    Tag === 'div' ? 'p-4 bg-muted rounded-md break-anywhere' : 'mt-1'
 
   return (
     <div key={title}>

@@ -1,4 +1,3 @@
-import { PageContainer } from '@/components/page-container'
 import { isAdminOrCreator } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
@@ -52,7 +51,7 @@ export default async function CreatorsPage({
   const error = (await searchParams).error
 
   return (
-    <PageContainer className='flex flex-col'>
+    <div className='flex flex-col'>
       {/* Error message if needed */}
       {error === 'not-creator' && (
         <div className='bg-destructive/15 border-l-4 border-destructive p-4'>
@@ -83,6 +82,6 @@ export default async function CreatorsPage({
       <CreatorsTypesSection />
       <CreatorsFAQSection />
       {!isCreator && <CreatorsCTASection />}
-    </PageContainer>
+    </div>
   )
 }
