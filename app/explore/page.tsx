@@ -15,7 +15,7 @@ import {
 } from './explore-utils'
 
 interface Props {
-  searchParams: Promise<{ category: string }>
+  searchParams: Promise<{ category: string; q: string }>
 }
 
 export const metadata: Metadata = {
@@ -107,12 +107,12 @@ export default async function ExplorePage({ searchParams }: Props) {
           />
         </aside>
 
-        <main className='flex-1'>
+        <div className='flex-1'>
           <AssetGrid
             assets={assetData?.assets}
             pagination={assetData?.pagination}
           />
-        </main>
+        </div>
       </div>
     </PageContainer>
   )

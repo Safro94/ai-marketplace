@@ -52,7 +52,7 @@ export const API_ROUTES = {
 }
 
 export const CACHE_KEYS = {
-  profile: (profileId: string) => `profile-${profileId}`,
+  profile: (userId: string) => `profile-${userId}`,
 }
 
 export const WS_EVENTS = {
@@ -64,6 +64,7 @@ export const PAYPAL_EMAIL = process.env.NEXT_PUBLIC_PAYPAL_EMAIL
 export const SUPPORT_EMAIL = 'support@aiassetsmarketplace.com'
 export const INFO_EMAIL = 'info@aiassetsmarketplace.com'
 export const PRIVACY_EMAIL = 'privacy@aiassetsmarketplace.com'
+export const BIO_MAX_LENGTH = 500
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },
@@ -78,6 +79,7 @@ export enum EXPLORE_PARAMS {
   MIN_PRICE = 'minPrice',
   SORT_BY = 'sortBy',
   PAGE = 'page',
+  QUERY = 'q',
 }
 
 export enum EXPLORE_FITLERS {

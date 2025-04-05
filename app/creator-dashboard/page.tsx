@@ -57,7 +57,11 @@ export default async function CreatorDashboard() {
       },
       buyer: {
         select: {
-          name: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
       assetLicense: {
@@ -216,7 +220,7 @@ export default async function CreatorDashboard() {
             </CardHeader>
 
             <CardContent>
-              {!!recentSales.length ? (
+              {!recentSales.length ? (
                 <div className='text-center py-8'>
                   <Package className='h-8 w-8 text-muted-foreground mx-auto mb-2' />
                   <p className='text-muted-foreground'>No sales yet</p>

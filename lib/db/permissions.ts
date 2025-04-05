@@ -23,9 +23,7 @@ export const validateAdminProfile = async (callbackUrl?: string) => {
   return { profile }
 }
 
-export const validateRouteProfilePermissions = async (
-  role: Role = Role.ADMIN,
-) => {
+export const validateRouteProfilePermissions = async () => {
   const session = await getServerSession()
 
   if (!session?.user) {
@@ -34,10 +32,10 @@ export const validateRouteProfilePermissions = async (
 
   // Check if user is an admin
   const profile = await prisma.profile.findUnique({
-    where: { role, userId: session.user.id },
+    where: { userId: session.user.id },
   })
 
-  if (!profile) {
+  if (!profile || !isAdminOrCreator(profile)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 

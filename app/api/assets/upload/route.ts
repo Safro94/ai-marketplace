@@ -1,14 +1,14 @@
-import { assetUploadSchema } from '@/app/creator-dashboard/upload/asset-upload-schema'
 import { CACHE_KEYS } from '@/lib/constants'
 import { validateRouteProfilePermissions } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
+import { assetUploadSchema } from '@/lib/schemas'
 import { ModerationService } from '@/services/ModerationService'
-import { AssetStatus, Role } from '@prisma/client'
+import { AssetStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  const result = await validateRouteProfilePermissions(Role.CREATOR)
+  const result = await validateRouteProfilePermissions()
   if (result instanceof NextResponse) return result
   const { profile } = result
 
@@ -85,25 +85,25 @@ export async function POST(request: Request) {
       },
     })
 
-    // Notify admins if manual review is needed
-    if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
-      // Create notification for admins
-      const admins = await prisma.profile.findMany({
-        where: { role: Role.ADMIN },
-      })
+    // // Notify admins if manual review is needed
+    // if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
+    //   // Create notification for admins
+    //   const admins = await prisma.profile.findMany({
+    //     where: { role: Role.ADMIN },
+    //   })
 
-      for (const admin of admins) {
-        await prisma.notification.create({
-          data: {
-            userId: admin.id,
-            title: 'New Asset Pending Review',
-            message: `Asset "${asset.title}" by ${profile.name} requires review.`,
-            type: 'INFO',
-            data: JSON.stringify({ assetId: asset.id }),
-          },
-        })
-      }
-    }
+    //   for (const admin of admins) {
+    //     await prisma.notification.create({
+    //       data: {
+    //         userId: admin.id,
+    //         title: 'New Asset Pending Review',
+    //         message: `Asset "${asset.title}" by ${profile.name} requires review.`,
+    //         type: 'INFO',
+    //         data: JSON.stringify({ assetId: asset.id }),
+    //       },
+    //     })
+    //   }
+    // }
 
     // Update creator stats
     await prisma.profile.update({
@@ -131,7 +131,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const result = await validateRouteProfilePermissions(Role.CREATOR)
+  const result = await validateRouteProfilePermissions()
   if (result instanceof NextResponse) return result
   const { profile } = result
 
@@ -203,25 +203,25 @@ export async function PATCH(request: Request) {
       },
     })
 
-    // Notify admins if manual review is needed
-    if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
-      // Create notification for admins
-      const admins = await prisma.profile.findMany({
-        where: { role: Role.ADMIN },
-      })
+    // // Notify admins if manual review is needed
+    // if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
+    //   // Create notification for admins
+    //   const admins = await prisma.profile.findMany({
+    //     where: { role: Role.ADMIN },
+    //   })
 
-      for (const admin of admins) {
-        await prisma.notification.create({
-          data: {
-            userId: admin.id,
-            title: 'New Asset Pending Review',
-            message: `Asset "${asset.title}" by ${profile.name} requires review.`,
-            type: 'INFO',
-            data: JSON.stringify({ assetId: asset.id }),
-          },
-        })
-      }
-    }
+    //   for (const admin of admins) {
+    //     await prisma.notification.create({
+    //       data: {
+    //         userId: admin.id,
+    //         title: 'New Asset Pending Review',
+    //         message: `Asset "${asset.title}" by ${profile.name} requires review.`,
+    //         type: 'INFO',
+    //         data: JSON.stringify({ assetId: asset.id }),
+    //       },
+    //     })
+    //   }
+    // }
 
     // Update creator stats
     await prisma.profile.update({

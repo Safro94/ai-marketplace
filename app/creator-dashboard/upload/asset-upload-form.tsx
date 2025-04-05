@@ -22,6 +22,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { assetUploadSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Asset, AssetLicense, AssetStatus, Category } from '@prisma/client'
 import { useRouter } from 'next/navigation'
@@ -29,7 +30,6 @@ import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AssetImageUpload } from './asset-image-upload'
-import { assetUploadSchema } from './asset-upload-schema'
 import { LicensePricing } from './license-pricing'
 
 type FormData = z.infer<typeof assetUploadSchema>
@@ -161,7 +161,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
         <div className='space-y-4'>
           <div>
             <h3 className='text-lg font-medium mb-2'>Asset Files</h3>
-            <div className='grid md:grid-cols-2 gap-4'>
+            <div className='grid md:grid-cols-2 md:items-stretch gap-4'>
               <Card className='grid grid-rows-[max-content_1fr]'>
                 <CardHeader>
                   <CardTitle>Featured Image</CardTitle>
@@ -170,7 +170,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent className='flex'>
                   <AssetImageUpload formField='featuredImage' form={form} />
                 </CardContent>
               </Card>
@@ -183,7 +183,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent className='flex'>
                   <AssetImageUpload formField='assetFile' form={form} />
                 </CardContent>
               </Card>

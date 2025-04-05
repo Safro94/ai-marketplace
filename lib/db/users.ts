@@ -10,7 +10,7 @@ export const getUserProfile = async (userId: string) => {
     revalidate: 3600 * 6, // 6 hours
     expire: 86400, // 1 day
   })
-  unstable_cacheTag(`${CACHE_KEYS.profile}-${userId}`)
+  unstable_cacheTag(CACHE_KEYS.profile(userId))
 
   return prisma.profile.findUnique({
     where: { userId },

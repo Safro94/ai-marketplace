@@ -1,23 +1,25 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { UploadFile } from '@/components/ui/file-upload'
+import { UploadDropzone, UploadFile } from '@/components/ui/file-upload'
 import { FormMessage } from '@/components/ui/form'
 import { toast } from '@/components/ui/toast'
+import { assetUploadSchema } from '@/lib/schemas'
+import { cn } from '@/lib/utils'
 import Image from 'next/image'
-import { FC } from 'react'
+import { ComponentProps, FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { assetUploadSchema } from './asset-upload-schema'
 
 type FormData = z.infer<typeof assetUploadSchema>
+type ImageSchemaKeys = keyof Pick<
+  FormData,
+  'featuredImage' | 'assetFile' | 'galleryImages'
+>
 
 interface Props {
   form: ReturnType<typeof useForm<FormData>>
-  formField: keyof Pick<
-    FormData,
-    'featuredImage' | 'assetFile' | 'galleryImages'
-  >
+  formField: ImageSchemaKeys
 }
 
 export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
@@ -27,7 +29,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
     switch (true) {
       case isGallery:
         return (
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 flex-1'>
             <div className='flex gap-2'>
               {form.getValues('galleryImages').map((item) => (
                 <Image
@@ -36,7 +38,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
                   height={150}
                   src={item}
                   alt='Image'
-                  className='object-cover mt-2 rounded-md'
+                  className='object-cover rounded-md'
                 />
               ))}
             </div>
@@ -56,20 +58,20 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
         )
       case formField === 'featuredImage':
         return (
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 flex-1'>
             <Image
               width={150}
               height={150}
-              src={form.getValues('featuredImage')}
+              src={form.getValues(formField)}
               alt='Featured Image'
-              className='w-full h-full object-cover mt-2 rounded-md'
+              className='w-full h-full object-cover rounded-md'
             />
 
             <Button
               type='button'
               variant='outline'
               onClick={() => {
-                form.setValue('featuredImage', '', {
+                form.setValue(formField, '', {
                   shouldValidate: true,
                 })
               }}
@@ -80,7 +82,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
         )
       default:
         return (
-          <div className='flex flex-col gap-2 h-full'>
+          <div className='flex flex-col gap-2 h-full flex-1'>
             <span className='text-2xl font-medium h-full w-full flex flex-col gap-4 justify-center items-center border rounded-lg bg-gray-100'>
               Preview not available
             </span>
@@ -89,7 +91,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
               type='button'
               variant='outline'
               onClick={() => {
-                form.setValue('assetFile', '', {
+                form.setValue(formField, '', {
                   shouldValidate: true,
                 })
               }}
@@ -113,33 +115,54 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
         <Controller
           control={form.control}
           name={formField}
-          render={({ field }) => (
-            <div className='flex flex-col gap-2'>
-              <UploadFile
-                {...field}
-                onClientUploadComplete={(res) => {
-                  toast.success('File uploaded successfully')
+          render={() => {
+            const endpoints: Record<
+              ImageSchemaKeys,
+              ComponentProps<typeof UploadDropzone>['endpoint']
+            > = {
+              featuredImage: 'assetUploadFeaturedImageOrVideo',
+              assetFile: 'assetUploadFile',
+              galleryImages: 'assetUploadGalleryImages',
+            }
 
-                  if (isGallery) {
-                    form.setValue(
-                      formField,
-                      res.map((item) => item.ufsUrl),
-                    )
-                  } else {
-                    form.setValue(formField, res[0].ufsUrl)
-                  }
-                }}
-                onUploadError={(error: Error) => {
-                  toast.error('An error occurred while uploading your file', {
-                    description: error.message,
-                  })
-                }}
-              />
+            const endpoint = endpoints[formField]
 
-              {/* @ts-expect-error error */}
-              <FormMessage error={form.formState.errors[formField]} />
-            </div>
-          )}
+            return (
+              <div
+                className={cn(
+                  'flex-1 flex',
+                  form.formState.errors[formField] && 'flex flex-col gap-2',
+                )}
+              >
+                <UploadFile
+                  endpoint={endpoint}
+                  onClientUploadComplete={(res) => {
+                    if (isGallery) {
+                      form.setValue(
+                        formField,
+                        res.map((item) => item.ufsUrl),
+                        { shouldValidate: true },
+                      )
+                    } else {
+                      form.setValue(formField, res[0].ufsUrl, {
+                        shouldValidate: true,
+                      })
+                    }
+
+                    toast.success('File uploaded successfully')
+                  }}
+                  onUploadError={(error: Error) => {
+                    toast.error('An error occurred while uploading your file', {
+                      description: error.message,
+                    })
+                  }}
+                />
+
+                {/* @ts-expect-error error */}
+                <FormMessage error={form.formState.errors[formField]} />
+              </div>
+            )
+          }}
         />
       )}
     </>

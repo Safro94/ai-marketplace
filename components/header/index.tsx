@@ -11,7 +11,6 @@ import { CartButton } from './cart-button'
 import { HeaderDropdown } from './header-dropdown'
 import { HeaderMobileButton } from './header-mobile-button'
 import { HeaderNav } from './header-nav'
-import { HeaderSearchbar } from './header-searchbar'
 
 export const Header = async () => {
   const session = await getServerSession()
@@ -47,7 +46,6 @@ export const Header = async () => {
         </div>
 
         <div className='flex items-center gap-4'>
-          <HeaderSearchbar />
           <ThemeToggle />
 
           {session?.user ? (

@@ -22,43 +22,40 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
-import { API_ROUTES } from '@/lib/constants'
+import { API_ROUTES, BIO_MAX_LENGTH } from '@/lib/constants'
+import { userAccountSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Profile } from '@prisma/client'
+import { User } from 'better-auth'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  bio: z
-    .string()
-    .max(500, { message: 'Bio cannot exceed 500 characters' })
-    .optional(),
-})
-
-interface UserProfileFormProps {
-  initialData: {
-    name: string
-    email: string
-    bio?: string
-    avatarUrl?: string
-  }
+interface Props {
+  initialData: Pick<
+    Profile,
+    'bio' | 'twitterHandle' | 'githubHandle' | 'website'
+  > &
+    Pick<User, 'email' | 'image' | 'name'>
 }
 
-export default function UserProfileForm({ initialData }: UserProfileFormProps) {
+export const UserProfileForm: FC<Props> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof userAccountSchema>>({
+    resolver: zodResolver(userAccountSchema),
     defaultValues: {
       name: initialData.name,
       bio: initialData.bio || '',
+      website: initialData.website || '',
+      githubHandle: initialData.githubHandle || '',
+      twitterHandle: initialData.twitterHandle || '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof userAccountSchema>) => {
     setIsLoading(true)
 
     try {
@@ -109,7 +106,7 @@ export default function UserProfileForm({ initialData }: UserProfileFormProps) {
             <div className='flex flex-col items-center space-y-4'>
               <Avatar className='h-24 w-24'>
                 <AvatarImage
-                  src={initialData.avatarUrl}
+                  src={initialData.image || ''}
                   alt={initialData.name}
                 />
                 <AvatarFallback>
@@ -144,6 +141,48 @@ export default function UserProfileForm({ initialData }: UserProfileFormProps) {
 
               <FormField
                 control={form.control}
+                name='website'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Website</FormLabel>
+                    <FormControl>
+                      <Input placeholder='https://yourwebsite.com' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='githubHandle'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>GitHub Handle</FormLabel>
+                    <FormControl>
+                      <Input placeholder='your-github-handle' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='twitterHandle'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Twitter Handle</FormLabel>
+                    <FormControl>
+                      <Input placeholder='your-twitter-handle' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name='bio'
                 render={({ field }) => (
                   <FormItem>
@@ -153,6 +192,8 @@ export default function UserProfileForm({ initialData }: UserProfileFormProps) {
                       <Textarea
                         placeholder='Tell us a bit about yourself...'
                         className='min-h-[120px]'
+                        maxLength={BIO_MAX_LENGTH}
+                        currentLength={field.value?.length}
                         {...field}
                       />
                     </FormControl>

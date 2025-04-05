@@ -66,16 +66,16 @@ export async function POST(request: Request) {
 
     revalidateTag(CACHE_KEYS.profile(assetLicense.asset.creatorId))
 
-    // Create notification for the creator
-    await prisma.notification.create({
-      data: {
-        userId: assetLicense.asset.creatorId,
-        title: 'New Sale',
-        message: `Your asset "${assetLicense.asset.title}" has been purchased for $${assetLicense.price.toFixed(2)}.`,
-        type: 'SUCCESS',
-        data: JSON.stringify({ purchaseId: purchase.id }),
-      },
-    })
+    // // Create notification for the creator
+    // await prisma.notification.create({
+    //   data: {
+    //     userId: assetLicense.asset.creatorId,
+    //     title: 'New Sale',
+    //     message: `Your asset "${assetLicense.asset.title}" has been purchased for $${assetLicense.price.toFixed(2)}.`,
+    //     type: 'SUCCESS',
+    //     data: JSON.stringify({ purchaseId: purchase.id }),
+    //   },
+    // })
 
     return NextResponse.json({
       success: true,

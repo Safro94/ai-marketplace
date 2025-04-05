@@ -21,7 +21,8 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
-import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { API_ROUTES, BIO_MAX_LENGTH, ROUTES } from '@/lib/constants'
+import { creatorApplicationSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { User } from 'better-auth'
 import { useRouter } from 'next/navigation'
@@ -33,47 +34,12 @@ interface Props {
   user: User | undefined
 }
 
-const BIO_MAX_LENGTH = 500
-
-const formSchema = z.object({
-  fullName: z.string().min(2, { message: 'Full name is required' }),
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  website: z
-    .string()
-    .url({ message: 'Please enter a valid URL' })
-    .optional()
-    .or(z.literal('')),
-  expertise: z
-    .string()
-    .min(1, { message: 'Please select your area of expertise' }),
-  experience: z
-    .string()
-    .min(1, { message: 'Please select your experience level' }),
-  bio: z
-    .string()
-    .min(50, { message: 'Bio must be at least 50 characters' })
-    .max(BIO_MAX_LENGTH, {
-      message: `Bio cannot exceed ${BIO_MAX_LENGTH} characters`,
-    }),
-  assetTypes: z.string().min(10, {
-    message: 'Please describe the types of assets you plan to sell',
-  }),
-  portfolio: z
-    .string()
-    .url({ message: 'Please enter a valid URL' })
-    .optional()
-    .or(z.literal('')),
-  terms: z.boolean().refine((val) => val === true, {
-    message: 'You must agree to the terms and conditions',
-  }),
-})
-
 export const CreatorApplicationForm: FC<Props> = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof creatorApplicationSchema>>({
+    resolver: zodResolver(creatorApplicationSchema),
     defaultValues: {
       fullName: user?.name || '',
       email: user?.email || '',
@@ -87,7 +53,7 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof creatorApplicationSchema>) {
     if (!user) {
       toast.error('Authentication required', {
         description: 'Please log in to submit your application.',

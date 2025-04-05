@@ -64,7 +64,7 @@ export const getExploreAssets = async (
 ) => {
   const params = await searchParams
 
-  const query = params.q || ''
+  const query = params[EXPLORE_PARAMS.QUERY]
   const useCase = params[EXPLORE_PARAMS.USE_CASES]
   const minPrice = params[EXPLORE_PARAMS.MIN_PRICE]
     ? Number(params[EXPLORE_PARAMS.MIN_PRICE])

@@ -16,7 +16,8 @@ import { validateSession } from '@/lib/session'
 import { Role } from '@prisma/client'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import UserProfileForm from './user-profile-form'
+import { redirect } from 'next/navigation'
+import { UserProfileForm } from './user-profile-form'
 
 enum TabsEnum {
   PROFILE = 'profile',
@@ -37,9 +38,13 @@ export default async function AccountPage() {
   const { user } = await validateSession(ROUTES.account())
   const profile = await getUserProfile(user.id)
 
+  if (!profile) {
+    redirect(ROUTES.home())
+  }
+
   // Get user's notifications
   // const notifications = await prisma.notification.findMany({
-  //   where: { userId: profile?.id },
+  //   where: { userId: profile.id },
   //   orderBy: { createdAt: 'desc' },
   //   take: 5,
   // })
@@ -66,22 +71,14 @@ export default async function AccountPage() {
             <CardContent className='space-y-6'>
               <div className='flex flex-col items-center space-y-3'>
                 <Avatar className='h-24 w-24'>
-                  <AvatarImage
-                    src={profile?.avatarUrl || user.image || ''}
-                    alt={profile?.name || user.name || ''}
-                  />
+                  <AvatarImage src={user.image || ''} alt={user.name || ''} />
                   <AvatarFallback>
-                    {profile?.name?.charAt(0).toUpperCase() ||
-                      user.name?.charAt(0).toUpperCase() ||
-                      'U'}
+                    {user.name?.charAt(0).toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className='text-center'>
-                  <h3 className='font-medium text-lg'>
-                    {profile?.name || user.name}
-                  </h3>
-
+                  <h3 className='font-medium text-lg'>{user.name}</h3>
                   <p className='text-sm text-muted-foreground'>{user.email}</p>
                 </div>
               </div>
@@ -93,9 +90,9 @@ export default async function AccountPage() {
                   </span>
 
                   <span className='text-sm font-medium'>
-                    {profile?.role === Role.ADMIN
+                    {profile.role === Role.ADMIN
                       ? 'Admin'
-                      : profile?.role === Role.CREATOR
+                      : profile.role === Role.CREATOR
                         ? 'Creator'
                         : 'User'}
                   </span>
@@ -107,7 +104,7 @@ export default async function AccountPage() {
                   </span>
 
                   <span className='text-sm font-medium'>
-                    {profile?.createdAt
+                    {profile.createdAt
                       ? new Date(profile.createdAt).toLocaleDateString()
                       : 'N/A'}
                   </span>
@@ -143,10 +140,13 @@ export default async function AccountPage() {
             <TabsContent value={TabsEnum.PROFILE}>
               <UserProfileForm
                 initialData={{
-                  name: profile?.name || user.name || '',
-                  email: user.email || '',
-                  bio: profile?.bio || '',
-                  avatarUrl: profile?.avatarUrl || user.image || '',
+                  name: user.name,
+                  email: user.email,
+                  image: user.image,
+                  website: profile.website,
+                  githubHandle: profile.githubHandle,
+                  twitterHandle: profile.twitterHandle,
+                  bio: profile.bio,
                 }}
               />
             </TabsContent>

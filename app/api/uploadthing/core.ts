@@ -4,8 +4,36 @@ import { UploadThingError } from 'uploadthing/server'
 
 const f = createUploadthing()
 
+const auth = async () => {
+  // This code runs on your server before upload
+  const session = await getServerSession()
+  // If you throw, the user will not be able to upload
+  if (!session?.user) throw new UploadThingError('Unauthorized')
+
+  return {}
+}
+
 export const fileRouter = {
-  imageUploader: f({
+  assetUploadFeaturedImageOrVideo: f(['image', 'video'])
+    .middleware(async () => await auth())
+    .onUploadComplete(() => {
+      // Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      return {}
+    }),
+
+  assetUploadGalleryImages: f({
+    image: {
+      maxFileSize: '4MB',
+      maxFileCount: 3,
+    },
+  })
+    .middleware(async () => await auth())
+    .onUploadComplete(() => {
+      // Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      return {}
+    }),
+
+  assetUploadFile: f({
     'application/json': {
       maxFileCount: 1,
       maxFileSize: '4MB',
@@ -43,26 +71,11 @@ export const fileRouter = {
       maxFileCount: 1,
       maxFileSize: '4MB',
     },
-    image: {
-      //ver tema de galeria y maxFileCount
-      maxFileSize: '4MB',
-      maxFileCount: 1,
-    },
   })
-    // Set permissions and file types for this FileRoute
-    .middleware(async () => {
-      // This code runs on your server before upload
-      const session = await getServerSession()
-      // If you throw, the user will not be able to upload
-      if (!session?.user) throw new UploadThingError('Unauthorized')
-
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: session.user.id }
-    })
-    .onUploadComplete(async ({ metadata }) => {
-      // This code RUNS ON YOUR SERVER after upload
+    .middleware(async () => await auth())
+    .onUploadComplete(() => {
       // Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { uploadedBy: metadata.userId }
+      return {}
     }),
 } satisfies FileRouter
 

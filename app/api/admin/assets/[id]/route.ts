@@ -1,5 +1,4 @@
 import { validateRouteProfilePermissions } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
 import { ModerationService } from '@/services/ModerationService'
 import { AssetStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
@@ -24,22 +23,22 @@ export async function POST(
       notes || undefined,
     )
 
-    // Notify the creator
-    await prisma.notification.create({
-      data: {
-        userId: asset.creatorId,
-        title:
-          status === AssetStatus.PUBLISHED
-            ? 'Asset Approved'
-            : 'Asset Rejected',
-        message:
-          status === AssetStatus.PUBLISHED
-            ? `Your asset "${asset.title}" has been approved and is now live on the marketplace.`
-            : `Your asset "${asset.title}" has been rejected. ${notes ? `Reason: ${notes}` : ''}`,
-        type: status === AssetStatus.PUBLISHED ? 'SUCCESS' : 'ERROR',
-        data: JSON.stringify({ assetId: asset.id }),
-      },
-    })
+    // // Notify the creator
+    // await prisma.notification.create({
+    //   data: {
+    //     userId: asset.creatorId,
+    //     title:
+    //       status === AssetStatus.PUBLISHED
+    //         ? 'Asset Approved'
+    //         : 'Asset Rejected',
+    //     message:
+    //       status === AssetStatus.PUBLISHED
+    //         ? `Your asset "${asset.title}" has been approved and is now live on the marketplace.`
+    //         : `Your asset "${asset.title}" has been rejected. ${notes ? `Reason: ${notes}` : ''}`,
+    //     type: status === AssetStatus.PUBLISHED ? 'SUCCESS' : 'ERROR',
+    //     data: JSON.stringify({ assetId: asset.id }),
+    //   },
+    // })
 
     return NextResponse.json({
       success: true,
