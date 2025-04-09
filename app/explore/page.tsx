@@ -34,17 +34,21 @@ export const metadata: Metadata = {
 }
 
 export default async function ExplorePage({ searchParams }: Props) {
-  let category
+  let categories
   const categorySlug = (await searchParams)[EXPLORE_PARAMS.CATEGORY]
 
   if (categorySlug) {
-    category = await prisma.category.findUnique({
-      where: { slug: categorySlug },
+    categories = await prisma.category.findMany({
+      where: {
+        slug: {
+          in: categorySlug.split(','),
+        },
+      },
     })
   }
 
   const { data: assetData, error: assetsError } = await tryCatch(
-    getExploreAssets(searchParams, category?.id),
+    getExploreAssets(searchParams, categories),
   )
 
   if (assetsError) {
@@ -85,7 +89,7 @@ export default async function ExplorePage({ searchParams }: Props) {
             <div className='flex items-center gap-4'>
               <ExploreCategoriesSelector
                 categories={data}
-                initialCategorySlug={category?.slug}
+                initialCategories={categorySlug}
               />
             </div>
 
@@ -98,7 +102,6 @@ export default async function ExplorePage({ searchParams }: Props) {
         <aside className='w-full md:w-64 lg:w-72 shrink-0'>
           <AssetFilters
             useCases={useCases}
-            initialCategory={category?.slug}
             maxPrice={
               assetData?.assets.length
                 ? Math.max(...assetData?.assets.map((asset) => asset.basePrice))

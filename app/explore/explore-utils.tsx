@@ -1,6 +1,6 @@
 import { EXPLORE_PARAMS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
-import { AssetStatus } from '@prisma/client'
+import { AssetStatus, Category, Prisma } from '@prisma/client'
 
 export const getCategoriesWithCount = async () => {
   // Fetch categories from the database
@@ -60,7 +60,7 @@ export const getUseCases = async () => {
 
 export const getExploreAssets = async (
   searchParams: Promise<{ [key: string]: string }>,
-  categoryId?: string,
+  categories?: Category[],
 ) => {
   const params = await searchParams
 
@@ -77,8 +77,7 @@ export const getExploreAssets = async (
   const limit = Number(params.limit || '12')
   const skip = (page - 1) * limit
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: any = {
+  const where: Prisma.AssetWhereInput = {
     status: AssetStatus.PUBLISHED,
   }
 
@@ -92,8 +91,10 @@ export const getExploreAssets = async (
   }
 
   // Category filter
-  if (categoryId) {
-    where.categoryId = categoryId
+  if (categories?.length) {
+    where.categoryId = {
+      in: categories.map((category) => category.id),
+    }
   }
 
   // Use case filter
@@ -103,10 +104,10 @@ export const getExploreAssets = async (
 
   // Price range filter
   if (minPrice !== undefined) {
-    where.price = {}
+    where.basePrice = {}
 
     if (minPrice !== undefined) {
-      where.price.gte = minPrice
+      where.basePrice.gte = minPrice
     }
   }
 

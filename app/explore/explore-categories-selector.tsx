@@ -17,7 +17,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useState } from 'react'
 
 interface Props {
-  initialCategorySlug?: string
+  initialCategories?: Category[]
   categories: Category[] &
     {
       count: number
@@ -35,13 +35,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 export const ExploreCategoriesSelector: FC<Props> = ({
   categories,
-  initialCategorySlug,
+  initialCategories,
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   const [selectedCategorySlugs, setSelectedCategorySlugs] = useState<string[]>(
-    initialCategorySlug ? [initialCategorySlug] : [],
+    initialCategories ? initialCategories.split(',') : [],
   )
 
   const handleClick = (slug: string) => {

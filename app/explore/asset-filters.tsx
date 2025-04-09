@@ -9,15 +9,10 @@ import { FiltersContent } from './filters-content'
 
 interface Props {
   useCases: { label?: string; id: string | null }[] | null
-  initialCategory?: string
   maxPrice: number
 }
 
-export const AssetFilters: FC<Props> = ({
-  useCases,
-  initialCategory,
-  maxPrice,
-}) => {
+export const AssetFilters: FC<Props> = ({ useCases, maxPrice }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -78,16 +73,6 @@ export const AssetFilters: FC<Props> = ({
     setSelectedUseCases([])
     setSelectedRatings([])
     setPriceRange([0, maxPrice])
-
-    // Clear URL params and navigate to base URL
-    if (initialCategory) {
-      // If we have an initial category, keep it in the URL
-      router.push(
-        `?${initialCategory ? `${EXPLORE_PARAMS.CATEGORY}=${initialCategory}` : ''}`,
-      )
-    } else {
-      router.push(window.location.pathname)
-    }
   }
 
   const hasActiveFilters =
