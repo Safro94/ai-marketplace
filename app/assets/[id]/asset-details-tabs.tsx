@@ -1,5 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Asset, Review as PrismaReview } from '@prisma/client'
+import { Asset, Review as PrismaReview, Profile } from '@prisma/client'
+import { Pick } from '@prisma/client/runtime/library'
+import { User } from 'better-auth'
 import { CheckCircle, InfoIcon } from 'lucide-react'
 import { FC } from 'react'
 import { AssetReviews } from './asset-reviews'
@@ -11,9 +13,8 @@ enum TabsEnum {
 }
 
 interface Review extends PrismaReview {
-  user: {
-    name: string | null
-    avatarUrl: string | null
+  userProfile: Profile & {
+    user: Pick<User, 'name' | 'image'>
   }
 }
 

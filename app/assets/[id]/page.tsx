@@ -7,10 +7,12 @@ import { checkUserPurchasedAsset } from '@/lib/db/purchases'
 import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { validateSession } from '@/lib/session'
-import { formatDate } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
+import { User } from 'better-auth'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
+import { FC } from 'react'
 import { AssetDetailCarousel } from './asset-detail-carousel'
 import { AssetDetailHeader } from './asset-detail-header'
 import { AssetDetailsTabs } from './asset-details-tabs'
@@ -89,7 +91,16 @@ export default async function AssetPage({
       },
       reviews: {
         include: {
-          user: true,
+          userProfile: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
         },
         orderBy: {
           createdAt: 'desc',
@@ -133,7 +144,7 @@ export default async function AssetPage({
               rating: asset.averageRating,
               reviews: asset.reviews.length,
               creator: {
-                name: asset.creator.name || 'Unknown Creator',
+                name: asset.creator.user.name || 'Unknown Creator',
               },
             }),
           ),
@@ -169,42 +180,21 @@ export default async function AssetPage({
             />
 
             {/* Creator Info (Mobile) */}
-            <Card className='lg:hidden border-border/50'>
-              <CardContent className='p-6'>
-                <div className='flex items-center space-x-4 mb-4'>
-                  <Avatar className='h-12 w-12'>
-                    <AvatarImage
-                      src={
-                        asset.creator.avatarUrl ||
-                        '/placeholder.svg?height=40&width=40'
-                      }
-                      alt={asset.creator.name || 'Creator'}
-                    />
-
-                    <AvatarFallback>
-                      {(asset.creator.name || 'C').charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <div>
-                    <h3 className='font-semibold'>
-                      {asset.creator.name || 'Unknown Creator'}
-                    </h3>
-                    <p className='text-sm text-muted-foreground'>Creator</p>
-                  </div>
-                </div>
-
-                <p className='text-sm mb-4'>
-                  {asset.creator.bio || 'No bio available'}
-                </p>
-              </CardContent>
-            </Card>
+            <CreatorInfo
+              user={asset.creator.user}
+              bio={asset.creator.bio}
+              className='lg:hidden'
+            />
           </div>
 
           <div className='space-y-6 lg:sticky lg:top-20'>
             {/* Purchase Options or Download */}
             {isPurchased ? (
-              <AssetDownload assetId={asset.id} isPurchased />
+              <AssetDownload
+                fileName={asset.title}
+                assetUrl={asset.assetFile}
+                isPurchased
+              />
             ) : (
               <PurchaseOptions
                 assetId={asset.id}
@@ -214,36 +204,7 @@ export default async function AssetPage({
             )}
 
             {/* Creator Info (Desktop) */}
-            <Card className='hidden lg:block border-border/50'>
-              <CardContent className='p-6'>
-                <div className='flex items-center space-x-4 mb-4'>
-                  <Avatar className='h-12 w-12'>
-                    <AvatarImage
-                      src={
-                        asset.creator.avatarUrl ||
-                        '/placeholder.svg?height=40&width=40'
-                      }
-                      alt={asset.creator.name || 'Creator'}
-                    />
-
-                    <AvatarFallback>
-                      {(asset.creator.name || 'C').charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <div>
-                    <h3 className='font-semibold'>
-                      {asset.creator.name || 'Unknown Creator'}
-                    </h3>
-                    <p className='text-sm text-muted-foreground'>Creator</p>
-                  </div>
-                </div>
-
-                <p className='text-sm mb-4'>
-                  {asset.creator.bio || 'No bio available'}
-                </p>
-              </CardContent>
-            </Card>
+            <CreatorInfo user={asset.creator.user} bio={asset.creator.bio} />
 
             {/* Asset Information */}
             <Card className='border-border/50'>
@@ -295,3 +256,31 @@ export default async function AssetPage({
     </>
   )
 }
+
+const CreatorInfo: FC<{
+  className?: string
+  user: User
+  bio: string | null
+}> = ({ className, user, bio }) => (
+  <Card className={cn('hidden lg:block border-border/50', className)}>
+    <CardContent className='p-6'>
+      <div className='flex items-center space-x-4 mb-4'>
+        <Avatar className='h-12 w-12'>
+          <AvatarImage
+            src={user.name || '/placeholder.svg?height=40&width=40'}
+            alt={user.name || 'Creator'}
+          />
+
+          <AvatarFallback>{(user.name || 'C').charAt(0)}</AvatarFallback>
+        </Avatar>
+
+        <div>
+          <h3 className='font-semibold'>{user.name || 'Unknown Creator'}</h3>
+          <p className='text-sm text-muted-foreground'>Creator</p>
+        </div>
+      </div>
+
+      <p className='text-sm mb-4'>{bio || 'No bio available'}</p>
+    </CardContent>
+  </Card>
+)

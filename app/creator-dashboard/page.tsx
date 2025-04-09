@@ -43,16 +43,33 @@ export default async function CreatorDashboard() {
   // Get recent sales
   const recentSales = await prisma.purchase.findMany({
     where: {
-      asset: {
-        creatorId: profile.id,
+      purchaseItems: {
+        some: {
+          asset: {
+            creatorId: profile.id,
+          },
+        },
       },
       status: PurchaseStatus.COMPLETED,
     },
     include: {
-      asset: {
-        select: {
-          title: true,
-          slug: true,
+      purchaseItems: {
+        include: {
+          assetLicense: {
+            select: {
+              license: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          asset: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
         },
       },
       buyer: {
@@ -62,11 +79,6 @@ export default async function CreatorDashboard() {
               name: true,
             },
           },
-        },
-      },
-      assetLicense: {
-        include: {
-          license: true,
         },
       },
     },
@@ -230,21 +242,23 @@ export default async function CreatorDashboard() {
                 </div>
               ) : (
                 <div className='space-y-4'>
-                  {recentSales.map((sale) => (
-                    <div
-                      key={sale.id}
-                      className='flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0'
-                    >
-                      <div>
-                        <p className='font-medium'>{sale.asset.title}</p>
-                        <p className='text-sm text-muted-foreground'>
-                          {sale.assetLicense?.license.name} •{' '}
-                          {format(new Date(sale.createdAt), 'MMM d')}
-                        </p>
+                  {recentSales.map((sale) => {
+                    return sale.purchaseItems.map((item) => (
+                      <div
+                        key={sale.id}
+                        className='flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0'
+                      >
+                        <div>
+                          <p className='font-medium'>{item.asset.title}</p>
+                          <p className='text-sm text-muted-foreground'>
+                            {item.assetLicense?.license.name} •{' '}
+                            {format(new Date(sale.createdAt), 'MMM d')}
+                          </p>
+                        </div>
+                        <p className='font-medium'>${sale.amount.toFixed(2)}</p>
                       </div>
-                      <p className='font-medium'>${sale.amount.toFixed(2)}</p>
-                    </div>
-                  ))}
+                    ))
+                  })}
                 </div>
               )}
             </CardContent>

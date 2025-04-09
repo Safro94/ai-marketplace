@@ -31,47 +31,6 @@ export const PurchaseOptions: FC<Props> = ({
   const [licenseOptions, setLicenseOptions] = useState<LicenseOption[]>([])
   const [licenseType, setLicenseType] = useState<LicenseOption>()
 
-  // const handlePurchase = async () => {
-  //   if (!user) {
-  //     toast.error('Authentication required', {
-  //       description: 'Please log in to purchase this asset.',
-  //     })
-
-  //     router.push(
-  //       `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-  //     )
-  //     return
-  //   }
-
-  //   setIsLoading(true)
-
-  //   try {
-  //     // Create purchase record
-  //     await createPurchase({
-  //       asset: { connect: { id: assetId } },
-  //       buyer: { connect: { userId: user.id } },
-  //       amount: licenseType!.price,
-  //       status: PurchaseStatus.COMPLETED,
-  //     })
-
-  //     toast.success('Purchase successful!', {
-  //       description: 'You now have access to this asset.',
-  //     })
-
-  //     // Refresh the page to show download option
-  //     router.refresh()
-  //   } catch (error) {
-  //     console.error('Purchase error:', error)
-
-  //     toast.error('Purchase failed', {
-  //       description:
-  //         'There was an error processing your purchase. Please try again.',
-  //     })
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
-
   const handleAddToCart = () => {
     if (!user) {
       toast.error('Authentication required', {

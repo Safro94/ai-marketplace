@@ -15,7 +15,7 @@ import { format } from 'date-fns'
 import { redirect } from 'next/navigation'
 
 export default async function NotificationsPage() {
-  const { user } = await validateSession(ROUTES.login())
+  const { user } = await validateSession()
 
   // Get user profile
   const profile = await getUserProfile(user.id)

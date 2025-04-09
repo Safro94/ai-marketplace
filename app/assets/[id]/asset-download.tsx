@@ -11,18 +11,22 @@ import {
 } from '@/components/ui/card'
 import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
-import { API_ROUTES } from '@/lib/constants'
+import { downloadAsset } from '@/lib/utils'
 import { AlertCircle, Check, Download } from 'lucide-react'
 import { FC, useState } from 'react'
 
 interface Props {
-  assetId: string
+  assetUrl: string
+  fileName: string
   isPurchased: boolean
 }
 
-export const AssetDownload: FC<Props> = ({ assetId, isPurchased }) => {
+export const AssetDownload: FC<Props> = ({
+  assetUrl,
+  fileName,
+  isPurchased,
+}) => {
   const [isDownloading, setIsDownloading] = useState(false)
-  const [downloadComplete, setDownloadComplete] = useState(false)
   const { user } = useAuth()
 
   const handleDownload = async () => {
@@ -43,40 +47,15 @@ export const AssetDownload: FC<Props> = ({ assetId, isPurchased }) => {
     setIsDownloading(true)
 
     try {
-      const response = await fetch(API_ROUTES.assetDownload(assetId))
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Download failed')
-      }
-
-      const { downloadUrl, assetName } = await response.json()
-
-      // Create a download link
-      const a = document.createElement('a')
-      a.href = downloadUrl
-      a.download = `${assetName.toLowerCase().replace(/\s+/g, '-')}.zip`
-      document.body.appendChild(a)
-      a.click()
-      URL.revokeObjectURL(downloadUrl)
-      document.body.removeChild(a)
-
-      setDownloadComplete(true)
+      await downloadAsset(assetUrl, fileName)
 
       toast.success('Download successful', {
         description: 'Your asset has been downloaded successfully',
       })
-
-      // Reset the download state after a delay
-      setTimeout(() => {
-        setDownloadComplete(false)
-      }, 3000)
-    } catch (error) {
+    } catch (err) {
       toast.error('Download failed', {
         description:
-          error instanceof Error
-            ? error.message
-            : 'There was a problem downloading your asset. Please try again.',
+          'There was a problem downloading your asset. Please try again.',
       })
     } finally {
       setIsDownloading(false)
@@ -129,17 +108,8 @@ export const AssetDownload: FC<Props> = ({ assetId, isPurchased }) => {
           isLoading={isDownloading}
           disabled={isDownloading || !isPurchased}
         >
-          {downloadComplete ? (
-            <span className='flex items-center'>
-              <Check className='mr-2 h-4 w-4' />
-              Downloaded
-            </span>
-          ) : (
-            <span className='flex items-center'>
-              <Download className='mr-2 h-4 w-4' />
-              Download Asset
-            </span>
-          )}
+          <Download className='mr-2 h-4 w-4' />
+          Download Asset
         </LoadingButton>
       </CardFooter>
     </Card>

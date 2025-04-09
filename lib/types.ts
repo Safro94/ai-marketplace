@@ -1,4 +1,12 @@
-import { Asset, Category, Profile, User } from '@prisma/client'
+import {
+  Asset,
+  Category,
+  CreatorApplicationPaymentMethod,
+  LicenseType,
+  PaymentProvider,
+  Profile,
+  User,
+} from '@prisma/client'
 
 export enum OAuthProviders {
   GOOGLE = 'google',
@@ -32,4 +40,32 @@ export interface ExploreAsset extends Asset {
   creator: Profile & {
     user: User
   }
+}
+
+export interface CartItem {
+  assetId: string
+  assetLicenseId: LicenseType
+  title: string
+  price: number
+  licenseName: string
+  image: string
+}
+
+export type CheckoutCreatorsData = Record<
+  PaymentProvider,
+  CheckoutPaymentDetails[]
+>
+export type CheckoutPaymentDetails = Pick<
+  CreatorApplicationPaymentMethod,
+  'accountIdentifier' | 'creatorProfileId'
+>
+
+export interface CartContextType {
+  items: CartItem[]
+  addItem: (item: CartItem) => void
+  removeItem: (assetId: string, title: string) => void
+  clearCart: () => void
+  totalItems: number
+  totalPrice: number
+  isLoading: boolean
 }

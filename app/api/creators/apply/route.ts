@@ -2,6 +2,7 @@ import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
+import { creatorApplicationSchema } from './../../../../lib/schemas'
 
 export async function POST(request: Request) {
   const session = await getServerSession()
@@ -12,6 +13,18 @@ export async function POST(request: Request) {
 
   try {
     const data = await request.json()
+
+    // Validate input data
+    const validationResult = creatorApplicationSchema.safeParse(data)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          error: 'Invalid creator application data',
+          details: validationResult.error.format(),
+        },
+        { status: 400 },
+      )
+    }
 
     // Get user profile
     const profile = await prisma.profile.findUnique({
@@ -54,25 +67,27 @@ export async function POST(request: Request) {
     const creatorProfile = await prisma.creatorProfile.create({
       data: {
         profile: { connect: { id: profile.id } },
-        expertise: data.expertise,
-        experience: data.experience,
-        portfolio: data.portfolio || null,
-        paymentDetails: {},
+        expertise: validationResult.data.expertise,
+        experience: validationResult.data.experience,
+        portfolio: validationResult.data.portfolio || null,
+        paymentMethods: {
+          create: validationResult.data.paymentMethods,
+        },
       },
     })
 
     // Create creator application
     const application = await prisma.creatorApplication.create({
       data: {
-        creatorProfile: { connect: { id: creatorProfile.id } },
-        fullName: data.fullName,
-        email: data.email,
-        website: data.website || null,
-        expertise: data.expertise,
-        experience: data.experience,
-        bio: data.bio,
-        assetTypes: data.assetTypes,
-        portfolio: data.portfolio || null,
+        creatorProfile: { connect: { id: creatorProfile.profileId } },
+        fullName: validationResult.data.fullName,
+        email: validationResult.data.email,
+        website: validationResult.data.website || null,
+        expertise: validationResult.data.expertise,
+        experience: validationResult.data.experience,
+        bio: validationResult.data.bio,
+        assetTypes: validationResult.data.assetTypes,
+        portfolio: validationResult.data.portfolio || null,
         status: ApplicationStatus.PENDING,
       },
     })

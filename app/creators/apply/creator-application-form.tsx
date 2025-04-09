@@ -24,11 +24,13 @@ import { toast } from '@/components/ui/toast'
 import { API_ROUTES, BIO_MAX_LENGTH, ROUTES } from '@/lib/constants'
 import { creatorApplicationSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { PaymentProvider } from '@prisma/client'
 import { User } from 'better-auth'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import { CreatorApplicationPaymentMethods } from './creator-application-payment-methods'
 
 interface Props {
   user: User | undefined
@@ -50,6 +52,13 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
       assetTypes: '',
       portfolio: '',
       terms: false,
+      paymentMethods: [
+        {
+          provider: PaymentProvider.PAYPAL,
+          accountIdentifier: '',
+          isDefault: true,
+        },
+      ],
     },
   })
 
@@ -300,6 +309,8 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
             </FormItem>
           )}
         />
+
+        <CreatorApplicationPaymentMethods form={form} />
 
         <FormField
           control={form.control}

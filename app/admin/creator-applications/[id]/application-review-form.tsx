@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
-import { API_ROUTES } from '@/lib/constants'
+import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { ApplicationStatus } from '@prisma/client'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -54,7 +54,7 @@ export const ApplicationReviewForm: FC<Props> = ({ applicationId }) => {
         description: 'The creator application has been approved successfully.',
       })
 
-      router.push(API_ROUTES.adminCreatorApplications())
+      router.push(ROUTES.adminCreatorApplications())
     } catch (error) {
       toast.error('Error', {
         description:

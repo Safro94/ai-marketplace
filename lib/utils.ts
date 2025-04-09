@@ -1,6 +1,11 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { HEADER_LINKS, ROUTES } from './constants'
+import {
+  FIXED_TRANSACTION_FEE,
+  HEADER_LINKS,
+  ROUTES,
+  SERVICE_CHARGE,
+} from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -52,4 +57,36 @@ export const formatCurrency = (
     minimumFractionDigits: decimalPrecision,
     maximumFractionDigits: decimalPrecision,
   }).format(isNaN(amount) ? 0 : amount)
+}
+
+export const getServiceCharge = (price: number) => {
+  return price ? price * SERVICE_CHARGE + FIXED_TRANSACTION_FEE : 0
+}
+
+export const downloadAsset = async (url: string, fileName: string) => {
+  // Fetch the file
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw Error('Failed to fetch file')
+  }
+
+  // Get the blob from the response
+  const blob = await response.blob()
+
+  // Create a URL for the blob
+  const blobUrl = window.URL.createObjectURL(blob)
+
+  // Create a temporary link element
+  const link = document.createElement('a')
+  link.href = blobUrl
+  link.setAttribute('download', fileName)
+  document.body.appendChild(link)
+
+  // Trigger the download
+  link.click()
+
+  // Clean up
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(blobUrl)
 }

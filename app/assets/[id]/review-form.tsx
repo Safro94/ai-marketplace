@@ -1,12 +1,12 @@
 'use client'
 
+import { createReview } from '@/actions/review'
 import { LoadingButton } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
-import { createReview } from '@/lib/db/reviews'
 import { StarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
@@ -16,13 +16,14 @@ interface Props {
 }
 
 export const ReviewForm: FC<Props> = ({ assetId }) => {
+  const { user } = useAuth()
+  const router = useRouter()
+
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [title, setTitle] = useState('')
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { user } = useAuth()
-  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -60,7 +61,7 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
     try {
       await createReview({
         asset: { connect: { id: assetId } },
-        user: { connect: { userId: user.id } },
+        userProfile: { connect: { userId: user.id } },
         rating,
         title,
         comment,

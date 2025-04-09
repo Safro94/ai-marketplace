@@ -1,5 +1,6 @@
 'use client'
 
+import { signUserOut } from '@/actions/sign-out'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,7 +17,6 @@ import { User } from 'better-auth'
 import Link from 'next/link'
 import { FC } from 'react'
 import { toast } from '../ui/toast'
-import { signUserOut } from './sign-out-action'
 
 interface Props {
   isCreator: boolean

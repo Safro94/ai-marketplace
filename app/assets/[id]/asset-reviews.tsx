@@ -5,18 +5,17 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { formatDate } from '@/lib/utils'
-import { Review as PrismaReview } from '@prisma/client'
+import { Review as PrismaReview, Profile } from '@prisma/client'
+import { User } from 'better-auth'
 import { StarIcon } from 'lucide-react'
 import { FC, useState } from 'react'
 import { ReviewForm } from './review-form'
 
 interface Review extends PrismaReview {
-  user: {
-    name: string | null
-    avatarUrl: string | null
+  userProfile: Profile & {
+    user: Pick<User, 'name' | 'image'>
   }
 }
-
 interface Props {
   assetId: string
   reviews: Review[]
@@ -108,20 +107,20 @@ export const AssetReviews: FC<Props> = ({ assetId, reviews, isPurchased }) => {
                     <Avatar className='h-8 w-8'>
                       <AvatarImage
                         src={
-                          review.user.avatarUrl ||
+                          review.userProfile.user.image ||
                           '/placeholder.svg?height=40&width=40'
                         }
-                        alt={review.user.name || 'User'}
+                        alt={review.userProfile.user.name || 'User'}
                       />
 
                       <AvatarFallback>
-                        {(review.user.name || 'U').charAt(0)}
+                        {(review.userProfile.user.name || 'U').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
 
                     <div>
                       <div className='font-medium'>
-                        {review.user.name || 'Anonymous User'}
+                        {review.userProfile.user.name || 'Anonymous User'}
                       </div>
 
                       <div className='text-xs text-muted-foreground'>

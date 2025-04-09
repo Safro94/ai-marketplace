@@ -7,7 +7,7 @@ import { getServerSession, validateSession } from '../session'
 import { USER_TYPES } from '../types'
 
 export const isAdminOrCreator = (profile?: Profile | null) =>
-  profile?.role !== Role.USER
+  !!profile && profile.role !== Role.USER
 
 export const validateAdminProfile = async (callbackUrl?: string) => {
   const { user } = await validateSession(callbackUrl ?? ROUTES.login())

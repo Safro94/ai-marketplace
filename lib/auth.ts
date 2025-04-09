@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { resend } from '@/lib/resend'
+import { Role } from '@prisma/client'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { nextCookies } from 'better-auth/next-js'
@@ -36,9 +37,8 @@ export const auth = betterAuth({
             await prisma.profile.create({
               data: {
                 userId: user.id ?? '',
-                email: user.email,
-                name: user.name,
-                avatarUrl: user.image,
+                role: Role.USER,
+                createdAt: new Date(),
               },
             })
           }

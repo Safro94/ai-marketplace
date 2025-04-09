@@ -1,7 +1,8 @@
+'use server'
+
 import prisma from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
 
-// Used in review-form.tsx
 export async function createReview(data: Prisma.ReviewCreateInput) {
   const review = await prisma.review.create({
     data,
@@ -22,7 +23,7 @@ export async function createReview(data: Prisma.ReviewCreateInput) {
     where: { id: data.asset.connect?.id },
     data: {
       averageRating,
-      reviewCount: assetReviews.length,
+      totalReviews: assetReviews.length,
     },
   })
 

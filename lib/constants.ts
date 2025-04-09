@@ -13,6 +13,8 @@ export const ROUTES = {
   account: () => '/account',
   purchases: () => '/purchases',
   cart: () => '/cart',
+  checkout: () => '/checkout',
+  checkoutSuccess: () => '/checkout/success',
   explore: () => '/explore',
   creators: () => '/creators',
   creatorsThankYou: () => '/creators/thank-you',
@@ -36,9 +38,9 @@ export const API_ROUTES = {
   adminCreatorApplications: () => '/api/admin/creator-applications',
   userProfile: () => '/api/user/profile',
   licenses: () => '/api/licenses',
+  assets: () => '/api/assets',
   assetsUpload: () => '/api/assets/upload',
   asset: (assetId: string) => `/api/assets/${assetId}`,
-  assetDownload: (assetId: string) => `/api/assets/${assetId}/download`,
   assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
   assetsReview: (assetId: string) => `/api/assets/${assetId}/reviews`,
   assetAdminModeration: (assetId: string) => `/api/admin/assets/${assetId}`,
@@ -49,6 +51,8 @@ export const API_ROUTES = {
   notifications: () => '/api/notifications',
   notificationsReadAll: () => '/api/notifications/read-all',
   notificationRead: (id: string) => `/api/notifications/${id}/read`,
+  purchase: () => '/api/purchases',
+  checkout: () => '/api/checkout',
 }
 
 export const CACHE_KEYS = {
@@ -65,6 +69,8 @@ export const SUPPORT_EMAIL = 'support@aiassetsmarketplace.com'
 export const INFO_EMAIL = 'info@aiassetsmarketplace.com'
 export const PRIVACY_EMAIL = 'privacy@aiassetsmarketplace.com'
 export const BIO_MAX_LENGTH = 500
+export const SERVICE_CHARGE = 0.1
+export const FIXED_TRANSACTION_FEE = 0.3
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },

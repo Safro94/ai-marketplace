@@ -22,6 +22,12 @@ export const assetUploadSchema = z.object({
   ),
 })
 
+const paymentMethodSchema = z.object({
+  provider: z.enum(['PAYPAL']),
+  accountIdentifier: z.string().min(1, 'Account identifier is required'),
+  isDefault: z.boolean().default(false),
+})
+
 export const creatorApplicationSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name is required' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -53,6 +59,9 @@ export const creatorApplicationSchema = z.object({
   terms: z.boolean().refine((val) => val === true, {
     message: 'You must agree to the terms and conditions',
   }),
+  paymentMethods: z
+    .array(paymentMethodSchema)
+    .min(1, 'At least one payment method is required'),
 })
 
 export const userAccountSchema = z.object({
