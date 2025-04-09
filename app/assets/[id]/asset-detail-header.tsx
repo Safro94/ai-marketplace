@@ -1,14 +1,20 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Asset, Category, Profile, Review } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { StarIcon } from 'lucide-react'
 import { FC } from 'react'
 
-interface Props extends Asset {
-  creator: Profile
-  category: Category
-  reviews: Review[]
-}
+type Props = Prisma.AssetGetPayload<{
+  include: {
+    category: true
+    creator: {
+      include: {
+        user: true
+      }
+    }
+    reviews: true
+  }
+}>
 
 export const AssetDetailHeader: FC<Props> = ({
   title,
@@ -27,17 +33,19 @@ export const AssetDetailHeader: FC<Props> = ({
         <div className='flex items-center gap-2'>
           <Avatar className='h-8 w-8'>
             <AvatarImage
-              src={creator.avatarUrl || '/placeholder.svg?height=40&width=40'}
-              alt={creator.name || 'Creator'}
+              src={creator.user.image || '/placeholder.svg?height=40&width=40'}
+              alt={creator.user.name || 'Creator'}
             />
 
-            <AvatarFallback>{(creator.name || 'C').charAt(0)}</AvatarFallback>
+            <AvatarFallback>
+              {(creator.user.name || 'C').charAt(0)}
+            </AvatarFallback>
           </Avatar>
 
           <span className='text-sm'>
             by{' '}
             <span className='font-medium'>
-              {creator.name || 'Unknown Creator'}
+              {creator.user.name || 'Unknown Creator'}
             </span>
           </span>
         </div>

@@ -3,13 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
-import {
-  Asset,
-  AssetLicense,
-  Category,
-  License,
-  PurchaseItem,
-} from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { format } from 'date-fns'
 import { ExternalLink } from 'lucide-react'
 import Image from 'next/image'
@@ -18,17 +12,20 @@ import { AssetDownloadButton } from './asset-download-button'
 import { Badge } from './ui/badge'
 
 interface Props {
-  purchasedItem: PurchaseItem & {
-    asset: Asset & {
-      category: Category
+  purchasedItem: Prisma.PurchaseItemGetPayload<{
+    include: {
+      assetLicense: {
+        include: {
+          license: true
+        }
+      }
+      asset: {
+        include: {
+          category: true
+        }
+      }
     }
-
-    assetLicense:
-      | (AssetLicense & {
-          license: License
-        })
-      | null
-  }
+  }>
 }
 
 export const PurchasedItemCard: FC<Props> = ({ purchasedItem }) => (

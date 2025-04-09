@@ -5,20 +5,31 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { formatDate } from '@/lib/utils'
-import { Review as PrismaReview, Profile } from '@prisma/client'
-import { User } from 'better-auth'
+import { Prisma } from '@prisma/client'
 import { StarIcon } from 'lucide-react'
 import { FC, useState } from 'react'
 import { ReviewForm } from './review-form'
 
-interface Review extends PrismaReview {
-  userProfile: Profile & {
-    user: Pick<User, 'name' | 'image'>
-  }
-}
-interface Props {
+interface Props
+  extends Prisma.AssetGetPayload<{
+    select: {
+      reviews: {
+        include: {
+          userProfile: {
+            include: {
+              user: {
+                select: {
+                  name: true
+                  image: true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }> {
   assetId: string
-  reviews: Review[]
   isPurchased: boolean
 }
 

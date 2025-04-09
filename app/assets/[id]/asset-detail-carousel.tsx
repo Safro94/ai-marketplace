@@ -1,5 +1,6 @@
 'use client'
 
+import { AssetOptions } from '@/components/asset-options'
 import { Button } from '@/components/ui/button'
 import {
   Carousel,
@@ -13,9 +14,10 @@ import { Asset } from '@prisma/client'
 import Image from 'next/image'
 import { FC, useCallback, useEffect, useState } from 'react'
 
-type Props = Pick<Asset, 'featuredImage' | 'galleryImages' | 'title'>
+type Props = Pick<Asset, 'id' | 'featuredImage' | 'galleryImages' | 'title'>
 
 export const AssetDetailCarousel: FC<Props> = ({
+  id,
   featuredImage,
   galleryImages,
   title,
@@ -34,7 +36,6 @@ export const AssetDetailCarousel: FC<Props> = ({
     if (!carouselAPI) return
 
     onSelect()
-
     setScrollSnaps(carouselAPI.scrollSnapList())
 
     carouselAPI.on('select', onSelect)
@@ -46,7 +47,7 @@ export const AssetDetailCarousel: FC<Props> = ({
         <CarouselContent>
           {[featuredImage, ...galleryImages].map((image, index) => (
             <CarouselItem key={index}>
-              <div className='relative aspect-video w-full overflow-hidden rounded-lg border border-border/50'>
+              <div className='relative aspect-video w-full overflow-hidden rounded-lg border border-border/50 mb-4'>
                 <Image
                   src={image || '/placeholder.svg?height=600&width=800'}
                   alt={title}
@@ -54,6 +55,8 @@ export const AssetDetailCarousel: FC<Props> = ({
                   className='object-cover'
                   priority
                 />
+
+                <AssetOptions assetId={id} />
               </div>
             </CarouselItem>
           ))}

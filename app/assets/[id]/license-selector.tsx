@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
 import { API_ROUTES } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
@@ -72,37 +71,37 @@ export const LicenseSelector: FC<Props> = ({
     onLicenseSelect(licenseOption)
   }
 
-  if (isLoadingLicenses) {
-    return (
-      <div className='space-y-4'>
-        <Skeleton className='h-8 w-48 bg-muted animate-pulse rounded' />
+  // if (isLoadingLicenses) {
+  //   return (
+  //     <div className='space-y-4'>
+  //       <Skeleton className='h-8 w-48 bg-muted animate-pulse rounded' />
 
-        <div className='grid gap-4'>
-          {[1, 2].map((i) => (
-            <Card key={i} className='opacity-50'>
-              <CardHeader>
-                <Skeleton className='h-6 w-24 mb-2' />
-                <Skeleton className='h-4 w-36' />
-                <Skeleton className='h-8 w-16 mt-2' />
-              </CardHeader>
+  //       <div className='grid gap-4'>
+  //         {[1, 2].map((i) => (
+  //           <Card key={i} className='opacity-50'>
+  //             <CardHeader>
+  //               <Skeleton className='h-6 w-24 mb-2' />
+  //               <Skeleton className='h-4 w-36' />
+  //               <Skeleton className='h-8 w-16 mt-2' />
+  //             </CardHeader>
 
-              <CardContent>
-                <div className='space-y-2'>
-                  {[1, 2, 3, 4].map((j) => (
-                    <Skeleton key={j} className='h-4 w-full ' />
-                  ))}
-                </div>
-              </CardContent>
+  //             <CardContent>
+  //               <div className='space-y-2'>
+  //                 {[1, 2, 3, 4].map((j) => (
+  //                   <Skeleton key={j} className='h-4 w-full ' />
+  //                 ))}
+  //               </div>
+  //             </CardContent>
 
-              <CardFooter>
-                <Skeleton className='h-10 w-full ' />
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      </div>
-    )
-  }
+  //             <CardFooter>
+  //               <Skeleton className='h-10 w-full ' />
+  //             </CardFooter>
+  //           </Card>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   if (!licenseOptions.length) {
     return (

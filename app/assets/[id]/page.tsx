@@ -161,9 +161,10 @@ export default async function AssetPage({
 
         <AssetDetailHeader {...asset} />
 
-        <div className='grid lg:grid-cols-[1fr_max-content] gap-8'>
+        <div className='grid lg:grid-cols-[2fr_1fr] gap-8'>
           <div className='space-y-8'>
             <AssetDetailCarousel
+              id={asset.id}
               featuredImage={asset.featuredImage}
               galleryImages={asset.galleryImages}
               title={asset.title}

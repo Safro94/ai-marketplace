@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
-import { FavoriteButton } from './favorite-button'
+import { AssetOptions } from './asset-options'
 
 export const Asset: FC<ExploreAsset> = ({
   id,
@@ -34,14 +34,7 @@ export const Asset: FC<ExploreAsset> = ({
             className='object-cover !max-h-[200px] !relative'
           />
 
-          <div className='absolute right-3 top-3'>
-            <FavoriteButton
-              assetId={id}
-              variant='ghost'
-              size='icon'
-              className='z-10 !h-fit !w-fit'
-            />
-          </div>
+          <AssetOptions assetId={id} />
         </CardHeader>
 
         <CardContent className='p-0 py-2 flex-1 flex flex-col'>
@@ -50,7 +43,7 @@ export const Asset: FC<ExploreAsset> = ({
               <h3 className='text-xl font-semibold mb-1'>{title}</h3>
 
               <span className='text-sm text-muted-foreground'>
-                By {creator.name || 'Unknown Creator'}
+                By {creator.user.name || 'Unknown Creator'}
               </span>
             </div>
 

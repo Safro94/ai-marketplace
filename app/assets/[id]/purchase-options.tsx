@@ -1,6 +1,5 @@
 'use client'
 
-import { FavoriteButton } from '@/components/favorite-button'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { toast } from '@/components/ui/toast'
@@ -10,7 +9,7 @@ import { ROUTES } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
 import { ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { FC, Suspense, useState } from 'react'
 import { LicenseSelector } from './license-selector'
 
 interface Props {
@@ -58,7 +57,7 @@ export const PurchaseOptions: FC<Props> = ({
 
     addItem({
       assetId,
-      assetLicenseId: selectedOption.id,
+      assetLicenseId: selectedOption.licenseId,
       title: assetTitle,
       price: selectedOption.price,
       licenseName: selectedOption.name,
@@ -69,12 +68,14 @@ export const PurchaseOptions: FC<Props> = ({
   return (
     <Card className='border-border/50'>
       <CardContent className='p-6'>
-        <LicenseSelector
-          assetId={assetId}
-          licenseOptions={licenseOptions}
-          onLicenseSelect={setLicenseType}
-          onLicensesFetch={setLicenseOptions}
-        />
+        <Suspense fallback={<div>loading...</div>}>
+          <LicenseSelector
+            assetId={assetId}
+            licenseOptions={licenseOptions}
+            onLicenseSelect={setLicenseType}
+            onLicensesFetch={setLicenseOptions}
+          />
+        </Suspense>
       </CardContent>
 
       <CardFooter className='px-6 pb-6 pt-0 flex flex-col gap-2'>
@@ -89,13 +90,6 @@ export const PurchaseOptions: FC<Props> = ({
             Add to Cart
           </span>
         </Button>
-
-        <FavoriteButton
-          assetId={assetId}
-          size='lg'
-          showText
-          className='w-full'
-        />
       </CardFooter>
     </Card>
   )

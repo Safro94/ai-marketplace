@@ -12,17 +12,9 @@ import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { API_ROUTES } from '@/lib/constants'
-import { LicenseType } from '@prisma/client'
+import { License, LicenseType } from '@prisma/client'
 import { CheckCircle } from 'lucide-react'
 import { FC, useEffect, useState } from 'react'
-
-interface License {
-  id: string
-  name: string
-  description: string
-  features: string[]
-  isDefault: boolean
-}
 
 interface LicenseOption {
   licenseId: LicenseType

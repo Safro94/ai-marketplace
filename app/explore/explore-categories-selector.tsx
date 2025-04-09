@@ -17,7 +17,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useState } from 'react'
 
 interface Props {
-  initialCategories?: Category[]
+  initialCategories?: string
   categories: Category[] &
     {
       count: number

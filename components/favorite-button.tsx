@@ -19,10 +19,9 @@ interface Props extends ButtonProps {
 export const FavoriteButton: FC<Props> = ({
   assetId,
   initialFavorited = false,
-  variant = 'outline',
+  variant = 'ghost',
   size = 'icon',
   className,
-  showText = false,
 }) => {
   const [isFavorited, setIsFavorited] = useState(initialFavorited)
   const [isLoading, setIsLoading] = useState(false)
@@ -111,24 +110,17 @@ export const FavoriteButton: FC<Props> = ({
       disabled={isLoading}
       aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
       className={cn(
-        'group hover:text-[#FF385C]',
+        'group hover:text-[#FF385C] z-10 bg-white rounded-full',
         isFavorited && 'text-[#FF385C]',
         className,
       )}
     >
       <Heart
         className={cn(
-          'h-6 w-6 text-black group-hover:fill-[#FF385C] group-hover:text-[#FF385C]',
+          'h-fit w-fit text-black group-hover:fill-[#FF385C] group-hover:text-[#FF385C]',
           isFavorited && 'fill-current text-[#FF385C]',
-          showText && 'mr-2',
         )}
       />
-
-      {showText && (
-        <span>
-          {isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-        </span>
-      )}
     </Button>
   )
 }

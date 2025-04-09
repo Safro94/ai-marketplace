@@ -1,11 +1,8 @@
 import {
-  Asset,
-  Category,
   CreatorApplicationPaymentMethod,
   LicenseType,
   PaymentProvider,
-  Profile,
-  User,
+  Prisma,
 } from '@prisma/client'
 
 export enum OAuthProviders {
@@ -21,7 +18,7 @@ export enum USER_TYPES {
 
 export interface LicenseOption {
   id: string
-  licenseId: string
+  licenseId: LicenseType
   name: string
   description: string
   features: string[]
@@ -35,12 +32,16 @@ export interface Pagination {
   hasPrevPage: boolean
 }
 
-export interface ExploreAsset extends Asset {
-  category: Category
-  creator: Profile & {
-    user: User
+export type ExploreAsset = Prisma.AssetGetPayload<{
+  include: {
+    category: true
+    creator: {
+      include: {
+        user: true
+      }
+    }
   }
-}
+}>
 
 export interface CartItem {
   assetId: string
