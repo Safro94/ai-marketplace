@@ -104,10 +104,8 @@ export const getExploreAssets = async (
 
   // Price range filter
   if (minPrice !== undefined) {
-    where.basePrice = {}
-
-    if (minPrice !== undefined) {
-      where.basePrice.gte = minPrice
+    where.basePrice = {
+      gte: minPrice,
     }
   }
 

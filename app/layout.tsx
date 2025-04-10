@@ -94,7 +94,7 @@ export default function RootLayout({
         <Providers>
           <div className='min-h-screen grid grid-rows-[max-content_1fr_max-content]'>
             <Header />
-            <main>{children}</main>
+            <main className='bg-main-background'>{children}</main>
             <Footer />
           </div>
 

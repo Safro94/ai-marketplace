@@ -26,8 +26,8 @@ export const PurchaseOptions: FC<Props> = ({
   assetTitle,
   getLicenses,
 }) => {
-  const { user } = useAuth()
   const router = useRouter()
+  const { user } = useAuth()
   const { addItem } = useCart()
   const { data: licenseOptions } = use(getLicenses)
 

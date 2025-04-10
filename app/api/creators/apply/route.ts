@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     // Create creator profile (initially not approved)
     const creatorProfile = await prisma.creatorProfile.create({
       data: {
-        profile: { connect: { id: profile.id } },
+        profileId: profile.id,
         expertise: validationResult.data.expertise,
         experience: validationResult.data.experience,
         portfolio: validationResult.data.portfolio || null,

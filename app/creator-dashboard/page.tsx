@@ -10,8 +10,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/db/permissions'
+import { getUserProfile } from '@/lib/db/users'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import { AssetStatus, PurchaseStatus } from '@prisma/client'
 import { format } from 'date-fns'
 import { DollarSign, Package, Star, Users } from 'lucide-react'
@@ -20,24 +21,25 @@ import { redirect } from 'next/navigation'
 import { CreatorDashboardAssetsList } from './creator-dashboard-asset-list'
 
 export default async function CreatorDashboard() {
-  const session = await getServerSession()
+  const { user } = await validateSession(ROUTES.creatorDashboard())
 
-  if (!session?.user) {
-    redirect(ROUTES.login())
-  }
-
-  // Get creator profile
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-  })
-
+  const profile = await getUserProfile(user.id)
   if (!profile || !isAdminOrCreator(profile)) {
     redirect(ROUTES.creators())
   }
 
-  // Get creator stats
-  const creatorStats = await prisma.creatorProfile.findUnique({
+  // Get creator profile
+  const creatorProfile = await prisma.creatorProfile.findUnique({
     where: { profileId: profile.id },
+  })
+
+  if (!creatorProfile) {
+    redirect(ROUTES.creators())
+  }
+
+  // Get creator stats
+  const creatorStats = await prisma.creatorAnalytics.findUnique({
+    where: { creatorProfileId: creatorProfile.id },
   })
 
   // Get recent sales
@@ -245,17 +247,17 @@ export default async function CreatorDashboard() {
                   {recentSales.map((sale) => {
                     return sale.purchaseItems.map((item) => (
                       <div
-                        key={sale.id}
+                        key={item.id}
                         className='flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0'
                       >
                         <div>
                           <p className='font-medium'>{item.asset.title}</p>
                           <p className='text-sm text-muted-foreground'>
                             {item.assetLicense?.license.name} •{' '}
-                            {format(new Date(sale.createdAt), 'MMM d')}
+                            {format(new Date(item.createdAt), 'MMM d')}
                           </p>
                         </div>
-                        <p className='font-medium'>${sale.amount.toFixed(2)}</p>
+                        <p className='font-medium'>${item.amount.toFixed(2)}</p>
                       </div>
                     ))
                   })}

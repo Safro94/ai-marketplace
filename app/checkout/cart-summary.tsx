@@ -25,10 +25,11 @@ export const CartSummary = () => {
 
       <CardContent className='space-y-4 flex-1'>
         {isLoading && (
-          <div className='flex flex-col gap-4'>
-            <Skeleton className='w-full h-16' />
-            <Skeleton className='w-full h-16' />
-          </div>
+          <>
+            <CartItemSkeleton />
+            <CartItemSkeleton />
+            <CartItemSkeleton />
+          </>
         )}
 
         {!isLoading && !items?.length && (
@@ -55,3 +56,14 @@ export const CartSummary = () => {
     </Card>
   )
 }
+
+const CartItemSkeleton = () => (
+  <div className='flex items-center space-x-4'>
+    <Skeleton className='w-16 h-16' />
+
+    <div className='flex-1'>
+      <Skeleton className='w-full h-5 mb-1' />
+      <Skeleton className='w-full h-5' />
+    </div>
+  </div>
+)

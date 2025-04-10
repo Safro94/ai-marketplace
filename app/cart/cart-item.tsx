@@ -34,7 +34,7 @@ export const CartItem: FC<ICartItem & { canEdit?: boolean }> = ({
         />
       </div>
 
-      <div className='flex-1 min-w-0'>
+      <div className='flex-1'>
         <Link href={ROUTES.assetsDetail(assetId)}>
           <h3 className='font-medium truncate'>{title}</h3>
         </Link>

@@ -1,6 +1,5 @@
 import { NotFound } from '@/components/not-found'
 import { PageContainer } from '@/components/page-container'
-import { PurchasedItemCard } from '@/components/purchased-item-card'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ROUTES } from '@/lib/constants'
@@ -10,7 +9,7 @@ import { validateSession } from '@/lib/session'
 import { Search, ShoppingBag } from 'lucide-react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { Fragment } from 'react'
+import { Purchase } from './purchase'
 
 export const metadata: Metadata = {
   title: 'My Purchases | AIAssets Marketplace',
@@ -119,14 +118,7 @@ export default async function PurchasesPage({
           ) : (
             <div className='space-y-6'>
               {purchases.map((purchase) => (
-                <Fragment key={purchase.id}>
-                  {purchase.purchaseItems.map((purchasedItem) => (
-                    <PurchasedItemCard
-                      key={purchase.id}
-                      purchasedItem={purchasedItem}
-                    />
-                  ))}
-                </Fragment>
+                <Purchase key={purchase.id} {...purchase} />
               ))}
             </div>
           )}
@@ -144,14 +136,7 @@ export default async function PurchasesPage({
           ) : (
             <div className='space-y-6'>
               {purchases.slice(0, 5).map((purchase) => (
-                <Fragment key={purchase.id}>
-                  {purchase.purchaseItems.map((purchasedItem) => (
-                    <PurchasedItemCard
-                      key={purchase.id}
-                      purchasedItem={purchasedItem}
-                    />
-                  ))}
-                </Fragment>
+                <Purchase key={purchase.id} {...purchase} />
               ))}
             </div>
           )}

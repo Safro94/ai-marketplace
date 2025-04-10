@@ -60,7 +60,7 @@ export const AssetDownloadButton: FC<Props> = ({
   return (
     <div>
       <LoadingButton
-        className='flex-1'
+        className='flex-1 w-full'
         isLoading={isLoading}
         disabled={isLoading}
         onClick={handleDownload}
