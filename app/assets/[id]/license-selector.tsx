@@ -10,98 +10,25 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { toast } from '@/components/ui/toast'
-import { API_ROUTES } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import { CheckCircle } from 'lucide-react'
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, FC, SetStateAction } from 'react'
 
 interface Props {
-  assetId: string
   licenseOptions: LicenseOption[]
-  onLicenseSelect: Dispatch<SetStateAction<LicenseOption | undefined>>
-  onLicensesFetch: Dispatch<SetStateAction<LicenseOption[]>>
+  selectedLicense: LicenseOption | undefined
+  setSelectedLicense: Dispatch<SetStateAction<LicenseOption | undefined>>
 }
 
 export const LicenseSelector: FC<Props> = ({
-  assetId,
   licenseOptions,
-  onLicenseSelect,
-  onLicensesFetch,
+  selectedLicense,
+  setSelectedLicense,
 }) => {
-  const [selectedLicense, setSelectedLicense] = useState<string | null>(null)
-  const [isLoadingLicenses, setIsLoadingLicenses] = useState(
-    !licenseOptions.length,
-  )
-
-  useEffect(() => {
-    const fetchLicenseOptions = async () => {
-      try {
-        setIsLoadingLicenses(true)
-        const response = await fetch(API_ROUTES.assetsLicenses(assetId))
-
-        if (!response.ok) throw new Error('Failed to fetch license options')
-
-        const data = await response.json()
-        onLicensesFetch(data)
-
-        // Auto-select the standard license if available
-        const standardLicense = data.find(
-          (option: LicenseOption) => option.licenseId === LicenseType.STANDARD,
-        )
-
-        if (standardLicense) {
-          onLicenseSelect(standardLicense)
-        }
-      } catch (error) {
-        toast.error('Error', {
-          description: 'Failed to load license options. Please try again.',
-        })
-      } finally {
-        setIsLoadingLicenses(false)
-      }
-    }
-
-    fetchLicenseOptions()
-  }, [assetId, onLicenseSelect, onLicensesFetch])
-
   const handleLicenseSelect = (licenseOption: LicenseOption) => {
-    setSelectedLicense(licenseOption.id)
-    onLicenseSelect(licenseOption)
+    setSelectedLicense(licenseOption)
   }
-
-  // if (isLoadingLicenses) {
-  //   return (
-  //     <div className='space-y-4'>
-  //       <Skeleton className='h-8 w-48 bg-muted animate-pulse rounded' />
-
-  //       <div className='grid gap-4'>
-  //         {[1, 2].map((i) => (
-  //           <Card key={i} className='opacity-50'>
-  //             <CardHeader>
-  //               <Skeleton className='h-6 w-24 mb-2' />
-  //               <Skeleton className='h-4 w-36' />
-  //               <Skeleton className='h-8 w-16 mt-2' />
-  //             </CardHeader>
-
-  //             <CardContent>
-  //               <div className='space-y-2'>
-  //                 {[1, 2, 3, 4].map((j) => (
-  //                   <Skeleton key={j} className='h-4 w-full ' />
-  //                 ))}
-  //               </div>
-  //             </CardContent>
-
-  //             <CardFooter>
-  //               <Skeleton className='h-10 w-full ' />
-  //             </CardFooter>
-  //           </Card>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   )
-  // }
 
   if (!licenseOptions.length) {
     return (
@@ -161,7 +88,7 @@ export const LicenseSelector: FC<Props> = ({
       <div className='grid gap-4'>
         {licenseOptions.map((option) => {
           const isExtended = option.licenseId === LicenseType.EXTENDED
-          const isSelected = selectedLicense === option.id
+          const isSelected = selectedLicense?.id === option.id
 
           return (
             <Card

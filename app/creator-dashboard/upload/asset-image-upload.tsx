@@ -31,16 +31,18 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
         return (
           <div className='flex flex-col gap-2 flex-1'>
             <div className='flex gap-2'>
-              {form.getValues('galleryImages').map((item) => (
-                <Image
-                  key={item}
-                  width={150}
-                  height={150}
-                  src={item}
-                  alt='Image'
-                  className='object-cover rounded-md'
-                />
-              ))}
+              {form
+                .getValues('galleryImages')
+                ?.map((item, i) => (
+                  <Image
+                    key={item + i}
+                    width={150}
+                    height={150}
+                    src={item}
+                    alt='Image'
+                    className='object-cover rounded-md'
+                  />
+                ))}
             </div>
 
             <Button
@@ -104,7 +106,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
   }
 
   const showImages = Array.isArray(form.getValues(formField))
-    ? !!form.getValues(formField).length
+    ? !!form.getValues(formField)?.length
     : form.getValues(formField)
 
   return (

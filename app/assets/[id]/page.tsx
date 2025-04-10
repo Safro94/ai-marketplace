@@ -12,11 +12,13 @@ import { User } from 'better-auth'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
-import { FC } from 'react'
+import { FC, Suspense } from 'react'
 import { AssetDetailCarousel } from './asset-detail-carousel'
 import { AssetDetailHeader } from './asset-detail-header'
 import { AssetDetailsTabs } from './asset-details-tabs'
+import { getLicenses } from './asset-details-utils'
 import { AssetDownload } from './asset-download'
+import { LicenseSkeleton } from './license-skeleton'
 import { PurchaseOptions } from './purchase-options'
 import { RelatedAssets } from './related-assets'
 
@@ -197,11 +199,14 @@ export default async function AssetPage({
                 isPurchased
               />
             ) : (
-              <PurchaseOptions
-                assetId={asset.id}
-                assetImage={asset.featuredImage}
-                assetTitle={asset.title}
-              />
+              <Suspense fallback={<LicenseSkeleton />}>
+                <PurchaseOptions
+                  assetId={asset.id}
+                  assetImage={asset.featuredImage}
+                  assetTitle={asset.title}
+                  getLicenses={getLicenses(asset.id)}
+                />
+              </Suspense>
             )}
 
             {/* Creator Info (Desktop) */}

@@ -22,11 +22,11 @@ export default async function UploadAssetPage() {
       <BreadcrumbNavigation
         items={[
           {
-            text: 'Dashboard',
+            text: 'Creator Dashboard',
             link: ROUTES.creatorDashboard(),
           },
           {
-            text: 'Upload',
+            text: 'Upload asset',
           },
         ]}
       />

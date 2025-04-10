@@ -277,6 +277,7 @@ const CarouselThumbnails: FC<
               src={image || '/placeholder.svg?height=300&width=400'}
               alt={`${image} preview ${i + 1}`}
               fill
+              priority
               className={cn(
                 'object-cover transition-all hover:opacity-100',
                 api?.selectedScrollSnap() !== i + 1 && 'opacity-50',

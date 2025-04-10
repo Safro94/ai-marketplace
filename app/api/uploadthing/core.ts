@@ -14,7 +14,12 @@ const auth = async () => {
 }
 
 export const fileRouter = {
-  assetUploadFeaturedImageOrVideo: f(['image', 'video'])
+  assetUploadFeaturedImageOrVideo: f({
+    image: {
+      maxFileSize: '4MB',
+      maxFileCount: 1,
+    },
+  })
     .middleware(async () => await auth())
     .onUploadComplete(() => {
       // Whatever is returned here is sent to the clientside `onClientUploadComplete` callback

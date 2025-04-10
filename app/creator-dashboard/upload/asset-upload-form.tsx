@@ -24,7 +24,7 @@ import { toast } from '@/components/ui/toast'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { assetUploadSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Asset, AssetLicense, AssetStatus, Category } from '@prisma/client'
+import { AssetStatus, Category, LicenseType, Prisma } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -36,9 +36,16 @@ type FormData = z.infer<typeof assetUploadSchema>
 
 interface Props {
   categories: Category[]
-  initialData?: Asset & {
-    assetLicenses: AssetLicense[]
-  }
+  initialData?: Prisma.AssetGetPayload<{
+    include: {
+      assetLicenses: {
+        select: {
+          licenseId: true
+          price: true
+        }
+      }
+    }
+  }>
 }
 
 export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
@@ -48,6 +55,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
   const form = useForm<FormData>({
     resolver: zodResolver(assetUploadSchema),
     defaultValues: {
+      id: initialData?.id,
       title: initialData?.title || '',
       description: initialData?.description || '',
       features: initialData?.features.join(',') || '',
@@ -55,7 +63,12 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
       featuredImage: initialData?.featuredImage || '',
       assetFile: initialData?.assetFile || '',
       galleryImages: initialData?.galleryImages || [],
-      licenses: initialData?.assetLicenses || [],
+      licenses: initialData?.assetLicenses || [
+        {
+          licenseId: LicenseType.STANDARD,
+          price: 20,
+        },
+      ],
       categoryId: initialData?.categoryId || '',
       slug: initialData?.slug || '',
     },
@@ -100,9 +113,8 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
         licenses: values.licenses,
       }
 
-      //TODO: send patch request to update asset if initialData is provided
       const response = await fetch(API_ROUTES.assetsUpload(), {
-        method: 'POST',
+        method: initialData ? 'PATCH' : 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -111,7 +123,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
       if (!response.ok) {
         toast.error('Error', {
-          description: 'Failed to create asset. Please try again.',
+          description: `Failed to ${initialData ? 'update' : 'create'} asset. Please try again.`,
         })
 
         return
@@ -140,180 +152,191 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <FormField
-          control={form.control}
-          name='title'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                A clear, descriptive title for your asset
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className='space-y-4'>
-          <div>
-            <h3 className='text-lg font-medium mb-2'>Asset Files</h3>
-            <div className='grid md:grid-cols-2 md:items-stretch gap-4'>
-              <Card className='grid grid-rows-[max-content_1fr]'>
-                <CardHeader>
-                  <CardTitle>Featured Image</CardTitle>
-                  <CardDescription>
-                    The main image displayed for your asset
-                  </CardDescription>
-                </CardHeader>
-
-                <CardContent className='flex'>
-                  <AssetImageUpload formField='featuredImage' form={form} />
-                </CardContent>
-              </Card>
-
-              <Card className='grid grid-rows-[max-content_1fr]'>
-                <CardHeader>
-                  <CardTitle>Asset File</CardTitle>
-                  <CardDescription>
-                    The actual asset file that buyers will download
-                  </CardDescription>
-                </CardHeader>
-
-                <CardContent className='flex'>
-                  <AssetImageUpload formField='assetFile' form={form} />
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          <div>
-            <h3 className='text-lg font-medium mb-2'>Gallery Images</h3>
-            <div className='flex flex-col gap-4'>
-              <AssetImageUpload formField='galleryImages' form={form} />
-            </div>
-          </div>
-        </div>
-
-        <FormField
-          control={form.control}
-          name='description'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} className='min-h-[200px]' />
-              </FormControl>
-
-              <FormDescription>
-                Detailed description of your asset, its capabilities, and use
-                cases
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='features'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Features</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  className='min-h-[100px]'
-                  placeholder='Enter each feature on a new line'
-                />
-              </FormControl>
-
-              <FormDescription>
-                List the key features of your asset, comma separated
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='requirements'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Requirements (Optional)</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  className='min-h-[100px]'
-                  placeholder='Enter each requirement on a new line'
-                />
-              </FormControl>
-
-              <FormDescription>
-                List any requirements or dependencies, comma separated
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {initialData && (
           <FormField
             control={form.control}
-            name='categoryId'
+            name='id'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={categories[0].id}
-                    className='flex flex-col gap-2'
-                  >
-                    {categories.map((category) => (
-                      <FormItem
-                        key={category.id}
-                        className='flex items-center gap-2'
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={category.id} />
-                        </FormControl>
-
-                        <FormLabel className='font-normal !mt-0'>
-                          {category.name}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
+                  <Input type='hidden' {...field} />
                 </FormControl>
+              </FormItem>
+            )}
+          />
+        )}
+
+        <div className='space-y-8'>
+          <FormField
+            control={form.control}
+            name='title'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormDescription>
+                  A clear, descriptive title for your asset
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
 
-        <div className='mt-6'>
-          <h3 className='text-lg font-medium mb-4'>License Options</h3>
-          <LicensePricing
-            basePrice={20}
-            onChange={(licenses) => {
-              form.setValue('licenses', licenses)
-            }}
+          <div className='space-y-4'>
+            <div>
+              <h3 className='text-lg font-medium mb-2'>Asset Files</h3>
+              <div className='grid md:grid-cols-2 md:items-stretch gap-4'>
+                <Card className='grid grid-rows-[max-content_1fr]'>
+                  <CardHeader>
+                    <CardTitle>Featured Image</CardTitle>
+                    <CardDescription>
+                      The main image displayed for your asset
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className='flex'>
+                    <AssetImageUpload formField='featuredImage' form={form} />
+                  </CardContent>
+                </Card>
+
+                <Card className='grid grid-rows-[max-content_1fr]'>
+                  <CardHeader>
+                    <CardTitle>Asset File</CardTitle>
+                    <CardDescription>
+                      The actual asset file that buyers will download
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className='flex'>
+                    <AssetImageUpload formField='assetFile' form={form} />
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            <div>
+              <h3 className='text-lg font-medium mb-2'>Gallery Images</h3>
+              <div className='flex flex-col gap-4'>
+                <AssetImageUpload formField='galleryImages' form={form} />
+              </div>
+            </div>
+          </div>
+
+          <FormField
+            control={form.control}
+            name='description'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea {...field} className='min-h-[200px]' />
+                </FormControl>
+
+                <FormDescription>
+                  Detailed description of your asset, its capabilities, and use
+                  cases
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        <div className='pt-4 flex justify-end'>
-          <LoadingButton
-            isLoading={isUploading}
-            type='submit'
-            disabled={isUploading}
-          >
-            Upload Asset
-          </LoadingButton>
+          <FormField
+            control={form.control}
+            name='features'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Features</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    className='min-h-[100px]'
+                    placeholder='Enter each feature on a new line'
+                  />
+                </FormControl>
+
+                <FormDescription>
+                  List the key features of your asset, comma separated
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='requirements'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Requirements (Optional)</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    className='min-h-[100px]'
+                    placeholder='Enter each requirement on a new line'
+                  />
+                </FormControl>
+
+                <FormDescription>
+                  List any requirements or dependencies, comma separated
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div>
+            <FormField
+              control={form.control}
+              name='categoryId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={categories[0].id}
+                      className='flex flex-col gap-2'
+                    >
+                      {categories.map((category) => (
+                        <FormItem
+                          key={category.id}
+                          className='flex items-center gap-2'
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={category.id} />
+                          </FormControl>
+
+                          <FormLabel className='font-normal !mt-0'>
+                            {category.name}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className='mt-6'>
+            <h3 className='text-lg font-medium mb-4'>License Options</h3>
+            <LicensePricing control={form.control} setValue={form.setValue} />
+          </div>
+
+          <div className='pt-4 flex justify-end'>
+            <LoadingButton
+              isLoading={isUploading}
+              type='submit'
+              disabled={isUploading}
+            >
+              Upload Asset
+            </LoadingButton>
+          </div>
         </div>
       </form>
     </Form>

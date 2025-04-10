@@ -32,6 +32,7 @@ export const Asset: FC<ExploreAsset> = ({
             src={featuredImage || '/placeholder.svg?height=400&width=600'}
             alt={title}
             className='object-cover !max-h-[200px] !relative'
+            priority
           />
 
           <AssetOptions assetId={id} />

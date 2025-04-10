@@ -1,13 +1,6 @@
 import { AssetUploadForm } from '@/app/creator-dashboard/upload/asset-upload-form'
 import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { toast } from '@/components/ui/toast'
 import { ROUTES } from '@/lib/constants'
 import { getCategories } from '@/lib/db/categories'
@@ -20,7 +13,7 @@ import { redirect } from 'next/navigation'
 export default async function EditAssetPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const session = await getServerSession()
 
@@ -39,11 +32,15 @@ export default async function EditAssetPage({
 
   // Get asset
   const asset = await prisma.asset.findUnique({
-    where: { id: params.id },
+    where: { id: (await params).id },
     include: {
       assetLicenses: {
-        include: {
-          license: true,
+        select: {
+          licenseId: true,
+          price: true,
+        },
+        orderBy: {
+          createdAt: 'asc',
         },
       },
     },
@@ -75,20 +72,18 @@ export default async function EditAssetPage({
           },
         ]}
       />
-      <h1 className='text-3xl font-bold mb-8'>Edit Asset</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Edit {asset.title}</CardTitle>
-          <CardDescription>
-            Update your asset details and licensing options
-          </CardDescription>
-        </CardHeader>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold tracking-tight mb-2'>
+          Edit {asset.title}
+        </h1>
 
-        <CardContent>
-          <AssetUploadForm categories={data} initialData={asset} />
-        </CardContent>
-      </Card>
+        <p className='text-muted-foreground'>
+          Update your asset details and licensing options
+        </p>
+      </div>
+
+      <AssetUploadForm categories={data} initialData={asset} />
     </PageContainer>
   )
 }

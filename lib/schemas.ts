@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { BIO_MAX_LENGTH } from './constants'
 
 export const assetUploadSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(5, 'Title must be at least 5 characters'),
   description: z
     .string()
@@ -10,7 +11,7 @@ export const assetUploadSchema = z.object({
   features: z.string().min(1, 'The product must contain at least one feature'),
   requirements: z.string().optional(),
   featuredImage: z.string().url('Please upload a file'),
-  galleryImages: z.array(z.string().url()).default([]),
+  galleryImages: z.array(z.string().url()).default([]).optional(),
   assetFile: z.string().url('Please upload a file'),
   slug: z.string(),
   categoryId: z.string(),
