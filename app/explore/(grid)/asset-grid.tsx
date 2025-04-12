@@ -1,7 +1,7 @@
 import { Asset } from '@/components/asset'
 import { ExploreAsset, Pagination } from '@/lib/types'
 import { FC } from 'react'
-import { SearchBar } from '../search-bar'
+import { SearchBar } from '../_components/search-bar'
 import { ExplorePagination } from './explore-pagination'
 import { ExploreSortBySelector } from './explore-sort-by-selector'
 

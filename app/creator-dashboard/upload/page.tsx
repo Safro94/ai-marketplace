@@ -3,7 +3,7 @@ import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { ROUTES } from '@/lib/constants'
 import { getCategories } from '@/lib/db/categories'
 import type { Metadata } from 'next'
-import { AssetUploadForm } from './asset-upload-form'
+import { AssetUploadForm } from './_components/asset-upload-form'
 
 export const metadata: Metadata = {
   title: 'Upload Asset | Creator Dashboard',

@@ -18,7 +18,7 @@ import { format } from 'date-fns'
 import { DollarSign, Package, Star, Users } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { CreatorDashboardAssetsList } from './creator-dashboard-asset-list'
+import { CreatorDashboardAssetsList } from './_components/creator-dashboard-asset-list'
 
 export default async function CreatorDashboard() {
   const { user } = await validateSession(ROUTES.creatorDashboard())

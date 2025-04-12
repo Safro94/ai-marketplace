@@ -6,13 +6,13 @@ import prisma from '@/lib/prisma'
 import { tryCatch } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { AssetGrid } from './(grid)/asset-grid'
-import { AssetFilters } from './asset-filters'
-import { ExploreCategoriesSelector } from './explore-categories-selector'
+import { AssetFilters } from './_components/asset-filters'
+import { ExploreCategoriesSelector } from './_components/explore-categories-selector'
 import {
   getCategoriesWithCount,
   getExploreAssets,
   getUseCases,
-} from './explore-utils'
+} from './_components/explore-utils'
 
 interface Props {
   searchParams: Promise<{ category: string; q: string }>

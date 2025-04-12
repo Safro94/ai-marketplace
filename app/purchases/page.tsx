@@ -9,7 +9,7 @@ import { validateSession } from '@/lib/session'
 import { Search, ShoppingBag } from 'lucide-react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { Purchase } from './purchase'
+import { Purchase } from './_components/purchase'
 
 export const metadata: Metadata = {
   title: 'My Purchases | AIAssets Marketplace',

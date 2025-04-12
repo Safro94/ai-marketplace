@@ -3,7 +3,7 @@ import { ROUTES } from '@/lib/constants'
 import { getServerSession } from '@/lib/session'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CreatorApplicationForm } from './creator-application-form'
+import { CreatorApplicationForm } from './_components/creator-application-form'
 
 export const metadata: Metadata = {
   title: 'Apply as Creator | AIAssets Marketplace',

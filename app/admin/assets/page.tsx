@@ -14,7 +14,7 @@ import { ModerationService } from '@/services/ModerationService'
 import { format } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
-import { AllCaughtUp } from '../all-caught-up'
+import { AllCaughtUp } from '../_components/all-caught-up'
 import { ModerationActions } from './moderation-actions'
 
 export default async function ModerationPage() {

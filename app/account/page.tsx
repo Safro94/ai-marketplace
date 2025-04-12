@@ -17,7 +17,7 @@ import { Role } from '@prisma/client'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { UserProfileForm } from './user-profile-form'
+import { UserProfileForm } from './_components/user-profile-form'
 
 enum TabsEnum {
   PROFILE = 'profile',

@@ -4,12 +4,12 @@ import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { AlertCircle } from 'lucide-react'
 import type { Metadata } from 'next'
-import { CreatorsBenefitsSection } from './creators-benefits-section'
-import { CreatorsCTASection } from './creators-cta-section'
-import { CreatorsFAQSection } from './creators-faq-section'
-import { CreatorsHeroSection } from './creators-hero-section'
-import { CreatorsHowItWorksSection } from './creators-how-it-works-section'
-import { CreatorsTypesSection } from './creators-types-section'
+import { CreatorsBenefitsSection } from './_components/creators-benefits-section'
+import { CreatorsCTASection } from './_components/creators-cta-section'
+import { CreatorsFAQSection } from './_components/creators-faq-section'
+import { CreatorsHeroSection } from './_components/creators-hero-section'
+import { CreatorsHowItWorksSection } from './_components/creators-how-it-works-section'
+import { CreatorsTypesSection } from './_components/creators-types-section'
 
 export const metadata: Metadata = {
   title: 'Become a Creator | Sell Your AI Assets',

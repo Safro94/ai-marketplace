@@ -26,7 +26,7 @@ export const assetUploadSchema = z.object({
 const paymentMethodSchema = z.object({
   provider: z.enum(['PAYPAL']),
   accountIdentifier: z.string().min(1, 'Account identifier is required'),
-  isDefault: z.boolean().default(false),
+  isDefault: z.boolean().optional(),
 })
 
 export const creatorApplicationSchema = z.object({

@@ -9,7 +9,7 @@ import {
 import { ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { LoginForm } from './login-form'
+import { LoginForm } from './_components/login-form'
 
 export const metadata: Metadata = {
   title: 'Log In | Access Your Account',

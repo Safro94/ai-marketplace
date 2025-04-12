@@ -21,7 +21,7 @@ import { validateAdminProfile } from '@/lib/db/permissions'
 import prisma from '@/lib/prisma'
 import { Role } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
-import { DeleteUserButton } from './delete-user-button'
+import { DeleteUserButton } from './_components/delete-user-button'
 
 export default async function UsersPage() {
   await validateAdminProfile(ROUTES.adminUsers())

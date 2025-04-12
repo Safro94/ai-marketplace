@@ -2,7 +2,7 @@ import { ROUTES } from '@/lib/constants'
 import { validateAdminProfile } from '@/lib/db/permissions'
 import type { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
-import { AdminSidebar } from './sidebar'
+import { AdminSidebar } from './_components/sidebar'
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard | AIAssets Marketplace',

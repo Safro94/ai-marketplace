@@ -22,7 +22,7 @@ import prisma from '@/lib/prisma'
 import { ApplicationStatus } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
-import { AllCaughtUp } from '../all-caught-up'
+import { AllCaughtUp } from '../_components/all-caught-up'
 
 export default async function CreatorApplicationsPage() {
   await validateAdminProfile(ROUTES.adminCreatorApplications())

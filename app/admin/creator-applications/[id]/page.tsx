@@ -15,7 +15,7 @@ import { ApplicationStatus } from '@prisma/client'
 import { format, formatDistanceToNow } from 'date-fns'
 import { notFound } from 'next/navigation'
 import { ElementType, ReactNode } from 'react'
-import { ApplicationReviewForm } from './application-review-form'
+import { ApplicationReviewForm } from './_components/application-review-form'
 
 export default async function CreatorApplicationPage({
   params,
