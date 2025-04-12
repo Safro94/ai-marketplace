@@ -1,27 +1,21 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { useCart } from '@/contexts/cart-context'
-import { formatCurrency, getServiceCharge } from '@/lib/utils'
-import { InfoIcon } from 'lucide-react'
+import { formatCurrency } from '@/lib/utils'
 
 export const PaymentPriceSection = () => {
   const { totalPrice, isLoading } = useCart()
 
-  const serviceCharge = getServiceCharge(totalPrice)
+  // const serviceCharge = getServiceCharge(totalPrice)
+  const serviceCharge = 0
   const totalWithServiceCharge = totalPrice + serviceCharge
 
   return (
     <>
       {isLoading ? (
         <>
-          {[...Array(3)].map((_, i) => (
+          {[...Array(2)].map((_, i) => (
             <div key={`summary-skeleton-${i}`} className='flex justify-between'>
               <Skeleton className='w-1/5 h-5' />
               <Skeleton className='w-1/5 h-5' />
@@ -33,7 +27,7 @@ export const PaymentPriceSection = () => {
           <span>Subtotal</span>
           <span className='text-right'>${totalPrice.toFixed(2)}</span>
 
-          <span className='flex items-center gap-1'>
+          {/* <span className='flex items-center gap-1'>
             Service fee
             <TooltipProvider>
               <Tooltip>
@@ -53,7 +47,7 @@ export const PaymentPriceSection = () => {
             </TooltipProvider>
           </span>
 
-          <span className='text-right'>{formatCurrency(serviceCharge)}</span>
+          <span className='text-right'>{formatCurrency(serviceCharge)}</span> */}
 
           <span className='font-bold'>Total</span>
           <span className='text-right font-bold'>

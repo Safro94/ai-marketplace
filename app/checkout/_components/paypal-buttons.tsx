@@ -139,8 +139,6 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
 
         const { payer, purchase_units } = payment
 
-        console.log(payer, purchase_units)
-
         const { data: response, error: createPurchaseError } = await tryCatch(
           fetch(`${API_ROUTES.purchase()}`, {
             method: 'POST',
@@ -149,6 +147,10 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
             },
             body: JSON.stringify({
               paypalOrderId: payment.id,
+              paymentDetails: {
+                ...payer,
+                ...purchase_units,
+              },
               cartItems: items.map((item) => ({
                 assetId: item.assetId,
                 assetLicenseId: item.assetLicenseId,

@@ -94,13 +94,12 @@ export const LicenseSelector: FC<Props> = ({
             <Card
               key={option.id}
               className={`
-                ${isExtended ? 'border-primary' : ''}
                 ${isSelected ? 'ring-2 ring-primary' : ''}
                 transition-all hover:shadow-md
               `}
             >
               {isExtended && (
-                <div className='bg-primary text-primary-foreground text-center py-1 text-sm font-medium'>
+                <div className='bg-primary rounded-t-lg text-primary-foreground text-center py-1 text-sm font-medium'>
                   EXTENDED
                 </div>
               )}

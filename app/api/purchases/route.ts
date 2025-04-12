@@ -19,8 +19,10 @@ export async function POST(request: Request) {
     const {
       cartItems,
       paypalOrderId,
+      paymentDetails,
     }: {
       paypalOrderId: string
+      paymentDetails: object
       cartItems: Pick<CartItem, 'assetId' | 'assetLicenseId'>[]
     } = await request.json()
 
@@ -43,6 +45,7 @@ export async function POST(request: Request) {
         transactionId: paypalOrderId,
         status: PurchaseStatus.COMPLETED,
         paymentProvider: PaymentProvider.PAYPAL,
+        paymentDetails: paymentDetails,
       },
     })
 
@@ -50,8 +53,19 @@ export async function POST(request: Request) {
     await Promise.all(
       assets.map(async (asset) => {
         // Generate a unique license key
+        const cartAsset = cartItems.find((item) => item.assetId === asset.id)
+        if (!cartAsset) {
+          return {
+            success: false,
+            error: 'Cart asset does not match current asset',
+          }
+        }
+
         const licenseKey = generateLicenseKey(session.user.id, asset.id)
-        const assetPrice = asset.assetLicenses[0].price
+        const assetLicense = asset.assetLicenses.find(
+          (item) => item.licenseId === cartAsset.assetLicenseId,
+        )
+        const assetPrice = assetLicense?.price || 0
 
         // Create the purchase item
         const purchaseItem = await prisma.purchaseItem.create({
@@ -60,7 +74,7 @@ export async function POST(request: Request) {
             purchaseId: purchase.id,
             assetId: asset.id,
             amount: assetPrice,
-            assetLicenseId: asset.assetLicenses[0].id,
+            assetLicenseId: assetLicense?.id,
           },
         })
 
@@ -84,20 +98,20 @@ export async function POST(request: Request) {
 
         revalidateTag(CACHE_KEYS.profile(asset.creatorId))
 
-        // Update creator analytics if they exist
-        const creatorAnalytics = await prisma.creatorAnalytics.findFirst({
-          where: { creatorProfileId: asset.creator.creatorProfile?.id },
-        })
-
-        if (creatorAnalytics) {
-          await prisma.creatorAnalytics.update({
-            where: { id: creatorAnalytics.id },
-            data: {
-              totalSales: { increment: 1 },
-              totalRevenue: { increment: assetPrice },
+        await prisma.creatorAnalytics.upsert({
+          where: { id: asset.creator.creatorProfile?.id },
+          update: {
+            totalSales: { increment: 1 },
+            totalRevenue: { increment: assetPrice },
+          },
+          create: {
+            totalSales: 1,
+            totalRevenue: assetPrice,
+            creatorProfile: {
+              connect: { id: asset.creator.creatorProfile?.id },
             },
-          })
-        }
+          },
+        })
 
         return purchaseItem
       }),

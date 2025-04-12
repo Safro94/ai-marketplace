@@ -58,7 +58,7 @@ export default async function CheckoutPage() {
             <h2 className='text-xl font-semibold'>Payment</h2>
           </div>
 
-          <Card className='min-h-[455px]'>
+          <Card className='min-h-[407px]'>
             <CardHeader>
               <CardTitle>Complete Payment</CardTitle>
               <CardDescription>

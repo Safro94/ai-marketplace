@@ -98,7 +98,15 @@ export class ModerationService {
         status: AssetStatus.PENDING_REVIEW,
       },
       include: {
-        creator: true,
+        creator: {
+          select: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: 'asc',

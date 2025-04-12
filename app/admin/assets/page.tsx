@@ -15,7 +15,7 @@ import { format } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { AllCaughtUp } from '../_components/all-caught-up'
-import { ModerationActions } from './moderation-actions'
+import { ModerationActions } from './_components/moderation-actions'
 
 export default async function ModerationPage() {
   await validateAdminProfile()
@@ -46,7 +46,7 @@ export default async function ModerationPage() {
                       <div>
                         <CardTitle>{asset.title}</CardTitle>
                         <CardDescription>
-                          By {asset.creator.name} • Submitted{' '}
+                          By {asset.creator.user.name} • Submitted{' '}
                           {format(new Date(asset.createdAt), 'PPP')}
                         </CardDescription>
                       </div>

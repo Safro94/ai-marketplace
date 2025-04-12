@@ -33,7 +33,6 @@ type Props = Prisma.PurchaseGetPayload<{
 }>
 
 export const Purchase: FC<Props> = ({
-  amount,
   createdAt,
   id,
   status,

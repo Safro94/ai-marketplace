@@ -39,6 +39,7 @@ export const getPurchaseAmounts = async (
         assetLicenses: {
           select: {
             id: true,
+            licenseId: true,
             price: true,
           },
         },
@@ -60,7 +61,12 @@ export const getPurchaseAmounts = async (
     }
   }>(
     (acc, asset) => {
-      const price = asset.assetLicenses[0]?.price || 0
+      const cartAsset = cartAssets.find((item) => item.assetId === asset.id)
+      const assetLicense = asset.assetLicenses.find(
+        (license) => license.licenseId === cartAsset?.assetLicenseId,
+      )
+
+      const price = assetLicense?.price || 0
       const serviceCharge = getServiceCharge(price)
 
       acc.totalPrice += price
