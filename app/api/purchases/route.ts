@@ -1,4 +1,4 @@
-import { getPurchaseAmounts } from '@/app/checkout/checkout-utils'
+import { getPurchaseAmounts } from '@/app/checkout/_components/checkout-utils'
 import { CACHE_KEYS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
 import prisma from '@/lib/prisma'

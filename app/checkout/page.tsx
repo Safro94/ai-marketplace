@@ -13,9 +13,9 @@ import { getUserProfile } from '@/lib/db/users'
 import { validateSession } from '@/lib/session'
 import { CreditCard, ShoppingCart } from 'lucide-react'
 import { redirect } from 'next/navigation'
-import { CartSummary } from './cart-summary'
-import { PaymentPriceSection } from './payment-price-section'
-import { PaypalButtons } from './paypal-buttons'
+import { CartSummary } from './_components/cart-summary'
+import { PaymentPriceSection } from './_components/payment-price-section'
+import { PaypalButtons } from './_components/paypal-buttons'
 
 export default async function CheckoutPage() {
   const { user } = await validateSession(ROUTES.checkout())
@@ -58,7 +58,7 @@ export default async function CheckoutPage() {
             <h2 className='text-xl font-semibold'>Payment</h2>
           </div>
 
-          <Card>
+          <Card className='min-h-[455px]'>
             <CardHeader>
               <CardTitle>Complete Payment</CardTitle>
               <CardDescription>
@@ -66,7 +66,7 @@ export default async function CheckoutPage() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className='space-y-6 flex-1'>
+            <CardContent className='space-y-4 flex-1'>
               <PaymentPriceSection />
 
               <Separator />

@@ -1,4 +1,4 @@
-import { getPurchaseAmounts } from '@/app/checkout/checkout-utils'
+import { getPurchaseAmounts } from '@/app/checkout/_components/checkout-utils'
 import { CartItem, CheckoutPaymentDetails } from '@/lib/types'
 import paypal from '@paypal/checkout-server-sdk'
 import { NextResponse } from 'next/server'

@@ -15,14 +15,14 @@ import { useRouter } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 
 export const PaypalButtons = () => {
-  const { items } = useCart()
+  const { items, isLoading: isLoadingItems } = useCart()
   const [isLoading, setIsLoading] = useState(true)
   const [creatorsData, setCreatorsData] = useState<CheckoutCreatorsData>()
 
   useEffect(() => {
-    const fetchAssets = async () => {
-      setIsLoading(true)
+    if (!items.length) return
 
+    const fetchAssets = async () => {
       const { data: response, error } = await tryCatch(
         fetch(API_ROUTES.assets(), {
           method: 'POST',
@@ -37,9 +37,8 @@ export const PaypalButtons = () => {
         }),
       )
 
-      setIsLoading(false)
-
       if (!response?.ok) {
+        setIsLoading(false)
         throw Error('Failed to get creators')
       }
 
@@ -51,19 +50,14 @@ export const PaypalButtons = () => {
 
       const data: CheckoutCreatorsData = await response?.json()
       setCreatorsData(data)
+      setIsLoading(false)
     }
 
     fetchAssets()
   }, [items])
 
-  if (isLoading) {
-    return (
-      <div className='flex flex-col gap-3'>
-        <Skeleton className='w-full h-9' />
-        <Skeleton className='w-full h-9' />
-        <Skeleton className='w-full h-3' />
-      </div>
-    )
+  if (isLoading || isLoadingItems) {
+    return <ButtonsSkeleton />
   }
 
   return (
@@ -190,3 +184,11 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
     />
   )
 }
+
+const ButtonsSkeleton = () => (
+  <div className='flex flex-col items-center'>
+    <Skeleton className='w-full h-[45px] mb-3.5' />
+    <Skeleton className='w-full h-[45px] mb-3.5' />
+    <Skeleton className='w-28 h-3 mb-0.5' />
+  </div>
+)

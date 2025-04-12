@@ -150,7 +150,7 @@ export default async function DashboardPage() {
               {purchases.map((purchase) => {
                 return purchase.purchaseItems.map((purchasedItem) => (
                   <PurchasedItemCard
-                    key={purchase.id}
+                    key={purchasedItem.id}
                     purchasedItem={purchasedItem}
                   />
                 ))

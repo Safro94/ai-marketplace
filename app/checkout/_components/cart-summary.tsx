@@ -1,5 +1,6 @@
 'use client'
 
+import { CartItemSkeleton } from '@/components/cart-item-skeleton'
 import {
   Card,
   CardContent,
@@ -11,7 +12,8 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCart } from '@/contexts/cart-context'
-import { CartItem } from '../cart/cart-item'
+import { formatCurrency } from '@/lib/utils'
+import { CartItem } from '../../cart/_components/cart-item'
 
 export const CartSummary = () => {
   const { isLoading, items, totalPrice } = useCart()
@@ -24,13 +26,7 @@ export const CartSummary = () => {
       </CardHeader>
 
       <CardContent className='space-y-4 flex-1'>
-        {isLoading && (
-          <>
-            <CartItemSkeleton />
-            <CartItemSkeleton />
-            <CartItemSkeleton />
-          </>
-        )}
+        {isLoading && <CartItemSkeleton />}
 
         {!isLoading && !items?.length && (
           <div className='text-center py-6'>
@@ -51,19 +47,14 @@ export const CartSummary = () => {
 
       <CardFooter className='flex justify-between pt-4'>
         <div className='text-base font-semibold'>Total</div>
-        <div className='text-base font-semibold'>{totalPrice?.toFixed(2)}</div>
+        <div className='text-base font-semibold'>
+          {isLoading ? (
+            <Skeleton className='w-10 h-5' />
+          ) : (
+            formatCurrency(totalPrice)
+          )}
+        </div>
       </CardFooter>
     </Card>
   )
 }
-
-const CartItemSkeleton = () => (
-  <div className='flex items-center space-x-4'>
-    <Skeleton className='w-16 h-16' />
-
-    <div className='flex-1'>
-      <Skeleton className='w-full h-5 mb-1' />
-      <Skeleton className='w-full h-5' />
-    </div>
-  </div>
-)
