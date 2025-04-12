@@ -15,7 +15,7 @@ import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import { AssetStatus, PurchaseStatus } from '@prisma/client'
 import { format } from 'date-fns'
-import { DollarSign, Package, Star, Users } from 'lucide-react'
+import { DollarSign, Package, Star } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { CreatorDashboardAssetsList } from './_components/creator-dashboard-asset-list'
@@ -109,7 +109,7 @@ export default async function CreatorDashboard() {
   }
 
   // Get total views
-  const totalViews = assets.reduce((sum, asset) => sum + (asset.views || 0), 0)
+  // const totalViews = assets.reduce((sum, asset) => sum + (asset.views || 0), 0)
 
   // Get average rating
   const assetsWithRatings = assets.filter((a) => a.averageRating !== null)
@@ -127,7 +127,7 @@ export default async function CreatorDashboard() {
         </Button>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>
         {[
           {
             title: 'Total Revenue',
@@ -139,11 +139,11 @@ export default async function CreatorDashboard() {
             description: `${creatorStats?.totalSales || 0}`,
             icon: <Package className='h-5 w-5 text-primary' />,
           },
-          {
-            title: 'Total Views',
-            description: totalViews,
-            icon: <Users className='h-5 w-5 text-primary' />,
-          },
+          // {
+          //   title: 'Total Views',
+          //   description: totalViews,
+          //   icon: <Users className='h-5 w-5 text-primary' />,
+          // },
           {
             title: 'Avgerage Rating',
             description: (
