@@ -8,6 +8,7 @@ import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { validateSession } from '@/lib/session'
 import { cn, formatDate } from '@/lib/utils'
+import { AssetStatus } from '@prisma/client'
 import { User } from 'better-auth'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -73,6 +74,28 @@ export async function generateMetadata({
     },
   }
 }
+
+// Add the generateStaticParams function at the top of the file
+export async function generateStaticParams() {
+  // Get the most popular assets
+  const popularAssets = await prisma.asset.findMany({
+    where: {
+      status: AssetStatus.PUBLISHED,
+    },
+    orderBy: [{ sales: 'desc' }, { averageRating: 'desc' }],
+    take: 50, // Generate static pages for top 50 assets
+    select: {
+      id: true,
+    },
+  })
+
+  return popularAssets.map((asset) => ({
+    id: asset.id,
+  }))
+}
+
+// Add revalidation period
+export const revalidate = 3600 // Revalidate every hour
 
 export default async function AssetPage({
   params,
