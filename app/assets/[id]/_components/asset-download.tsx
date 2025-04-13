@@ -16,12 +16,14 @@ import { AlertCircle, Check, Download } from 'lucide-react'
 import { FC, useState } from 'react'
 
 interface Props {
+  assetId: string
   assetUrl: string
   fileName: string
   isPurchased: boolean
 }
 
 export const AssetDownload: FC<Props> = ({
+  assetId,
   assetUrl,
   fileName,
   isPurchased,
@@ -47,7 +49,7 @@ export const AssetDownload: FC<Props> = ({
     setIsDownloading(true)
 
     try {
-      await downloadAsset(assetUrl, fileName)
+      await downloadAsset({ url: assetUrl, fileName, assetId })
 
       toast.success('Download successful', {
         description: 'Your asset has been downloaded successfully',

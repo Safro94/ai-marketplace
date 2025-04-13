@@ -40,6 +40,7 @@ export const API_ROUTES = {
   licenses: () => '/api/licenses',
   assets: () => '/api/assets',
   assetsUpload: () => '/api/assets/upload',
+  assetsDownload: () => `/api/assets/download`,
   asset: (assetId: string) => `/api/assets/${assetId}`,
   assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
   assetsReview: (assetId: string) => `/api/assets/${assetId}/reviews`,

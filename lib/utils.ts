@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import {
+  API_ROUTES,
   FIXED_TRANSACTION_FEE,
   HEADER_LINKS,
   ROUTES,
@@ -63,15 +64,26 @@ export const getServiceCharge = (price: number) => {
   return price ? price * SERVICE_CHARGE + FIXED_TRANSACTION_FEE : 0
 }
 
-export const downloadAsset = async (url: string, fileName: string) => {
+export const downloadAsset = async ({
+  url,
+  fileName,
+  assetId,
+}: {
+  url: string
+  fileName: string
+  assetId: string
+}) => {
   // Fetch the file
-  const response = await fetch(url)
+  const { data: response, error } = await tryCatch(
+    fetch(
+      `${API_ROUTES.assetsDownload()}?url=${encodeURIComponent(url)}&assetId=${assetId}`,
+    ),
+  )
 
-  if (!response.ok) {
-    throw Error('Failed to fetch file')
+  if (!response?.ok || error) {
+    throw Error(error?.message ?? 'Failed to fetch file')
   }
 
-  // Get the blob from the response
   const blob = await response.blob()
 
   // Create a URL for the blob

@@ -217,6 +217,7 @@ export default async function AssetPage({
             {/* Purchase Options or Download */}
             {isPurchased ? (
               <AssetDownload
+                assetId={asset.id}
                 fileName={asset.title}
                 assetUrl={asset.assetFile}
                 isPurchased

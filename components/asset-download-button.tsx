@@ -33,7 +33,7 @@ export const AssetDownloadButton: FC<Props> = ({
     setIsLoading(true)
 
     const { error: downloadError } = await tryCatch(
-      downloadAsset(assetFileUrl, fileName),
+      downloadAsset({ url: assetFileUrl, fileName, assetId }),
     )
 
     setIsLoading(false)
