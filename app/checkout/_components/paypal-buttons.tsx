@@ -2,9 +2,13 @@
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
-import { useCart } from '@/contexts/cart-context'
+import { useCart } from '@/hooks/use-cart'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
-import { CheckoutCreatorsData, CheckoutPaymentDetails } from '@/lib/types'
+import {
+  CartItem,
+  CheckoutCreatorsData,
+  CheckoutPaymentDetails,
+} from '@/lib/types'
 import { cn, tryCatch } from '@/lib/utils'
 import {
   PayPalButtons as PaypalLibButtons,
@@ -14,27 +18,14 @@ import {
 import { useRouter } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 
-export const PaypalButtons = () => {
-  const { items, isLoading: isLoadingItems } = useCart()
+export const PaypalButtons: FC<{ cartItems: CartItem[] }> = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [creatorsData, setCreatorsData] = useState<CheckoutCreatorsData>()
 
   useEffect(() => {
-    if (!items.length) return
-
     const fetchAssets = async () => {
       const { data: response, error } = await tryCatch(
-        fetch(API_ROUTES.assets(), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            cartAssets: items.map((item) => ({
-              assetId: item.assetId,
-            })),
-          }),
-        }),
+        fetch(API_ROUTES.assets()),
       )
 
       if (!response?.ok) {
@@ -54,11 +45,9 @@ export const PaypalButtons = () => {
     }
 
     fetchAssets()
-  }, [items])
+  }, [])
 
-  if (isLoading || isLoadingItems) {
-    return <ButtonsSkeleton />
-  }
+  if (isLoading) return <ButtonsSkeleton />
 
   return (
     <>
@@ -85,16 +74,16 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
   paypalData,
 }) => {
   const router = useRouter()
-  const { clearCart, totalPrice, items } = useCart()
+  const { clearCart, cartTotal } = useCart()
   const [{ isPending }] = usePayPalScriptReducer()
 
-  const isPaypalButtonDisabled = isPending || !totalPrice
+  const isPaypalButtonDisabled = isPending || !cartTotal
 
   return (
     <PaypalLibButtons
       className={cn(
         '!opacity-100',
-        !totalPrice && '!opacity-50 pointer-events-none',
+        !cartTotal && '!opacity-50 pointer-events-none',
       )}
       disabled={isPaypalButtonDisabled}
       createOrder={async () => {
@@ -106,10 +95,6 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
             },
             body: JSON.stringify({
               paypalData,
-              cartAssets: items.map((item) => ({
-                assetId: item.assetId,
-                assetLicenseId: item.assetLicenseId,
-              })),
             }),
           }),
         )
@@ -151,10 +136,6 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
                 ...payer,
                 ...purchase_units,
               },
-              cartItems: items.map((item) => ({
-                assetId: item.assetId,
-                assetLicenseId: item.assetLicenseId,
-              })),
             }),
           }),
         )

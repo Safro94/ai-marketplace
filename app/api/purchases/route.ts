@@ -3,7 +3,6 @@ import { CACHE_KEYS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
-import { CartItem } from '@/lib/types'
 import { PaymentProvider, PurchaseStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
@@ -17,13 +16,11 @@ export async function POST(request: Request) {
 
   try {
     const {
-      cartItems,
       paypalOrderId,
       paymentDetails,
     }: {
       paypalOrderId: string
       paymentDetails: object
-      cartItems: Pick<CartItem, 'assetId' | 'assetLicenseId'>[]
     } = await request.json()
 
     // Get user profile
@@ -35,7 +32,7 @@ export async function POST(request: Request) {
       return { success: false, error: 'User profile not found' }
     }
 
-    const { totalAmounts, assets } = await getPurchaseAmounts(cartItems)
+    const { totalAmounts, assets, cart } = await getPurchaseAmounts()
 
     // Create the purchase with multiple items
     const purchase = await prisma.purchase.create({
@@ -53,7 +50,7 @@ export async function POST(request: Request) {
     await Promise.all(
       assets.map(async (asset) => {
         // Generate a unique license key
-        const cartAsset = cartItems.find((item) => item.assetId === asset.id)
+        const cartAsset = cart.find((item) => item.assetId === asset.id)
         if (!cartAsset) {
           return {
             success: false,
@@ -88,7 +85,7 @@ export async function POST(request: Request) {
           },
         })
 
-        await prisma.creatorProfile.update({
+        const creatorProfile = await prisma.creatorProfile.update({
           where: { id: asset.creator.creatorProfile?.id },
           data: {
             totalSales: { increment: 1 },
@@ -99,16 +96,17 @@ export async function POST(request: Request) {
         revalidateTag(CACHE_KEYS.profile(asset.creatorId))
 
         await prisma.creatorAnalytics.upsert({
-          where: { id: asset.creator.creatorProfile?.id },
+          where: { creatorProfileId: creatorProfile.id },
           update: {
             totalSales: { increment: 1 },
             totalRevenue: { increment: assetPrice },
+            updatedAt: new Date(),
           },
           create: {
             totalSales: 1,
             totalRevenue: assetPrice,
             creatorProfile: {
-              connect: { id: asset.creator.creatorProfile?.id },
+              connect: { id: creatorProfile.id },
             },
           },
         })

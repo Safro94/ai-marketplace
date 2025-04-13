@@ -1,33 +1,20 @@
-'use client'
-
-import { Skeleton } from '@/components/ui/skeleton'
-import { useCart } from '@/contexts/cart-context'
 import { formatCurrency } from '@/lib/utils'
+import { FC } from 'react'
 
-export const PaymentPriceSection = () => {
-  const { totalPrice, isLoading } = useCart()
-
+export const PaymentPriceSection: FC<{ cartTotal: number }> = ({
+  cartTotal,
+}) => {
   // const serviceCharge = getServiceCharge(totalPrice)
   const serviceCharge = 0
-  const totalWithServiceCharge = totalPrice + serviceCharge
+  const totalWithServiceCharge = cartTotal + serviceCharge
 
   return (
     <>
-      {isLoading ? (
-        <>
-          {[...Array(2)].map((_, i) => (
-            <div key={`summary-skeleton-${i}`} className='flex justify-between'>
-              <Skeleton className='w-1/5 h-5' />
-              <Skeleton className='w-1/5 h-5' />
-            </div>
-          ))}
-        </>
-      ) : (
-        <div className='grid grid-cols-2 gap-2'>
-          <span>Subtotal</span>
-          <span className='text-right'>${totalPrice.toFixed(2)}</span>
+      <div className='grid grid-cols-2 gap-2'>
+        <span>Subtotal</span>
+        <span className='text-right'>{formatCurrency(cartTotal)}</span>
 
-          {/* <span className='flex items-center gap-1'>
+        {/* <span className='flex items-center gap-1'>
             Service fee
             <TooltipProvider>
               <Tooltip>
@@ -49,12 +36,11 @@ export const PaymentPriceSection = () => {
 
           <span className='text-right'>{formatCurrency(serviceCharge)}</span> */}
 
-          <span className='font-bold'>Total</span>
-          <span className='text-right font-bold'>
-            {formatCurrency(totalWithServiceCharge)}
-          </span>
-        </div>
-      )}
+        <span className='font-bold'>Total</span>
+        <span className='text-right font-bold'>
+          {formatCurrency(totalWithServiceCharge)}
+        </span>
+      </div>
     </>
   )
 }

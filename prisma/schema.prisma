@@ -77,6 +77,8 @@ model CreatorApplicationPaymentMethod {
   isDefault         Boolean         @default(false)
   creatorProfile    CreatorProfile? @relation(fields: [creatorProfileId], references: [id])
   creatorProfileId  String?
+
+  @@unique([provider, accountIdentifier])
 }
 
 model CreatorAnalytics {
@@ -211,7 +213,7 @@ model AssetLicense {
   license   License     @relation(fields: [licenseId], references: [id])
   price     Float
   createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   // Relations
   purchaseItems PurchaseItem[]
@@ -333,7 +335,7 @@ model User {
   emailVerified Boolean
   image         String?
   createdAt     DateTime
-  updatedAt     DateTime
+  updatedAt     DateTime  @updatedAt
   role          String    @default("user")
   banned        Boolean?
   banReason     String?
@@ -351,7 +353,7 @@ model Session {
   expiresAt      DateTime
   token          String
   createdAt      DateTime
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
   ipAddress      String?
   userAgent      String?
   impersonatedBy String?
@@ -376,7 +378,7 @@ model Account {
   scope                 String?
   password              String?
   createdAt             DateTime
-  updatedAt             DateTime
+  updatedAt             DateTime  @updatedAt
 
   @@map("account")
 }
@@ -387,7 +389,7 @@ model Verification {
   value      String
   expiresAt  DateTime
   createdAt  DateTime?
-  updatedAt  DateTime?
+  updatedAt  DateTime? @updatedAt
 
   @@map("verification")
 }

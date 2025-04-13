@@ -1,5 +1,5 @@
 import { getPurchaseAmounts } from '@/app/checkout/_components/checkout-utils'
-import { CartItem, CheckoutPaymentDetails } from '@/lib/types'
+import { CheckoutPaymentDetails } from '@/lib/types'
 import paypal from '@paypal/checkout-server-sdk'
 import { NextResponse } from 'next/server'
 
@@ -13,14 +13,12 @@ const client = new paypal.core.PayPalHttpClient(environment)
 export async function POST(req: Request) {
   const request = new paypal.orders.OrdersCreateRequest()
   const {
-    cartAssets,
     paypalData,
   }: {
-    cartAssets: Pick<CartItem, 'assetId' | 'assetLicenseId'>[]
     paypalData: CheckoutPaymentDetails[]
   } = await req.json()
 
-  const { totalAmounts } = await getPurchaseAmounts(cartAssets)
+  const { totalAmounts } = await getPurchaseAmounts()
 
   const units = paypalData.map((item, i) => {
     return {

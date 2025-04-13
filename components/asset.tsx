@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
+import { formatCurrency } from '@/lib/utils'
 import { StarIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -49,7 +50,7 @@ export const Asset: FC<ExploreAsset> = ({
             </div>
 
             <span className='text-lg font-bold justify-self-end'>
-              ${basePrice.toFixed(2)}
+              {formatCurrency(basePrice)}
             </span>
           </div>
 
@@ -81,7 +82,6 @@ export const Asset: FC<ExploreAsset> = ({
         title={title}
         basePrice={basePrice}
         featuredImage={featuredImage}
-        isLoading={false}
         variant='outline'
         className='w-full text-primary border-primary'
       />

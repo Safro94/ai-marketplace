@@ -1,24 +1,23 @@
+import { getCart } from '@/lib/cart'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
-import { CartItem } from '@/lib/types'
 import { getServiceCharge, tryCatch } from '@/lib/utils'
 
-export const getPurchaseAmounts = async (
-  cartAssets: Pick<CartItem, 'assetId' | 'assetLicenseId'>[],
-) => {
+export const getPurchaseAmounts = async () => {
   await validateSession()
+  const cart = await getCart()
 
   const { data: assets, error } = await tryCatch(
     prisma.asset.findMany({
       where: {
         id: {
-          in: cartAssets.map((asset) => asset.assetId),
+          in: cart.map((asset) => asset.assetId),
         },
         assetLicenses: {
           some: {
             license: {
               id: {
-                in: cartAssets.map((asset) => asset.assetLicenseId),
+                in: cart.map((asset) => asset.assetLicenseId),
               },
             },
           },
@@ -61,7 +60,7 @@ export const getPurchaseAmounts = async (
     }
   }>(
     (acc, asset) => {
-      const cartAsset = cartAssets.find((item) => item.assetId === asset.id)
+      const cartAsset = cart.find((item) => item.assetId === asset.id)
       const assetLicense = asset.assetLicenses.find(
         (license) => license.licenseId === cartAsset?.assetLicenseId,
       )
@@ -85,5 +84,5 @@ export const getPurchaseAmounts = async (
     },
   )
 
-  return { assets, totalAmounts }
+  return { assets, totalAmounts, cart }
 }

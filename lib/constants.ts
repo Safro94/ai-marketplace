@@ -71,6 +71,8 @@ export const PRIVACY_EMAIL = 'privacy@aiassetsmarketplace.com'
 export const BIO_MAX_LENGTH = 500
 export const SERVICE_CHARGE = 0.25
 export const FIXED_TRANSACTION_FEE = 0.3
+export const CART_COOKIE_NAME = 'cart_session_id'
+export const CART_EXPIRY = 60 * 60 * 24 * 30 // 30 days in seconds
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },

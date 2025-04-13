@@ -1,27 +1,22 @@
+import { getCart } from '@/lib/cart'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
-import { CartItem, CheckoutPaymentDetails } from '@/lib/types'
-import { NextRequest, NextResponse } from 'next/server'
+import { CheckoutPaymentDetails } from '@/lib/types'
+import { NextResponse } from 'next/server'
 
-export async function POST(request: NextRequest) {
+export async function GET() {
   const session = await getServerSession()
+  const cart = await getCart()
 
   if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const { cartAssets }: { cartAssets: Pick<CartItem, 'assetId'>[] } =
-    await request.json()
-
-  if (!cartAssets || !cartAssets.length) {
-    return NextResponse.json([])
   }
 
   try {
     const creatorsProfiles = await prisma.asset.findMany({
       where: {
         id: {
-          in: cartAssets.map((asset) => asset.assetId),
+          in: cart.map((asset) => asset.assetId),
         },
       },
       select: {

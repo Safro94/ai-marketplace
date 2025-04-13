@@ -1,16 +1,16 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { LoadingButton } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { toast } from '@/components/ui/toast'
-import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
+import { useCart } from '@/hooks/use-cart'
 import { ROUTES } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import { ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { FC, use, useState } from 'react'
+import { FC, use, useState, useTransition } from 'react'
 import { LicenseSelector } from './license-selector'
 
 interface Props {
@@ -26,9 +26,10 @@ export const PurchaseOptions: FC<Props> = ({
   assetTitle,
   getLicenses,
 }) => {
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const { user } = useAuth()
-  const { addItem } = useCart()
+  const { addToCart } = useCart()
   const { data: licenseOptions } = use(getLicenses)
 
   // Auto-select the standard license if available
@@ -59,13 +60,19 @@ export const PurchaseOptions: FC<Props> = ({
       return
     }
 
-    addItem({
-      assetId,
-      assetLicenseId: selectedLicense.licenseId,
-      title: assetTitle,
-      price: selectedLicense.price,
-      licenseName: selectedLicense.name,
-      image: assetImage,
+    startTransition(async () => {
+      await addToCart({
+        assetId,
+        assetLicenseId: selectedLicense.licenseId,
+        title: assetTitle,
+        price: selectedLicense.price,
+        licenseName: selectedLicense.name,
+        image: assetImage,
+      })
+
+      toast.success('Added to cart', {
+        description: `${assetTitle} has been added to your cart.`,
+      })
     })
   }
 
@@ -80,17 +87,16 @@ export const PurchaseOptions: FC<Props> = ({
       </CardContent>
 
       <CardFooter className='px-6 pb-6 pt-0 flex flex-col gap-2'>
-        <Button
+        <LoadingButton
           size='lg'
           onClick={handleAddToCart}
-          disabled={!selectedLicense}
+          disabled={!selectedLicense || isPending}
+          isLoading={isPending}
           className='w-full'
         >
-          <span className='flex items-center'>
-            <ShoppingCart className='mr-2 h-5 w-5' />
-            Add to Cart
-          </span>
-        </Button>
+          <ShoppingCart className='mr-2 h-5 w-5' />
+          Add to Cart
+        </LoadingButton>
       </CardFooter>
     </Card>
   )

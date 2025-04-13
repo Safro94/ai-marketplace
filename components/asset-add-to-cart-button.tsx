@@ -1,70 +1,70 @@
 'use client'
 
-import { useCart } from '@/contexts/cart-context'
-import { useAuth } from '@/hooks/use-auth'
-import { ROUTES } from '@/lib/constants'
+import { LoadingButton } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
+import { useCart } from '@/hooks/use-cart'
 import { ExploreAsset } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
-import { ShoppingCart, Trash2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { ComponentProps, FC } from 'react'
-import { LoadingButton } from './ui/button'
-import { toast } from './ui/toast'
+import { ShoppingCart } from 'lucide-react'
+import { ComponentProps, FC, useTransition } from 'react'
 
 interface Props
-  extends Omit<ComponentProps<typeof LoadingButton>, 'id' | 'title'>,
-    Pick<ExploreAsset, 'id' | 'title' | 'basePrice' | 'featuredImage'> {}
+  extends Pick<ExploreAsset, 'id' | 'title' | 'basePrice' | 'featuredImage'>,
+    Pick<ComponentProps<typeof LoadingButton>, 'variant' | 'className'> {
+  assetLicenseId?: LicenseType
+  licenseName?: string
+  licensePrice?: number
+}
 
 export const AssetAddToCartButton: FC<Props> = ({
   id,
-  basePrice,
   title,
+  basePrice,
   featuredImage,
-  variant = 'default',
-  ...rest
+  assetLicenseId,
+  licenseName,
+  licensePrice,
+  ...props
 }) => {
-  const router = useRouter()
-  const { user } = useAuth()
-  const { addItem, removeItem, items } = useCart()
+  const { addToCart } = useCart()
+  const [isPending, startTransition] = useTransition()
 
-  const isItemInCart = items.some((item) => item.assetId === id)
+  const handleAddToCart = async () => {
+    try {
+      const price = licensePrice !== undefined ? licensePrice : basePrice
 
-  const handleCart = () => {
-    if (!user) {
-      toast.error('Authentication required', {
-        description: 'Please log in to purchase this asset.',
+      startTransition(async () => {
+        await addToCart({
+          assetId: id,
+          assetLicenseId: assetLicenseId || LicenseType.STANDARD,
+          title,
+          price,
+          image: featuredImage,
+          licenseName: licenseName || 'Standard License',
+        })
+
+        toast.success('Added to cart', {
+          description: `${title} has been added to your cart.`,
+        })
       })
+    } catch (error) {
+      console.error('Error adding to cart:', error)
 
-      router.push(
-        `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-      )
-      return
+      toast.error('Error', {
+        description: 'There was a problem adding this item to your cart.',
+      })
     }
-
-    if (isItemInCart) {
-      removeItem(id, title)
-      return
-    }
-
-    addItem({
-      assetId: id,
-      assetLicenseId: LicenseType.STANDARD,
-      title: title,
-      price: basePrice,
-      licenseName: 'Standard License',
-      image: featuredImage,
-    })
   }
 
   return (
-    <LoadingButton variant={variant} onClick={handleCart} size='sm' {...rest}>
-      {isItemInCart ? (
-        <Trash2 className='mr-2 h-5 w-5' />
-      ) : (
-        <ShoppingCart className='mr-2 h-5 w-5' />
-      )}
-
-      {isItemInCart ? 'Remove from cart' : 'Add to Cart'}
+    <LoadingButton
+      onClick={handleAddToCart}
+      isLoading={isPending}
+      disabled={isPending}
+      {...props}
+    >
+      <ShoppingCart className='mr-2 h-4 w-4' />
+      Add to Cart
     </LoadingButton>
   )
 }
