@@ -5,7 +5,7 @@ import { UploadDropzone, UploadFile } from '@/components/ui/file-upload'
 import { FormMessage } from '@/components/ui/form'
 import { toast } from '@/components/ui/toast'
 import { assetUploadSchema } from '@/lib/schemas'
-import { cn } from '@/lib/utils'
+import { cn, createDownloadLink } from '@/lib/utils'
 import Image from 'next/image'
 import { ComponentProps, FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -87,6 +87,35 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
           <div className='flex flex-col gap-2 h-full flex-1'>
             <span className='text-2xl font-medium h-full w-full flex flex-col gap-4 justify-center items-center border rounded-lg bg-gray-100'>
               Preview not available
+              <Button
+                type='button'
+                onClick={async (e) => {
+                  e.preventDefault()
+
+                  try {
+                    const response = await fetch(form.getValues('assetFile'))
+
+                    if (!response.ok) {
+                      toast.error('Error', {
+                        description: 'Failed to download your file',
+                      })
+                      return
+                    }
+
+                    const file = await response.blob()
+                    const fileName = form.getValues('title') || 'Asset file'
+
+                    createDownloadLink(file, fileName)
+                  } catch (e) {
+                    console.error(e)
+                    toast.error('Error', {
+                      description: 'Failed to download your file',
+                    })
+                  }
+                }}
+              >
+                Download file
+              </Button>
             </span>
 
             <Button

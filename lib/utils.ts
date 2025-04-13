@@ -86,8 +86,12 @@ export const downloadAsset = async ({
 
   const blob = await response.blob()
 
+  createDownloadLink(blob, fileName)
+}
+
+export const createDownloadLink = (file: Blob, fileName: string) => {
   // Create a URL for the blob
-  const blobUrl = window.URL.createObjectURL(blob)
+  const blobUrl = window.URL.createObjectURL(file)
 
   // Create a temporary link element
   const link = document.createElement('a')
