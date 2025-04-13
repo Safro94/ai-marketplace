@@ -1,12 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import {
-  API_ROUTES,
-  FIXED_TRANSACTION_FEE,
-  HEADER_LINKS,
-  ROUTES,
-  SERVICE_CHARGE,
-} from './constants'
+import { API_ROUTES, HEADER_LINKS, ROUTES, SERVICE_CHARGE } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -61,7 +55,7 @@ export const formatCurrency = (
 }
 
 export const getServiceCharge = (price: number) => {
-  return price ? price * SERVICE_CHARGE + FIXED_TRANSACTION_FEE : 0
+  return price ? price * SERVICE_CHARGE : 0
 }
 
 export const downloadAsset = async ({

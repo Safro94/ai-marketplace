@@ -1,3 +1,4 @@
+import { InfoIconWithTooltip } from '@/components/info-icon-with-tooltip'
 import { PageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,11 +9,12 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ROUTES } from '@/lib/constants'
+import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/db/permissions'
 import { getUserProfile } from '@/lib/db/users'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
+import { formatCurrency } from '@/lib/utils'
 import { AssetStatus, PurchaseStatus } from '@prisma/client'
 import { format } from 'date-fns'
 import { DollarSign, Package, Star } from 'lucide-react'
@@ -130,8 +132,18 @@ export default async function CreatorDashboard() {
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>
         {[
           {
-            title: 'Total Revenue',
-            description: `${creatorStats?.totalRevenue.toFixed(2) || '0.00'}`,
+            title: (
+              <span className='flex gap-1 items-center'>
+                Total Revenue
+                <InfoIconWithTooltip content='Total sales - platform commission' />
+              </span>
+            ),
+            description: formatCurrency(
+              creatorStats?.totalRevenue
+                ? creatorStats.totalRevenue -
+                    creatorStats.totalRevenue * SERVICE_CHARGE
+                : 0,
+            ),
             icon: <DollarSign className='h-5 w-5 text-primary' />,
           },
           {
@@ -154,8 +166,8 @@ export default async function CreatorDashboard() {
             ),
             icon: <Star className='h-5 w-5 text-primary' />,
           },
-        ].map(({ title, description, icon }) => (
-          <Card key={title}>
+        ].map(({ title, description, icon }, i) => (
+          <Card key={i}>
             <CardContent className='pt-6'>
               <div className='flex items-center justify-between'>
                 <div>

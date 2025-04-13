@@ -39,7 +39,7 @@ export const Purchase: FC<Props> = ({
   purchaseItems,
 }) => {
   return (
-    <div className='bg-white border-primary border p-4 rounded-md'>
+    <div className='bg-background border-primary border p-4 rounded-md'>
       <div className='flex items-center justify-between mb-4'>
         <div className='flex flex-col gap-1'>
           <h2 className='text-lg font-bold'>#{id}</h2>

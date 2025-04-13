@@ -1,7 +1,8 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ROUTES } from '@/lib/constants'
+import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { formatCurrency } from '@/lib/utils'
 import { ApplicationStatus } from '@prisma/client'
 import { DollarSign, FileText, ShoppingBag, Users } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -65,12 +66,12 @@ export default async function AdminDashboardPage() {
           {
             cardTitle: 'Total Revenue',
             Icon: DollarSign,
-            cardContent: `${totalRevenue.toFixed(2)}`,
+            cardContent: formatCurrency(totalRevenue * SERVICE_CHARGE),
             cardContentExtra: `${salesCount} sales`,
           },
-        ].map(({ cardTitle, link, Icon, cardContent, cardContentExtra }) => (
-          <Link href={link ?? '#'} key={cardTitle}>
-            <Card key={cardTitle} className='card-hover'>
+        ].map(({ cardTitle, link, Icon, cardContent, cardContentExtra }, i) => (
+          <Link href={link ?? '#'} key={i}>
+            <Card className='card-hover'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>
                   {cardTitle}
