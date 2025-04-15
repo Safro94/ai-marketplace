@@ -24,8 +24,10 @@ export const getCartItems = async () => {
 export const addItemToCart = async (item: CartItem) => {
   await validateSession()
   const updatedCart = await addToCart(item)
+  const cartTotal = await getCartTotal()
   revalidatePath(ROUTES.cart())
-  return updatedCart
+
+  return { updatedCart, cartTotal }
 }
 
 // Remove item from cart
@@ -35,8 +37,10 @@ export const removeItemFromCart = async (
 ) => {
   await validateSession()
   const updatedCart = await removeFromCart(assetId, licenseId)
+  const cartTotal = await getCartTotal()
   revalidatePath(ROUTES.cart())
-  return updatedCart
+
+  return { updatedCart, cartTotal }
 }
 
 // Clear cart

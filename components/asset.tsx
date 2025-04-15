@@ -26,6 +26,7 @@ export const Asset: FC<ExploreAsset> = ({
         href={ROUTES.assetsDetail(id)}
         key={id}
         className='flex-1 grid grid-rows-[200px,1fr]'
+        prefetch
       >
         <CardHeader className='p-0 block relative w-full overflow-hidden'>
           <Image

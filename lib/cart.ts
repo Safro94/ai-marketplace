@@ -75,9 +75,9 @@ export const removeFromCart = async (
     )
 
     if (existingItemIndex >= 0) {
-      // Replace the existing item (might be a different license)
       const newCart = cart.filter((i) => i.assetId !== assetId)
       await redis.set(cartKey, newCart, { ex: CART_EXPIRY })
+      return newCart
     }
 
     return cart

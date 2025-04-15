@@ -39,49 +39,39 @@ export function useCart() {
   }, [])
 
   // Add item to cart
-  const addToCart = useCallback(
-    async (item: CartItem) => {
-      try {
-        setIsLoading(true)
-        const updatedCart = await addItemToCart(item)
-        setCart(updatedCart)
+  const addToCart = useCallback(async (item: CartItem) => {
+    try {
+      setIsLoading(true)
+      const { updatedCart, cartTotal } = await addItemToCart(item)
 
-        const total = await getCartTotalPrice()
-        setCartTotal(total)
-
-        router.refresh()
-        return true
-      } catch (error) {
-        console.error('Error adding item to cart:', error)
-        return false
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [router],
-  )
+      setCart(updatedCart)
+      setCartTotal(cartTotal)
+    } catch (error) {
+      console.error('Error adding item to cart:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
 
   // Remove item from cart
   const removeItem = useCallback(
     async (assetId: string, licenseId: LicenseType) => {
       try {
         setIsLoading(true)
-        const updatedCart = await removeItemFromCart(assetId, licenseId)
+        const { updatedCart, cartTotal } = await removeItemFromCart(
+          assetId,
+          licenseId,
+        )
+
         setCart(updatedCart)
-
-        const total = await getCartTotalPrice()
-        setCartTotal(total)
-
-        router.refresh()
-        return true
+        setCartTotal(cartTotal)
       } catch (error) {
         console.error('Error removing item from cart:', error)
-        return false
       } finally {
         setIsLoading(false)
       }
     },
-    [router],
+    [],
   )
 
   // Clear cart
