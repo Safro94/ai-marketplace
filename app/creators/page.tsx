@@ -1,5 +1,5 @@
-import { isAdminOrCreator } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { getUserProfile } from '@/data-access/profile'
+import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { AlertCircle } from 'lucide-react'
@@ -32,16 +32,7 @@ export default async function CreatorsPage({
   searchParams: Promise<{ error?: string }>
 }) {
   const { user } = await validateSession()
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id },
-    include: {
-      creatorProfile: {
-        include: {
-          creatorApplication: true,
-        },
-      },
-    },
-  })
+  const profile = await getUserProfile(user.id)
 
   const isCreator = isAdminOrCreator(profile)
   const hasPendingApplication =

@@ -1,6 +1,6 @@
+import { createProfile, getProfileByUserId } from '@/data-access/profile'
 import { prisma } from '@/lib/prisma'
 import { resend } from '@/lib/resend'
-import { Role } from '@prisma/client'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { nextCookies } from 'better-auth/next-js'
@@ -28,19 +28,11 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          const profileExists = await prisma.profile.findUnique({
-            where: { userId: user.id },
-          })
+          const profileExists = await getProfileByUserId(user.id)
 
           if (!profileExists) {
             // Create a profile for the user
-            await prisma.profile.create({
-              data: {
-                userId: user.id ?? '',
-                role: Role.USER,
-                createdAt: new Date(),
-              },
-            })
+            await createProfile(user.id)
           }
         },
       },

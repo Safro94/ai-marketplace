@@ -1,8 +1,8 @@
 import { ThemeToggle } from '@/components/header/theme-toggle'
 import { Button } from '@/components/ui/button'
+import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import Link from 'next/link'
@@ -17,16 +17,7 @@ export const Header = async () => {
   let profile
 
   if (session?.user) {
-    profile = await prisma.profile.findUnique({
-      where: { userId: session?.user.id },
-      include: {
-        creatorProfile: {
-          include: {
-            creatorApplication: true,
-          },
-        },
-      },
-    })
+    profile = await getUserProfile(session.user.id)
   }
 
   const isCreator = isAdminOrCreator(profile)

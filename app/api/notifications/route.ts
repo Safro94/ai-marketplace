@@ -1,4 +1,4 @@
-import { getUserProfile } from '@/lib/db/users'
+import { getUserProfile } from '@/data-access/profile'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { Role } from '@prisma/client'

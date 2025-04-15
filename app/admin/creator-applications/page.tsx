@@ -16,9 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { getPendingCreatorApplications } from '@/data-access/creator-application'
 import { ROUTES } from '@/lib/constants'
-import { validateAdminProfile } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { validateAdminProfile } from '@/lib/permissions'
 import { ApplicationStatus } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
@@ -27,29 +27,15 @@ import { AllCaughtUp } from '../_components/all-caught-up'
 export default async function CreatorApplicationsPage() {
   await validateAdminProfile(ROUTES.adminCreatorApplications())
 
-  // Get all creator applications
-  const applications = await prisma.creatorApplication.findMany({
-    where: {
-      status: ApplicationStatus.PENDING,
-    },
-    include: {
-      creatorProfile: {
-        include: {
-          profile: true,
-        },
-      },
-    },
-    orderBy: {
-      submittedAt: 'desc',
-    },
-  })
+  // TODO: add pagination
+  const creatorApplications = await getPendingCreatorApplications()
 
   return (
     <PageContainer>
       <h1 className='text-3xl font-bold tracking-tight mb-8'>
         Creator Applications
       </h1>
-      {!applications.length ? (
+      {!creatorApplications.length ? (
         <AllCaughtUp />
       ) : (
         <Card>
@@ -75,7 +61,7 @@ export default async function CreatorApplicationsPage() {
               </TableHeader>
 
               <TableBody>
-                {applications.map((application) => (
+                {creatorApplications.map((application) => (
                   <TableRow key={application.id}>
                     <TableCell className='font-medium'>
                       {application.fullName}

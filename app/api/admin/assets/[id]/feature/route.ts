@@ -1,5 +1,5 @@
-import { validateRouteProfilePermissions } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { getAssetCount, updateAsset } from '@/data-access/assets'
+import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { NextResponse } from 'next/server'
 
 export async function POST(
@@ -12,24 +12,22 @@ export async function POST(
     const { featured } = await request.json()
 
     // Update the asset's featured status
-    const asset = await prisma.asset.update({
-      where: { id: params.id },
-      data: {
-        featured,
-        // If featuring, set a default order at the end
-        ...(featured
-          ? {
-              featuredOrder: {
-                set:
-                  (await prisma.asset.count({
-                    where: { featured: true },
-                  })) + 1,
-              },
-            }
-          : {
-              featuredOrder: { set: null },
-            }),
-      },
+    const asset = await updateAsset({
+      assetId: params.id,
+      featured,
+      // If featuring, set a default order at the end
+      ...(featured
+        ? {
+            featuredOrder: {
+              set:
+                (await getAssetCount({
+                  where: { featured: true },
+                })) + 1,
+            },
+          }
+        : {
+            featuredOrder: { set: null },
+          }),
     })
 
     return NextResponse.json({

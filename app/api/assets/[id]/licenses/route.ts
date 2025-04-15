@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma'
+import { getAssetLicensesByAssetId } from '@/data-access/asset-licenses'
 import { NextResponse } from 'next/server'
 
 export async function GET(
@@ -8,10 +8,7 @@ export async function GET(
   const assetId = (await params).id
 
   try {
-    const assetLicenses = await prisma.assetLicense.findMany({
-      where: {
-        assetId,
-      },
+    const assetLicenses = await getAssetLicensesByAssetId(assetId, {
       include: {
         license: true,
       },

@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
+import { getCategoriesWithCount } from '@/data-access/categories'
 import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
-import prisma from '@/lib/prisma'
 import {
   Bot,
   Briefcase,
@@ -22,29 +22,11 @@ const iconMap: Record<string, LucideIcon> = {
 }
 
 export const CategoryShowcase = async () => {
-  // Fetch categories from the database
-  const categories = await prisma.category.findMany({
-    orderBy: {
-      name: 'asc',
-    },
-  })
-
-  // Count assets in each category
-  const categoryCounts = await Promise.all(
-    categories.map(async (category) => {
-      const count = await prisma.asset.count({
-        where: {
-          categoryId: category.id,
-          status: 'PUBLISHED',
-        },
-      })
-      return { ...category, count }
-    }),
-  )
+  const categories = await getCategoriesWithCount()
 
   return (
     <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-      {categoryCounts.map((category) => {
+      {categories.map((category) => {
         // Get the icon component or default to MessageSquare
         const IconComponent =
           category.iconName && iconMap[category.iconName]

@@ -1,9 +1,9 @@
 import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
+import { getCategoriesWithCount } from '@/data-access/categories'
 import { ROUTES } from '@/lib/constants'
-import { getCategories } from '@/lib/db/categories'
 import type { Metadata } from 'next'
-import { AssetUploadForm } from './_components/asset-upload-form'
+import { AssetUploadForm } from '../_components/asset-upload-form'
 
 export const metadata: Metadata = {
   title: 'Upload Asset | Creator Dashboard',
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 }
 
 export default async function UploadAssetPage() {
-  const categories = await getCategories()
+  const categories = await getCategoriesWithCount()
 
   return (
     <PageContainer>

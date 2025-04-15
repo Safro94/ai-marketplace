@@ -1,13 +1,13 @@
 import { Asset } from '@/components/asset'
 import { Button } from '@/components/ui/button'
+import { getAssets } from '@/data-access/assets'
 import { ROUTES } from '@/lib/constants'
-import prisma from '@/lib/prisma'
 import { AssetStatus } from '@prisma/client'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export const FeaturedSection = async () => {
-  const featuredAssets = await prisma.asset.findMany({
+  const featuredAssets = await getAssets({
     where: {
       status: AssetStatus.PUBLISHED,
       featured: true,

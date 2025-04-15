@@ -1,18 +1,18 @@
 import { PageContainer } from '@/components/page-container'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { toast } from '@/components/ui/toast'
+import {
+  getCategoriesBySlug,
+  getCategoriesWithCount,
+} from '@/data-access/categories'
 import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
-import prisma from '@/lib/prisma'
 import { tryCatch } from '@/lib/utils'
+import { Prisma } from '@prisma/client'
 import type { Metadata } from 'next'
 import { AssetGrid } from './(grid)/asset-grid'
 import { AssetFilters } from './_components/asset-filters'
 import { ExploreCategoriesSelector } from './_components/explore-categories-selector'
-import {
-  getCategoriesWithCount,
-  getExploreAssets,
-  getUseCases,
-} from './_components/explore-utils'
+import { getExploreAssets, getUseCases } from './_components/explore-utils'
 
 interface Props {
   searchParams: Promise<{ category: string; q: string }>
@@ -34,17 +34,11 @@ export const metadata: Metadata = {
 }
 
 export default async function ExplorePage({ searchParams }: Props) {
-  let categories
+  let categories: Prisma.PromiseReturnType<typeof getCategoriesBySlug> = []
   const categorySlug = (await searchParams)[EXPLORE_PARAMS.CATEGORY]
 
   if (categorySlug) {
-    categories = await prisma.category.findMany({
-      where: {
-        slug: {
-          in: categorySlug.split(','),
-        },
-      },
-    })
+    categories = await getCategoriesBySlug(categorySlug)
   }
 
   const { data: assetData, error: assetsError } = await tryCatch(
@@ -65,7 +59,9 @@ export default async function ExplorePage({ searchParams }: Props) {
     })
   }
 
-  const { data, error } = await tryCatch(getCategoriesWithCount())
+  const { data: categoriesWithCount, error } = await tryCatch(
+    getCategoriesWithCount(),
+  )
 
   if (error) {
     toast.error('An error occurred', {
@@ -84,11 +80,11 @@ export default async function ExplorePage({ searchParams }: Props) {
           Browse our curated collection of high-quality AI assets
         </p>
 
-        {data?.length && (
+        {categoriesWithCount?.length && (
           <ScrollArea className='py-4'>
             <div className='flex items-center gap-4'>
               <ExploreCategoriesSelector
-                categories={data}
+                categories={categoriesWithCount}
                 initialCategories={categorySlug}
               />
             </div>

@@ -1,14 +1,15 @@
-import { AssetUploadForm } from '@/app/creator-dashboard/upload/asset-upload-form'
 import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { toast } from '@/components/ui/toast'
+import { getAssetById } from '@/data-access/assets'
+import { getCategoriesWithCount } from '@/data-access/categories'
+import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
-import { getCategories } from '@/lib/db/categories'
-import { isAdminOrCreator } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { tryCatch } from '@/lib/utils'
 import { redirect } from 'next/navigation'
+import { AssetUploadForm } from '../../../_components/asset-upload-form'
 
 export default async function EditAssetPage({
   params,
@@ -22,26 +23,23 @@ export default async function EditAssetPage({
   }
 
   // Get creator profile
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-  })
+  const profile = await getUserProfile(session.user.id)
 
   if (!profile || !isAdminOrCreator(profile)) {
     redirect(ROUTES.creators())
   }
 
+  const assetId = (await params).id
+
   // Get asset
-  const asset = await prisma.asset.findUnique({
-    where: { id: (await params).id },
-    include: {
-      assetLicenses: {
-        select: {
-          licenseId: true,
-          price: true,
-        },
-        orderBy: {
-          createdAt: 'asc',
-        },
+  const asset = await getAssetById(assetId, {
+    assetLicenses: {
+      select: {
+        licenseId: true,
+        price: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     },
   })
@@ -53,7 +51,7 @@ export default async function EditAssetPage({
     redirect(ROUTES.creatorDashboard())
   }
 
-  const { data, error } = await tryCatch(getCategories())
+  const { data, error } = await tryCatch(getCategoriesWithCount())
 
   if (error) {
     toast.error('Error', {

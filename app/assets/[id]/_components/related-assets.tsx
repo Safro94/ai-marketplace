@@ -1,5 +1,5 @@
 import { Asset } from '@/components/asset'
-import prisma from '@/lib/prisma'
+import { getAssets } from '@/data-access/assets'
 import { ExploreAsset } from '@/lib/types'
 import { AssetStatus } from '@prisma/client'
 import { FC } from 'react'
@@ -14,7 +14,7 @@ export const RelatedAssets: FC<Props> = async ({
   categoryId,
 }) => {
   // Fetch related assets from the same category
-  const relatedAssets = await prisma.asset.findMany({
+  const relatedAssets = await getAssets({
     where: {
       id: { not: currentAssetId },
       categoryId: categoryId,
@@ -34,7 +34,7 @@ export const RelatedAssets: FC<Props> = async ({
 
   if (!relatedAssets.length) {
     // If no assets in the same category, get top-rated assets
-    const topAssets = await prisma.asset.findMany({
+    const topAssets = await getAssets({
       where: {
         id: { not: currentAssetId },
         status: AssetStatus.PUBLISHED,

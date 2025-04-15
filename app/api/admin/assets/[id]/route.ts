@@ -1,5 +1,5 @@
-import { validateRouteProfilePermissions } from '@/lib/db/permissions'
-import { ModerationService } from '@/services/ModerationService'
+import { updateAsset } from '@/data-access/assets'
+import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { AssetStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
 
@@ -17,11 +17,12 @@ export async function POST(
     }
 
     const id = (await params).id
-    const asset = await ModerationService.updateAssetStatus(
-      id,
+    const asset = await updateAsset({
+      assetId: id,
       status,
-      notes || undefined,
-    )
+      moderationNotes: notes || null,
+      ...(status === AssetStatus.PUBLISHED ? { approvedAt: new Date() } : {}),
+    })
 
     // // Notify the creator
     // await prisma.notification.create({

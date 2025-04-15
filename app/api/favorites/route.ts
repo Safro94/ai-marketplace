@@ -1,4 +1,10 @@
-import prisma from '@/lib/prisma'
+import {
+  createFavorite,
+  deleteFavorite,
+  getFavorite,
+  getFavoritesByProfileId,
+} from '@/data-access/favorites'
+import { getUserProfile } from '@/data-access/profile'
 import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
 
@@ -10,25 +16,13 @@ export async function GET() {
   }
 
   try {
-    const profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-    })
+    const profile = await getUserProfile(session.user.id)
 
     if (!profile) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
-    const favorites = await prisma.favorite.findMany({
-      where: { userId: profile.id },
-      include: {
-        asset: {
-          include: {
-            category: true,
-            creator: true,
-          },
-        },
-      },
-    })
+    const favorites = await getFavoritesByProfileId(profile.id)
 
     return NextResponse.json(favorites)
   } catch (error) {
@@ -47,6 +41,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const profile = await getUserProfile(session.user.id)
+
+  if (!profile) {
+    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+  }
+
   try {
     const { assetId } = await request.json()
 
@@ -57,16 +57,8 @@ export async function POST(request: Request) {
       )
     }
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-    })
-
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
-
     // Check if already favorited
-    const existingFavorite = await prisma.favorite.findUnique({
+    const existingFavorite = await getFavorite({
       where: {
         userId_assetId: {
           userId: profile.id,
@@ -76,17 +68,13 @@ export async function POST(request: Request) {
     })
 
     if (existingFavorite) {
-      await prisma.favorite.delete({
-        where: { id: existingFavorite.id },
-      })
+      await deleteFavorite(existingFavorite.id)
 
       return NextResponse.json({ favorited: false })
     } else {
-      await prisma.favorite.create({
-        data: {
-          userId: profile.id,
-          assetId,
-        },
+      await createFavorite({
+        userId: profile.id,
+        assetId,
       })
 
       return NextResponse.json({ favorited: true })

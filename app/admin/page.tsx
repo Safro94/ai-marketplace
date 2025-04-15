@@ -1,9 +1,11 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getAssetCount } from '@/data-access/assets'
+import { getPendingCreatorApplicationsCount } from '@/data-access/creator-application'
+import { getPurchasesAmount, getPurchasesCount } from '@/data-access/purchases'
+import { getUserCount } from '@/data-access/users'
 import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
-import prisma from '@/lib/prisma'
 import { formatCurrency } from '@/lib/utils'
-import { ApplicationStatus } from '@prisma/client'
 import { DollarSign, FileText, ShoppingBag, Users } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -18,19 +20,11 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminDashboardPage() {
-  const userCount = await prisma.user.count()
-  const assetCount = await prisma.asset.count()
-  const salesCount = await prisma.purchase.count()
-  const pendingApplicationsCount = await prisma.creatorApplication.count({
-    where: { status: ApplicationStatus.PENDING },
-  })
-
-  // Calculate total revenue
-  const sales = await prisma.purchase.findMany({
-    select: {
-      amount: true,
-    },
-  })
+  const userCount = await getUserCount()
+  const assetCount = await getAssetCount()
+  const salesCount = await getPurchasesCount()
+  const sales = await getPurchasesAmount()
+  const pendingApplicationsCount = await getPendingCreatorApplicationsCount()
 
   const totalRevenue = sales.reduce((total, sale) => total + sale.amount, 0)
 

@@ -7,8 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
-import { getUserProfile } from '@/lib/db/users'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import { format } from 'date-fns'

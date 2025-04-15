@@ -1,5 +1,5 @@
+import { updateProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
-import prisma from '@/lib/prisma'
 import { userAccountSchema } from '@/lib/schemas'
 import { getServerSession } from '@/lib/session'
 import { revalidateTag } from 'next/cache'
@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     // Update the user profile
-    const updatedProfile = await prisma.profile.update({
+    const updatedProfile = await updateProfile({
       where: { userId: session.user.id },
       data: {
         bio: body.bio,

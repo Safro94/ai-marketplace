@@ -16,9 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { getUserProfiles } from '@/data-access/users'
 import { ROUTES } from '@/lib/constants'
-import { validateAdminProfile } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { validateAdminProfile } from '@/lib/permissions'
 import { Role } from '@prisma/client'
 import { formatDistanceToNow } from 'date-fns'
 import { DeleteUserButton } from './_components/delete-user-button'
@@ -27,14 +27,7 @@ export default async function UsersPage() {
   await validateAdminProfile(ROUTES.adminUsers())
 
   // Get all users with their profiles
-  const users = await prisma.user.findMany({
-    include: {
-      profile: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
+  const users = await getUserProfiles()
 
   return (
     <PageContainer>

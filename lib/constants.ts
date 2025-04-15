@@ -43,7 +43,6 @@ export const API_ROUTES = {
   assetsDownload: () => `/api/assets/download`,
   asset: (assetId: string) => `/api/assets/${assetId}`,
   assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
-  assetsReview: (assetId: string) => `/api/assets/${assetId}/reviews`,
   assetAdminModeration: (assetId: string) => `/api/admin/assets/${assetId}`,
   assetAdminFeature: (assetId: string) =>
     `/api/admin/assets/${assetId}/feature`,

@@ -29,8 +29,8 @@ import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { AssetImageUpload } from './asset-image-upload'
-import { LicensePricing } from './license-pricing'
+import { AssetImageUpload } from '../upload/_components/asset-image-upload'
+import { LicensePricing } from '../upload/_components/license-pricing'
 
 type FormData = z.infer<typeof assetUploadSchema>
 

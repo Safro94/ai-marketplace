@@ -2,12 +2,11 @@ import { PageContainer } from '@/components/page-container'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { Card, CardContent } from '@/components/ui/card'
+import { getAssetById, getAssets } from '@/data-access/assets'
 import { ROUTES } from '@/lib/constants'
-import { checkUserPurchasedAsset } from '@/lib/db/purchases'
-import prisma from '@/lib/prisma'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { validateSession } from '@/lib/session'
-import { cn, formatDate } from '@/lib/utils'
+import { checkUserPurchasedAsset, cn, formatDate } from '@/lib/utils'
 import { AssetStatus } from '@prisma/client'
 import { User } from 'better-auth'
 import type { Metadata } from 'next'
@@ -30,11 +29,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const id = (await params).id
 
-  const asset = await prisma.asset.findUnique({
-    where: { id },
-    include: {
-      category: true,
-    },
+  const asset = await getAssetById(id, {
+    category: true,
   })
 
   if (!asset) {
@@ -78,7 +74,7 @@ export async function generateMetadata({
 // Add the generateStaticParams function at the top of the file
 export async function generateStaticParams() {
   // Get the most popular assets
-  const popularAssets = await prisma.asset.findMany({
+  const popularAssets = await getAssets({
     where: {
       status: AssetStatus.PUBLISHED,
     },
@@ -105,33 +101,30 @@ export default async function AssetPage({
   const { user } = await validateSession()
   const id = (await params).id
 
-  const asset = await prisma.asset.findUnique({
-    where: { id },
-    include: {
-      category: true,
-      creator: {
-        include: {
-          user: true,
-        },
+  const asset = await getAssetById(id, {
+    category: true,
+    creator: {
+      include: {
+        user: true,
       },
-      reviews: {
-        include: {
-          userProfile: {
-            include: {
-              user: {
-                select: {
-                  name: true,
-                  image: true,
-                },
+    },
+    reviews: {
+      include: {
+        userProfile: {
+          include: {
+            user: {
+              select: {
+                name: true,
+                image: true,
               },
             },
           },
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: 5,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 5,
     },
   })
 

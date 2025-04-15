@@ -241,22 +241,22 @@ model Download {
 }
 
 model Review {
-  id          String       @id @default(cuid())
-  assetId     String
-  asset       Asset        @relation(fields: [assetId], references: [id])
-  userId      String
-  userProfile Profile      @relation(fields: [userId], references: [id])
-  rating      Int
-  title       String
-  comment     String?
-  isVerified  Boolean      @default(false)
-  status      ReviewStatus @default(PENDING) // PENDING, APPROVED, REJECTED
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id            String       @id @default(cuid())
+  assetId       String
+  asset         Asset        @relation(fields: [assetId], references: [id])
+  userProfileId String
+  userProfile   Profile      @relation(fields: [userProfileId], references: [id])
+  rating        Int
+  title         String
+  comment       String?
+  isVerified    Boolean      @default(false)
+  status        ReviewStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
-  @@unique([assetId, userId])
+  @@unique([assetId, userProfileId])
   @@index([assetId])
-  @@index([userId])
+  @@index([userProfileId])
 }
 
 model Notification {

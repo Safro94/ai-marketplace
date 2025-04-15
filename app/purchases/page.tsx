@@ -1,9 +1,9 @@
 import { NotFound } from '@/components/not-found'
 import { PageContainer } from '@/components/page-container'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { getUserProfile } from '@/data-access/profile'
+import { getAllPurchasesByProfileId } from '@/data-access/purchases'
 import { ROUTES } from '@/lib/constants'
-import { getUserProfile } from '@/lib/db/users'
-import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import { ShoppingBag } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -24,37 +24,7 @@ export default async function PurchasesPage() {
   const profile = await getUserProfile(user.id)
   if (!profile) redirect(ROUTES.home())
 
-  const purchases = await prisma.purchase.findMany({
-    where: {
-      buyerId: profile.id,
-    },
-    include: {
-      purchaseItems: {
-        include: {
-          asset: {
-            include: {
-              category: true,
-              creator: {
-                include: {
-                  user: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          assetLicense: {
-            include: {
-              license: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: 'desc' },
-  })
+  const purchases = await getAllPurchasesByProfileId(profile.id)
 
   return (
     <PageContainer>

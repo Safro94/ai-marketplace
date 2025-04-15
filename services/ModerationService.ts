@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma'
+import { getAssetById } from '@/data-access/assets'
 import { AssetStatus } from '@prisma/client'
 
 export class ModerationService {
@@ -6,11 +6,8 @@ export class ModerationService {
    * Automatically checks an asset for potential issues
    */
   static async autoModerateAsset(assetId: string) {
-    const asset = await prisma.asset.findUnique({
-      where: { id: assetId },
-      include: {
-        creator: true,
-      },
+    const asset = await getAssetById(assetId, {
+      creator: true,
     })
 
     if (!asset) {
@@ -69,50 +66,5 @@ export class ModerationService {
     }
 
     return { status, issues, score }
-  }
-
-  /**
-   * Updates the status of an asset after moderation
-   */
-  static async updateAssetStatus(
-    assetId: string,
-    status: AssetStatus,
-    moderationNotes?: string,
-  ) {
-    return prisma.asset.update({
-      where: { id: assetId },
-      data: {
-        status,
-        moderationNotes,
-        ...(status === AssetStatus.PUBLISHED ? { approvedAt: new Date() } : {}),
-      },
-    })
-  }
-
-  /**
-   * Gets assets pending moderation
-   */
-  static async getPendingAssets(limit = 20, offset = 0) {
-    return prisma.asset.findMany({
-      where: {
-        status: AssetStatus.PENDING_REVIEW,
-      },
-      include: {
-        creator: {
-          select: {
-            user: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-      take: limit,
-      skip: offset,
-    })
   }
 }

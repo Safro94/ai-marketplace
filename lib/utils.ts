@@ -1,6 +1,9 @@
+import { getUserProfile } from '@/data-access/profile'
+import { PurchaseStatus } from '@prisma/client'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { API_ROUTES, HEADER_LINKS, ROUTES, SERVICE_CHARGE } from './constants'
+import prisma from './prisma'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -99,4 +102,23 @@ export const createDownloadLink = (file: Blob, fileName: string) => {
   // Clean up
   document.body.removeChild(link)
   window.URL.revokeObjectURL(blobUrl)
+}
+
+export async function checkUserPurchasedAsset(userId: string, assetId: string) {
+  const profile = await getUserProfile(userId)
+  if (!profile) return false
+
+  const purchase = await prisma.purchase.findFirst({
+    where: {
+      buyerId: profile.id,
+      purchaseItems: {
+        some: {
+          assetId,
+        },
+      },
+      status: PurchaseStatus.COMPLETED,
+    },
+  })
+
+  return !!purchase
 }

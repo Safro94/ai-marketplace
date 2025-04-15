@@ -9,8 +9,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { validateAdminProfile } from '@/lib/db/permissions'
-import { ModerationService } from '@/services/ModerationService'
+import { getAssets } from '@/data-access/assets'
+import { validateAdminProfile } from '@/lib/permissions'
+import { AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
@@ -20,7 +21,27 @@ import { ModerationActions } from './_components/moderation-actions'
 export default async function ModerationPage() {
   await validateAdminProfile()
 
-  const pendingAssets = await ModerationService.getPendingAssets(20, 0)
+  const pendingAssets = await getAssets({
+    where: {
+      status: AssetStatus.PENDING_REVIEW,
+    },
+    include: {
+      creator: {
+        select: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+    take: 20,
+    skip: 0,
+  })
 
   return (
     <PageContainer>

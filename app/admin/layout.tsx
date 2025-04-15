@@ -1,5 +1,5 @@
 import { ROUTES } from '@/lib/constants'
-import { validateAdminProfile } from '@/lib/db/permissions'
+import { validateAdminProfile } from '@/lib/permissions'
 import type { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
 import { AdminSidebar } from './_components/sidebar'

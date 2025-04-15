@@ -1,6 +1,10 @@
+import {
+  getCreatorApplicationById,
+  updateCreatorApplication,
+} from '@/data-access/creator-application'
+import { updateProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
-import { validateRouteProfilePermissions } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { ApplicationStatus, Role } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
@@ -23,17 +27,10 @@ export async function PATCH(
       )
     }
 
+    const creatorApplicationId = (await params).id
+
     // Get the application
-    const application = await prisma.creatorApplication.findUnique({
-      where: { id: (await params).id },
-      include: {
-        creatorProfile: {
-          include: {
-            profile: true,
-          },
-        },
-      },
-    })
+    const application = await getCreatorApplicationById(creatorApplicationId)
 
     if (!application) {
       return NextResponse.json(
@@ -43,8 +40,8 @@ export async function PATCH(
     }
 
     // Update application status
-    const updatedApplication = await prisma.creatorApplication.update({
-      where: { id: (await params).id },
+    const updatedApplication = await updateCreatorApplication({
+      where: { id: creatorApplicationId },
       data: {
         status,
         reviewedAt: new Date(),
@@ -54,7 +51,7 @@ export async function PATCH(
 
     // If approved, update the user's profile to mark them as a creator
     if (status === ApplicationStatus.APPROVED) {
-      await prisma.profile.update({
+      await updateProfile({
         where: { id: application.creatorProfile.profileId },
         data: {
           role: Role.CREATOR,

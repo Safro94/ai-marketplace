@@ -1,6 +1,6 @@
 'use client'
 
-import { createReview } from '@/actions/review'
+import { createReviewAction } from '@/actions/review'
 import { LoadingButton } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -59,7 +59,7 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
     setIsSubmitting(true)
 
     try {
-      await createReview({
+      await createReviewAction({
         asset: { connect: { id: assetId } },
         userProfile: { connect: { userId: user.id } },
         rating,

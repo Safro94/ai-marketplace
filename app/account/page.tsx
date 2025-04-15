@@ -9,9 +9,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/db/permissions'
-import { getUserProfile } from '@/lib/db/users'
+import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
 import { Role } from '@prisma/client'
 import type { Metadata } from 'next'

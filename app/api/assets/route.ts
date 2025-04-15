@@ -1,5 +1,5 @@
+import { getAssets } from '@/data-access/assets'
 import { getCart } from '@/lib/cart'
-import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { CheckoutPaymentDetails } from '@/lib/types'
 import { NextResponse } from 'next/server'
@@ -13,7 +13,7 @@ export async function GET() {
   }
 
   try {
-    const creatorsProfiles = await prisma.asset.findMany({
+    const creatorsProfiles = await getAssets({
       where: {
         id: {
           in: cart.map((asset) => asset.assetId),

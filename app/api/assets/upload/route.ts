@@ -1,6 +1,17 @@
+import {
+  createAssetLicense,
+  deleteAssetLicense,
+  updateAssetLincese,
+} from '@/data-access/asset-licenses'
+import {
+  createAsset,
+  getAssetById,
+  getAssetBySlug,
+  updateAsset,
+} from '@/data-access/assets'
+import { updateProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
-import { validateRouteProfilePermissions } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { assetUploadSchema } from '@/lib/schemas'
 import { ModerationService } from '@/services/ModerationService'
 import { AssetStatus, LicenseType } from '@prisma/client'
@@ -31,9 +42,7 @@ export async function POST(request: Request) {
       validationResult.data
 
     // Check if slug is unique
-    const existingAsset = await prisma.asset.findUnique({
-      where: { slug: assetData.slug },
-    })
+    const existingAsset = await getAssetBySlug(assetData.slug)
 
     if (existingAsset) {
       // Generate a unique slug by appending a timestamp
@@ -41,34 +50,30 @@ export async function POST(request: Request) {
     }
 
     // Create the asset
-    const asset = await prisma.asset.create({
-      data: {
-        ...assetData,
-        creatorId: profile.id,
-        basePrice: Number(
-          Math.min(...licenses.map((license) => license.price)).toFixed(2),
-        ),
-        features: features.split(',').filter((f) => f.trim()),
-        requirements: requirements
-          ? requirements.split(',').filter((r) => r.trim())
-          : [],
-        status: AssetStatus.PENDING_REVIEW,
-        views: 0,
-        totalSales: 0,
-        totalReviews: 0,
-        featured: false,
-      },
+    const asset = await createAsset({
+      ...assetData,
+      creatorId: profile.id,
+      basePrice: Number(
+        Math.min(...licenses.map((license) => license.price)).toFixed(2),
+      ),
+      features: features.split(',').filter((f) => f.trim()),
+      requirements: requirements
+        ? requirements.split(',').filter((r) => r.trim())
+        : [],
+      status: AssetStatus.PENDING_REVIEW,
+      views: 0,
+      totalSales: 0,
+      totalReviews: 0,
+      featured: false,
     })
 
     // Create license options for the asset
     for (const license of licenses) {
-      await prisma.assetLicense.create({
-        data: {
-          assetId: asset.id,
-          licenseId: license.licenseId,
-          price: license.price,
-          createdAt: new Date(),
-        },
+      await createAssetLicense({
+        assetId: asset.id,
+        licenseId: license.licenseId,
+        price: license.price,
+        createdAt: new Date(),
       })
     }
 
@@ -76,12 +81,10 @@ export async function POST(request: Request) {
     const moderationResult = await ModerationService.autoModerateAsset(asset.id)
 
     // Update asset with moderation results
-    await prisma.asset.update({
-      where: { id: asset.id },
-      data: {
-        status: moderationResult.status,
-        moderationNotes: moderationResult.issues.join(', '),
-      },
+    await updateAsset({
+      assetId: asset.id,
+      status: moderationResult.status,
+      moderationNotes: moderationResult.issues.join(', '),
     })
 
     // // Notify admins if manual review is needed
@@ -105,7 +108,7 @@ export async function POST(request: Request) {
     // }
 
     // Update creator stats
-    await prisma.profile.update({
+    await updateProfile({
       where: { id: profile.id },
       data: {
         totalAssets: { increment: 1 },
@@ -152,28 +155,23 @@ export async function PATCH(request: Request) {
       validationResult.data
 
     // Check if slug is unique
-    const existingAsset = await prisma.asset.findUnique({
-      where: { id },
-      include: {
-        assetLicenses: true,
-      },
+    const existingAsset = await getAssetById(id!, {
+      assetLicenses: true,
     })
 
     // update the asset
-    const asset = await prisma.asset.update({
-      where: { id },
-      data: {
-        ...assetData,
-        basePrice: Number(
-          Math.min(...licenses.map((license) => license.price)).toFixed(2),
-        ),
-        features: features.split(',').filter((f) => f.trim()),
-        requirements: requirements
-          ? requirements.split(',').filter((r) => r.trim())
-          : [],
-        status: AssetStatus.PENDING_REVIEW,
-        featured: false,
-      },
+    const asset = await updateAsset({
+      assetId: id!,
+      ...assetData,
+      basePrice: Number(
+        Math.min(...licenses.map((license) => license.price)).toFixed(2),
+      ),
+      features: features.split(',').filter((f) => f.trim()),
+      requirements: requirements
+        ? requirements.split(',').filter((r) => r.trim())
+        : [],
+      status: AssetStatus.PENDING_REVIEW,
+      featured: false,
     })
 
     const existingLicenses = existingAsset?.assetLicenses ?? []
@@ -187,7 +185,7 @@ export async function PATCH(request: Request) {
 
       if (exists) {
         operations.push(
-          prisma.assetLicense.update({
+          updateAssetLincese({
             where: {
               assetId_licenseId: {
                 assetId: asset.id,
@@ -202,13 +200,11 @@ export async function PATCH(request: Request) {
         )
       } else {
         operations.push(
-          prisma.assetLicense.create({
-            data: {
-              assetId: asset.id,
-              licenseId: license.licenseId,
-              price: license.price,
-              createdAt: now,
-            },
+          createAssetLicense({
+            assetId: asset.id,
+            licenseId: license.licenseId,
+            price: license.price,
+            createdAt: now,
           }),
         )
       }
@@ -220,12 +216,10 @@ export async function PATCH(request: Request) {
       !incomingLicenseIds.has(LicenseType.EXTENDED)
     ) {
       operations.push(
-        prisma.assetLicense.delete({
-          where: {
-            assetId_licenseId: {
-              assetId: asset.id,
-              licenseId: LicenseType.EXTENDED,
-            },
+        deleteAssetLicense({
+          assetId_licenseId: {
+            assetId: asset.id,
+            licenseId: LicenseType.EXTENDED,
           },
         }),
       )
@@ -237,12 +231,10 @@ export async function PATCH(request: Request) {
     const moderationResult = await ModerationService.autoModerateAsset(asset.id)
 
     // Update asset with moderation results
-    await prisma.asset.update({
-      where: { id: asset.id },
-      data: {
-        status: moderationResult.status,
-        moderationNotes: moderationResult.issues.join(', '),
-      },
+    await updateAsset({
+      assetId: asset.id,
+      status: moderationResult.status,
+      moderationNotes: moderationResult.issues.join(', '),
     })
 
     // // Notify admins if manual review is needed

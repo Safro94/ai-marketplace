@@ -1,17 +1,16 @@
 'use server'
 
-import prisma from '@/lib/prisma'
+import { updateAsset } from '@/data-access/assets'
+import { createReview, getReviewsByAssetId } from '@/data-access/reviews'
 import type { Prisma } from '@prisma/client'
 
-export async function createReview(data: Prisma.ReviewCreateInput) {
-  const review = await prisma.review.create({
-    data,
+export async function createReviewAction(data: Prisma.ReviewCreateInput) {
+  const review = await createReview({
+    ...data,
   })
 
   // Update asset average rating
-  const assetReviews = await prisma.review.findMany({
-    where: { assetId: data.asset.connect?.id },
-  })
+  const assetReviews = await getReviewsByAssetId(data.asset.connect?.id)
 
   const totalRating = assetReviews.reduce(
     (sum, review) => sum + review.rating,
@@ -19,12 +18,10 @@ export async function createReview(data: Prisma.ReviewCreateInput) {
   )
   const averageRating = totalRating / assetReviews.length
 
-  await prisma.asset.update({
-    where: { id: data.asset.connect?.id },
-    data: {
-      averageRating,
-      totalReviews: assetReviews.length,
-    },
+  await updateAsset({
+    assetId: data.asset.connect?.id as string,
+    averageRating,
+    totalReviews: assetReviews.length,
   })
 
   return review

@@ -1,38 +1,9 @@
+import { getAssets, getPaginatedAssets } from '@/data-access/assets'
 import { EXPLORE_PARAMS } from '@/lib/constants'
-import prisma from '@/lib/prisma'
 import { AssetStatus, Category, Prisma } from '@prisma/client'
 
-export const getCategoriesWithCount = async () => {
-  // Fetch categories from the database
-  const categories = await prisma.category.findMany({
-    orderBy: {
-      name: 'asc',
-    },
-  })
-
-  // Count assets in each category and get featured assets
-  const categoriesWithData = await Promise.all(
-    categories.map(async (category) => {
-      // Count assets in this category
-      const count = await prisma.asset.count({
-        where: {
-          categoryId: category.id,
-          status: AssetStatus.PUBLISHED,
-        },
-      })
-
-      return {
-        ...category,
-        count,
-      }
-    }),
-  )
-
-  return categoriesWithData
-}
-
 export const getUseCases = async () => {
-  const useCases = await prisma.asset.findMany({
+  const useCases = await getAssets({
     where: {
       useCase: {
         not: null,
@@ -115,13 +86,16 @@ export const getExploreAssets = async (
   }
 
   // Determine sort order
-  let orderBy = {}
+  let orderBy:
+    | Prisma.AssetOrderByWithRelationInput
+    | Prisma.AssetOrderByWithRelationInput[]
+
   switch (sortBy) {
     case 'price-low':
-      orderBy = { price: 'asc' }
+      orderBy = { basePrice: 'asc' }
       break
     case 'price-high':
-      orderBy = { price: 'desc' }
+      orderBy = { basePrice: 'desc' }
       break
     case 'rating':
       orderBy = { averageRating: 'desc' }
@@ -139,23 +113,12 @@ export const getExploreAssets = async (
   }
 
   // Execute the query
-  const [assets, totalCount] = await Promise.all([
-    prisma.asset.findMany({
-      where,
-      include: {
-        category: true,
-        creator: {
-          include: {
-            user: true,
-          },
-        },
-      },
-      orderBy,
-      skip,
-      take: limit,
-    }),
-    prisma.asset.count({ where }),
-  ])
+  const [assets, totalCount] = await getPaginatedAssets({
+    where,
+    orderBy,
+    skip,
+    limit,
+  })
 
   // Calculate pagination info
   const totalPages = Math.ceil(totalCount / limit)

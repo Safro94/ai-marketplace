@@ -1,7 +1,12 @@
 import { getPurchaseAmounts } from '@/app/checkout/_components/checkout-utils'
+import { updateAsset } from '@/data-access/assets'
+import { createOrUpdateCreatorAnalytics } from '@/data-access/creator-analytics'
+import { updateCreatorProfile } from '@/data-access/creator-profile'
+import { getUserProfile } from '@/data-access/profile'
+import { createPurchaseItem } from '@/data-access/purchase-item'
+import { createPurchase } from '@/data-access/purchases'
 import { CACHE_KEYS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
-import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { PaymentProvider, PurchaseStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
@@ -24,9 +29,7 @@ export async function POST(request: Request) {
     } = await request.json()
 
     // Get user profile
-    const userProfile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-    })
+    const userProfile = await getUserProfile(session.user.id)
 
     if (!userProfile) {
       return { success: false, error: 'User profile not found' }
@@ -35,15 +38,13 @@ export async function POST(request: Request) {
     const { totalAmounts, assets, cart } = await getPurchaseAmounts()
 
     // Create the purchase with multiple items
-    const purchase = await prisma.purchase.create({
-      data: {
-        buyerId: userProfile.id,
-        amount: totalAmounts.totalPrice,
-        transactionId: paypalOrderId,
-        status: PurchaseStatus.COMPLETED,
-        paymentProvider: PaymentProvider.PAYPAL,
-        paymentDetails: paymentDetails,
-      },
+    const purchase = await createPurchase({
+      buyerId: userProfile.id,
+      amount: totalAmounts.totalPrice,
+      transactionId: paypalOrderId,
+      status: PurchaseStatus.COMPLETED,
+      paymentProvider: PaymentProvider.PAYPAL,
+      paymentDetails: paymentDetails,
     })
 
     // Process each purchase item
@@ -65,27 +66,23 @@ export async function POST(request: Request) {
         const assetPrice = assetLicense?.price || 0
 
         // Create the purchase item
-        const purchaseItem = await prisma.purchaseItem.create({
-          data: {
-            licenseKey,
-            purchaseId: purchase.id,
-            assetId: asset.id,
-            amount: assetPrice,
-            assetLicenseId: assetLicense?.id,
-          },
+        const purchaseItem = await createPurchaseItem({
+          licenseKey,
+          purchaseId: purchase.id,
+          assetId: asset.id,
+          amount: assetPrice,
+          assetLicenseId: assetLicense?.id,
         })
 
         // Update asset sales and revenue
-        await prisma.asset.update({
-          where: { id: asset.id },
-          data: {
-            sales: { increment: 1 },
-            revenue: { increment: assetPrice },
-            totalSales: { increment: 1 },
-          },
+        await updateAsset({
+          assetId: asset.id,
+          sales: { increment: 1 },
+          revenue: { increment: assetPrice },
+          totalSales: { increment: 1 },
         })
 
-        const creatorProfile = await prisma.creatorProfile.update({
+        const creatorProfile = await updateCreatorProfile({
           where: { id: asset.creator.creatorProfile?.id },
           data: {
             totalSales: { increment: 1 },
@@ -95,7 +92,7 @@ export async function POST(request: Request) {
 
         revalidateTag(CACHE_KEYS.profile(asset.creatorId))
 
-        await prisma.creatorAnalytics.upsert({
+        await createOrUpdateCreatorAnalytics({
           where: { creatorProfileId: creatorProfile.id },
           update: {
             totalSales: { increment: 1 },

@@ -6,9 +6,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { getDashboardDownloads } from '@/data-access/download'
+import { getFavoritesByProfileId } from '@/data-access/favorites'
+import { getUserProfile } from '@/data-access/profile'
+import { getAllPurchasesByProfileId } from '@/data-access/purchases'
+import { getDashboardReviews } from '@/data-access/reviews'
 import { ROUTES } from '@/lib/constants'
-import { getUserProfile } from '@/lib/db/users'
-import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
@@ -42,83 +45,11 @@ export default async function DashboardPage() {
     redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.dashboard()}`)
   }
 
-  const purchases = await prisma.purchase.findMany({
-    where: {
-      buyerId: profile.id,
-      status: PurchaseStatus.COMPLETED,
-    },
-    include: {
-      purchaseItems: {
-        include: {
-          asset: {
-            include: {
-              category: true,
-              creator: {
-                include: {
-                  user: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          assetLicense: {
-            include: {
-              license: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
-
-  const downloadHistory = await prisma.download.findMany({
-    where: {
-      userId: profile.id,
-    },
-    include: {
-      purchaseItem: {
-        include: {
-          asset: true,
-        },
-      },
-    },
-    orderBy: {
-      downloadedAt: 'desc',
-    },
-  })
-
-  const reviews = await prisma.review.findMany({
-    where: {
-      userId: profile.id,
-    },
-    include: {
-      asset: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
-
-  const favorites = await prisma.favorite.findMany({
-    where: {
-      userId: profile.id,
-    },
-    include: {
-      asset: {
-        include: {
-          category: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
+  const downloadHistory = await getDashboardDownloads(profile.id)
+  const reviews = await getDashboardReviews(profile.id)
+  const favorites = await getFavoritesByProfileId(profile.id)
+  const purchases = await getAllPurchasesByProfileId(profile.id, {
+    status: PurchaseStatus.COMPLETED,
   })
 
   return (

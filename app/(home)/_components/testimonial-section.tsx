@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma'
+import { getTestimonials } from '@/data-access/testimonials'
 import { Testimonial } from '@prisma/client'
 import { TestimonialsCarousel } from './testimonials-carousel'
 
@@ -34,12 +34,7 @@ const TESTIMONAILS_FALLBACK: Partial<Testimonial>[] = [
 ]
 
 export const TestimonialSection = async () => {
-  const dbTestimonials = await prisma.testimonial.findMany({
-    orderBy: {
-      createdAt: 'desc',
-    },
-    take: 5,
-  })
+  const dbTestimonials = await getTestimonials()
 
   const testimonials = !!dbTestimonials.length
     ? dbTestimonials

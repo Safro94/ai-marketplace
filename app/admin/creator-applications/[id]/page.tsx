@@ -8,9 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { getCreatorApplicationById } from '@/data-access/creator-application'
 import { ROUTES } from '@/lib/constants'
-import { validateAdminProfile } from '@/lib/db/permissions'
-import prisma from '@/lib/prisma'
+import { validateAdminProfile } from '@/lib/permissions'
 import { ApplicationStatus } from '@prisma/client'
 import { format, formatDistanceToNow } from 'date-fns'
 import { notFound } from 'next/navigation'
@@ -23,28 +23,10 @@ export default async function CreatorApplicationPage({
   params: Promise<{ id: string }>
 }) {
   await validateAdminProfile(ROUTES.adminCreatorApplications())
+  const creatorApplicationId = (await params).id
 
   // Get the application
-  const application = await prisma.creatorApplication.findUnique({
-    where: { id: (await params).id },
-    include: {
-      creatorProfile: {
-        include: {
-          profile: {
-            include: {
-              user: {
-                select: {
-                  email: true,
-                  name: true,
-                  createdAt: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  })
+  const application = await getCreatorApplicationById(creatorApplicationId)
 
   if (!application) notFound()
 

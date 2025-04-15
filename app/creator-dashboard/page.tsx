@@ -9,13 +9,16 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { getAssets } from '@/data-access/assets'
+import { getCreatorAnalyticsByCreatorProfileId } from '@/data-access/creator-analytics'
+import { getCreatorProfileByProfileId } from '@/data-access/creator-profile'
+import { getUserProfile } from '@/data-access/profile'
+import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/purchases'
 import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/db/permissions'
-import { getUserProfile } from '@/lib/db/users'
-import prisma from '@/lib/prisma'
+import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
 import { formatCurrency } from '@/lib/utils'
-import { AssetStatus, PurchaseStatus } from '@prisma/client'
+import { AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
 import { DollarSign, Package, Star } from 'lucide-react'
 import Link from 'next/link'
@@ -31,69 +34,24 @@ export default async function CreatorDashboard() {
   }
 
   // Get creator profile
-  const creatorProfile = await prisma.creatorProfile.findUnique({
-    where: { profileId: profile.id },
-  })
+  const creatorProfile = await getCreatorProfileByProfileId(profile.id)
 
   if (!creatorProfile) {
     redirect(ROUTES.creators())
   }
 
   // Get creator stats
-  const creatorStats = await prisma.creatorAnalytics.findUnique({
-    where: { creatorProfileId: creatorProfile.id },
-  })
+  const creatorStats = await getCreatorAnalyticsByCreatorProfileId(
+    creatorProfile.id,
+  )
 
   // Get recent sales
-  const recentSales = await prisma.purchase.findMany({
-    where: {
-      purchaseItems: {
-        some: {
-          asset: {
-            creatorId: profile.id,
-          },
-        },
-      },
-      status: PurchaseStatus.COMPLETED,
-    },
-    include: {
-      purchaseItems: {
-        include: {
-          assetLicense: {
-            select: {
-              license: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
-          asset: {
-            select: {
-              id: true,
-              title: true,
-            },
-          },
-        },
-      },
-      buyer: {
-        select: {
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    take: 5,
-  })
+  const recentSales = await getAllCreatorDashboardPurchasesByAssetCreator(
+    profile.id,
+  )
 
   // Get assets by status
-  const assets = await prisma.asset.findMany({
+  const assets = await getAssets({
     where: {
       creatorId: profile.id,
     },

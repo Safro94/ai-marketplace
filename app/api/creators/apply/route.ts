@@ -1,4 +1,12 @@
-import prisma from '@/lib/prisma'
+import {
+  createCreatorApplication,
+  getFirstCreatorApplicationByProfileId,
+} from '@/data-access/creator-application'
+import {
+  createCreatorProfile,
+  getCreatorProfileByProfileId,
+} from '@/data-access/creator-profile'
+import { getUserProfile } from '@/data-access/profile'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
@@ -9,6 +17,13 @@ export async function POST(request: Request) {
 
   if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // Get user profile
+  const profile = await getUserProfile(session.user.id)
+
+  if (!profile) {
+    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
   }
 
   try {
@@ -26,19 +41,10 @@ export async function POST(request: Request) {
       )
     }
 
-    // Get user profile
-    const profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-    })
-
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
-
     // Check if user already has a creator profile or pending application
-    const existingCreatorProfile = await prisma.creatorProfile.findUnique({
-      where: { profileId: profile.id },
-    })
+    const existingCreatorProfile = await getCreatorProfileByProfileId(
+      profile.id,
+    )
 
     if (existingCreatorProfile) {
       return NextResponse.json(
@@ -47,14 +53,9 @@ export async function POST(request: Request) {
       )
     }
 
-    const existingApplication = await prisma.creatorApplication.findFirst({
-      where: {
-        creatorProfile: {
-          profileId: profile.id,
-        },
-        status: ApplicationStatus.PENDING,
-      },
-    })
+    const existingApplication = await getFirstCreatorApplicationByProfileId(
+      profile.id,
+    )
 
     if (existingApplication) {
       return NextResponse.json(
@@ -64,32 +65,28 @@ export async function POST(request: Request) {
     }
 
     // Create creator profile (initially not approved)
-    const creatorProfile = await prisma.creatorProfile.create({
-      data: {
-        profileId: profile.id,
-        expertise: validationResult.data.expertise,
-        experience: validationResult.data.experience,
-        portfolio: validationResult.data.portfolio || null,
-        paymentMethods: {
-          create: validationResult.data.paymentMethods,
-        },
+    const creatorProfile = await createCreatorProfile({
+      profileId: profile.id,
+      expertise: validationResult.data.expertise,
+      experience: validationResult.data.experience,
+      portfolio: validationResult.data.portfolio || null,
+      paymentMethods: {
+        create: validationResult.data.paymentMethods,
       },
     })
 
     // Create creator application
-    const application = await prisma.creatorApplication.create({
-      data: {
-        creatorProfile: { connect: { id: creatorProfile.profileId } },
-        fullName: validationResult.data.fullName,
-        email: validationResult.data.email,
-        website: validationResult.data.website || null,
-        expertise: validationResult.data.expertise,
-        experience: validationResult.data.experience,
-        bio: validationResult.data.bio,
-        assetTypes: validationResult.data.assetTypes,
-        portfolio: validationResult.data.portfolio || null,
-        status: ApplicationStatus.PENDING,
-      },
+    const application = await createCreatorApplication({
+      creatorProfile: { connect: { id: creatorProfile.profileId } },
+      fullName: validationResult.data.fullName,
+      email: validationResult.data.email,
+      website: validationResult.data.website || null,
+      expertise: validationResult.data.expertise,
+      experience: validationResult.data.experience,
+      bio: validationResult.data.bio,
+      assetTypes: validationResult.data.assetTypes,
+      portfolio: validationResult.data.portfolio || null,
+      status: ApplicationStatus.PENDING,
     })
 
     // Create notification for admin

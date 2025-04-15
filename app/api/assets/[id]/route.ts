@@ -1,5 +1,13 @@
-import { getAssetById } from '@/lib/db/assets'
-import prisma from '@/lib/prisma'
+import {
+  deleteAssetLicensesByAssetId,
+  getAssetLicensesByAssetId,
+} from '@/data-access/asset-licenses'
+import {
+  deleteAssetById,
+  getAssetById,
+  updateAsset,
+} from '@/data-access/assets'
+import { getUserProfile } from '@/data-access/profile'
 import { getServerSession } from '@/lib/session'
 import { Role } from '@prisma/client'
 import { NextResponse } from 'next/server'
@@ -37,23 +45,18 @@ export async function PATCH(
 
   try {
     const data = await request.json()
+    const assetId = (await params).id
 
     // Check if user is the creator or an admin
-    const asset = await prisma.asset.findUnique({
-      where: { id: (await params).id },
-      include: {
-        creator: true,
-      },
+    const asset = await getAssetById(assetId, {
+      creator: true,
     })
 
     if (!asset) {
       return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
     }
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-    })
-
+    const profile = await getUserProfile(session.user.id)
     if (!profile) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
@@ -67,9 +70,9 @@ export async function PATCH(
       )
     }
 
-    const updatedAsset = await prisma.asset.update({
-      where: { id: (await params).id },
-      data,
+    const updatedAsset = await updateAsset({
+      assetId: (await params).id,
+      ...data,
     })
 
     return NextResponse.json(updatedAsset)
@@ -96,20 +99,15 @@ export async function DELETE(
 
   try {
     // Check if user is the creator or an admin
-    const asset = await prisma.asset.findUnique({
-      where: { id: assetId },
-      include: {
-        creator: true,
-      },
+    const asset = await getAssetById(assetId, {
+      creator: true,
     })
 
     if (!asset) {
       return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
     }
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
-    })
+    const profile = await getUserProfile(session.user.id)
 
     if (!profile) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
@@ -124,19 +122,13 @@ export async function DELETE(
       )
     }
 
-    const licenses = await prisma.assetLicense.findMany({
-      where: { assetId },
-    })
+    const licenses = await getAssetLicensesByAssetId(assetId)
 
     for (const license of licenses) {
-      await prisma.assetLicense.deleteMany({
-        where: { assetId: license.assetId },
-      })
+      await deleteAssetLicensesByAssetId(license.assetId)
     }
 
-    await prisma.asset.delete({
-      where: { id: assetId },
-    })
+    await deleteAssetById(assetId)
 
     return NextResponse.json({ success: true })
   } catch (error) {
