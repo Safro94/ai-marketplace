@@ -2,11 +2,11 @@
 
 import { LoadingButton } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
-import { useCart } from '@/hooks/use-cart'
+import { useCart } from '@/contexts/cart-context'
 import { ExploreAsset } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import { ShoppingCart, Trash2 } from 'lucide-react'
-import { ComponentProps, FC, useOptimistic, useTransition } from 'react'
+import { ComponentProps, FC, useTransition } from 'react'
 import { Skeleton } from './ui/skeleton'
 
 interface Props
@@ -29,17 +29,11 @@ export const AssetAddToCartButton: FC<Props> = ({
 }) => {
   const { addToCart, removeItem, cart, isLoading } = useCart()
   const [isPending, startTransition] = useTransition()
-  const isItemInCart = cart.some((item) => item.assetId === id)
-  const [optimisticCart, addOptimistic] = useOptimistic<boolean, boolean>(
-    isItemInCart,
-    (_currentState, newState) => newState,
-  )
+  const isItemInCart = cart.items.some((item) => item.assetId === id)
 
   const handleAddToCart = async () => {
     try {
       const price = licensePrice !== undefined ? licensePrice : basePrice
-
-      addOptimistic(!isItemInCart)
 
       startTransition(async () => {
         const licenseId = assetLicenseId || LicenseType.STANDARD
@@ -66,8 +60,6 @@ export const AssetAddToCartButton: FC<Props> = ({
     } catch (error) {
       console.error('Error adding to cart:', error)
 
-      addOptimistic(isItemInCart)
-
       toast.error('Error', {
         description: 'There was a problem adding this item to your cart.',
       })
@@ -81,17 +73,17 @@ export const AssetAddToCartButton: FC<Props> = ({
       ) : (
         <LoadingButton
           onClick={handleAddToCart}
-          isLoading={optimisticCart === isPending}
-          disabled={optimisticCart === isPending}
+          isLoading={isLoading || isPending}
+          disabled={isLoading || isPending}
           {...props}
         >
-          {optimisticCart ? (
+          {isItemInCart ? (
             <Trash2 className='mr-2 h-5 w-5' />
           ) : (
             <ShoppingCart className='mr-2 h-5 w-5' />
           )}
 
-          {optimisticCart ? 'Remove from cart' : 'Add to Cart'}
+          {isItemInCart ? 'Remove from cart' : 'Add to Cart'}
         </LoadingButton>
       )}
     </>

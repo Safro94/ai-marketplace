@@ -1,19 +1,21 @@
-import { getCartItemsCount } from '@/actions/cart'
+'use client'
+
 import { Button } from '@/components/ui/button'
+import { useCart } from '@/contexts/cart-context'
 import { ROUTES } from '@/lib/constants'
 import { ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
 
-export const CartButton = async () => {
-  const itemCount = await getCartItemsCount()
+export const CartButton = () => {
+  const { cart } = useCart()
 
   return (
     <Button variant='outline' size='sm' asChild className='relative'>
       <Link href={ROUTES.cart()}>
         <ShoppingCart className='h-4 w-4' />
-        {itemCount > 0 && (
+        {!!cart.items.length && (
           <span className='absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center'>
-            {itemCount}
+            {cart.items.length}
           </span>
         )}
       </Link>

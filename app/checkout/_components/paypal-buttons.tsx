@@ -2,7 +2,7 @@
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
-import { useCart } from '@/hooks/use-cart'
+import { useCart } from '@/contexts/cart-context'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import {
   CartItem,
@@ -74,16 +74,16 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
   paypalData,
 }) => {
   const router = useRouter()
-  const { clearCart, cartTotal } = useCart()
+  const { clearCart, cart } = useCart()
   const [{ isPending }] = usePayPalScriptReducer()
 
-  const isPaypalButtonDisabled = isPending || !cartTotal
+  const isPaypalButtonDisabled = isPending || !cart.total
 
   return (
     <PaypalLibButtons
       className={cn(
         '!opacity-100',
-        !cartTotal && '!opacity-50 pointer-events-none',
+        !cart.total && '!opacity-50 pointer-events-none',
       )}
       disabled={isPaypalButtonDisabled}
       createOrder={async () => {

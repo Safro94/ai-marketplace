@@ -7,27 +7,34 @@ import {
   getCartTotalPrice,
   removeItemFromCart,
 } from '@/actions/cart'
-import { CartItem } from '@/lib/types'
+import { Cart, CartContextType, CartItem } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
-import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
-export function useCart() {
-  const router = useRouter()
-  const [cart, setCart] = useState<CartItem[]>([])
+const CartContext = createContext<CartContextType | undefined>(undefined)
+
+export const CartProvider = ({ children }: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true)
-  const [cartTotal, setCartTotal] = useState(0)
+  const [cart, setCart] = useState<Cart>({
+    items: [],
+    total: 0,
+  })
 
-  // Fetch cart on component mount
+  // Load cart from localStorage on initial render
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        setIsLoading(true)
         const items = await getCartItems()
-        setCart(items)
-
         const total = await getCartTotalPrice()
-        setCartTotal(total)
+        setCart({ items, total })
       } catch (error) {
         console.error('Error fetching cart:', error)
       } finally {
@@ -38,14 +45,11 @@ export function useCart() {
     fetchCart()
   }, [])
 
-  // Add item to cart
   const addToCart = useCallback(async (item: CartItem) => {
     try {
       setIsLoading(true)
       const { updatedCart, cartTotal } = await addItemToCart(item)
-
-      setCart(updatedCart)
-      setCartTotal(cartTotal)
+      setCart({ items: updatedCart, total: cartTotal })
     } catch (error) {
       console.error('Error adding item to cart:', error)
     } finally {
@@ -53,7 +57,6 @@ export function useCart() {
     }
   }, [])
 
-  // Remove item from cart
   const removeItem = useCallback(
     async (assetId: string, licenseId: LicenseType) => {
       try {
@@ -63,8 +66,7 @@ export function useCart() {
           licenseId,
         )
 
-        setCart(updatedCart)
-        setCartTotal(cartTotal)
+        setCart({ items: updatedCart, total: cartTotal })
       } catch (error) {
         console.error('Error removing item from cart:', error)
       } finally {
@@ -74,30 +76,46 @@ export function useCart() {
     [],
   )
 
-  // Clear cart
   const clearCart = useCallback(async () => {
     try {
       setIsLoading(true)
       await clearCartItems()
-      setCart([])
-      setCartTotal(0)
-
-      router.refresh()
-      return true
+      setCart({ items: [], total: 0 })
     } catch (error) {
       console.error('Error clearing cart:', error)
-      return false
     } finally {
       setIsLoading(false)
     }
-  }, [router])
+  }, [])
 
-  return {
-    cart,
-    isLoading,
-    cartTotal,
-    addToCart,
-    removeItem,
-    clearCart,
+  const totalPrice = useMemo(
+    () => cart.items.reduce((total, item) => total + item.price, 0),
+    [cart.items],
+  )
+
+  return useMemo(() => {
+    return (
+      <CartContext.Provider
+        value={{
+          cart,
+          isLoading,
+          addToCart,
+          removeItem,
+          clearCart,
+          totalItems: cart.items.length,
+          totalPrice,
+        }}
+      >
+        {children}
+      </CartContext.Provider>
+    )
+  }, [addToCart, cart, children, clearCart, isLoading, removeItem, totalPrice])
+}
+
+export function useCart() {
+  const context = useContext(CartContext)
+  if (context === undefined) {
+    throw new Error('useCart must be used within a CartProvider')
   }
+  return context
 }

@@ -61,11 +61,16 @@ export type CheckoutPaymentDetails = Pick<
   'accountIdentifier' | 'creatorProfileId'
 >
 
-export interface CartContextType {
+export interface Cart {
   items: CartItem[]
-  addItem: (item: CartItem) => void
-  removeItem: (assetId: string, title: string) => void
-  clearCart: () => void
+  total: number
+}
+
+export interface CartContextType {
+  cart: Cart
+  addToCart: (item: CartItem) => Promise<void>
+  removeItem: (assetId: string, licenseId: LicenseType) => Promise<void>
+  clearCart: () => Promise<void>
   totalItems: number
   totalPrice: number
   isLoading: boolean

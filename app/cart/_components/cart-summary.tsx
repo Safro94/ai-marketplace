@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { useCart } from '@/hooks/use-cart'
+import { useCart } from '@/contexts/cart-context'
 import { ROUTES } from '@/lib/constants'
 import { CartItem } from '@/lib/types'
 import { useRouter } from 'next/navigation'
