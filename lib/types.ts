@@ -75,3 +75,9 @@ export interface CartContextType {
   totalPrice: number
   isLoading: boolean
 }
+
+export enum CartContextActionType {
+  ADD_ITEM = 'ADD_ITEM',
+  REMOVE_ITEM = 'REMOVE_ITEM',
+  CLEAR_CART = 'CLEAR_CART',
+}
