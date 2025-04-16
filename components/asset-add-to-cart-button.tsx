@@ -6,7 +6,7 @@ import { useCart } from '@/contexts/cart-context'
 import { ExploreAsset } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import { ShoppingCart, Trash2 } from 'lucide-react'
-import { ComponentProps, FC, useTransition } from 'react'
+import { ComponentProps, FC, MouseEvent, useTransition } from 'react'
 import { Skeleton } from './ui/skeleton'
 
 interface Props
@@ -31,7 +31,10 @@ export const AssetAddToCartButton: FC<Props> = ({
   const [isPending, startTransition] = useTransition()
   const isItemInCart = cart.items.some((item) => item.assetId === id)
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     try {
       const price = licensePrice !== undefined ? licensePrice : basePrice
 

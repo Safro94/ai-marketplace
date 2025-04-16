@@ -31,7 +31,7 @@ export const AssetGrid: FC<Props> = ({ assets, pagination }) => {
 
       {!!assets?.length ? (
         <>
-          <div className='grid grid-cols-[repeat(auto-fill,280px)] gap-6'>
+          <div className='grid grid-cols-[repeat(auto-fill,325px)] gap-6'>
             {assets.map((asset) => (
               <Asset key={asset.id} {...asset} />
             ))}

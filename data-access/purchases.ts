@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import { Prisma, PurchaseStatus } from '@prisma/client'
 import 'server-only'
+import { getUserProfile } from './profile'
 
 export const getPurchasesCount = async () => {
   return await prisma.purchase.count()
@@ -126,4 +127,26 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async (
     },
     take: 5,
   })
+}
+
+export const checkUserPurchasedAsset = async (
+  userId: string,
+  assetId: string,
+) => {
+  const profile = await getUserProfile(userId)
+  if (!profile) return false
+
+  const purchase = await prisma.purchase.findFirst({
+    where: {
+      buyerId: profile.id,
+      purchaseItems: {
+        some: {
+          assetId,
+        },
+      },
+      status: PurchaseStatus.COMPLETED,
+    },
+  })
+
+  return !!purchase
 }

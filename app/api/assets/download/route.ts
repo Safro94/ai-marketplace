@@ -1,4 +1,4 @@
-import { checkUserPurchasedAsset } from '@/lib/db/purchases'
+import { checkUserPurchasedAsset } from '@/data-access/purchases'
 import { getServerSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
 

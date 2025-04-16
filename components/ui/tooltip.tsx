@@ -2,11 +2,12 @@
 
 import { cn } from '@/lib/utils'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
-import { ComponentProps, FC } from 'react'
+import { ComponentProps, FC, ReactNode } from 'react'
 
 const TooltipProvider = TooltipPrimitive.Provider
-const Tooltip = TooltipPrimitive.Root
+const RootTooltip = TooltipPrimitive.Root
 const TooltipTrigger = TooltipPrimitive.Trigger
+const TooltipPortal = TooltipPrimitive.Portal
 
 const TooltipContent: FC<ComponentProps<typeof TooltipPrimitive.Content>> = ({
   className,
@@ -24,5 +25,24 @@ const TooltipContent: FC<ComponentProps<typeof TooltipPrimitive.Content>> = ({
     {...props}
   />
 )
+
+const Tooltip: FC<{ trigger: ReactNode; content: ReactNode }> = ({
+  trigger,
+  content,
+}) => {
+  return (
+    <TooltipProvider delayDuration={200}>
+      <RootTooltip>
+        <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+
+        <TooltipPortal>
+          <TooltipContent className='bg-primary text-background'>
+            <div>{content}</div>
+          </TooltipContent>
+        </TooltipPortal>
+      </RootTooltip>
+    </TooltipProvider>
+  )
+}
 
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }

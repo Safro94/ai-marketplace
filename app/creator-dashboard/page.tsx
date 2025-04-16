@@ -1,4 +1,3 @@
-import { InfoIconWithTooltip } from '@/components/info-icon-with-tooltip'
 import { PageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tooltip } from '@/components/ui/tooltip'
 import { getAssets } from '@/data-access/assets'
 import { getCreatorAnalyticsByCreatorProfileId } from '@/data-access/creator-analytics'
 import { getCreatorProfileByProfileId } from '@/data-access/creator-profile'
@@ -20,7 +20,7 @@ import { validateSession } from '@/lib/session'
 import { formatCurrency } from '@/lib/utils'
 import { AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
-import { DollarSign, Package, Star } from 'lucide-react'
+import { DollarSign, InfoIcon, Package, Star } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { CreatorDashboardAssetsList } from './_components/creator-dashboard-asset-list'
@@ -93,7 +93,12 @@ export default async function CreatorDashboard() {
             title: (
               <span className='flex gap-1 items-center'>
                 Total Revenue
-                <InfoIconWithTooltip content='Total sales - platform commission' />
+                <Tooltip
+                  content='Total sales - platform commission'
+                  trigger={
+                    <InfoIcon className='h-4 w-4 text-primary cursor-pointer' />
+                  }
+                />
               </span>
             ),
             description: formatCurrency(

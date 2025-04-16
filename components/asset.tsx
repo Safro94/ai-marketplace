@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
 import { AssetOptions } from './asset-options'
+import { Tooltip } from './ui/tooltip'
 
 export const Asset: FC<ExploreAsset> = ({
   id,
@@ -21,7 +22,7 @@ export const Asset: FC<ExploreAsset> = ({
   basePrice,
 }) => {
   return (
-    <Card className='overflow-hidden border-0 shadow-none rounded-none flex flex-col gap-2 h-[375px] lg:h-[400px]'>
+    <Card className='overflow-hidden shadow-none flex flex-col gap-2 h-[375px] card-hover'>
       <Link
         href={ROUTES.assetsDetail(id)}
         key={id}
@@ -40,10 +41,15 @@ export const Asset: FC<ExploreAsset> = ({
           <AssetOptions assetId={id} />
         </CardHeader>
 
-        <CardContent className='p-0 py-2 flex-1 flex flex-col'>
-          <div className='flex justify-between gap-4'>
+        <CardContent className='p-2 flex-1 flex flex-col overflow-hidden'>
+          <div className='grid grid-cols-[70%_1fr] gap-4'>
             <div>
-              <h3 className='text-xl font-semibold mb-1'>{title}</h3>
+              <Tooltip
+                content={title}
+                trigger={
+                  <h3 className='text-xl font-semibold truncate'>{title}</h3>
+                }
+              />
 
               <span className='text-sm text-muted-foreground'>
                 By {creator.user.name || 'Unknown Creator'}
@@ -76,16 +82,18 @@ export const Asset: FC<ExploreAsset> = ({
             </div>
           </div>
         </CardContent>
-      </Link>
 
-      <AssetAddToCartButton
-        id={id}
-        title={title}
-        basePrice={basePrice}
-        featuredImage={featuredImage}
-        variant='outline'
-        className='w-full text-primary border-primary'
-      />
+        <CardFooter className='p-2'>
+          <AssetAddToCartButton
+            id={id}
+            title={title}
+            basePrice={basePrice}
+            featuredImage={featuredImage}
+            variant='outline'
+            className='w-full text-primary border-primary'
+          />
+        </CardFooter>
+      </Link>
     </Card>
   )
 }

@@ -15,6 +15,7 @@ export default withUt({
       center: true,
       padding: '2rem',
       screens: {
+        DEFAULT: '400px',
         sm: '600px',
         md: '728px',
         lg: '984px',
