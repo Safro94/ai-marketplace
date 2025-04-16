@@ -45,4 +45,4 @@ const Tooltip: FC<{ trigger: ReactNode; content: ReactNode }> = ({
   )
 }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+export { RootTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }

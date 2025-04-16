@@ -44,6 +44,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
             className='z-50 bg-white rounded-full group'
             onClick={(e) => {
               e.preventDefault()
+              e.nativeEvent.stopImmediatePropagation()
 
               setIsOpen(true)
             }}

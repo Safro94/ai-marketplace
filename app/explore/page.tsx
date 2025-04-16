@@ -9,8 +9,8 @@ import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
 import { tryCatch } from '@/lib/utils'
 import { Prisma } from '@prisma/client'
 import type { Metadata } from 'next'
-import { AssetGrid } from './(grid)/asset-grid'
-import { AssetFilters } from './_components/asset-filters'
+import { AssetGrid } from './_components/asset-grid'
+import { AssetGridContainer } from './_components/asset-grid-container'
 import { ExploreCategoriesSelector } from './_components/explore-categories-selector'
 import { getExploreAssets, getUseCases } from './_components/explore-utils'
 
@@ -94,24 +94,13 @@ export default async function ExplorePage({ searchParams }: Props) {
         )}
       </div>
 
-      <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6'>
-        <aside className='w-full md:w-64 lg:w-72 shrink-0'>
-          <AssetFilters
-            useCases={useCases}
-            maxPrice={
-              assetData?.assets.length
-                ? Math.max(...assetData?.assets.map((asset) => asset.basePrice))
-                : 0
-            }
-          />
-        </aside>
-
-        <div className='flex-1'>
+      <div className='flex-1'>
+        <AssetGridContainer useCases={useCases} assets={assetData?.assets}>
           <AssetGrid
             assets={assetData?.assets}
             pagination={assetData?.pagination}
           />
-        </div>
+        </AssetGridContainer>
       </div>
     </PageContainer>
   )

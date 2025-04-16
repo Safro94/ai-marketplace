@@ -53,6 +53,7 @@ export const FavoriteButton: FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault()
+    e.nativeEvent.stopImmediatePropagation()
 
     if (!user) {
       toast.error('Authentication required', {

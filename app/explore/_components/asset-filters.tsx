@@ -10,9 +10,14 @@ import { FiltersContent } from './filters-content'
 interface Props {
   useCases: { label?: string; id: string | null }[] | null
   maxPrice: number
+  showDesktopFilters?: boolean
 }
 
-export const AssetFilters: FC<Props> = ({ useCases, maxPrice }) => {
+export const AssetFilters: FC<Props> = ({
+  useCases,
+  maxPrice,
+  showDesktopFilters,
+}) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -83,21 +88,22 @@ export const AssetFilters: FC<Props> = ({ useCases, maxPrice }) => {
 
   return (
     <>
-      {/* Desktop filters */}
-      <div className='hidden md:block sticky top-20'>
-        <FiltersContent
-          maxPrice={maxPrice}
-          useCases={useCases}
-          hasActiveFilters={hasActiveFilters}
-          priceRange={priceRange}
-          selectedRatings={selectedRatings}
-          selectedUseCases={selectedUseCases}
-          setSelectedRatings={setSelectedRatings}
-          setSelectedUseCases={setSelectedUseCases}
-          setPriceRange={setPriceRange}
-          clearAllFilters={clearAllFilters}
-        />
-      </div>
+      {showDesktopFilters && (
+        <div className='hidden md:block bg-background z-50 w-[350px] p-4 h-full'>
+          <FiltersContent
+            maxPrice={maxPrice}
+            useCases={useCases}
+            hasActiveFilters={hasActiveFilters}
+            priceRange={priceRange}
+            selectedRatings={selectedRatings}
+            selectedUseCases={selectedUseCases}
+            setSelectedRatings={setSelectedRatings}
+            setSelectedUseCases={setSelectedUseCases}
+            setPriceRange={setPriceRange}
+            clearAllFilters={clearAllFilters}
+          />
+        </div>
+      )}
 
       {/* Mobile filters button */}
       <div className='md:hidden mb-4'>

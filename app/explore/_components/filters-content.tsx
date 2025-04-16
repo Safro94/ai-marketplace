@@ -66,8 +66,6 @@ export const FiltersContent: FC<Props> = ({
   return (
     <>
       <div className='flex items-center justify-between mb-4'>
-        <h2 className='text-lg font-semibold'>Filters</h2>
-
         {hasActiveFilters && (
           <Button
             variant='ghost'

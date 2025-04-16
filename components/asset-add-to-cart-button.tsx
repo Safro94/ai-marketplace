@@ -34,6 +34,7 @@ export const AssetAddToCartButton: FC<Props> = ({
   const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
 
     try {
       const price = licensePrice !== undefined ? licensePrice : basePrice
