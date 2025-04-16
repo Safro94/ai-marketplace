@@ -4,11 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
 import { useCart } from '@/contexts/cart-context'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
-import {
-  CartItem,
-  CheckoutCreatorsData,
-  CheckoutPaymentDetails,
-} from '@/lib/types'
+import { CheckoutCreatorsData, CheckoutPaymentDetails } from '@/lib/types'
 import { cn, tryCatch } from '@/lib/utils'
 import {
   PayPalButtons as PaypalLibButtons,
@@ -16,9 +12,31 @@ import {
   usePayPalScriptReducer,
 } from '@paypal/react-paypal-js'
 import { useRouter } from 'next/navigation'
-import { FC, useEffect, useState, useTransition } from 'react'
+import { useTopLoader } from 'nextjs-toploader'
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 
-export const PaypalButtons: FC<{ cartItems: CartItem[] }> = () => {
+interface PaypalButtonsProps {
+  isPurchasing: boolean
+  setIsPurchasing: Dispatch<SetStateAction<boolean>>
+}
+
+interface ButtonsProps extends PaypalButtonsProps {
+  isPurchasing: boolean
+  setIsPurchasing: Dispatch<SetStateAction<boolean>>
+  paypalData: CheckoutPaymentDetails[]
+}
+
+export const PaypalButtons: FC<PaypalButtonsProps> = ({
+  isPurchasing,
+  setIsPurchasing,
+}) => {
   const [isLoading, setIsLoading] = useState(true)
   const [creatorsData, setCreatorsData] = useState<CheckoutCreatorsData>()
 
@@ -63,31 +81,40 @@ export const PaypalButtons: FC<{ cartItems: CartItem[] }> = () => {
             ],
           }}
         >
-          <Buttons paypalData={creatorsData.PAYPAL} />
+          <Buttons
+            paypalData={creatorsData.PAYPAL}
+            isPurchasing={isPurchasing}
+            setIsPurchasing={setIsPurchasing}
+          />
         </PayPalScriptProvider>
       )}
     </>
   )
 }
 
-const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
+const Buttons: FC<ButtonsProps> = ({
   paypalData,
+  isPurchasing,
+  setIsPurchasing,
 }) => {
   const router = useRouter()
   const { clearCart, cart } = useCart()
   const [{ isPending }] = usePayPalScriptReducer()
   const [, startTransition] = useTransition()
+  const loader = useTopLoader()
 
   const isPaypalButtonDisabled = isPending || !cart.total
 
   return (
     <PaypalLibButtons
       className={cn(
-        '!opacity-100',
-        !cart.total && '!opacity-50 pointer-events-none',
+        '!opacity-100 relative',
+        (!cart.total || isPurchasing) && '!opacity-50 pointer-events-none',
       )}
       disabled={isPaypalButtonDisabled}
       createOrder={async () => {
+        setIsPurchasing(true)
+
         const { data: response, error } = await tryCatch(
           fetch(API_ROUTES.checkout(), {
             method: 'POST',
@@ -110,9 +137,13 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
         }
 
         const order = await response.json()
+        setIsPurchasing(false)
         return order.id
       }}
       onApprove={async (_data, actions) => {
+        loader.start()
+        setIsPurchasing(true)
+
         if (!actions.order) throw Error('Order not found')
 
         const { data: payment, error } = await tryCatch(
@@ -156,8 +187,13 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
           description: 'Your items have been purchased successfully.',
         })
 
-        startTransition(async () => {
-          await clearCart()
+        startTransition(() => {
+          setIsPurchasing(false)
+          loader.done()
+
+          startTransition(async () => {
+            await clearCart()
+          })
         })
 
         router.push(`${ROUTES.checkoutSuccess()}`)

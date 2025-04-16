@@ -15,13 +15,10 @@ import { FC } from 'react'
 import { CartItem } from './cart-item'
 interface Props {
   cartItems: CartItemType[]
-  showContinueShopping?: boolean
+  showActions?: boolean
 }
 
-export const CartItemList: FC<Props> = ({
-  cartItems,
-  showContinueShopping = true,
-}) => {
+export const CartItemList: FC<Props> = ({ cartItems, showActions = true }) => {
   return (
     <Card className='lg:col-span-2 flex-1'>
       <CardHeader>
@@ -31,12 +28,16 @@ export const CartItemList: FC<Props> = ({
       <CardContent>
         <div className='flex flex-col gap-4'>
           {cartItems.map((item) => (
-            <CartItem key={item.assetId} item={item} />
+            <CartItem
+              key={item.assetId}
+              item={item}
+              showActions={showActions}
+            />
           ))}
         </div>
       </CardContent>
 
-      {showContinueShopping && (
+      {showActions && (
         <CardFooter className='justify-end'>
           <Button asChild variant='outline'>
             <Link href={ROUTES.explore()}>Continue shopping</Link>

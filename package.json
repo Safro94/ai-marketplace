@@ -56,6 +56,7 @@
     "next": "^15.3.0",
     "next-share": "^0.27.0",
     "next-themes": "latest",
+    "nextjs-toploader": "^3.8.16",
     "prisma": "^6.4.1",
     "react": "^19",
     "react-dom": "^19",

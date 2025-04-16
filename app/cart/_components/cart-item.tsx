@@ -12,7 +12,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useTransition } from 'react'
 
-export const CartItem: FC<{ item: CartItemType }> = ({ item }) => {
+interface Props {
+  showActions?: boolean
+  item: CartItemType
+}
+
+export const CartItem: FC<Props> = ({ item, showActions }) => {
   const { removeItem } = useCart()
   const [isPending, startTransition] = useTransition()
 
@@ -66,16 +71,18 @@ export const CartItem: FC<{ item: CartItemType }> = ({ item }) => {
               <div className='text-right flex items-center gap-2'>
                 <p className='font-medium'>{formatCurrency(item.price)}</p>
 
-                <LoadingButton
-                  variant='ghost'
-                  size='sm'
-                  className='text-destructive'
-                  disabled={isPending}
-                  isLoading={isPending}
-                  onClick={() => handleClick(item)}
-                >
-                  <Trash2 className='h-4 w-4' />
-                </LoadingButton>
+                {showActions && (
+                  <LoadingButton
+                    variant='ghost'
+                    size='sm'
+                    className='text-destructive'
+                    disabled={isPending}
+                    isLoading={isPending}
+                    onClick={() => handleClick(item)}
+                  >
+                    <Trash2 className='h-4 w-4' />
+                  </LoadingButton>
+                )}
               </div>
             </div>
           </div>
