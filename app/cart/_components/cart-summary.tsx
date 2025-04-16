@@ -1,7 +1,7 @@
 'use client'
 
 import { PaymentPriceSection } from '@/app/checkout/_components/payment-price-section'
-import { Button } from '@/components/ui/button'
+import { Button, LoadingButton } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -9,11 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { toast } from '@/components/ui/toast'
 import { useCart } from '@/contexts/cart-context'
 import { ROUTES } from '@/lib/constants'
 import { CartItem } from '@/lib/types'
 import { useRouter } from 'next/navigation'
-import { FC } from 'react'
+import { FC, useTransition } from 'react'
 
 interface Props {
   cartItems: CartItem[]
@@ -23,6 +24,25 @@ interface Props {
 export const CartSummary: FC<Props> = ({ cartItems, cartTotal }) => {
   const router = useRouter()
   const { clearCart, isLoading } = useCart()
+  const [isPending, startTransition] = useTransition()
+
+  const handleClick = () => {
+    try {
+      startTransition(async () => {
+        await clearCart()
+      })
+
+      toast.success('Cart cleared', {
+        description: `Your cart has been cleared`,
+      })
+    } catch (error) {
+      console.error('Error clearing your cart:', error)
+
+      toast.error('Error', {
+        description: 'There was a problem clearing your cart.',
+      })
+    }
+  }
 
   return (
     <Card className='lg:col-span-1 h-fit'>
@@ -38,20 +58,21 @@ export const CartSummary: FC<Props> = ({ cartItems, cartTotal }) => {
         <Button
           className='w-full'
           size='lg'
-          disabled={isLoading || !cartItems.length}
+          disabled={isLoading || isPending || !cartItems.length}
           onClick={() => router.push(ROUTES.checkout())}
         >
           Proceed to Checkout
         </Button>
 
-        <Button
+        <LoadingButton
           variant='outline'
           className='w-full'
-          disabled={isLoading || !cartItems.length}
-          onClick={() => clearCart()}
+          disabled={isLoading || isPending || !cartItems.length}
+          isLoading={isPending}
+          onClick={handleClick}
         >
           Clear Cart
-        </Button>
+        </LoadingButton>
       </CardFooter>
     </Card>
   )

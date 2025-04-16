@@ -16,7 +16,7 @@ import {
   usePayPalScriptReducer,
 } from '@paypal/react-paypal-js'
 import { useRouter } from 'next/navigation'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useTransition } from 'react'
 
 export const PaypalButtons: FC<{ cartItems: CartItem[] }> = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -76,6 +76,7 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
   const router = useRouter()
   const { clearCart, cart } = useCart()
   const [{ isPending }] = usePayPalScriptReducer()
+  const [, startTransition] = useTransition()
 
   const isPaypalButtonDisabled = isPending || !cart.total
 
@@ -155,7 +156,10 @@ const Buttons: FC<{ paypalData: CheckoutPaymentDetails[] }> = ({
           description: 'Your items have been purchased successfully.',
         })
 
-        clearCart()
+        startTransition(async () => {
+          await clearCart()
+        })
+
         router.push(`${ROUTES.checkoutSuccess()}`)
       }}
       onError={() => {
