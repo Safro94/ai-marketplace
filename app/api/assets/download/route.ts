@@ -1,3 +1,4 @@
+import { getUserProfile } from '@/data-access/profile'
 import { checkUserPurchasedAsset } from '@/data-access/purchases'
 import { getServerSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
@@ -9,6 +10,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const profile = await getUserProfile(session.user.id)
+
+  if (!profile) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const url = req.nextUrl.searchParams.get('url')
   const assetId = req.nextUrl.searchParams.get('assetId')
 
@@ -16,10 +23,7 @@ export async function GET(req: NextRequest) {
     throw Error('Asset or url not found')
   }
 
-  const isAssetPurchased = await checkUserPurchasedAsset(
-    session.user.id,
-    assetId,
-  )
+  const isAssetPurchased = await checkUserPurchasedAsset(profile.id, assetId)
 
   if (!isAssetPurchased) {
     throw Error('Asset not purchased')

@@ -29,23 +29,26 @@ export async function POST(request: Request) {
     } = await request.json()
 
     // Get user profile
-    const userProfile = await getUserProfile(session.user.id)
+    const profile = await getUserProfile(session.user.id)
 
-    if (!userProfile) {
-      return { success: false, error: 'User profile not found' }
+    if (!profile) {
+      return { success: false, error: 'Profile not found' }
     }
 
     const { totalAmounts, assets, cart } = await getPurchaseAmounts()
 
     // Create the purchase with multiple items
     const purchase = await createPurchase({
-      buyerId: userProfile.id,
+      buyerId: profile.id,
       amount: totalAmounts.totalPrice,
       transactionId: paypalOrderId,
       status: PurchaseStatus.COMPLETED,
       paymentProvider: PaymentProvider.PAYPAL,
       paymentDetails: paymentDetails,
     })
+
+    revalidateTag(CACHE_KEYS.purchases(profile.id))
+    revalidateTag(CACHE_KEYS.creatorDashboardPurchases(profile.id))
 
     // Process each purchase item
     await Promise.all(
@@ -82,6 +85,8 @@ export async function POST(request: Request) {
           totalSales: { increment: 1 },
         })
 
+        revalidateTag(CACHE_KEYS.purchasedAsset(profile.id, asset.id))
+
         const creatorProfile = await updateCreatorProfile({
           where: { id: asset.creator.creatorProfile?.id },
           data: {
@@ -89,7 +94,6 @@ export async function POST(request: Request) {
             totalRevenue: { increment: assetPrice },
           },
         })
-
         revalidateTag(CACHE_KEYS.profile(asset.creatorId))
 
         await createOrUpdateCreatorAnalytics({
@@ -107,6 +111,8 @@ export async function POST(request: Request) {
             },
           },
         })
+
+        revalidateTag(CACHE_KEYS.creatorDashboardAnalytics(creatorProfile.id))
 
         return purchaseItem
       }),

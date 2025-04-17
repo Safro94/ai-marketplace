@@ -109,11 +109,11 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
               </div>
 
               <div className='flex-1 min-w-0'>
-                <h3 className='font-medium text-center truncate md:text-start'>
+                <h3 className='font-medium text-center truncate whitespace-normal md:text-start'>
                   {asset.title}
                 </h3>
 
-                <div className='flex items-center space-x-4 mt-2 text-sm text-muted-foreground'>
+                <div className='flex flex-wrap justify-center md:justify-start items-center space-x-4 mt-2 text-sm text-muted-foreground'>
                   <div className='flex items-center'>
                     <Eye className='h-4 w-4 mr-1' />
                     {asset.views || 0}

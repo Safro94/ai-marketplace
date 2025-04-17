@@ -1,28 +1,29 @@
+import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
+import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
 
-export const createFavorite = async (
-  data: Prisma.FavoriteCreateArgs['data'],
+export const getFavorite = async (
+  assetId: string,
+  args: Prisma.FavoriteFindUniqueArgs,
 ) => {
-  await prisma.favorite.create({
-    data,
-  })
-}
+  'use cache'
 
-export const deleteFavorite = async (id: string) => {
-  await prisma.favorite.delete({
-    where: {
-      id,
-    },
-  })
-}
+  unstable_cacheTag(CACHE_KEYS.assetFavorite(assetId))
+  unstable_cacheLife('hours')
 
-export const getFavorite = async (args: Prisma.FavoriteFindUniqueArgs) => {
+  console.log('cache')
+
   return await prisma.favorite.findUnique(args)
 }
 
 export const getFavoritesByProfileId = async (profileId: string) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.dashboardFavorites(profileId))
+  unstable_cacheLife('hours')
+
   return await prisma.favorite.findMany({
     where: {
       userId: profileId,
@@ -47,6 +48,22 @@ export const getFavoritesByProfileId = async (profileId: string) => {
     },
     orderBy: {
       createdAt: 'desc',
+    },
+  })
+}
+
+export const createFavorite = async (
+  data: Prisma.FavoriteCreateArgs['data'],
+) => {
+  await prisma.favorite.create({
+    data,
+  })
+}
+
+export const deleteFavorite = async (id: string) => {
+  await prisma.favorite.delete({
+    where: {
+      id,
     },
   })
 }

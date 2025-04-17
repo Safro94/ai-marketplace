@@ -1,6 +1,8 @@
 import { updateAsset } from '@/data-access/assets'
+import { CACHE_KEYS } from '@/lib/constants'
 import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { AssetStatus } from '@prisma/client'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(
@@ -23,6 +25,9 @@ export async function POST(
       moderationNotes: notes || null,
       ...(status === AssetStatus.PUBLISHED ? { approvedAt: new Date() } : {}),
     })
+
+    revalidateTag(CACHE_KEYS.categoriesWithCount())
+    revalidateTag(CACHE_KEYS.exploreAssets())
 
     // // Notify the creator
     // await prisma.notification.create({

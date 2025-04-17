@@ -4,6 +4,11 @@ const config: NextConfig = {
   experimental: {
     useCache: true,
   },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   images: {
     remotePatterns: [
       {

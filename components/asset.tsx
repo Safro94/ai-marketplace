@@ -21,7 +21,7 @@ export const Asset: FC<ExploreAsset> = ({
   basePrice,
 }) => {
   return (
-    <Card className='overflow-hidden shadow-none flex flex-col gap-2 h-[375px] card-hover'>
+    <Card className='overflow-hidden shadow-none flex flex-col gap-2 h-[375px] hover:border-primary'>
       <Link
         href={ROUTES.assetsDetail(id)}
         key={id}

@@ -7,8 +7,10 @@ import {
   getCreatorProfileByProfileId,
 } from '@/data-access/creator-profile'
 import { getUserProfile } from '@/data-access/profile'
+import { CACHE_KEYS } from '@/lib/constants'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 import { creatorApplicationSchema } from './../../../../lib/schemas'
 
@@ -74,6 +76,8 @@ export async function POST(request: Request) {
         create: validationResult.data.paymentMethods,
       },
     })
+
+    revalidateTag(CACHE_KEYS.creatorDashboardCreatorProfile(profile.id))
 
     // Create creator application
     const application = await createCreatorApplication({

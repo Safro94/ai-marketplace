@@ -41,7 +41,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
           <Button
             size='icon'
             variant='ghost'
-            className='z-50 bg-white rounded-full group'
+            className='w-6 h-6 md:h-10 md:w-10 z-50 bg-white rounded-full group'
             onClick={(e) => {
               e.preventDefault()
               e.nativeEvent.stopImmediatePropagation()
@@ -49,7 +49,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
               setIsOpen(true)
             }}
           >
-            <Share className='!h-fit !w-fit group-hover:text-primary' />
+            <Share className='w-4 h-4 md:h-fit md:w-fit group-hover:text-primary' />
           </Button>
         </DialogTrigger>
 

@@ -1,18 +1,19 @@
 import prisma from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
+import { cache } from 'react'
 import 'server-only'
 
-export const getAssetLicensesByAssetId = async <
-  T extends Prisma.AssetLicenseFindManyArgs,
->(
-  assetId: string,
-  args?: T,
-): Promise<Prisma.AssetLicenseGetPayload<T>[]> => {
-  return (await prisma.assetLicense.findMany({
-    where: { assetId },
-    ...args,
-  })) as Prisma.AssetLicenseGetPayload<T>[]
-}
+export const getAssetLicensesByAssetId = cache(
+  async <T extends Prisma.AssetLicenseFindManyArgs>(
+    assetId: string,
+    args?: T,
+  ): Promise<Prisma.AssetLicenseGetPayload<T>[]> => {
+    return (await prisma.assetLicense.findMany({
+      where: { assetId },
+      ...args,
+    })) as Prisma.AssetLicenseGetPayload<T>[]
+  },
+)
 
 export const deleteAssetLicense = async (
   where: Prisma.AssetLicenseWhereUniqueInput,

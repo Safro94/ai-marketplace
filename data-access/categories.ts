@@ -1,12 +1,15 @@
+import { CACHE_KEYS } from '@/lib/constants'
 import { AssetStatus } from '@prisma/client'
+import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
 import prisma from '../lib/prisma'
 
-export const getCategoriesCount = async () => {
-  return await prisma.category.count()
-}
-
 export const getCategoriesBySlug = async (categorySlug: string) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.categoriesBySlug())
+  unstable_cacheLife('hours')
+
   return await prisma.category.findMany({
     where: {
       slug: {
@@ -17,6 +20,11 @@ export const getCategoriesBySlug = async (categorySlug: string) => {
 }
 
 export const getCategoriesWithCount = async () => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.categoriesWithCount())
+  unstable_cacheLife('hours')
+
   // Fetch categories from the database
   const categories = await prisma.category.findMany({
     orderBy: {

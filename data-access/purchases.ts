@@ -1,7 +1,8 @@
+import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { Prisma, PurchaseStatus } from '@prisma/client'
+import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
-import { getUserProfile } from './profile'
 
 export const getPurchasesCount = async () => {
   return await prisma.purchase.count()
@@ -23,27 +24,15 @@ export const createPurchase = async (
   })
 }
 
-export const getCompletedPurchaseByAssetAndBuyerId = async (
-  profileId: string,
-  assetId: string,
-) => {
-  return await prisma.purchase.findFirst({
-    where: {
-      buyerId: profileId,
-      purchaseItems: {
-        some: {
-          assetId,
-        },
-      },
-      status: PurchaseStatus.COMPLETED,
-    },
-  })
-}
-
 export const getAllPurchasesByProfileId = async (
   profileId: string,
   where?: Prisma.PurchaseWhereInput,
 ) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.purchases(profileId))
+  unstable_cacheLife('hours')
+
   return await prisma.purchase.findMany({
     where: {
       ...where,
@@ -81,6 +70,11 @@ export const getAllPurchasesByProfileId = async (
 export const getAllCreatorDashboardPurchasesByAssetCreator = async (
   profileId: string,
 ) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.creatorDashboardPurchases(profileId))
+  unstable_cacheLife('hours')
+
   return await prisma.purchase.findMany({
     where: {
       purchaseItems: {
@@ -130,21 +124,23 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async (
 }
 
 export const checkUserPurchasedAsset = async (
-  userId: string,
+  profileId: string,
   assetId: string,
 ) => {
-  const profile = await getUserProfile(userId)
-  if (!profile) return false
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.purchasedAsset(profileId, assetId))
+  unstable_cacheLife('hours')
 
   const purchase = await prisma.purchase.findFirst({
     where: {
-      buyerId: profile.id,
+      buyerId: profileId,
+      status: PurchaseStatus.COMPLETED,
       purchaseItems: {
         some: {
           assetId,
         },
       },
-      status: PurchaseStatus.COMPLETED,
     },
   })
 

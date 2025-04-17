@@ -75,6 +75,7 @@ export async function POST(request: Request) {
         price: license.price,
         createdAt: new Date(),
       })
+      revalidateTag(CACHE_KEYS.assetLicenses(asset.id))
     }
 
     // Run auto-moderation
@@ -86,6 +87,8 @@ export async function POST(request: Request) {
       status: moderationResult.status,
       moderationNotes: moderationResult.issues.join(', '),
     })
+
+    revalidateTag(CACHE_KEYS.assetById(asset.id))
 
     // // Notify admins if manual review is needed
     // if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
@@ -226,6 +229,7 @@ export async function PATCH(request: Request) {
     }
 
     await Promise.all(operations)
+    revalidateTag(CACHE_KEYS.assetLicenses(asset.id))
 
     // Run auto-moderation
     const moderationResult = await ModerationService.autoModerateAsset(asset.id)
@@ -236,6 +240,8 @@ export async function PATCH(request: Request) {
       status: moderationResult.status,
       moderationNotes: moderationResult.issues.join(', '),
     })
+
+    revalidateTag(CACHE_KEYS.assetById(asset.id))
 
     // // Notify admins if manual review is needed
     // if (moderationResult.status === AssetStatus.PENDING_REVIEW) {

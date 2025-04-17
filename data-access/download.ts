@@ -1,5 +1,7 @@
+import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
+import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import { headers } from 'next/headers'
 import 'server-only'
 
@@ -26,6 +28,11 @@ export const downloadCreate = async ({
 }
 
 export const getDashboardDownloads = async (profileId: string) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.dashboardDownloads(profileId))
+  unstable_cacheLife('hours')
+
   return await prisma.download.findMany({
     where: {
       userId: profileId,

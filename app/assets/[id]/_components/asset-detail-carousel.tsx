@@ -12,7 +12,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Asset } from '@prisma/client'
 import Image from 'next/image'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 
 type Props = Pick<Asset, 'id' | 'featuredImage' | 'galleryImages' | 'title'>
 
@@ -26,20 +26,18 @@ export const AssetDetailCarousel: FC<Props> = ({
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
 
-  const onSelect = useCallback(() => {
-    if (!carouselAPI) return
-
-    setSelectedIndex(carouselAPI.selectedScrollSnap())
-  }, [carouselAPI])
-
   useEffect(() => {
     if (!carouselAPI) return
+
+    const onSelect = () => {
+      setSelectedIndex(carouselAPI.selectedScrollSnap())
+    }
 
     onSelect()
     setScrollSnaps(carouselAPI.scrollSnapList())
 
     carouselAPI.on('select', onSelect)
-  }, [carouselAPI, onSelect])
+  }, [carouselAPI])
 
   return (
     <div className='relative'>

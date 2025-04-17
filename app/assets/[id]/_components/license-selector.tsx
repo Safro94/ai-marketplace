@@ -50,7 +50,9 @@ export const LicenseSelector: FC<Props> = ({
       <div className='space-y-4'>
         <div className='flex justify-between'>
           <h2 className='text-xl font-semibold'>License</h2>
-          <Badge variant='outline'>non-refundable</Badge>
+          <Badge variant='outline' className='flex-shrink-0 self-center'>
+            non-refundable
+          </Badge>
         </div>
 
         <Card>
@@ -82,7 +84,9 @@ export const LicenseSelector: FC<Props> = ({
     <div className='space-y-4'>
       <div className='flex justify-between'>
         <h2 className='text-xl font-semibold'>Choose a License</h2>
-        <Badge variant='outline'>non-refundable</Badge>
+        <Badge variant='outline' className='flex-shrink-0 self-center'>
+          non-refundable
+        </Badge>
       </div>
 
       <div className='grid gap-4'>

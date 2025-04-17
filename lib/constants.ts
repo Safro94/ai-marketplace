@@ -56,7 +56,27 @@ export const API_ROUTES = {
 }
 
 export const CACHE_KEYS = {
+  testimonials: () => 'testimonials',
+  categoriesBySlug: () => 'categories-by-slug',
+  categoriesWithCount: () => 'categories-with-count',
+  assetFavorite: (assetId: string) => `asset-favorite-${assetId}`,
+  assetById: (assetId: string) => `asset-${assetId}`,
+  assetLicenses: (assetId: string) => `asset-licenses-${assetId}`,
+  exploreAssets: () => `explore-assets`,
+  dashboardFavorites: (profileId: string) => `favorites-${profileId}`,
+  dashboardReviews: (profileId: string) => `reviews-${profileId}`,
+  dashboardDownloads: (profileId: string) => `downloads-${profileId}`,
+  licenses: () => 'licenses',
   profile: (userId: string) => `profile-${userId}`,
+  purchases: (profileId: string) => `purchases-${profileId}`,
+  purchasedAsset: (profileId: string, assetId: string) =>
+    `purchases-${profileId}-${assetId}`,
+  creatorDashboardCreatorProfile: (profileId: string) =>
+    `creator-dashboard-creator-profile-${profileId}`,
+  creatorDashboardPurchases: (profileId: string) =>
+    `creator-dashboard-purchases-${profileId}`,
+  creatorDashboardAnalytics: (creatorProfileId: string) =>
+    `creator-dashboard-analytics-${creatorProfileId}`,
 }
 
 export const WS_EVENTS = {

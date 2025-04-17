@@ -80,7 +80,7 @@ export default async function CreatorDashboard() {
 
   return (
     <PageContainer>
-      <div className='flex justify-between items-center mb-8'>
+      <div className='flex flex-col gap-2 md:flex-row md:justify-between items-center mb-8'>
         <h1 className='text-3xl font-bold'>Creator Dashboard</h1>
         <Button asChild>
           <Link href={ROUTES.creatorDashboardUpload()}>Upload New Asset</Link>
