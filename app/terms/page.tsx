@@ -1,11 +1,10 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { SUPPORT_EMAIL } from '@/lib/constants'
+import { APP_DATA, SUPPORT_EMAIL } from '@/lib/constants'
 
 export const metadata = {
-  title: 'Terms of Service | AI Assets Marketplace',
-  description:
-    'Terms and conditions for using the AI Assets Marketplace platform.',
+  title: `Terms of Service | ${APP_DATA.name}`,
+  description: `Terms and conditions for using the ${APP_DATA.name} platform.`,
 }
 
 export default function TermsPage() {
@@ -22,7 +21,7 @@ export default function TermsPage() {
         <CardContent className='prose dark:prose-invert max-w-none [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mb-4 [&>h3]:font-bold [&>p]:mb-4 [&>ul]:mb-4'>
           <h2>1. Acceptance of Terms</h2>
           <p>
-            By accessing or using the AI Assets Marketplace (the
+            By accessing or using the {APP_DATA.name} (the
             &quot;Platform&quot;), you agree to be bound by these Terms of
             Service. If you do not agree to these terms, please do not use the
             Platform.

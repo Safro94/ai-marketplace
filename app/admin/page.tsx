@@ -4,15 +4,15 @@ import { getAssetCount } from '@/data-access/assets'
 import { getPendingCreatorApplicationsCount } from '@/data-access/creator-application'
 import { getPurchasesAmount, getPurchasesCount } from '@/data-access/purchases'
 import { getUserCount } from '@/data-access/users'
-import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
+import { APP_DATA, ROUTES, SERVICE_CHARGE } from '@/lib/constants'
 import { formatCurrency } from '@/lib/utils'
 import { DollarSign, FileText, ShoppingBag, Users } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Admin Dashboard | AIAssets Marketplace',
-  description: 'Manage the AIAssets marketplace',
+  title: `Admin Dashboard | ${APP_DATA.name}`,
+  description: `Manage the ${APP_DATA.name}`,
   robots: {
     index: false,
     follow: false,

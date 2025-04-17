@@ -1,4 +1,4 @@
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { TwitterIcon } from 'lucide-react'
 import Link from 'next/link'
 import { GithubIcon } from './icons/github-icon'
@@ -37,7 +37,7 @@ export const Footer = () => {
           <Section
             title='For Creators'
             items={[
-              { text: 'Sell on AIAssets', link: ROUTES.creators() },
+              { text: `Sell on ${APP_DATA.name}`, link: ROUTES.creators() },
               { text: 'Terms for Creators', link: ROUTES.creatorTerms() },
               { text: 'FAQ', link: ROUTES.creatorFAQ() },
             ]}
@@ -55,7 +55,9 @@ export const Footer = () => {
         </div>
 
         <div className='mt-8 border-t border-border/40 pt-8 text-center text-sm text-muted-foreground'>
-          <p>© {new Date().getFullYear()} AIAssets. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} {APP_DATA.name}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

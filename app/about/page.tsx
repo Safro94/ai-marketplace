@@ -1,10 +1,10 @@
+import { APP_DATA } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 
 export const metadata = {
-  title: 'About Us | AI Assets Marketplace',
-  description:
-    'Learn about the AI Assets Marketplace, our mission, and the team behind it.',
+  title: `About Us | ${APP_DATA.name}`,
+  description: `Learn about the ${APP_DATA.name}, our mission, and the team behind it.`,
 }
 
 export default function AboutPage() {
@@ -12,7 +12,7 @@ export default function AboutPage() {
     <div className='py-12'>
       <Section
         title="Welcome to the world's marketplace for AI"
-        description='AI Assets Marketplace is the premier platform for buying and selling high-quality AI assets, models, and tools. We connect creators with users to accelerate AI innovation. Discover more than 5 million quality AI resources created by people in over 190 countries around the world. Join forces with talented creators to make your projects stand out.'
+        description={`${APP_DATA.name} is the premier platform for buying and selling high-quality AI assets, models, and tools. We connect creators with users to accelerate AI innovation. Discover more than 5 million quality AI resources created by people in over 190 countries around the world. Join forces with talented creators to make your projects stand out.`}
         src='/about-us.svg'
       />
 
@@ -26,7 +26,7 @@ export default function AboutPage() {
 
       <Section
         title='Our Story'
-        description='Founded in 2025, AI Assets Marketplace was born from the recognition that AI development was becoming increasingly accessible, yet there was no dedicated platform for creators to share and monetize their work. We set out to build a marketplace that would support the growing community of AI creators and provide users with access to high-quality assets.'
+        description={`Founded in 2025, ${APP_DATA.name} was born from the recognition that AI development was becoming increasingly accessible, yet there was no dedicated platform for creators to share and monetize their work. We set out to build a marketplace that would support the growing community of AI creators and provide users with access to high-quality assets.`}
       />
     </div>
   )

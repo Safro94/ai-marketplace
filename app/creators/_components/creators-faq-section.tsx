@@ -1,4 +1,5 @@
-import { CreatorFAQs } from '@/app/creators/creator-faq'
+import { APP_DATA } from '@/lib/constants'
+import { CreatorFAQs } from './creator-faq'
 
 export const CreatorsFAQSection = () => {
   return (
@@ -10,7 +11,7 @@ export const CreatorsFAQSection = () => {
           </h2>
 
           <p className='text-muted-foreground mt-2 max-w-2xl mx-auto'>
-            Everything you need to know about selling on AIAssets
+            Everything you need to know about selling on {APP_DATA.name}
           </p>
         </div>
 

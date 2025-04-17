@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { APP_DATA } from '@/lib/constants'
 import { generateFaqJsonLd } from '@/lib/seo-config'
 import { useEffect } from 'react'
 
@@ -17,8 +18,7 @@ const FAQs = [
   },
   {
     question: 'How much does it cost to become a creator?',
-    answer:
-      'There is no upfront cost to become a creator on AIAssets. We operate on a commission model, taking 15% of each sale. This means you only pay when you earn, and you keep 85% of your revenue.',
+    answer: `There is no upfront cost to become a creator on ${APP_DATA.name}. We operate on a commission model, taking 15% of each sale. This means you only pay when you earn, and you keep 85% of your revenue.`,
   },
   {
     question: 'How do I get paid?',

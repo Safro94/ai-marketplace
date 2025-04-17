@@ -1,10 +1,10 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PRIVACY_EMAIL } from '@/lib/constants'
+import { APP_DATA, PRIVACY_EMAIL } from '@/lib/constants'
 
 export const metadata = {
-  title: 'Privacy Policy | AI Assets Marketplace',
-  description: 'Privacy policy for the AI Assets Marketplace platform.',
+  title: `Privacy Policy | ${APP_DATA.name}`,
+  description: `Privacy policy for the ${APP_DATA.name} platform.`,
 }
 
 export default function PrivacyPage() {
@@ -21,10 +21,10 @@ export default function PrivacyPage() {
         <CardContent className='prose dark:prose-invert max-w-none [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mb-4 [&>h3]:font-bold [&>p]:mb-4 [&>ul]:mb-4'>
           <h2>1. Introduction</h2>
           <p>
-            AI Assets Marketplace (&quot;we&quot;, &quot;our&quot;, or
-            &quot;us&quot;) is committed to protecting your privacy. This
-            Privacy Policy explains how we collect, use, disclose, and safeguard
-            your information when you use our platform.
+            {APP_DATA.name} (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;)
+            is committed to protecting your privacy. This Privacy Policy
+            explains how we collect, use, disclose, and safeguard your
+            information when you use our platform.
           </p>
 
           <h2>2. Information We Collect</h2>

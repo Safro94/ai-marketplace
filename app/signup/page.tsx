@@ -6,15 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SignupForm } from './_components/signup-form'
 
 export const metadata: Metadata = {
   title: 'Sign Up | Create Your Account',
-  description:
-    'Create an account on AIAssets Marketplace to buy AI assets, save favorites, and track your purchases.',
+  description: `Create an account on ${APP_DATA.name} to buy AI assets, save favorites, and track your purchases.`,
   alternates: {
     canonical: '/signup',
   },

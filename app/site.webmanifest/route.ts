@@ -1,11 +1,11 @@
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { siteConfig } from '@/lib/seo-config'
 import { NextResponse } from 'next/server'
 
 export function GET() {
   return NextResponse.json({
     name: siteConfig.name,
-    short_name: 'AIAssets',
+    short_name: APP_DATA.name,
     description: siteConfig.description,
     start_url: ROUTES.home(),
     display: 'standalone',

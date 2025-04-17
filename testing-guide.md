@@ -1,6 +1,6 @@
-# AI Assets Marketplace - Complete Testing Guide
+# AI Market Hub - Complete Testing Guide
 
-This guide provides step-by-step instructions for testing all features of the AI Assets Marketplace. Follow each section to verify the functionality works as expected.
+This guide provides step-by-step instructions for testing all features of the AI Market Hub. Follow each section to verify the functionality works as expected.
 
 ## Table of Contents
 

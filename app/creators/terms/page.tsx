@@ -1,10 +1,10 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { APP_DATA, CREATORS_EMAIL } from '@/lib/constants'
 
 export const metadata = {
-  title: 'Creator Terms | AI Assets Marketplace',
-  description:
-    'Terms and conditions for creators on the AI Assets Marketplace platform.',
+  title: `Creator Terms | ${APP_DATA.name}`,
+  description: `Terms and conditions for creators on the ${APP_DATA.name} platform.`,
 }
 
 export default function CreatorTermsPage() {
@@ -23,7 +23,7 @@ export default function CreatorTermsPage() {
           <p>
             These Creator Terms (&quot;Terms&quot;) govern your participation as
             a creator (&quot;Creator&quot;, &quot;you&quot;, or
-            &quot;your&quot;) on the AI Assets Marketplace platform
+            &quot;your&quot;) on the {APP_DATA.name} platform
             (&quot;Platform&quot;, &quot;we&quot;, &quot;us&quot;, or
             &quot;our&quot;). By registering as a Creator and uploading assets
             to the Platform, you agree to be bound by these Terms.
@@ -245,7 +245,7 @@ export default function CreatorTermsPage() {
           <h2>11. Contact Information</h2>
           <p>
             If you have questions about these Creator Terms, please contact us
-            at creators@aiassetsmarketplace.com.
+            at {CREATORS_EMAIL}.
           </p>
         </CardContent>
       </Card>

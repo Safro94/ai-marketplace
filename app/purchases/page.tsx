@@ -3,7 +3,7 @@ import { PageContainer } from '@/components/page-container'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getUserProfile } from '@/data-access/profile'
 import { getAllPurchasesByProfileId } from '@/data-access/purchases'
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { validateSession } from '@/lib/session'
 import { ShoppingBag } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -11,7 +11,7 @@ import { redirect } from 'next/navigation'
 import { Purchase } from './_components/purchase'
 
 export const metadata: Metadata = {
-  title: 'My Purchases | AIAssets Marketplace',
+  title: `My Purchases | ${APP_DATA.name}`,
   description: 'View and download your purchased AI assets',
   robots: {
     index: false,
@@ -45,8 +45,7 @@ export default async function PurchasesPage() {
           {!purchases.length ? (
             <NotFound
               title='No purchases yet'
-              description="You haven't purchased any assets yet. Explore our
-                  marketplace to find AI assets that can help you."
+              description="You haven't purchased any assets yet. Explore our marketplace to find AI assets that can help you."
               icon={ShoppingBag}
               btnLink={ROUTES.explore()}
               btnText='Explore Assets'

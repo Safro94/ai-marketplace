@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
+import { APP_DATA } from '@/lib/constants'
 import { BarChart, DollarSign, Shield } from 'lucide-react'
 
 export const CreatorsBenefitsSection = () => {
@@ -7,7 +8,7 @@ export const CreatorsBenefitsSection = () => {
       <div className='container'>
         <div className='text-center mb-12'>
           <h2 className='text-3xl font-bold tracking-tight'>
-            Why Sell on AIAssets?
+            Why Sell on {APP_DATA.name}?
           </h2>
           <p className='text-muted-foreground mt-2 max-w-2xl mx-auto'>
             Join a growing community of AI creators and reach customers

@@ -1,5 +1,6 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { APP_DATA } from '@/lib/constants'
 import { getLicenseTerms } from '@/lib/license-utils'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -13,7 +14,7 @@ export async function generateMetadata({
   const licenseType = decodeURIComponent(params.type)
 
   return {
-    title: `${licenseType} Terms | AI Assets Marketplace`,
+    title: `${licenseType} Terms | ${APP_DATA.name}`,
     description: `Full terms and conditions for the ${licenseType}`,
   }
 }

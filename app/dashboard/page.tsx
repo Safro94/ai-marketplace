@@ -11,7 +11,7 @@ import { getFavoritesByProfileId } from '@/data-access/favorites'
 import { getUserProfile } from '@/data-access/profile'
 import { getAllPurchasesByProfileId } from '@/data-access/purchases'
 import { getDashboardReviews } from '@/data-access/reviews'
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { validateSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
@@ -29,7 +29,7 @@ enum TabsEnum {
 }
 
 export const metadata: Metadata = {
-  title: 'User Dashboard | AIAssets Marketplace',
+  title: `User Dashboard | ${APP_DATA.name}`,
   description: 'Manage your purchased assets and account',
   robots: {
     index: false,

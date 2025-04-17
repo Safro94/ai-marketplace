@@ -83,11 +83,17 @@ export const WS_EVENTS = {
   NEW_NOTIFICATION: 'NEW_NOTIFICATION',
 }
 
-export const EMAIL_FROM = `AI Assets <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
+export const APP_DATA = {
+  name: 'AIAssetHub',
+  url: 'https://www.aiassetHub.com',
+  lowercaseName: 'aiassetHub',
+}
+export const EMAIL_FROM = `${APP_DATA.name} <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
 export const PAYPAL_EMAIL = process.env.NEXT_PUBLIC_PAYPAL_EMAIL
-export const SUPPORT_EMAIL = 'support@aiassetsmarketplace.com'
-export const INFO_EMAIL = 'info@aiassetsmarketplace.com'
-export const PRIVACY_EMAIL = 'privacy@aiassetsmarketplace.com'
+export const SUPPORT_EMAIL = `support@${APP_DATA.lowercaseName}.com`
+export const INFO_EMAIL = `info@${APP_DATA.lowercaseName}.com`
+export const PRIVACY_EMAIL = `privacy@${APP_DATA.lowercaseName}.com`
+export const CREATORS_EMAIL = `creators@${APP_DATA.lowercaseName}.com`
 export const BIO_MAX_LENGTH = 500
 export const SERVICE_CHARGE = 0.25
 export const CART_COOKIE_NAME = 'cart_session_id'

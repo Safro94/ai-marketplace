@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getUserProfile } from '@/data-access/profile'
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
 import { Role } from '@prisma/client'
@@ -26,7 +26,7 @@ enum TabsEnum {
 }
 
 export const metadata: Metadata = {
-  title: 'Account Settings | AIAssets Marketplace',
+  title: `Account Settings | ${APP_DATA.name}`,
   description: 'Manage your account settings and profile information',
   robots: {
     index: false,

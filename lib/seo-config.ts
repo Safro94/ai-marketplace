@@ -1,15 +1,19 @@
+import { APP_DATA, SUPPORT_EMAIL } from './constants'
+
 // Base SEO configuration
 export const siteConfig = {
-  name: 'AIAssets Marketplace',
-  url: 'https://aiassets-marketplace.com',
+  name: APP_DATA.name,
+  url: APP_DATA.url,
   ogImage: '/images/og-image.jpg',
   description: 'Discover and purchase high-quality AI assets for your projects',
   links: {
-    twitter: 'https://twitter.com/aiassets',
-    github: 'https://github.com/aiassets',
+    twitter: `https://twitter.com/${APP_DATA.lowercaseName}`,
+    github: `https://github.com/${APP_DATA.lowercaseName}`,
   },
-  creator: '@aiassets',
+  creator: `@${APP_DATA.lowercaseName}`,
   keywords: [
+    'AI hub',
+    'AI market hub',
     'AI assets',
     'prompt engineering',
     'custom GPTs',
@@ -21,8 +25,8 @@ export const siteConfig = {
   ],
   authors: [
     {
-      name: 'AIAssets Team',
-      url: 'https://aiassets-marketplace.com',
+      name: `${APP_DATA.name} Team`,
+      url: APP_DATA.url,
     },
   ],
 }
@@ -48,14 +52,14 @@ export function generateProductJsonLd(product: {
     description: product.description,
     image: product.image,
     sku: `asset-${product.id}`,
-    mpn: `aiassets-${product.id}`,
+    mpn: `${APP_DATA.lowercaseName}-${product.id}`,
     brand: {
       '@type': 'Brand',
-      name: 'AIAssets',
+      name: APP_DATA.name,
     },
     offers: {
       '@type': 'Offer',
-      url: `https://aiassets-marketplace.com/assets/${product.id}`,
+      url: `${APP_DATA.url}/assets/${product.id}`,
       priceCurrency: 'USD',
       price: product.price,
       priceValidUntil: new Date(
@@ -81,19 +85,18 @@ export function generateOrganizationJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'AIAssets Marketplace',
-    url: 'https://aiassets-marketplace.com',
-    logo: 'https://aiassets-marketplace.com/images/logo.png',
+    name: APP_DATA.name,
+    url: APP_DATA.url,
+    logo: `${APP_DATA.url}/images/logo.png`,
     sameAs: [
-      'https://twitter.com/aiassets',
-      'https://github.com/aiassets',
-      'https://linkedin.com/company/aiassets',
+      `https://twitter.com/${APP_DATA.lowercaseName}`,
+      `https://github.com/${APP_DATA.lowercaseName}`,
+      `https://linkedin.com/company/${APP_DATA.lowercaseName}`,
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+1-555-555-5555',
       contactType: 'customer service',
-      email: 'support@aiassets-marketplace.com',
+      email: SUPPORT_EMAIL,
       availableLanguage: 'English',
     },
   }

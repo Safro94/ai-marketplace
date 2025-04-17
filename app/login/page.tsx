@@ -6,15 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LoginForm } from './_components/login-form'
 
 export const metadata: Metadata = {
   title: 'Log In | Access Your Account',
-  description:
-    'Log in to your AIAssets account to access your purchased assets, manage your profile, and more.',
+  description: `Log in to your ${APP_DATA.name} account to access your purchased assets, manage your profile, and more.`,
   alternates: {
     canonical: '/login',
   },
@@ -31,7 +30,7 @@ export default function LoginPage() {
         <CardHeader>
           <CardTitle>
             <h1 className='text-2xl font-semibold tracking-tight text-center'>
-              Sign in to AI Assets
+              Sign in to {APP_DATA.name}
             </h1>
           </CardTitle>
         </CardHeader>

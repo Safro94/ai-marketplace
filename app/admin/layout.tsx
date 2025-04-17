@@ -1,12 +1,12 @@
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { validateAdminProfile } from '@/lib/permissions'
 import type { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
 import { AdminSidebar } from './_components/sidebar'
 
 export const metadata: Metadata = {
-  title: 'Admin Dashboard | AIAssets Marketplace',
-  description: 'Admin dashboard for managing the AIAssets marketplace',
+  title: `Admin Dashboard | ${APP_DATA.name}`,
+  description: `Admin dashboard for managing the ${APP_DATA.name}`,
   robots: {
     index: false,
     follow: false,

@@ -1,3 +1,4 @@
+import { APP_DATA } from '@/lib/constants'
 import { Shield, Sparkles, Zap } from 'lucide-react'
 
 const BENEFITS = [
@@ -27,7 +28,7 @@ export const BenefitsSection = () => {
       <div className='container'>
         <div className='text-center mb-12'>
           <h2 className='text-3xl font-bold tracking-tight'>
-            Why Choose AIAssets
+            Why Choose {APP_DATA.name}
           </h2>
 
           <p className='text-muted-foreground mt-2 max-w-2xl mx-auto'>

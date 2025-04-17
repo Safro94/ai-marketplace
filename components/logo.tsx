@@ -1,4 +1,4 @@
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -52,7 +52,7 @@ export const Logo: FC<LogoProps> = ({ className, variant = 'default' }) => {
               variant === 'default' ? 'text-xl' : 'text-base',
             )}
           >
-            AIAssets
+            {APP_DATA.name}
           </span>
         </div>
       </div>

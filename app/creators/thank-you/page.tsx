@@ -1,13 +1,13 @@
 import { PageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
+import { APP_DATA } from '@/lib/constants'
 import { CheckCircle } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Application Submitted | AIAssets Marketplace',
-  description:
-    'Thank you for applying to become a creator on AIAssets Marketplace',
+  title: `Application Submitted | ${APP_DATA.name}`,
+  description: `Thank you for applying to become a creator on ${APP_DATA.name}`,
 }
 
 const NEXT_STEPS = [
@@ -31,7 +31,7 @@ export default function ThankYouPage() {
         </h1>
 
         <p className='text-xl text-muted-foreground mb-8'>
-          Thank you for applying to become a creator on AIAssets Marketplace.
+          Thank you for applying to become a creator on {APP_DATA.name}.
           We&apos;ve received your application and will review it shortly.
         </p>
 

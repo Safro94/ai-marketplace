@@ -1,13 +1,13 @@
 import { PageContainer } from '@/components/page-container'
-import { ROUTES } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { getServerSession } from '@/lib/session'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { CreatorApplicationForm } from './_components/creator-application-form'
 
 export const metadata: Metadata = {
-  title: 'Apply as Creator | AIAssets Marketplace',
-  description: 'Apply to become a creator on AIAssets Marketplace',
+  title: `Apply as Creator | ${APP_DATA.name}`,
+  description: `Apply to become a creator on ${APP_DATA.name}`,
 }
 
 export default async function CreatorApplicationPage() {
@@ -21,7 +21,7 @@ export default async function CreatorApplicationPage() {
         </h1>
 
         <p className='text-muted-foreground'>
-          Fill out the form below to apply as a creator on AI Assets Marketplace
+          Fill out the form below to apply as a creator on {APP_DATA.name}
         </p>
       </div>
 

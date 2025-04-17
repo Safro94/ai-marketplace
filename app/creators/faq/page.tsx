@@ -1,11 +1,11 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CreatorFAQs } from '../creator-faq'
+import { APP_DATA } from '@/lib/constants'
+import { CreatorFAQs } from '../_components/creator-faq'
 
 export const metadata = {
-  title: 'Creator FAQ | AI Assets Marketplace',
-  description:
-    'Frequently asked questions for creators on the AI Assets Marketplace platform.',
+  title: `Creator FAQ | ${APP_DATA.name}`,
+  description: `Frequently asked questions for creators on the ${APP_DATA.name} platform.`,
 }
 
 export default function CreatorFAQPage() {
