@@ -105,19 +105,21 @@ export const HEADER_LINKS = [
   { name: 'For Creators', href: ROUTES.creators() },
 ]
 
-export enum EXPLORE_PARAMS {
-  CATEGORY = 'category',
-  USE_CASES = 'useCase',
-  MIN_RATING = 'minRating',
-  MIN_PRICE = 'minPrice',
-  SORT_BY = 'sortBy',
-  PAGE = 'page',
-  QUERY = 'q',
-}
+export const FADE_IN_UP = (delay?: number) => ({
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay },
+  },
+})
 
-export enum EXPLORE_FITLERS {
-  CATEGORIES = 'categories',
-  PRICE = 'price',
-  USE_CASES = 'use-cases',
-  RATINGS = 'ratings',
+export const STAGGER = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
 }

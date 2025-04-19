@@ -1,18 +1,16 @@
 'use client'
 
-import { ThemeToggle } from '@/components/header/theme-toggle'
 import { ROUTES } from '@/lib/constants'
-import { cn, getCreatorsLinks } from '@/lib/utils'
 import { User } from 'better-auth'
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { FC, useState } from 'react'
 import { Button } from '../ui/button'
+import { HeaderNav } from './header-nav'
 
 interface Props {
-  isCreator: boolean
   user: User | undefined
+  isCreator: boolean
   hasPendingApplication: boolean
 }
 
@@ -22,8 +20,6 @@ export const HeaderMobileButton: FC<Props> = ({
   hasPendingApplication,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const links = getCreatorsLinks(isCreator, hasPendingApplication)
 
   return (
     <>
@@ -39,30 +35,14 @@ export const HeaderMobileButton: FC<Props> = ({
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className='md:hidden absolute top-16 left-0 right-0 z-10 bg-background border-t border-border/40'>
-          <div className='container py-4 space-y-4'>
-            <div className='flex items-center justify-between'>
-              <span className='text-sm font-medium'>Theme</span>
-              <ThemeToggle />
-            </div>
-
-            <nav className='flex flex-col space-y-4'>
-              {links.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={cn(
-                    'text-sm font-medium transition-colors hover:text-primary',
-                    pathname === item.href
-                      ? 'text-foreground'
-                      : 'text-muted-foreground',
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
-
+        <div className='md:hidden absolute top-16 left-0 right-0 z-10 bg-background border-y border-border'>
+          <div className='px-8 py-4'>
+            <HeaderNav
+              isCreator={isCreator}
+              hasPendingApplication={hasPendingApplication}
+              onClick={() => setIsMenuOpen(false)}
+              className='flex-col'
+            >
               {!user && (
                 <>
                   <Link
@@ -83,7 +63,7 @@ export const HeaderMobileButton: FC<Props> = ({
                   </Button>
                 </>
               )}
-            </nav>
+            </HeaderNav>
           </div>
         </div>
       )}

@@ -1,11 +1,9 @@
 import { createProfile, getProfileByUserId } from '@/data-access/profile'
 import { prisma } from '@/lib/prisma'
-import { resend } from '@/lib/resend'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { nextCookies } from 'better-auth/next-js'
 import { admin } from 'better-auth/plugins/admin'
-import { EMAIL_FROM } from './constants'
 import { USER_TYPES } from './types'
 
 export const auth = betterAuth({
@@ -52,16 +50,16 @@ export const auth = betterAuth({
     //   })
     // },
   },
-  emailVerification: {
-    async sendVerificationEmail({ user, url }) {
-      await resend.emails.send({
-        from: EMAIL_FROM,
-        to: user.email,
-        subject: 'Verify your email address',
-        html: `<a href="${url}">Verify your email address</a>`,
-      })
-    },
-  },
+  // emailVerification: {
+  //   async sendVerificationEmail({ user, url }) {
+  //     await resend.emails.send({
+  //       from: EMAIL_FROM,
+  //       to: user.email,
+  //       subject: 'Verify your email address',
+  //       html: `<a href="${url}">Verify your email address</a>`,
+  //     })
+  //   },
+  // },
   account: {
     accountLinking: {
       trustedProviders: ['google'],

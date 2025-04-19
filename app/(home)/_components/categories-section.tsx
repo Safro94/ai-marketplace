@@ -1,22 +1,25 @@
+import {
+  HomeSection,
+  HomeSectionDescription,
+  HomeSectionTitle,
+} from '@/components/page-container'
 import { CategoryShowcase } from './category-showcase'
 
 export const CategoriesSection = () => {
   return (
-    <section className='py-16'>
-      <div className='container'>
-        <div className='text-center mb-12'>
-          <h2 className='text-3xl font-bold tracking-tight'>
-            Browse by Category
-          </h2>
+    <HomeSection className='bg-primary'>
+      <div className='text-center mb-12'>
+        <HomeSectionTitle className='text-white'>
+          Browse by Category
+        </HomeSectionTitle>
 
-          <p className='text-muted-foreground mt-2 max-w-2xl mx-auto'>
-            Explore our curated categories of AI assets designed for specific
-            use cases
-          </p>
-        </div>
-
-        <CategoryShowcase />
+        <HomeSectionDescription className='text-muted-foreground-primary-bg mt-2'>
+          Explore our curated categories of AI assets designed for specific use
+          cases
+        </HomeSectionDescription>
       </div>
-    </section>
+
+      <CategoryShowcase />
+    </HomeSection>
   )
 }

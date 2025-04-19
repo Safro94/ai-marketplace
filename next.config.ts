@@ -9,6 +9,7 @@ const config: NextConfig = {
       fullUrl: true,
     },
   },
+  transpilePackages: ['three'],
   images: {
     remotePatterns: [
       {

@@ -1,4 +1,11 @@
-import { APP_DATA } from '@/lib/constants'
+import { Benefit } from '@/components/benefit'
+import {
+  HomeSection,
+  HomeSectionDescription,
+  HomeSectionTitle,
+} from '@/components/page-container'
+import { Motion } from '@/components/ui/motion'
+import { APP_DATA, STAGGER } from '@/lib/constants'
 import { Shield, Sparkles, Zap } from 'lucide-react'
 
 const BENEFITS = [
@@ -24,35 +31,32 @@ const BENEFITS = [
 
 export const BenefitsSection = () => {
   return (
-    <section className='py-16 bg-secondary/30'>
-      <div className='container'>
-        <div className='text-center mb-12'>
-          <h2 className='text-3xl font-bold tracking-tight'>
-            Why Choose {APP_DATA.name}
-          </h2>
+    <HomeSection className='bg-muted grid md:grid-cols-2'>
+      <div className='flex flex-col justify-center gap-2'>
+        <HomeSectionTitle>Why Choose {APP_DATA.name}?</HomeSectionTitle>
 
-          <p className='text-muted-foreground mt-2 max-w-2xl mx-auto'>
-            We&apos;re building the premier marketplace for high-quality AI
-            assets
-          </p>
-        </div>
-
-        <div className='grid md:grid-cols-3 gap-8'>
-          {BENEFITS.map(({ Icon, title, description }) => (
-            <div
-              key={title}
-              className='bg-background rounded-lg p-6 border flex flex-col items-center text-center card-hover'
-            >
-              <div className='h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4'>
-                <Icon className='h-6 w-6 text-primary' aria-hidden='true' />
-              </div>
-
-              <h3 className='text-xl font-medium mb-2'>{title}</h3>
-              <p className='text-muted-foreground'>{description}</p>
-            </div>
-          ))}
-        </div>
+        <HomeSectionDescription className='mx-[initial]'>
+          We&apos;re building the premier marketplace for high-quality AI assets
+        </HomeSectionDescription>
       </div>
-    </section>
+
+      <Motion
+        initial='hidden'
+        whileInView='visible'
+        viewport={{ once: true, margin: '-100px' }}
+        variants={STAGGER}
+        className='grid gap-4'
+      >
+        {BENEFITS.map(({ Icon, title, description }, i) => (
+          <Benefit
+            key={title}
+            icon={Icon}
+            title={title}
+            description={description}
+            delay={0.5 * i}
+          />
+        ))}
+      </Motion>
+    </HomeSection>
   )
 }

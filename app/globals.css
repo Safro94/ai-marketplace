@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -12,6 +16,20 @@ body {
   }
   .break-anywhere {
     overflow-wrap: anywhere;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .container {
+    @apply mx-auto px-12;
   }
 }
 
@@ -27,15 +45,15 @@ body {
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* --primary: 222.2 47.4% 11.2%; */
-    --primary: 259 91% 58%;
+    --primary: 264.7 66.7% 20%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
-    --secondary-foreground: 265 60% 55%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground-primary-bg: 0 0% 80%;
 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
@@ -69,7 +87,7 @@ body {
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 259 91% 58%;
+    --primary: 264.7 66.7% 20%;
     --primary-foreground: white;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -77,6 +95,7 @@ body {
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground-primary-bg: 0 0% 80%;
 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
@@ -98,17 +117,178 @@ body {
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+}
 
-  .container {
-    @apply mx-auto px-12;
+/* Isometric Illustration Styles */
+.isometric-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  transform-style: preserve-3d;
+  transform: rotateX(30deg) rotateZ(-30deg);
+}
+
+.isometric-element {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+/* Smartphone */
+.smartphone {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.phone-body {
+  width: 350px;
+  height: 600px;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.phone-screen {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 40px;
+  background: hsl(var(--primary));
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.phone-button {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 10px;
+  background: #d0d0d0;
+  border-radius: 5px;
+}
+
+/* Shopping Basket */
+.basket {
+  transform: translate(-50%, -50%);
+}
+
+.basket-handle {
+  position: absolute;
+  width: 10px;
+  height: 40px;
+  background: #6a2fbd;
+  top: -20px;
+  border-radius: 5px;
+}
+
+.credit-card {
+  transform: translate(-50%, -50%) rotateX(-5deg);
+}
+
+.card-body {
+  background: linear-gradient(135deg, #8a4fff, #6a2fbd);
+}
+
+/* Chat Bubbles */
+.chat-bubble {
+  transform: translate(-50%, -50%) rotateX(-5deg);
+}
+
+.chat-bubble-1 {
+  top: -15%;
+  background: linear-gradient(135deg, #6a2fbd, #4a1d8d);
+}
+
+.chat-bubble-2 {
+  top: 0%;
+  background: linear-gradient(135deg, #6a2fbd, #4a1d8d);
+}
+
+/* Social Icons */
+.social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 20;
+  right: -10%;
+  transform: translate(-50%, -50%) rotateX(-5deg);
+}
+
+.social-icon-1 {
+  top: 20%;
+  background: #4caf50;
+}
+
+.social-icon-2 {
+  top: 35%;
+  background: #ff3e8f;
+}
+
+.social-icon-3 {
+  top: 50%;
+  background: #2196f3;
+}
+
+.social-icon-4 {
+  top: 65%;
+  background: #9c27b0;
+}
+
+.tile {
+  background: rgba(138, 79, 255, 0.6);
+}
+
+/* Animation for floating effect */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
   }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.basket {
+  animation: float 4s ease-in-out infinite;
+}
+
+.credit-card {
+  animation: float 5s ease-in-out infinite;
+}
+
+.social-icon {
+  animation: float 3s ease-in-out infinite;
+}
+
+.chat-bubble {
+  animation: float 4.5s ease-in-out infinite;
 }
 
 /* Add gradient for hero section */

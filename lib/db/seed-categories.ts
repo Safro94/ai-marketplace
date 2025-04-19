@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma'
 
-const categories = [
+const CATEGORIES = [
   {
     name: 'Prompt Engineering Systems',
     slug: 'prompt-engineering',
@@ -49,7 +49,7 @@ const categories = [
 ]
 
 export async function seedCategories() {
-  for (const category of categories) {
+  for (const category of CATEGORIES) {
     await prisma.category.upsert({
       where: { slug: category.slug },
       update: category,

@@ -1,5 +1,4 @@
 import { Footer } from '@/components/footer'
-import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/toast'
 import { generateOrganizationJsonLd, siteConfig } from '@/lib/seo-config'
 import { cn } from '@/lib/utils'
@@ -9,7 +8,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import type React from 'react'
 import { extractRouterConfig } from 'uploadthing/server'
-import { fileRouter } from './api/uploadthing/core'
+import { fileRouter } from './(main)/api/uploadthing/core'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -92,8 +91,7 @@ export default function RootLayout({
         <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
 
         <Providers>
-          <div className='min-h-screen grid grid-rows-[max-content_1fr_max-content]'>
-            <Header />
+          <div className='min-h-screen grid grid-rows-[1fr_max-content]'>
             <main className='bg-main-background'>{children}</main>
             <Footer />
           </div>

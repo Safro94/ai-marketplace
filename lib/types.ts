@@ -81,3 +81,13 @@ export enum CartContextActionType {
   REMOVE_ITEM = 'REMOVE_ITEM',
   CLEAR_CART = 'CLEAR_CART',
 }
+
+export enum EXPLORE_PARAMS {
+  CATEGORY = 'category',
+  USE_CASES = 'useCase',
+  MIN_RATING = 'minRating',
+  MIN_PRICE = 'minPrice',
+  SORT_BY = 'sortBy',
+  PAGE = 'page',
+  QUERY = 'q',
+}

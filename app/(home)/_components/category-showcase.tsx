@@ -1,6 +1,8 @@
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Motion } from '@/components/ui/motion'
 import { getCategoriesWithCount } from '@/data-access/categories'
-import { EXPLORE_PARAMS, ROUTES } from '@/lib/constants'
+import { FADE_IN_UP, ROUTES } from '@/lib/constants'
+import { EXPLORE_PARAMS } from '@/lib/types'
 import {
   Bot,
   Briefcase,
@@ -26,7 +28,7 @@ export const CategoryShowcase = async () => {
 
   return (
     <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-      {categories.map((category) => {
+      {categories.map((category, i) => {
         // Get the icon component or default to MessageSquare
         const IconComponent =
           category.iconName && iconMap[category.iconName]
@@ -34,29 +36,36 @@ export const CategoryShowcase = async () => {
             : MessageSquare
 
         return (
-          <Link
-            href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
+          <Motion
             key={category.id}
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-100px' }}
+            variants={FADE_IN_UP(0.5 * i)}
           >
-            <Card className='h-full transition-colors card-hover'>
-              <CardContent className='p-6 flex items-start space-x-4'>
-                <div
-                  className={`p-3 rounded-lg ${category.colorClass || 'bg-primary/10 text-primary'}`}
-                >
-                  <IconComponent className='h-6 w-6' />
-                </div>
+            <Link
+              href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
+            >
+              <Card className='h-full transition-colors card-hover'>
+                <CardHeader>
+                  <div
+                    className={`rounded-lg ${category.colorClass || 'bg-primary/10 text-primary'}`}
+                  >
+                    <IconComponent className='h-10 w-10' />
+                  </div>
+                </CardHeader>
 
-                <div className='space-y-1'>
-                  <h3 className='font-medium text-lg'>{category.name}</h3>
-                  <p className='text-sm text-muted-foreground'>
-                    {category.description}
-                  </p>
-
-                  <p className='text-sm font-medium'>{category.count} assets</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+                <CardContent className='flex items-start space-x-4'>
+                  <div className='space-y-1'>
+                    <h3 className='font-medium text-lg'>{category.name}</h3>
+                    <p className='text-sm text-muted-foreground'>
+                      {category.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </Motion>
         )
       })}
     </div>

@@ -1,5 +1,11 @@
-import { Asset } from '@/components/asset'
+import { AssetsGrid } from '@/components/assets-grid'
+import {
+  HomeSection,
+  HomeSectionDescription,
+  HomeSectionTitle,
+} from '@/components/page-container'
 import { Button } from '@/components/ui/button'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { getAssets } from '@/data-access/assets'
 import { ROUTES } from '@/lib/constants'
 import { AssetStatus } from '@prisma/client'
@@ -27,33 +33,34 @@ export const FeaturedSection = async () => {
   if (!featuredAssets.length) return null
 
   return (
-    <section className='py-16 bg-secondary/30'>
-      <div className='container'>
-        <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-8'>
-          <div>
-            <h2 className='text-3xl font-bold tracking-tight'>
-              Featured Assets
-            </h2>
+    <HomeSection className='bg-muted'>
+      <div className='grid gap-1 mb-8'>
+        <HomeSectionTitle className='text-center'>
+          Featured Assets
+        </HomeSectionTitle>
 
-            <p className='text-muted-foreground mt-1'>
-              Handpicked premium assets from our marketplace
-            </p>
-          </div>
+        <HomeSectionDescription>
+          Handpicked premium assets from our marketplace
+        </HomeSectionDescription>
+      </div>
 
-          <Button variant='ghost' className='mt-4 md:mt-0' asChild>
-            <Link href={ROUTES.explore()}>
+      <div className='grid items-center '>
+        <div className='grid gap-4'>
+          <ScrollArea className='py-4'>
+            <AssetsGrid items={featuredAssets} />
+            <ScrollBar orientation='horizontal' />
+          </ScrollArea>
+        </div>
+
+        <div className='flex justify-center'>
+          <Button asChild>
+            <Link href={ROUTES.explore()} prefetch>
               View all assets
               <ArrowRight className='ml-2 h-4 w-4' />
             </Link>
           </Button>
         </div>
-
-        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {featuredAssets.map((asset) => (
-            <Asset key={asset.id} {...asset} />
-          ))}
-        </div>
       </div>
-    </section>
+    </HomeSection>
   )
 }

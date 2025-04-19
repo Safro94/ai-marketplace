@@ -21,7 +21,7 @@ export const Asset: FC<ExploreAsset> = ({
   basePrice,
 }) => {
   return (
-    <Card className='overflow-hidden shadow-none flex flex-col gap-2 h-[375px] hover:border-primary'>
+    <Card className='overflow-hidden shadow-lg grid gap-2 h-[375px]'>
       <Link
         href={ROUTES.assetsDetail(id)}
         key={id}
@@ -40,7 +40,7 @@ export const Asset: FC<ExploreAsset> = ({
           <AssetOptions assetId={id} />
         </CardHeader>
 
-        <CardContent className='p-2 flex-1 flex flex-col overflow-hidden'>
+        <CardContent className='p-2 flex-1 grid overflow-hidden'>
           <div className='grid grid-cols-[70%_1fr] gap-4'>
             <div>
               <h3 className='text-xl font-semibold truncate'>{title}</h3>

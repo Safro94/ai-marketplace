@@ -1,0 +1,224 @@
+'use client'
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Slider } from '@/components/ui/slider'
+
+import { StarIcon } from 'lucide-react'
+import { Dispatch, FC, ReactNode, SetStateAction } from 'react'
+
+interface Props {
+  useCases: { label?: string; id: string | null }[] | null
+  hasActiveFilters: boolean
+  priceRange: number[]
+  maxPrice: number
+  selectedRatings: string[]
+  selectedUseCases: string[]
+  setSelectedUseCases: Dispatch<SetStateAction<string[]>>
+  setSelectedRatings: Dispatch<SetStateAction<string[]>>
+  setPriceRange: Dispatch<SetStateAction<number[]>>
+  clearAllFilters: () => void
+}
+
+enum EXPLORE_FITLERS {
+  CATEGORIES = 'categories',
+  PRICE = 'price',
+  USE_CASES = 'use-cases',
+  RATINGS = 'ratings',
+}
+
+const RATINGS = [
+  { id: '4-up', label: '4+' },
+  { id: '3-up', label: '3+' },
+  { id: '2-up', label: '2+' },
+]
+
+export const FiltersContent: FC<Props> = ({
+  useCases,
+  hasActiveFilters,
+  priceRange,
+  selectedRatings,
+  selectedUseCases,
+  setSelectedUseCases,
+  setSelectedRatings,
+  setPriceRange,
+  clearAllFilters,
+  maxPrice,
+}) => {
+  const handleUseCaseChange = (useCaseId: string) => {
+    setSelectedUseCases((prev) =>
+      prev.includes(useCaseId)
+        ? prev.filter((id) => id !== useCaseId)
+        : [...prev, useCaseId],
+    )
+  }
+
+  const handleRatingChange = (ratingId: string) => {
+    setSelectedRatings((prev) =>
+      prev.includes(ratingId)
+        ? prev.filter((id) => id !== ratingId)
+        : [...prev, ratingId],
+    )
+  }
+
+  return (
+    <>
+      <div className='flex items-center justify-between mb-4'>
+        {hasActiveFilters && (
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={clearAllFilters}
+            className='h-8 text-xs'
+          >
+            Clear all
+          </Button>
+        )}
+      </div>
+
+      <Accordion
+        type='multiple'
+        defaultValue={Object.values(EXPLORE_FITLERS).map((value) => value)}
+        className='space-y-2'
+      >
+        {!!useCases?.length && (
+          <Filter
+            value={EXPLORE_FITLERS.USE_CASES}
+            title='Use Cases'
+            items={useCases}
+          >
+            {(item) => (
+              <>
+                <Checkbox
+                  id={`usecase-${item.id}`}
+                  checked={selectedUseCases.includes(item.id ?? '')}
+                  onCheckedChange={() => handleUseCaseChange(item.id ?? '')}
+                />
+
+                <Label
+                  htmlFor={`usecase-${item.id}`}
+                  className='text-sm font-normal cursor-pointer'
+                >
+                  {item.label}
+                </Label>
+              </>
+            )}
+          </Filter>
+        )}
+
+        <AccordionItem value={EXPLORE_FITLERS.PRICE} className='border-b-0'>
+          <AccordionTrigger className='py-3 text-sm font-medium'>
+            Price Range
+          </AccordionTrigger>
+
+          <AccordionContent>
+            <div className='space-y-4'>
+              <div className='p-4'>
+                <Slider
+                  defaultValue={[priceRange[0], priceRange[1]]}
+                  max={priceRange[1]}
+                  min={0}
+                  step={1}
+                  value={[priceRange[0], priceRange[1]]}
+                  onValueChange={setPriceRange}
+                />
+              </div>
+
+              <div className='grid grid-cols-3 items-center justify-between'>
+                <div className='flex items-center gap-2'>
+                  <span className='text-xs text-muted-foreground'>$</span>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={maxPrice}
+                    value={priceRange[0]}
+                    onChange={(e) => {
+                      const price = Number.parseInt(e.target.value)
+                      if (price > maxPrice) return
+
+                      setPriceRange([price, priceRange[1]])
+                    }}
+                    className='h-8 text-xs'
+                  />
+                </div>
+
+                <span className='text-xs text-muted-foreground text-center'>
+                  to
+                </span>
+
+                <div className='flex items-center gap-2'>
+                  <span className='text-xs text-muted-foreground'>$</span>
+                  <Input
+                    type='number'
+                    value={priceRange[1]}
+                    max={priceRange[1]}
+                    disabled
+                    className='h-8 text-xs'
+                  />
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        <Filter value={EXPLORE_FITLERS.RATINGS} title='Ratings' items={RATINGS}>
+          {(item) => (
+            <>
+              <Checkbox
+                id={`rating-${item.id}`}
+                checked={selectedRatings.includes(item.id)}
+                onCheckedChange={() => handleRatingChange(item.id)}
+              />
+
+              <Label
+                htmlFor={`rating-${item.id}`}
+                className='text-sm font-normal cursor-pointer flex items-center'
+              >
+                <StarIcon className='h-4 w-4 fill-yellow-400 text-yellow-400 mr-1' />
+                {item.label}
+              </Label>
+            </>
+          )}
+        </Filter>
+      </Accordion>
+    </>
+  )
+}
+
+const Filter = <T extends { id: string | null }>({
+  items,
+  title,
+  value,
+  children,
+}: {
+  items: T[] | null
+  title: string
+  value: string
+  children: (item: T) => ReactNode
+}) => {
+  return (
+    <AccordionItem value={value} className='border-b-0'>
+      <AccordionTrigger className='py-3 text-sm font-medium'>
+        {title}
+      </AccordionTrigger>
+
+      <AccordionContent>
+        <div className='space-y-2 pt-1'>
+          {items?.map((item) => (
+            <div key={item.id} className='flex items-center space-x-2'>
+              {children(item)}
+            </div>
+          ))}
+        </div>
+      </AccordionContent>
+    </AccordionItem>
+  )
+}

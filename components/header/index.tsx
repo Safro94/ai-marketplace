@@ -4,15 +4,24 @@ import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
+import { cn } from '@/lib/utils'
 import { ApplicationStatus } from '@prisma/client'
 import Link from 'next/link'
+import { FC } from 'react'
 import { Logo } from '../logo'
 import { CartButton } from './cart-button'
 import { HeaderDropdown } from './header-dropdown'
 import { HeaderMobileButton } from './header-mobile-button'
 import { HeaderNav } from './header-nav'
 
-export const Header = async () => {
+interface Props {
+  classNames?: {
+    header?: string
+    container?: string
+  }
+}
+
+export const Header: FC<Props> = async ({ classNames }) => {
   const session = await getServerSession()
   let profile
 
@@ -26,13 +35,25 @@ export const Header = async () => {
     ApplicationStatus.PENDING
 
   return (
-    <header className='sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
-      <div className='container flex h-16 items-center justify-between relative'>
+    <header
+      className={cn(
+        'sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+        classNames?.header,
+      )}
+    >
+      <div
+        className={cn(
+          'flex h-16 items-center justify-between relative',
+          !classNames?.container && 'container',
+          classNames?.container,
+        )}
+      >
         <div className='flex items-center gap-6 md:gap-10'>
           <Logo />
           <HeaderNav
             isCreator={isCreator}
             hasPendingApplication={hasPendingApplication}
+            className='hidden md:flex'
           />
         </div>
 
@@ -47,7 +68,7 @@ export const Header = async () => {
             </>
           ) : (
             <div className='hidden md:flex gap-2'>
-              <Button variant='ghost' asChild>
+              <Button variant='outline' asChild>
                 <Link href={ROUTES.login()}>Log in</Link>
               </Button>
 

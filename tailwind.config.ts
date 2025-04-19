@@ -46,6 +46,7 @@ export default withUt({
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
+          'foreground-primary-bg': 'hsl(var(--muted-foreground-primary-bg))',
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',

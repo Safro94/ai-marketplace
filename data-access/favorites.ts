@@ -13,8 +13,6 @@ export const getFavorite = async (
   unstable_cacheTag(CACHE_KEYS.assetFavorite(assetId))
   unstable_cacheLife('hours')
 
-  console.log('cache')
-
   return await prisma.favorite.findUnique(args)
 }
 

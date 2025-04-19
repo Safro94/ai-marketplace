@@ -1,3 +1,8 @@
+import {
+  HomeSection,
+  HomeSectionDescription,
+  HomeSectionTitle,
+} from '@/components/page-container'
 import { getTestimonials } from '@/data-access/testimonials'
 import { Testimonial } from '@prisma/client'
 import { TestimonialsCarousel } from './testimonials-carousel'
@@ -41,20 +46,16 @@ export const TestimonialSection = async () => {
     : TESTIMONAILS_FALLBACK
 
   return (
-    <section className='py-16'>
-      <div className='container'>
-        <div className='text-center mb-12'>
-          <h2 className='text-3xl font-bold tracking-tight'>
-            What Our Users Say
-          </h2>
-          <p className='text-muted-foreground mt-2 max-w-2xl mx-auto'>
-            Hear from professionals who have transformed their work with our AI
-            assets
-          </p>
-        </div>
-
-        <TestimonialsCarousel testimonials={testimonials} />
+    <HomeSection>
+      <div className='text-center mb-12'>
+        <HomeSectionTitle>Testimonials</HomeSectionTitle>
+        <HomeSectionDescription className='mt-2'>
+          Hear from professionals who have transformed their work with our AI
+          assets
+        </HomeSectionDescription>
       </div>
-    </section>
+
+      <TestimonialsCarousel testimonials={testimonials} />
+    </HomeSection>
   )
 }

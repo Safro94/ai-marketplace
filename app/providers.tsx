@@ -9,7 +9,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
   return (
     <ThemeProvider defaultTheme='system' storageKey='ai-assets-theme'>
       <CartProvider>
-        <NextTopLoader showSpinner={false} color='hsl(259 91% 58)' />
+        <NextTopLoader showSpinner={false} color='hsl(264.7 66.7% 20%)' />
         {children}
       </CartProvider>
     </ThemeProvider>
