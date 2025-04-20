@@ -50,7 +50,7 @@ export const AssetDetailCarousel: FC<Props> = ({
                   src={image || '/placeholder.svg?height=600&width=800'}
                   alt={title}
                   fill
-                  className='object-cover'
+                  className='object-contain'
                   priority
                 />
 

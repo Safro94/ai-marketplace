@@ -36,8 +36,8 @@ export const FavoriteButton: FC<Props> = ({ assetId }) => {
       }
     }
 
-    checkFavoriteStatus()
-  }, [assetId])
+    if (user) checkFavoriteStatus()
+  }, [assetId, user])
 
   const handleClick = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,

@@ -279,7 +279,7 @@ const CarouselThumbnails: FC<
               fill
               priority
               className={cn(
-                'object-cover transition-all hover:opacity-100',
+                'object-contain transition-all hover:opacity-100',
                 api?.selectedScrollSnap() !== i + 1 && 'opacity-50',
               )}
             />

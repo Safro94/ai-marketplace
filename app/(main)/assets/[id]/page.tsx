@@ -3,10 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { Card, CardContent } from '@/components/ui/card'
 import { getAssetById, getAssets } from '@/data-access/assets'
+import { getUserProfile } from '@/data-access/profile'
 import { checkUserPurchasedAsset } from '@/data-access/purchases'
 import { ROUTES } from '@/lib/constants'
 import { generateProductJsonLd } from '@/lib/seo-config'
-import { validateSession } from '@/lib/session'
+import { getServerSession } from '@/lib/session'
 import { cn, formatDate } from '@/lib/utils'
 import { AssetStatus } from '@prisma/client'
 import { User } from 'better-auth'
@@ -99,7 +100,7 @@ export default async function AssetPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const { user } = await validateSession()
+  const session = await getServerSession()
   const id = (await params).id
 
   const asset = await getAssetById(id, {
@@ -133,8 +134,11 @@ export default async function AssetPage({
 
   // Check if the user has purchased this asset
   let isPurchased = false
-  if (user) {
-    isPurchased = await checkUserPurchasedAsset(user.id, asset.id)
+  if (session?.user) {
+    const profile = await getUserProfile(session?.user.id)
+    if (!profile) return
+
+    isPurchased = await checkUserPurchasedAsset(profile.id, asset.id)
   }
 
   // Parse features and requirements from JSON strings

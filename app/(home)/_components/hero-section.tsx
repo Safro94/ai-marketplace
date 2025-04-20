@@ -7,10 +7,11 @@ import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
-import Spline from '@splinetool/react-spline/next'
 import { ArrowRight } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Suspense } from 'react'
+
+const Spline = dynamic(() => import('@splinetool/react-spline'))
 
 export const HeroSection = async () => {
   let profile
@@ -21,13 +22,11 @@ export const HeroSection = async () => {
   }
 
   return (
-    <section className='relative min-h-[75vh] overflow-hidden flex'>
-      <Suspense fallback={<div className='absolute inset-0 bg-black' />}>
-        <Spline
-          className='absolute inset-0 scale-125'
-          scene='https://prod.spline.design/eCjzFag6WDawhhgS/scene.splinecode'
-        />
-      </Suspense>
+    <section className='relative min-h-[75vh] bg-black overflow-hidden flex'>
+      <Spline
+        className='absolute scale-125'
+        scene='https://prod.spline.design/eCjzFag6WDawhhgS/scene.splinecode'
+      />
 
       <div className='flex flex-col items-center justify-center text-center space-y-6 max-w-3xl mx-auto z-20'>
         <div className='inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium mb-4'>

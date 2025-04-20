@@ -1,9 +1,11 @@
+import { User } from 'better-auth'
 import { FC } from 'react'
 import { FavoriteButton } from './favorite-button'
 import { ShareButton } from './share-button'
 
 interface Props {
   assetId: string
+  user?: User
 }
 
 export const AssetOptions: FC<Props> = ({ assetId }) => {

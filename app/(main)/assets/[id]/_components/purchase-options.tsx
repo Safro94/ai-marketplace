@@ -44,7 +44,7 @@ export const PurchaseOptions: FC<Props> = ({
   const handleAddToCart = () => {
     if (!user) {
       toast.error('Authentication required', {
-        description: 'Please log in to purchase this asset.',
+        description: 'Please log in to add items to your cart.',
       })
 
       router.push(
@@ -87,6 +87,7 @@ export const PurchaseOptions: FC<Props> = ({
       </CardContent>
 
       <CardFooter className='px-6 pb-6 pt-0 flex flex-col gap-2'>
+        {/* TODO: check if we should use AssetAddToCartButton */}
         <LoadingButton
           size='lg'
           onClick={handleAddToCart}

@@ -3,9 +3,12 @@
 import { LoadingButton } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
 import { useCart } from '@/contexts/cart-context'
+import { useAuth } from '@/hooks/use-auth'
+import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import { ShoppingCart, Trash2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { ComponentProps, FC, MouseEvent, useTransition } from 'react'
 import { Skeleton } from './ui/skeleton'
 
@@ -27,6 +30,8 @@ export const AssetAddToCartButton: FC<Props> = ({
   licensePrice,
   ...props
 }) => {
+  const { user } = useAuth()
+  const router = useRouter()
   const { addToCart, removeItem, cart, isLoading } = useCart()
   const [isPending, startTransition] = useTransition()
   const isItemInCart = cart.items.some((item) => item.assetId === id)
@@ -35,6 +40,17 @@ export const AssetAddToCartButton: FC<Props> = ({
     e.preventDefault()
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
+
+    if (!user) {
+      toast.error('Authentication required', {
+        description: 'Please log in to add items to your cart',
+      })
+
+      router.push(
+        `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+      )
+      return
+    }
 
     try {
       const price = licensePrice !== undefined ? licensePrice : basePrice

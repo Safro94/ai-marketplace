@@ -5,28 +5,28 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
-import Spline from '@splinetool/react-spline/next'
 import { ArrowRight } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { FC, Suspense } from 'react'
+import { FC } from 'react'
 
 interface Props {
   isCreator: boolean
   hasPendingApplication: boolean
 }
 
+const Spline = dynamic(() => import('@splinetool/react-spline'))
+
 export const CreatorsHeroSection: FC<Props> = ({
   isCreator,
   hasPendingApplication,
 }) => {
   return (
-    <section className='relative min-h-[75vh] overflow-hidden flex'>
-      <Suspense fallback={<div className='absolute inset-0 bg-black' />}>
-        <Spline
-          className='absolute inset-0 scale-125'
-          scene='https://prod.spline.design/k5BofMnTaYCm2Pnu/scene.splinecode'
-        />
-      </Suspense>
+    <section className='relative min-h-[75vh] bg-black overflow-hidden flex'>
+      <Spline
+        className='absolute scale-125'
+        scene='https://prod.spline.design/k5BofMnTaYCm2Pnu/scene.splinecode'
+      />
 
       <div className='flex flex-col items-center justify-center text-center space-y-6 max-w-3xl mx-auto z-20'>
         <HomeSectionTitle className='text-white text-6xl'>

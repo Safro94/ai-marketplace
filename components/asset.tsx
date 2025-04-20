@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
+import { getServerSession } from '@/lib/session'
 import { ExploreAsset } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
 import { StarIcon } from 'lucide-react'
@@ -10,7 +11,7 @@ import { FC } from 'react'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
 import { AssetOptions } from './asset-options'
 
-export const Asset: FC<ExploreAsset> = ({
+export const Asset: FC<ExploreAsset> = async ({
   id,
   featuredImage,
   title,
@@ -20,28 +21,30 @@ export const Asset: FC<ExploreAsset> = ({
   totalReviews,
   basePrice,
 }) => {
+  const session = await getServerSession()
+
   return (
-    <Card className='overflow-hidden shadow-lg grid gap-2 h-[375px]'>
+    <Card className='overflow-hidden shadow-md grid gap-2 h-[375px]'>
       <Link
         href={ROUTES.assetsDetail(id)}
         key={id}
         className='flex-1 grid grid-rows-[200px,1fr]'
         prefetch
       >
-        <CardHeader className='p-0 block relative w-full overflow-hidden'>
+        <CardHeader className='p-0 block relative w-full'>
           <Image
             fill
             src={featuredImage || '/placeholder.svg?height=400&width=600'}
             alt={title}
-            className='object-cover !max-h-[200px] !relative'
+            className='object-fill !max-h-[200px] !relative'
             priority
           />
 
-          <AssetOptions assetId={id} />
+          <AssetOptions assetId={id} user={session?.user} />
         </CardHeader>
 
-        <CardContent className='p-2 flex-1 grid overflow-hidden'>
-          <div className='grid grid-cols-[70%_1fr] gap-4'>
+        <CardContent className='p-2 flex-1 grid'>
+          <div className='grid grid-cols-[70%_1fr] gap-4 overflow-hidden'>
             <div>
               <h3 className='text-xl font-semibold truncate'>{title}</h3>
 
@@ -78,14 +81,16 @@ export const Asset: FC<ExploreAsset> = ({
         </CardContent>
 
         <CardFooter className='p-2'>
-          <AssetAddToCartButton
-            id={id}
-            title={title}
-            basePrice={basePrice}
-            featuredImage={featuredImage}
-            variant='outline'
-            className='w-full text-primary border-primary'
-          />
+          {session?.user && (
+            <AssetAddToCartButton
+              id={id}
+              title={title}
+              basePrice={basePrice}
+              featuredImage={featuredImage}
+              variant='outline'
+              className='w-full text-primary border-primary'
+            />
+          )}
         </CardFooter>
       </Link>
     </Card>

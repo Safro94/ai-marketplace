@@ -10,10 +10,7 @@ import { revalidateTag } from 'next/cache'
 export async function createReviewAction(data: Prisma.ReviewCreateInput) {
   await validateSession()
 
-  const review = await createReview({
-    ...data,
-  })
-
+  const review = await createReview(data)
   const assetId = data.asset.connect?.id as string
 
   // Update asset average rating
@@ -31,6 +28,7 @@ export async function createReviewAction(data: Prisma.ReviewCreateInput) {
     totalReviews: assetReviews.length,
   })
 
+  revalidateTag(CACHE_KEYS.exploreAssets())
   revalidateTag(
     CACHE_KEYS.dashboardReviews(data.userProfile.connect?.id as string),
   )
