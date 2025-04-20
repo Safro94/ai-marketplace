@@ -9,7 +9,7 @@
     "lint": "next lint --fix",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "postinstall": "prisma generate"
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "latest",
