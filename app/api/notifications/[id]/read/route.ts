@@ -5,9 +5,10 @@ import { NextResponse } from 'next/server'
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession()
+  const id = (await params).id
 
   if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -23,7 +24,7 @@ export async function POST(
 
     // Get notification
     const notification = await prisma.notification.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!notification) {
@@ -40,7 +41,7 @@ export async function POST(
 
     // Mark notification as read
     await prisma.notification.update({
-      where: { id: params.id },
+      where: { id },
       data: { read: true },
     })
 

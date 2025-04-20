@@ -4,16 +4,17 @@ import { NextResponse } from 'next/server'
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   await validateRouteProfilePermissions()
 
   try {
     const { featured } = await request.json()
+    const assetId = (await params).id
 
     // Update the asset's featured status
     const asset = await updateAsset({
-      assetId: params.id,
+      assetId,
       featured,
       // If featuring, set a default order at the end
       ...(featured

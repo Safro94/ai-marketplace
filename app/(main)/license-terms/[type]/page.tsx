@@ -9,9 +9,10 @@ import ReactMarkdown from 'react-markdown'
 export async function generateMetadata({
   params,
 }: {
-  params: { type: string }
+  params: Promise<{ type: string }>
 }): Promise<Metadata> {
-  const licenseType = decodeURIComponent(params.type)
+  const type = (await params).type
+  const licenseType = decodeURIComponent(type)
 
   return {
     title: `${licenseType} Terms | ${APP_DATA.name}`,
@@ -19,12 +20,13 @@ export async function generateMetadata({
   }
 }
 
-export default function LicenseTermsPage({
+export default async function LicenseTermsPage({
   params,
 }: {
-  params: { type: string }
+  params: Promise<{ type: string }>
 }) {
-  const licenseType = decodeURIComponent(params.type)
+  const type = (await params).type
+  const licenseType = decodeURIComponent(type)
   const validLicenseTypes = [
     'Standard License',
     'Extended License',

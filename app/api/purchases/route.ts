@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     const profile = await getUserProfile(session.user.id)
 
     if (!profile) {
-      return { success: false, error: 'Profile not found' }
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
     const { totalAmounts, assets, cart } = await getPurchaseAmounts()
@@ -56,10 +56,10 @@ export async function POST(request: Request) {
         // Generate a unique license key
         const cartAsset = cart.find((item) => item.assetId === asset.id)
         if (!cartAsset) {
-          return {
-            success: false,
-            error: 'Cart asset does not match current asset',
-          }
+          return NextResponse.json(
+            { error: 'Cart asset does not match current asset' },
+            { status: 500 },
+          )
         }
 
         const licenseKey = generateLicenseKey(session.user.id, asset.id)

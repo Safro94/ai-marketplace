@@ -9,7 +9,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import type React from 'react'
 import { extractRouterConfig } from 'uploadthing/server'
-import { fileRouter } from './(main)/api/uploadthing/core'
+import { fileRouter } from './api/uploadthing/core'
 import './globals.css'
 import { Providers } from './providers'
 

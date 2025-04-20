@@ -8,11 +8,11 @@ import {
 } from '@/data-access/creator-profile'
 import { getUserProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
+import { creatorApplicationSchema } from '@/lib/schemas'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
-import { creatorApplicationSchema } from '../../../../../lib/schemas'
 
 export async function POST(request: Request) {
   const session = await getServerSession()
