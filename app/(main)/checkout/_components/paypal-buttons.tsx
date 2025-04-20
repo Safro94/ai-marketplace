@@ -25,6 +25,7 @@ import {
 interface PaypalButtonsProps {
   isPurchasing: boolean
   setIsPurchasing: Dispatch<SetStateAction<boolean>>
+  cartTotal: number
 }
 
 interface ButtonsProps extends PaypalButtonsProps {
@@ -36,6 +37,7 @@ interface ButtonsProps extends PaypalButtonsProps {
 export const PaypalButtons: FC<PaypalButtonsProps> = ({
   isPurchasing,
   setIsPurchasing,
+  cartTotal,
 }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [creatorsData, setCreatorsData] = useState<CheckoutCreatorsData>()
@@ -85,6 +87,7 @@ export const PaypalButtons: FC<PaypalButtonsProps> = ({
             paypalData={creatorsData.PAYPAL}
             isPurchasing={isPurchasing}
             setIsPurchasing={setIsPurchasing}
+            cartTotal={cartTotal}
           />
         </PayPalScriptProvider>
       )}
@@ -96,20 +99,21 @@ const Buttons: FC<ButtonsProps> = ({
   paypalData,
   isPurchasing,
   setIsPurchasing,
+  cartTotal,
 }) => {
   const router = useRouter()
-  const { clearCart, cart } = useCart()
+  const { clearCart } = useCart()
   const [{ isPending }] = usePayPalScriptReducer()
   const [, startTransition] = useTransition()
   const loader = useTopLoader()
 
-  const isPaypalButtonDisabled = isPending || !cart.total
+  const isPaypalButtonDisabled = isPending || !cartTotal
 
   return (
     <PaypalLibButtons
       className={cn(
         '!opacity-100 relative',
-        (!cart.total || isPurchasing) && '!opacity-50 pointer-events-none',
+        (!cartTotal || isPurchasing) && '!opacity-50 pointer-events-none',
       )}
       disabled={isPaypalButtonDisabled}
       createOrder={async () => {

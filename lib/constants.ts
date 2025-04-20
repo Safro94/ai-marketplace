@@ -1,5 +1,6 @@
 export const ROUTES = {
   home: () => '/',
+  blocked: () => '/blocked',
   privacy: () => '/privacy',
   terms: () => '/terms',
   login: () => '/login',

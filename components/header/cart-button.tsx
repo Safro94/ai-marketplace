@@ -7,15 +7,16 @@ import { ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
 
 export const CartButton = () => {
-  const { cart } = useCart()
+  const { totalItems } = useCart()
 
   return (
     <Button variant='outline' size='sm' asChild className='relative'>
       <Link href={ROUTES.cart()} prefetch>
         <ShoppingCart className='h-4 w-4' />
-        {!!cart.items.length && (
+
+        {!!totalItems && (
           <span className='absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center'>
-            {cart.items.length}
+            {totalItems}
           </span>
         )}
       </Link>

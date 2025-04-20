@@ -30,11 +30,11 @@ export const AssetAddToCartButton: FC<Props> = ({
   licensePrice,
   ...props
 }) => {
-  const { user } = useAuth()
   const router = useRouter()
+  const { user } = useAuth()
   const { addToCart, removeItem, cart, isLoading } = useCart()
   const [isPending, startTransition] = useTransition()
-  const isItemInCart = cart.items.some((item) => item.assetId === id)
+  const isItemInCart = cart.some((item) => item.assetId === id)
 
   const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()

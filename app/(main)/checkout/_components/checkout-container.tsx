@@ -51,6 +51,7 @@ export const CheckoutContainer: FC<Props> = ({ cartItems, cartTotal }) => {
               <PaypalButtons
                 isPurchasing={isPurchasing}
                 setIsPurchasing={setIsPurchasing}
+                cartTotal={cartTotal}
               />
             </div>
           </CardContent>

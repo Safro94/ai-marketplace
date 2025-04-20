@@ -4,16 +4,10 @@ import {
   addItemToCart,
   clearCartItems,
   getCartItems,
-  getCartTotalPrice,
   removeItemFromCart,
 } from '@/actions/cart'
 import { useAuth } from '@/hooks/use-auth'
-import {
-  Cart,
-  CartContextActionType,
-  CartContextType,
-  CartItem,
-} from '@/lib/types'
+import { CartContextActionType, CartContextType, CartItem } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import {
   createContext,
@@ -36,10 +30,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 export const CartProvider = ({ children }: PropsWithChildren) => {
   const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
-  const [cart, setCart] = useState<Cart>({
-    items: [],
-    total: 0,
-  })
+  const [cart, setCart] = useState<CartItem[]>([])
 
   // Set up optimistic updates with useOptimistic
 
@@ -49,33 +40,25 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       switch (action.type) {
         case CartContextActionType.ADD_ITEM: {
           const newItem = action.item as CartItem
-          const updatedItems = [...state.items, newItem]
-          return {
-            items: updatedItems,
-            total: state.total + newItem.price,
+          const updatedItems = [...state]
+
+          if (!state.find((item) => item.assetId === newItem.assetId)) {
+            updatedItems.push(newItem)
           }
+
+          return updatedItems
         }
         case CartContextActionType.REMOVE_ITEM: {
           const { assetId, licenseId } = action
-          const itemToRemove = state.items.find(
-            (item) =>
-              item.assetId === assetId && item.assetLicenseId === licenseId,
-          )
-          const priceToSubtract = itemToRemove?.price || 0
-          const updatedItems = state.items.filter(
+
+          const updatedItems = state.filter(
             (item) =>
               !(item.assetId === assetId && item.assetLicenseId === licenseId),
           )
-          return {
-            items: updatedItems,
-            total: state.total - priceToSubtract,
-          }
+          return updatedItems
         }
         case CartContextActionType.CLEAR_CART:
-          return {
-            items: [],
-            total: 0,
-          }
+          return []
         default:
           return state
       }
@@ -87,8 +70,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     const fetchCart = async () => {
       try {
         const items = await getCartItems()
-        const total = await getCartTotalPrice()
-        setCart({ items, total })
+        setCart(items)
       } catch (error) {
         console.error('Error fetching cart:', error)
       } finally {
@@ -106,8 +88,9 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
 
       try {
         setIsLoading(true)
-        const { updatedCart, cartTotal } = await addItemToCart(item)
-        setCart({ items: updatedCart, total: cartTotal })
+
+        const { updatedCart } = await addItemToCart(item)
+        setCart(updatedCart)
       } catch (error) {
         console.error('Error adding item to cart:', error)
         // The useOptimistic hook will automatically revert to the previous state
@@ -131,12 +114,9 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
 
       try {
         setIsLoading(true)
-        const { updatedCart, cartTotal } = await removeItemFromCart(
-          assetId,
-          licenseId,
-        )
+        const { updatedCart } = await removeItemFromCart(assetId, licenseId)
 
-        setCart({ items: updatedCart, total: cartTotal })
+        setCart(updatedCart)
       } catch (error) {
         console.error('Error removing item from cart:', error)
         // Trigger reversion of optimistic update
@@ -154,8 +134,9 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
 
     try {
       setIsLoading(true)
+
       await clearCartItems()
-      setCart({ items: [], total: 0 })
+      setCart([])
     } catch (error) {
       console.error('Error clearing cart:', error)
       // Trigger reversion of optimistic update
@@ -164,11 +145,6 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       setIsLoading(false)
     }
   }, [addOptimisticCartUpdate])
-
-  const totalPrice = useMemo(
-    () => optimisticCart.items.reduce((total, item) => total + item.price, 0),
-    [optimisticCart.items],
-  )
 
   return useMemo(() => {
     return (
@@ -179,22 +155,13 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
           addToCart,
           removeItem,
           clearCart,
-          totalItems: optimisticCart.items.length,
-          totalPrice,
+          totalItems: optimisticCart.length,
         }}
       >
         {children}
       </CartContext.Provider>
     )
-  }, [
-    addToCart,
-    optimisticCart,
-    children,
-    clearCart,
-    isLoading,
-    removeItem,
-    totalPrice,
-  ])
+  }, [addToCart, optimisticCart, children, clearCart, isLoading, removeItem])
 }
 
 export function useCart() {
