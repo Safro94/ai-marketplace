@@ -1,7 +1,7 @@
 import { ThemeToggle } from '@/components/header/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { getUserProfile } from '@/data-access/profile'
-import { ROUTES } from '@/lib/constants'
+import { PAGE_PADDING, ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { cn } from '@/lib/utils'
@@ -44,7 +44,7 @@ export const Header: FC<Props> = async ({ classNames }) => {
       <div
         className={cn(
           'flex h-16 items-center justify-between relative',
-          !classNames?.container && 'container',
+          PAGE_PADDING,
           classNames?.container,
         )}
       >

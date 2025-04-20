@@ -1,4 +1,5 @@
 import { Footer } from '@/components/footer'
+import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/toast'
 import { generateOrganizationJsonLd, siteConfig } from '@/lib/seo-config'
 import { cn } from '@/lib/utils'
@@ -91,7 +92,8 @@ export default function RootLayout({
         <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
 
         <Providers>
-          <div className='min-h-screen grid grid-rows-[1fr_max-content]'>
+          <div className='min-h-screen grid grid-rows-[max-content_1fr_max-content]'>
+            <Header />
             <main className='bg-main-background'>{children}</main>
             <Footer />
           </div>

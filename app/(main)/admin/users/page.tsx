@@ -26,7 +26,6 @@ import { DeleteUserButton } from './_components/delete-user-button'
 export default async function UsersPage() {
   await validateAdminProfile(ROUTES.adminUsers())
 
-  // Get all users with their profiles
   const users = await getUserProfiles()
 
   return (

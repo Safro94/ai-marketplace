@@ -1,4 +1,5 @@
-import { APP_DATA, ROUTES } from '@/lib/constants'
+import { APP_DATA, PAGE_PADDING, ROUTES } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 import { TwitterIcon } from 'lucide-react'
 import Link from 'next/link'
 import { GithubIcon } from './icons/github-icon'
@@ -7,7 +8,7 @@ import { Logo } from './logo'
 export const Footer = () => {
   return (
     <footer className='border-t border-border/40 bg-background'>
-      <div className='container py-8 md:py-12'>
+      <div className={cn('py-8 md:py-12', PAGE_PADDING)}>
         <div className='grid gap-8 md:grid-cols-4'>
           <div className='space-y-4'>
             <Logo />

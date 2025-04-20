@@ -7,6 +7,7 @@ import {
   getCartTotalPrice,
   removeItemFromCart,
 } from '@/actions/cart'
+import { useAuth } from '@/hooks/use-auth'
 import {
   Cart,
   CartContextActionType,
@@ -33,6 +34,7 @@ type CartAction =
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
+  const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [cart, setCart] = useState<Cart>({
     items: [],
@@ -94,8 +96,8 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       }
     }
 
-    fetchCart()
-  }, [])
+    if (user) fetchCart()
+  }, [user])
 
   const addToCart = useCallback(
     async (item: CartItem) => {

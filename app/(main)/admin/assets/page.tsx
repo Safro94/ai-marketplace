@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getAssets } from '@/data-access/assets'
+import { ROUTES } from '@/lib/constants'
 import { validateAdminProfile } from '@/lib/permissions'
 import { AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
@@ -19,7 +20,7 @@ import { AllCaughtUp } from '../_components/all-caught-up'
 import { ModerationActions } from './_components/moderation-actions'
 
 export default async function ModerationPage() {
-  await validateAdminProfile()
+  await validateAdminProfile(ROUTES.adminAssets())
 
   const pendingAssets = await getAssets({
     where: {

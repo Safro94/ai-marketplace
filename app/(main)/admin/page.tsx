@@ -5,6 +5,7 @@ import { getPendingCreatorApplicationsCount } from '@/data-access/creator-applic
 import { getPurchasesAmount, getPurchasesCount } from '@/data-access/purchases'
 import { getUserCount } from '@/data-access/users'
 import { APP_DATA, ROUTES, SERVICE_CHARGE } from '@/lib/constants'
+import { validateAdminProfile } from '@/lib/permissions'
 import { formatCurrency } from '@/lib/utils'
 import { DollarSign, FileText, ShoppingBag, Users } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -20,6 +21,8 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminDashboardPage() {
+  await validateAdminProfile(ROUTES.admin())
+
   const userCount = await getUserCount()
   const assetCount = await getAssetCount()
   const salesCount = await getPurchasesCount()

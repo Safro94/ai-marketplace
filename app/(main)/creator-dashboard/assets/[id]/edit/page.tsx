@@ -6,7 +6,7 @@ import { getCategoriesWithCount } from '@/data-access/categories'
 import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
 import { tryCatch } from '@/lib/utils'
 import { redirect } from 'next/navigation'
 import { AssetUploadForm } from '../../../_components/asset-upload-form'
@@ -16,7 +16,11 @@ export default async function EditAssetPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const session = await getServerSession()
+  const assetId = (await params).id
+
+  const session = await validateSession(
+    ROUTES.creatorDashboardAssetEdit(assetId),
+  )
 
   if (!session?.user) {
     redirect(ROUTES.login())
@@ -28,8 +32,6 @@ export default async function EditAssetPage({
   if (!profile || !isAdminOrCreator(profile)) {
     redirect(ROUTES.creators())
   }
-
-  const assetId = (await params).id
 
   // Get asset
   const asset = await getAssetById(assetId, {
