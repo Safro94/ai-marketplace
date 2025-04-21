@@ -40,7 +40,7 @@ export const Asset: FC<ExploreAsset> = async ({
             priority
           />
 
-          <AssetOptions assetId={id} user={session?.user} />
+          <AssetOptions assetId={id} />
         </CardHeader>
 
         <CardContent className='p-2 flex-1 grid'>
@@ -88,7 +88,7 @@ export const Asset: FC<ExploreAsset> = async ({
               basePrice={basePrice}
               featuredImage={featuredImage}
               variant='outline'
-              className='w-full text-primary border-primary'
+              className='w-full border-primary'
             />
           )}
         </CardFooter>

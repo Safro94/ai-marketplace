@@ -9,18 +9,26 @@ import {
   CarouselItem,
   CarouselThumbnails,
 } from '@/components/ui/carousel'
+import { ExploreAsset } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { Asset } from '@prisma/client'
+import { Favorite } from '@prisma/client'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
 
-type Props = Pick<Asset, 'id' | 'featuredImage' | 'galleryImages' | 'title'>
+interface Props
+  extends Pick<
+    ExploreAsset,
+    'id' | 'featuredImage' | 'galleryImages' | 'title'
+  > {
+  favorite: Favorite[]
+}
 
 export const AssetDetailCarousel: FC<Props> = ({
   id,
   featuredImage,
   galleryImages,
   title,
+  favorite,
 }) => {
   const [carouselAPI, setCarouselAPI] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -54,7 +62,7 @@ export const AssetDetailCarousel: FC<Props> = ({
                   priority
                 />
 
-                <AssetOptions assetId={id} />
+                <AssetOptions assetId={id} favorite={favorite} />
               </div>
             </CarouselItem>
           ))}

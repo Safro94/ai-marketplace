@@ -16,7 +16,6 @@ import { StarIcon } from 'lucide-react'
 import { Dispatch, FC, ReactNode, SetStateAction } from 'react'
 
 interface Props {
-  useCases: { label?: string; id: string | null }[] | null
   hasActiveFilters: boolean
   priceRange: number[]
   maxPrice: number
@@ -42,7 +41,6 @@ const RATINGS = [
 ]
 
 export const FiltersContent: FC<Props> = ({
-  useCases,
   hasActiveFilters,
   priceRange,
   selectedRatings,
@@ -89,31 +87,6 @@ export const FiltersContent: FC<Props> = ({
         defaultValue={Object.values(EXPLORE_FITLERS).map((value) => value)}
         className='space-y-2'
       >
-        {!!useCases?.length && (
-          <Filter
-            value={EXPLORE_FITLERS.USE_CASES}
-            title='Use Cases'
-            items={useCases}
-          >
-            {(item) => (
-              <>
-                <Checkbox
-                  id={`usecase-${item.id}`}
-                  checked={selectedUseCases.includes(item.id ?? '')}
-                  onCheckedChange={() => handleUseCaseChange(item.id ?? '')}
-                />
-
-                <Label
-                  htmlFor={`usecase-${item.id}`}
-                  className='text-sm font-normal cursor-pointer'
-                >
-                  {item.label}
-                </Label>
-              </>
-            )}
-          </Filter>
-        )}
-
         <AccordionItem value={EXPLORE_FITLERS.PRICE} className='border-b-0'>
           <AccordionTrigger className='py-3 text-sm font-medium'>
             Price Range

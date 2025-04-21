@@ -10,7 +10,6 @@ import { generateProductJsonLd } from '@/lib/seo-config'
 import { getServerSession } from '@/lib/session'
 import { cn, formatDate } from '@/lib/utils'
 import { AssetStatus } from '@prisma/client'
-import { User } from 'better-auth'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
@@ -101,13 +100,30 @@ export default async function AssetPage({
   params: Promise<{ id: string }>
 }) {
   const session = await getServerSession()
+  const profile = await getUserProfile(session!.user.id)
   const id = (await params).id
 
   const asset = await getAssetById(id, {
-    category: true,
+    favorite: {
+      where: {
+        profileId: profile?.id,
+      },
+      take: 1,
+    },
+    category: {
+      select: {
+        name: true,
+      },
+    },
     creator: {
-      include: {
-        user: true,
+      select: {
+        bio: true,
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
       },
     },
     reviews: {
@@ -191,21 +207,22 @@ export default async function AssetPage({
               featuredImage={asset.featuredImage}
               galleryImages={asset.galleryImages}
               title={asset.title}
+              favorite={asset.favorite}
             />
 
             {/* Asset Details */}
             <AssetDetailsTabs
               id={asset.id}
               description={asset.description}
+              reviews={asset.reviews}
               features={features}
               requirements={requirements}
-              reviews={asset.reviews}
               isPurchased={isPurchased}
             />
 
             {/* Creator Info (Mobile) */}
             <CreatorInfo
-              user={asset.creator.user}
+              name={asset.creator.user.name}
               bio={asset.creator.bio}
               className='lg:hidden'
             />
@@ -232,7 +249,10 @@ export default async function AssetPage({
             )}
 
             {/* Creator Info (Desktop) */}
-            <CreatorInfo user={asset.creator.user} bio={asset.creator.bio} />
+            <CreatorInfo
+              name={asset.creator.user.name}
+              bio={asset.creator.bio}
+            />
 
             {/* Asset Information */}
             <Card className='border-border/50'>
@@ -287,23 +307,23 @@ export default async function AssetPage({
 
 const CreatorInfo: FC<{
   className?: string
-  user: User
+  name: string
   bio: string | null
-}> = ({ className, user, bio }) => (
+}> = ({ className, name, bio }) => (
   <Card className={cn('hidden lg:block border-border/50', className)}>
     <CardContent className='p-6'>
       <div className='flex items-center space-x-4 mb-4'>
         <Avatar className='h-12 w-12'>
           <AvatarImage
-            src={user.name || '/placeholder.svg?height=40&width=40'}
-            alt={user.name || 'Creator'}
+            src={name || '/placeholder.svg?height=40&width=40'}
+            alt={name || 'Creator'}
           />
 
-          <AvatarFallback>{(user.name || 'C').charAt(0)}</AvatarFallback>
+          <AvatarFallback>{(name || 'C').charAt(0)}</AvatarFallback>
         </Avatar>
 
         <div>
-          <h3 className='font-semibold'>{user.name || 'Unknown Creator'}</h3>
+          <h3 className='font-semibold'>{name || 'Unknown Creator'}</h3>
           <p className='text-sm text-muted-foreground'>Creator</p>
         </div>
       </div>

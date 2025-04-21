@@ -38,7 +38,7 @@ export const CartItemList: FC<Props> = ({ cartItems, showActions = true }) => {
       </CardContent>
 
       {showActions && (
-        <CardFooter className='justify-end'>
+        <CardFooter className='justify-center md:justify-end'>
           <Button asChild variant='outline'>
             <Link href={ROUTES.explore()}>Continue shopping</Link>
           </Button>

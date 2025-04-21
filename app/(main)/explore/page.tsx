@@ -13,7 +13,7 @@ import type { Metadata } from 'next'
 import { AssetGrid } from './_components/asset-grid'
 import { AssetGridContainer } from './_components/asset-grid-container'
 import { ExploreCategoriesSelector } from './_components/explore-categories-selector'
-import { getExploreAssets, getUseCases } from './_components/explore-utils'
+import { getExploreAssets } from './_components/explore-utils'
 
 interface Props {
   searchParams: Promise<{ category: string; q: string }>
@@ -49,14 +49,6 @@ export default async function ExplorePage({ searchParams }: Props) {
   if (assetsError) {
     toast.error('An error occurred', {
       description: 'There was an error while fetching the assets',
-    })
-  }
-
-  const { data: useCases, error: useCasesError } = await tryCatch(getUseCases())
-
-  if (useCasesError) {
-    toast.error('An error occurred', {
-      description: 'There was an error while fetching the use cases',
     })
   }
 
@@ -96,7 +88,7 @@ export default async function ExplorePage({ searchParams }: Props) {
       </div>
 
       <div className='flex-1'>
-        <AssetGridContainer useCases={useCases} assets={assetData?.assets}>
+        <AssetGridContainer assets={assetData?.assets}>
           <AssetGrid
             assets={assetData?.assets}
             pagination={assetData?.pagination}

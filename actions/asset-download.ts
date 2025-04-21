@@ -13,7 +13,7 @@ export const saveDownload = async (assetId: string, purchaseItemId: string) => {
   if (!profile) throw Error('Profile not found')
 
   try {
-    await downloadCreate({ assetId, purchaseItemId })
+    await downloadCreate({ assetId, purchaseItemId, profileId: profile.id })
     revalidateTag(CACHE_KEYS.dashboardDownloads(profile?.id))
   } catch (e) {
     console.error(e)

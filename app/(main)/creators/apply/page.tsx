@@ -25,7 +25,7 @@ export default async function CreatorApplicationPage() {
         </p>
       </div>
 
-      <CreatorApplicationForm user={session?.user} />
+      {session?.user && <CreatorApplicationForm user={session.user} />}
 
       <div className='mt-8 text-center text-sm text-muted-foreground'>
         <p>

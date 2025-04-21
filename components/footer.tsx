@@ -1,8 +1,7 @@
 import { APP_DATA, PAGE_PADDING, ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { TwitterIcon } from 'lucide-react'
+import { Linkedin, TwitterIcon } from 'lucide-react'
 import Link from 'next/link'
-import { GithubIcon } from './icons/github-icon'
 import { Logo } from './logo'
 
 export const Footer = () => {
@@ -24,8 +23,8 @@ export const Footer = () => {
               </a>
 
               <a href='https://github.com' target='_blank' rel='noreferrer'>
-                <GithubIcon className='w-5 h-5' />
-                <span className='sr-only'>GitHub</span>
+                <Linkedin className='w-5 h-5 dark:fill-white' />
+                <span className='sr-only'>Linkedin</span>
               </a>
             </div>
           </div>

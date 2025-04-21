@@ -2,42 +2,25 @@
 
 import { addOrRemoveFavorite } from '@/actions/favorite'
 import { useAuth } from '@/hooks/use-auth'
-import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { ROUTES } from '@/lib/constants'
 import { cn, tryCatch } from '@/lib/utils'
+import { Favorite } from '@prisma/client'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { Button } from './ui/button'
 import { toast } from './ui/toast'
 
 interface Props {
   assetId: string
+  favorite: Favorite[]
 }
 
-export const FavoriteButton: FC<Props> = ({ assetId }) => {
-  const [isFavorited, setIsFavorited] = useState(false)
+export const FavoriteButton: FC<Props> = ({ assetId, favorite }) => {
+  const [isFavorited, setIsFavorited] = useState(!!favorite[0])
   const [isLoading, setIsLoading] = useState(false)
   const { user } = useAuth()
   const router = useRouter()
-
-  // Check if asset is favorited on mount
-  useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      try {
-        const response = await fetch(
-          `${API_ROUTES.favorites()}?assetId=${assetId}`,
-        )
-        if (response.ok) {
-          const favorite = await response.json()
-          setIsFavorited(!!favorite)
-        }
-      } catch (error) {
-        console.error('Error checking favorite status:', error)
-      }
-    }
-
-    if (user) checkFavoriteStatus()
-  }, [assetId, user])
 
   const handleClick = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,

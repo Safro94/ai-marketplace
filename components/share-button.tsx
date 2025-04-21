@@ -49,7 +49,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
               setIsOpen(true)
             }}
           >
-            <Share className='w-4 h-4 md:h-fit md:w-fit group-hover:text-primary' />
+            <Share className='w-4 h-4 md:h-fit md:w-fit text-black group-hover:text-primary' />
           </Button>
         </DialogTrigger>
 
@@ -62,19 +62,15 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
           </DialogHeader>
 
           <div className='flex items-center space-x-2'>
-            {typeof window !== 'undefined' && (
-              <>
-                <div className='grid flex-1 gap-2'>
-                  <Label htmlFor='link' className='sr-only'>
-                    Link
-                  </Label>
+            <div className='grid flex-1 gap-2'>
+              <Label htmlFor='link' className='sr-only'>
+                Link
+              </Label>
 
-                  <Input readOnly id='link' defaultValue={url} />
-                </div>
+              <Input readOnly id='link' defaultValue={url} />
+            </div>
 
-                <CopyToClipboard url={url} />
-              </>
-            )}
+            <CopyToClipboard url={url} />
           </div>
 
           <div className='flex gap-2 items-center'>

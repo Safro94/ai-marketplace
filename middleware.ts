@@ -6,7 +6,10 @@ import redis from './lib/redis'
 
 const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.slidingWindow(5, '10 s'),
+  limiter: Ratelimit.slidingWindow(
+    parseInt(process.env.RATE_LIMIT_MAX as string),
+    '10 s',
+  ),
   prefix: '@upstash/ratelimit',
   analytics: true,
 })
@@ -21,22 +24,13 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
   event.waitUntil(pending)
 
   if (!success) {
-    return NextResponse.rewrite(new URL(ROUTES.blocked(), request.url), request)
+    return NextResponse.rewrite(new URL(ROUTES.blocked(), request.url))
   }
 
-  /*
-   * Match all request paths except for the ones starting with:
-   * - api (API routes)
-   * - _next/static (static files)
-   * - _next/image (image optimization files)
-   * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-   */
+  const regex = new RegExp('/api.*')
 
-  const regex = new RegExp(
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-  )
-
-  if (regex.test(request.nextUrl.pathname)) {
+  // if it's not an API route, check the cart cookie
+  if (!regex.test(request.nextUrl.pathname)) {
     if (!request.cookies.has(CART_COOKIE_NAME)) {
       response.cookies.set(CART_COOKIE_NAME, uuidv4(), {
         httpOnly: true,
@@ -49,8 +43,19 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
 
     return response
   }
+
+  return response
 }
 
 export const config = {
-  matcher: ['/'],
+  /*
+   * Match all request paths except for the ones starting with:
+   * - _next/static (static files)
+   * - _next/image (image optimization files)
+   * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+   */
+
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|site.webmanifest|placeholder.svg).*)',
+  ],
 }

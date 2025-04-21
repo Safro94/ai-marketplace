@@ -11,19 +11,9 @@ import { SearchBar } from './search-bar'
 
 interface Props extends PropsWithChildren {
   assets: ExploreAsset[] | undefined
-  useCases:
-    | {
-        id: string | null
-        label: string | undefined
-      }[]
-    | null
 }
 
-export const AssetGridContainer: FC<Props> = ({
-  children,
-  assets,
-  useCases,
-}) => {
+export const AssetGridContainer: FC<Props> = ({ children, assets }) => {
   const [showDesktopFilters, setShowDesktopFilters] = useState(false)
 
   return (
@@ -63,7 +53,6 @@ export const AssetGridContainer: FC<Props> = ({
       >
         <AssetFilters
           showDesktopFilters={showDesktopFilters}
-          useCases={useCases}
           maxPrice={
             assets?.length
               ? Math.max(...assets.map((asset) => asset.basePrice))

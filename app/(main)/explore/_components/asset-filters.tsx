@@ -8,16 +8,11 @@ import { FC, useEffect, useState } from 'react'
 import { FiltersContent } from './filters-content'
 
 interface Props {
-  useCases: { label?: string; id: string | null }[] | null
   maxPrice: number
   showDesktopFilters?: boolean
 }
 
-export const AssetFilters: FC<Props> = ({
-  useCases,
-  maxPrice,
-  showDesktopFilters,
-}) => {
+export const AssetFilters: FC<Props> = ({ maxPrice, showDesktopFilters }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -92,7 +87,6 @@ export const AssetFilters: FC<Props> = ({
         <div className='hidden md:block bg-background z-50 w-[350px] p-4 h-full'>
           <FiltersContent
             maxPrice={maxPrice}
-            useCases={useCases}
             hasActiveFilters={hasActiveFilters}
             priceRange={priceRange}
             selectedRatings={selectedRatings}
@@ -141,7 +135,6 @@ export const AssetFilters: FC<Props> = ({
 
             <FiltersContent
               maxPrice={maxPrice}
-              useCases={useCases}
               hasActiveFilters={hasActiveFilters}
               priceRange={priceRange}
               selectedRatings={selectedRatings}

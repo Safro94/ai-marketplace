@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     // Get notifications
     const notifications = await prisma.notification.findMany({
-      where: { userId: profile.id },
+      where: { profileId: profile.id },
       orderBy: { createdAt: 'desc' },
       take: 20,
     })
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     // Count unread notifications
     const unreadCount = await prisma.notification.count({
       where: {
-        userId: profile.id,
+        profileId: profile.id,
         read: false,
       },
     })
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { userId, title, message, type, data } = await request.json()
+    const { title, message, type, data } = await request.json()
 
     // Check if user has admin privileges
     const profile = await prisma.profile.findUnique({
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     // Create notification
     const notification = await prisma.notification.create({
       data: {
-        userId,
+        profileId: profile.id,
         title,
         message,
         type: type || 'INFO',

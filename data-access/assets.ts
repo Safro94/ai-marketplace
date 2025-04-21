@@ -60,10 +60,18 @@ export const getPaginatedAssets = async ({
     prisma.asset.findMany({
       where,
       include: {
-        category: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
         creator: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
       },

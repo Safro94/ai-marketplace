@@ -105,7 +105,7 @@ export const CreatorApplicationPaymentMethods: FC<{
         add at least one method.
       </FormDescription>
 
-      {paymentMethods.map((method, index) => (
+      {paymentMethods.map((_method, index) => (
         <Card key={index} className='border border-muted'>
           <CardContent className='pt-6'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>

@@ -34,10 +34,18 @@ export interface Pagination {
 
 export type ExploreAsset = Prisma.AssetGetPayload<{
   include: {
-    category: true
+    category: {
+      select: {
+        name: true
+      }
+    }
     creator: {
-      include: {
-        user: true
+      select: {
+        user: {
+          select: {
+            name: true
+          }
+        }
       }
     }
   }

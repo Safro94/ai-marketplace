@@ -95,9 +95,7 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
     <Card>
       <CardHeader>
         <CardTitle>Profile Information</CardTitle>
-        <CardDescription>
-          Update your profile information and avatar
-        </CardDescription>
+        <CardDescription>Update your profile information</CardDescription>
       </CardHeader>
 
       <Form {...form}>
@@ -144,7 +142,7 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
                 name='website'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Website</FormLabel>
+                    <FormLabel>Website (Optional)</FormLabel>
                     <FormControl>
                       <Input placeholder='https://yourwebsite.com' {...field} />
                     </FormControl>
@@ -158,7 +156,7 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
                 name='githubHandle'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>GitHub Handle</FormLabel>
+                    <FormLabel>GitHub Handle (Optional)</FormLabel>
                     <FormControl>
                       <Input placeholder='your-github-handle' {...field} />
                     </FormControl>
@@ -172,7 +170,7 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
                 name='twitterHandle'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Twitter Handle</FormLabel>
+                    <FormLabel>Twitter Handle (Optional)</FormLabel>
                     <FormControl>
                       <Input placeholder='your-twitter-handle' {...field} />
                     </FormControl>
@@ -186,7 +184,7 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
                 name='bio'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bio</FormLabel>
+                    <FormLabel>Bio (Optional)</FormLabel>
 
                     <FormControl>
                       <Textarea

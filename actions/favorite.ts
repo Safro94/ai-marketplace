@@ -19,28 +19,31 @@ export const addOrRemoveFavorite = async (assetId: string) => {
     // Check if already favorited
     const existingFavorite = await getFavorite(assetId, {
       where: {
-        userId_assetId: {
-          userId: profile.id,
+        profileId_assetId: {
+          profileId: profile.id,
           assetId,
         },
       },
     })
 
+    const revalidateTags = () => {
+      revalidateTag(CACHE_KEYS.assetFavorite(assetId))
+      revalidateTag(CACHE_KEYS.assetById(assetId))
+      revalidateTag(CACHE_KEYS.dashboardFavorites(profile.id))
+    }
+
     if (existingFavorite) {
       await deleteFavorite(existingFavorite.id)
 
-      revalidateTag(CACHE_KEYS.assetFavorite(assetId))
-      revalidateTag(CACHE_KEYS.dashboardFavorites(profile.id))
-
+      revalidateTags()
       return { favorited: false }
     } else {
       await createFavorite({
-        userId: profile.id,
+        profileId: profile.id,
         assetId,
       })
 
-      revalidateTag(CACHE_KEYS.assetFavorite(assetId))
-      revalidateTag(CACHE_KEYS.dashboardFavorites(profile.id))
+      revalidateTags()
 
       return { favorited: true }
     }

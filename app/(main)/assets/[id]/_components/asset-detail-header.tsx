@@ -6,10 +6,19 @@ import { FC } from 'react'
 
 type Props = Prisma.AssetGetPayload<{
   include: {
-    category: true
+    category: {
+      select: {
+        name: true
+      }
+    }
     creator: {
-      include: {
-        user: true
+      select: {
+        user: {
+          select: {
+            name: true
+            image: true
+          }
+        }
       }
     }
     reviews: true
@@ -22,7 +31,6 @@ export const AssetDetailHeader: FC<Props> = ({
   sales,
   creator,
   category,
-  useCase,
   reviews,
 }) => {
   return (
@@ -67,8 +75,6 @@ export const AssetDetailHeader: FC<Props> = ({
         <Badge variant='secondary' className='bg-secondary/80 rounded-sm'>
           {category.name}
         </Badge>
-
-        {useCase && <Badge variant='outline'>{useCase}</Badge>}
       </div>
     </div>
   )

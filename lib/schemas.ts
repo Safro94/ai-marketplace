@@ -31,7 +31,10 @@ const paymentMethodSchema = z.object({
 
 export const creatorApplicationSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name is required' }),
-  email: z.string().email({ message: 'Please enter a valid email address' }),
+  email: z
+    .string()
+    .min(1)
+    .email({ message: 'Please enter a valid email address' }),
   website: z
     .string()
     .url({ message: 'Please enter a valid URL' })
@@ -67,15 +70,13 @@ export const creatorApplicationSchema = z.object({
 
 export const userAccountSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  website: z.string().url({ message: 'Invalid URL' }).optional(),
-  githubHandle: z
+  website: z
     .string()
-    .min(2, { message: 'GitHub handle must be at least 2 characters' })
-    .optional(),
-  twitterHandle: z
-    .string()
-    .min(2, { message: 'Twitter handle must be at least 2 characters' })
-    .optional(),
+    .url({ message: 'Please enter a valid URL' })
+    .optional()
+    .or(z.literal('')),
+  githubHandle: z.string().optional(),
+  twitterHandle: z.string().optional(),
   bio: z
     .string()
     .max(BIO_MAX_LENGTH, {

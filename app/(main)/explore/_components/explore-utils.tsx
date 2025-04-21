@@ -1,33 +1,7 @@
-import { getAssets, getPaginatedAssets } from '@/data-access/assets'
+import { getPaginatedAssets } from '@/data-access/assets'
 import { EXPLORE_PARAMS } from '@/lib/types'
 import { AssetStatus, Category, Prisma } from '@prisma/client'
-
-export const getUseCases = async () => {
-  const useCases = await getAssets({
-    where: {
-      useCase: {
-        not: null,
-      },
-    },
-    select: {
-      useCase: true,
-    },
-    distinct: ['useCase'],
-  })
-
-  // Transform to the expected format
-  const formattedUseCases = useCases
-    .filter((item) => item.useCase) // Remove null values
-    .map((item) => ({
-      id: item.useCase,
-      label: item.useCase
-        ?.split('-')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' '),
-    }))
-
-  return formattedUseCases
-}
+import 'server-only'
 
 export const getExploreAssets = async (
   searchParams: Promise<{ [key: string]: string }>,

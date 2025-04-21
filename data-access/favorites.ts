@@ -24,7 +24,7 @@ export const getFavoritesByProfileId = async (profileId: string) => {
 
   return await prisma.favorite.findMany({
     where: {
-      userId: profileId,
+      profileId,
     },
     select: {
       id: true,

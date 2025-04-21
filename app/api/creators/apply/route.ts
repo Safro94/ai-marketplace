@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
     // Create creator application
     const application = await createCreatorApplication({
-      creatorProfile: { connect: { id: creatorProfile.profileId } },
+      creatorProfile: { connect: { id: creatorProfile.id } },
       fullName: validationResult.data.fullName,
       email: validationResult.data.email,
       website: validationResult.data.website || null,

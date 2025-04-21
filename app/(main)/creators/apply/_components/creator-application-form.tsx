@@ -33,7 +33,7 @@ import * as z from 'zod'
 import { CreatorApplicationPaymentMethods } from './creator-application-payment-methods'
 
 interface Props {
-  user: User | undefined
+  user: User
 }
 
 export const CreatorApplicationForm: FC<Props> = ({ user }) => {
@@ -43,8 +43,8 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
   const form = useForm<z.infer<typeof creatorApplicationSchema>>({
     resolver: zodResolver(creatorApplicationSchema),
     defaultValues: {
-      fullName: user?.name || '',
-      email: user?.email || '',
+      fullName: user.name,
+      email: user.email,
       website: '',
       expertise: '',
       experience: '',
@@ -130,12 +130,16 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
         <FormField
           control={form.control}
           name='email'
-          disabled={!!user?.email}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input placeholder='john@example.com' {...field} />
+                <Input
+                  placeholder='john@example.com'
+                  readOnly
+                  className='opacity-50'
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -339,15 +343,16 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
           )}
         />
 
-        <LoadingButton
-          type='submit'
-          className='w-full'
-          size='lg'
-          isLoading={isLoading}
-          disabled={isLoading}
-        >
-          Submit Application
-        </LoadingButton>
+        <div className='flex justify-center'>
+          <LoadingButton
+            type='submit'
+            size='lg'
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            Submit Application
+          </LoadingButton>
+        </div>
       </form>
     </Form>
   )

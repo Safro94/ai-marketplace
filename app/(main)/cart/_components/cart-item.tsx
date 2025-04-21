@@ -54,7 +54,7 @@ export const CartItem: FC<Props> = ({ item, showActions }) => {
           </div>
 
           <div className='flex-1'>
-            <div className='flex justify-between'>
+            <div className='flex flex-col items-center md:items-start md:flex-row md:justify-between'>
               <div>
                 <Link
                   href={ROUTES.assetsDetail(item.assetId)}

@@ -30,21 +30,21 @@ export const HeroSection = async () => {
 
       <div className='flex flex-col items-center justify-center text-center space-y-6 max-w-3xl mx-auto z-20'>
         <div className='inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium mb-4'>
-          <span className='text-sm bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600 font-medium'>
+          <span className='text-xs md:text-sm bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600 font-medium'>
             Just Launched
           </span>
 
           <span className='mx-2 h-0.5 w-0.5 rounded-full bg-border'></span>
-          <span className='text-sm text-white'>
+          <span className='text-xs md:text-sm text-white'>
             Discover our AI asset marketplace
           </span>
         </div>
 
-        <HomeSectionTitle className='text-white text-6xl'>
+        <HomeSectionTitle className='text-white md:text-6xl'>
           The marketplace for premium AI assets
         </HomeSectionTitle>
 
-        <HomeSectionDescription className='text-lg text-muted-foreground-primary-bg'>
+        <HomeSectionDescription className='text-muted-foreground-primary-bg'>
           Discover high-quality AI prompt systems, custom GPTs, and specialized
           tools created by experts.
         </HomeSectionDescription>

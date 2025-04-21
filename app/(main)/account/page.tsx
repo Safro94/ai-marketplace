@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getUserProfile } from '@/data-access/profile'
 import { APP_DATA, ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
@@ -129,29 +128,29 @@ export default async function AccountPage() {
         </div>
 
         <div className='md:col-span-2'>
-          <Tabs defaultValue={TabsEnum.PROFILE}>
+          {/* <Tabs defaultValue={TabsEnum.PROFILE}>
             <TabsList className='mb-6'>
               <TabsTrigger value={TabsEnum.PROFILE}>Profile</TabsTrigger>
               {/* <TabsTrigger value={TabsEnum.NOTIFICATIONS}>
                   Notifications
-                </TabsTrigger> */}
+                </TabsTrigger> 
             </TabsList>
 
-            <TabsContent value={TabsEnum.PROFILE}>
-              <UserProfileForm
-                initialData={{
-                  name: user.name,
-                  email: user.email,
-                  image: user.image,
-                  website: profile.website,
-                  githubHandle: profile.githubHandle,
-                  twitterHandle: profile.twitterHandle,
-                  bio: profile.bio,
-                }}
-              />
-            </TabsContent>
+            <TabsContent value={TabsEnum.PROFILE}> */}
+          <UserProfileForm
+            initialData={{
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              website: profile.website,
+              githubHandle: profile.githubHandle,
+              twitterHandle: profile.twitterHandle,
+              bio: profile.bio,
+            }}
+          />
+          {/* </TabsContent> */}
 
-            {/* <TabsContent value={TabsEnum.NOTIFICATIONS}>
+          {/* <TabsContent value={TabsEnum.NOTIFICATIONS}>
                 <Card>
                   <CardHeader>
                     <CardTitle>Notifications</CardTitle>
@@ -201,7 +200,7 @@ export default async function AccountPage() {
                   </CardContent>
                 </Card>
               </TabsContent> */}
-          </Tabs>
+          {/* </Tabs> */}
         </div>
       </div>
     </PageContainer>
