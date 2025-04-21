@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     // Mark all notifications as read
     await prisma.notification.updateMany({
       where: {
-        userId: profile.id,
+        profileId: profile.id,
         read: false,
       },
       data: { read: true },

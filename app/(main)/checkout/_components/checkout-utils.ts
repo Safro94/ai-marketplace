@@ -31,6 +31,16 @@ export const getPurchaseAmounts = async () => {
             creatorProfile: {
               select: {
                 id: true,
+                profile: {
+                  select: {
+                    user: {
+                      select: {
+                        email: true,
+                        name: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },

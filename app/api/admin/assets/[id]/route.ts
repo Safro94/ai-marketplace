@@ -1,6 +1,11 @@
 import { updateAsset } from '@/data-access/assets'
+import { getProfileById } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
 import { validateRouteProfilePermissions } from '@/lib/permissions'
+import {
+  notifyAssetApproved,
+  notifyAssetRejected,
+} from '@/services/emails/email'
 import { AssetStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
@@ -29,10 +34,24 @@ export async function POST(
     revalidateTag(CACHE_KEYS.categoriesWithCount())
     revalidateTag(CACHE_KEYS.exploreAssets())
 
+    const creatorUser = await getProfileById(asset.creatorId)
+
+    if (status === AssetStatus.PUBLISHED && creatorUser) {
+      await notifyAssetApproved({
+        assetName: asset.title,
+        email: creatorUser.user.email,
+      })
+    } else if (status === AssetStatus.REJECTED && creatorUser) {
+      await notifyAssetRejected({
+        assetName: asset.title,
+        email: creatorUser.user.email,
+      })
+    }
+
     // // Notify the creator
     // await prisma.notification.create({
     //   data: {
-    //     userId: asset.creatorId,
+    //     profileId: asset.creatorId,
     //     title:
     //       status === AssetStatus.PUBLISHED
     //         ? 'Asset Approved'

@@ -8,6 +8,10 @@ import { createPurchase } from '@/data-access/purchases'
 import { CACHE_KEYS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
 import { getServerSession } from '@/lib/session'
+import {
+  notifyBuyerOrderCompleted,
+  notifyCreatorSellCompleted,
+} from '@/services/emails/email'
 import { PaymentProvider, PurchaseStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
@@ -78,7 +82,7 @@ export async function POST(request: Request) {
         })
 
         // Update asset sales and revenue
-        await updateAsset({
+        const updatedAsset = await updateAsset({
           assetId: asset.id,
           sales: { increment: 1 },
           revenue: { increment: assetPrice },
@@ -94,6 +98,7 @@ export async function POST(request: Request) {
             totalRevenue: { increment: assetPrice },
           },
         })
+
         revalidateTag(CACHE_KEYS.profile(asset.creatorId))
 
         await createOrUpdateCreatorAnalytics({
@@ -114,14 +119,24 @@ export async function POST(request: Request) {
 
         revalidateTag(CACHE_KEYS.creatorDashboardAnalytics(creatorProfile.id))
 
+        await notifyCreatorSellCompleted({
+          assetName: updatedAsset.title,
+          creatorEmail: asset.creator.creatorProfile!.profile.user.email,
+          creatorUsername: asset.creator.creatorProfile!.profile.user.name,
+        })
+
         return purchaseItem
       }),
     )
 
+    await notifyBuyerOrderCompleted({
+      email: session.user.email,
+    })
+
     // // Create a notification for the buyer about the purchase
     // await prisma.notification.create({
     //   data: {
-    //     userId: userProfile.id,
+    //     profileId: userProfile.id,
     //     title: 'Purchase Completed',
     //     message: `Your purchase of ${items.length} asset${items.length > 1 ? 's' : ''} has been completed successfully`,
     //     type: 'SUCCESS',
@@ -156,7 +171,7 @@ export async function POST(request: Request) {
     // for (const [creatorId, assets] of creatorNotifications.entries()) {
     //   await prisma.notification.create({
     //     data: {
-    //       userId: creatorId,
+    //       profileId: creatorId,
     //       title: 'New Sale',
     //       message:
     //         assets.length === 1

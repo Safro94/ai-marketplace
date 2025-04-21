@@ -35,7 +35,7 @@ export async function POST(
     }
 
     // Check if notification belongs to user
-    if (notification.userId !== profile.id) {
+    if (notification.profileId !== profile.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

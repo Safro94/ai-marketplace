@@ -13,6 +13,10 @@ import { updateProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
 import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { assetUploadSchema } from '@/lib/schemas'
+import {
+  notifyAssetApproved,
+  notifyAssetRejected,
+} from '@/services/emails/email'
 import { ModerationService } from '@/services/ModerationService'
 import { AssetStatus, LicenseType } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
@@ -21,7 +25,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   const result = await validateRouteProfilePermissions()
   if (result instanceof NextResponse) return result
-  const { profile } = result
+  const { profile, user } = result
 
   try {
     const data = (await request.json()) as typeof assetUploadSchema
@@ -75,6 +79,7 @@ export async function POST(request: Request) {
         price: license.price,
         createdAt: new Date(),
       })
+
       revalidateTag(CACHE_KEYS.assetLicenses(asset.id))
     }
 
@@ -90,6 +95,12 @@ export async function POST(request: Request) {
 
     revalidateTag(CACHE_KEYS.assetById(asset.id))
 
+    if (moderationResult.status === AssetStatus.PUBLISHED) {
+      await notifyAssetApproved({ assetName: asset.title, email: user.email })
+    } else if (moderationResult.status === AssetStatus.REJECTED) {
+      await notifyAssetRejected({ assetName: asset.title, email: user.email })
+    }
+
     // // Notify admins if manual review is needed
     // if (moderationResult.status === AssetStatus.PENDING_REVIEW) {
     //   // Create notification for admins
@@ -100,7 +111,7 @@ export async function POST(request: Request) {
     //   for (const admin of admins) {
     //     await prisma.notification.create({
     //       data: {
-    //         userId: admin.id,
+    //         profileId: admin.id,
     //         title: 'New Asset Pending Review',
     //         message: `Asset "${asset.title}" by ${profile.name} requires review.`,
     //         type: 'INFO',
@@ -253,7 +264,7 @@ export async function PATCH(request: Request) {
     //   for (const admin of admins) {
     //     await prisma.notification.create({
     //       data: {
-    //         userId: admin.id,
+    //         profileId: admin.id,
     //         title: 'New Asset Pending Review',
     //         message: `Asset "${asset.title}" by ${profile.name} requires review.`,
     //         type: 'INFO',

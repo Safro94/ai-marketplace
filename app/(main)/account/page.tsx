@@ -43,7 +43,7 @@ export default async function AccountPage() {
 
   // Get user's notifications
   // const notifications = await prisma.notification.findMany({
-  //   where: { userId: profile.id },
+  //   where: { profileId: profile.id },
   //   orderBy: { createdAt: 'desc' },
   //   take: 5,
   // })

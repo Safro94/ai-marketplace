@@ -3,6 +3,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
 import { useCart } from '@/contexts/cart-context'
+import { useAuth } from '@/hooks/use-auth'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { CheckoutCreatorsData, CheckoutPaymentDetails } from '@/lib/types'
 import { cn, tryCatch } from '@/lib/utils'
@@ -102,6 +103,7 @@ const Buttons: FC<ButtonsProps> = ({
   cartTotal,
 }) => {
   const router = useRouter()
+  const { user } = useAuth()
   const { clearCart } = useCart()
   const [{ isPending }] = usePayPalScriptReducer()
   const [, startTransition] = useTransition()

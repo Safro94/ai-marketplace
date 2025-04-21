@@ -2,9 +2,13 @@ import {
   getCreatorApplicationById,
   updateCreatorApplication,
 } from '@/data-access/creator-application'
-import { updateProfile } from '@/data-access/profile'
+import { getProfileById, updateProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
 import { validateRouteProfilePermissions } from '@/lib/permissions'
+import {
+  notifyCreatorApplicationApproved,
+  notifyCreatorApplicationRejected,
+} from '@/services/emails/email'
 import { ApplicationStatus, Role } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
@@ -49,6 +53,10 @@ export async function PATCH(
       },
     })
 
+    const creatorUser = await getProfileById(
+      application.creatorProfile.profileId,
+    )
+
     // If approved, update the user's profile to mark them as a creator
     if (status === ApplicationStatus.APPROVED) {
       await updateProfile({
@@ -60,10 +68,16 @@ export async function PATCH(
 
       revalidateTag(CACHE_KEYS.profile(application.creatorProfile.profileId))
 
+      if (creatorUser) {
+        await notifyCreatorApplicationApproved({
+          email: creatorUser.user.email,
+        })
+      }
+
       //   // Create notification for the user
       //   await prisma.notification.create({
       //     data: {
-      //       userId: application.creatorProfile.profile.id,
+      //       profileId: application.creatorProfile.profile.id,
       //       title: 'Creator Application Approved',
       //       message:
       //         'Congratulations! Your application to become a creator has been approved. You can now start uploading assets.',
@@ -71,11 +85,18 @@ export async function PATCH(
       //       data: JSON.stringify({ applicationId: application.id }),
       //     },
       //   })
-      // } else {
-      //   // Create rejection notification
+    } else {
+      if (creatorUser) {
+        await notifyCreatorApplicationRejected({
+          email: creatorUser.user.email,
+          notes: reviewNotes,
+        })
+      }
+
+      //   Create rejection notification
       //   await prisma.notification.create({
       //     data: {
-      //       userId: application.creatorProfile.profile.id,
+      //       profileId: application.creatorProfile.profile.id,
       //       title: 'Creator Application Rejected',
       //       message:
       //         "We're sorry, but your creator application has been rejected. Please see the review notes for more information.",

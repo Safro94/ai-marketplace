@@ -23,7 +23,7 @@ export default async function NotificationsPage() {
 
   // Get notifications
   const notifications = await prisma.notification.findMany({
-    where: { userId: profile.id },
+    where: { profileId: profile.id },
     orderBy: { createdAt: 'desc' },
     take: 20,
   })
@@ -31,7 +31,7 @@ export default async function NotificationsPage() {
   // Mark all as read
   await prisma.notification.updateMany({
     where: {
-      userId: profile.id,
+      profileId: profile.id,
       read: false,
     },
     data: { read: true },

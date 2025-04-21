@@ -97,7 +97,7 @@ export async function POST(request: Request) {
     // TODO: uncomment
     // await prisma.notification.create({
     //   data: {
-    //     userId: 'admin', // Assuming there's an admin user ID
+    //     profileId: 'admin', // Assuming there's an admin user ID
     //     title: 'New Creator Application',
     //     message: `${data.fullName} has applied to become a creator.`,
     //     type: 'INFO',

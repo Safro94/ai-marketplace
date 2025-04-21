@@ -39,6 +39,20 @@ export const getProfileByUserId = async (
   })
 }
 
+export const getProfileById = async (profileId: string) => {
+  return await prisma.profile.findUnique({
+    where: { id: profileId },
+    select: {
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+  })
+}
+
 export const createProfile = async (userId: string) => {
   await prisma.profile.create({
     data: {
