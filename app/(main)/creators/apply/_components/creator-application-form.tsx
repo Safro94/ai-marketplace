@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
+import { useValidateCaptcha } from '@/hooks/use-validate-captcha'
 import { API_ROUTES, BIO_MAX_LENGTH, ROUTES } from '@/lib/constants'
 import { creatorApplicationSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -37,8 +38,10 @@ interface Props {
 }
 
 export const CreatorApplicationForm: FC<Props> = ({ user }) => {
-  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { validateCaptcha } = useValidateCaptcha()
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof creatorApplicationSchema>>({
     resolver: zodResolver(creatorApplicationSchema),
@@ -71,6 +74,8 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
       router.push(ROUTES.login())
       return
     }
+
+    await validateCaptcha()
 
     setIsLoading(true)
 

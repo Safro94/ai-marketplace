@@ -12,6 +12,7 @@
     "postinstall": "npx prisma generate"
   },
   "dependencies": {
+    "next-recaptcha-v3": "^1.5.2",
     "@hookform/resolvers": "latest",
     "@paypal/checkout-server-sdk": "^1.0.3",
     "@paypal/react-paypal-js": "^8.8.2",
