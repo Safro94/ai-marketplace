@@ -1,21 +1,23 @@
-export const container = {
+import { CSSProperties } from 'react'
+
+export const container: CSSProperties = {
   maxWidth: '600px',
   margin: '20px auto',
   background: '#FFFFFF',
 }
 
-export const header = {
+export const header: CSSProperties = {
   textAlign: 'center',
   background: 'hsl(264.7 66.7% 20%)',
   color: '#FFFFFF',
   padding: '15px',
 }
 
-export const content = {
+export const content: CSSProperties = {
   padding: '20px',
 }
 
-export const footer = {
+export const footer: CSSProperties = {
   textAlign: 'center',
   fontSize: '14px',
   padding: '10px',
