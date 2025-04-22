@@ -17,7 +17,7 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const viewport: Viewport = {
-  themeColor: '#5D3FD3',
+  themeColor: 'hsl(264.7 66.7% 20%)',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -61,14 +61,12 @@ export const metadata: Metadata = {
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
-  manifest: '/site.webmanifest',
   alternates: {
     canonical: '/',
     languages: {
       'en-US': '/en-US',
     },
   },
-  generator: 'v0.dev',
 }
 
 export default function RootLayout({
