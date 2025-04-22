@@ -22,8 +22,7 @@ const FAQs = [
   },
   {
     question: 'How do I get paid?',
-    answer:
-      'Payments are processed through Stripe. You can set up your payout method in your creator dashboard. We process payments on a monthly basis for all sales, with a minimum payout threshold of $50.',
+    answer: `Payments are processed through Paypal. You can set up your payout method in your creator application. Payments are processed instantly after each sale. You will receive ${100 - SERVICE_CHARGE * 100}% of the sale price directly to your connected payment account immediately after a successful transaction.`,
   },
   {
     question: 'How long does the review process take?',
