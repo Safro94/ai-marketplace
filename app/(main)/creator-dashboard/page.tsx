@@ -254,13 +254,23 @@ export default async function CreatorDashboard() {
                         className='flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0'
                       >
                         <div>
-                          <p className='font-medium'>{item.asset.title}</p>
+                          <Link
+                            href={ROUTES.assetsDetail(item.assetId)}
+                            className='font-medium'
+                            target='_blank'
+                          >
+                            {item.asset.title}
+                          </Link>
+
                           <p className='text-sm text-muted-foreground'>
                             {item.assetLicense?.license.name} •{' '}
                             {format(new Date(item.createdAt), 'MMM d')}
                           </p>
                         </div>
-                        <p className='font-medium'>${item.amount.toFixed(2)}</p>
+
+                        <p className='font-medium'>
+                          {formatCurrency(item.amount)}
+                        </p>
                       </div>
                     ))
                   })}

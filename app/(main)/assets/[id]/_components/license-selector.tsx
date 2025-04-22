@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { LicenseOption } from '@/lib/types'
+import { formatCurrency } from '@/lib/utils'
 import { LicenseType } from '@prisma/client'
 import { CheckCircle } from 'lucide-react'
 import { Dispatch, FC, SetStateAction } from 'react'
@@ -57,23 +58,15 @@ export const LicenseSelector: FC<Props> = ({
 
         <Card>
           <CardHeader>
-            <CardTitle>{option.name}</CardTitle>
-            <CardDescription>{option.description}</CardDescription>
-
-            <div className='mt-2 text-2xl font-bold'>
-              ${option.price.toFixed(2)}
-            </div>
+            <CardHeaderItems
+              name={option.name}
+              description={option.description}
+              price={option.price}
+            />
           </CardHeader>
 
           <CardContent>
-            <ul className='space-y-2'>
-              {option.features.map((feature, index) => (
-                <li key={index} className='text-sm flex items-start'>
-                  <CheckCircle className='h-4 w-4 text-green-500 mr-2 mt-0.5' />
-                  {feature}
-                </li>
-              ))}
-            </ul>
+            <CardContentList features={option.features} />
           </CardContent>
         </Card>
       </div>
@@ -109,23 +102,15 @@ export const LicenseSelector: FC<Props> = ({
               )}
 
               <CardHeader>
-                <CardTitle>{option.name}</CardTitle>
-                <CardDescription>{option.description}</CardDescription>
-
-                <div className='mt-2 text-2xl font-bold'>
-                  ${option.price.toFixed(2)}
-                </div>
+                <CardHeaderItems
+                  name={option.name}
+                  description={option.description}
+                  price={option.price}
+                />
               </CardHeader>
 
               <CardContent>
-                <ul className='space-y-2'>
-                  {option.features.map((feature, index) => (
-                    <li key={index} className='text-sm flex items-start'>
-                      <CheckCircle className='h-4 w-4 text-green-500 mr-2 mt-0.5' />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <CardContentList features={option.features} />
               </CardContent>
 
               <CardFooter>
@@ -144,3 +129,27 @@ export const LicenseSelector: FC<Props> = ({
     </div>
   )
 }
+
+export const CardHeaderItems = ({
+  name,
+  description,
+  price,
+}: Pick<LicenseOption, 'name' | 'description' | 'price'>) => (
+  <>
+    <CardTitle>{name}</CardTitle>
+    <CardDescription>{description}</CardDescription>
+
+    <div className='mt-2 text-2xl font-bold'>{formatCurrency(price)}</div>
+  </>
+)
+
+export const CardContentList = ({ features }: { features: string[] }) => (
+  <ul className='space-y-2'>
+    {features.map((feature, index) => (
+      <li key={index} className='text-sm flex items-start'>
+        <CheckCircle className='h-4 w-4 text-green-500 mr-2 mt-0.5' />
+        {feature}
+      </li>
+    ))}
+  </ul>
+)

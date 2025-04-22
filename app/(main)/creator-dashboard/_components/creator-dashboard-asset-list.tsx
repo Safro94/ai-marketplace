@@ -21,16 +21,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/toast'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { formatCurrency } from '@/lib/utils'
 import { Asset, AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
-import {
-  AlertCircle,
-  Eye,
-  MoreHorizontal,
-  Pencil,
-  Star,
-  Trash,
-} from 'lucide-react'
+import { AlertCircle, MoreHorizontal, Pencil, Star, Trash } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -114,18 +108,18 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
                 </h3>
 
                 <div className='flex flex-wrap justify-center md:justify-start items-center space-x-4 mt-2 text-sm text-muted-foreground'>
-                  <div className='flex items-center'>
+                  {/* <div className='flex items-center'>
                     <Eye className='h-4 w-4 mr-1' />
                     {asset.views || 0}
+                  </div> */}
+
+                  <div className='flex items-center'>
+                    {formatCurrency(asset.totalSales)}
                   </div>
 
                   <div className='flex items-center'>
-                    ${asset.totalSales || 0}
-                  </div>
-
-                  <div className='flex items-center'>
-                    <Star className='h-4 w-4 mr-1' />
-                    {asset.averageRating.toFixed(1) || 0}({asset.totalReviews})
+                    <Star className='h-4 w-4 mr-1 fill-yellow-400 text-yellow-400' />
+                    {asset.averageRating.toFixed(1)}({asset.totalReviews})
                   </div>
 
                   <div>{format(new Date(asset.createdAt), 'MMM d, yyyy')}</div>

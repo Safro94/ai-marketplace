@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
+import { formatCurrency } from '@/lib/utils'
 import { Prisma } from '@prisma/client'
 import { format } from 'date-fns'
 import { ExternalLink } from 'lucide-react'
@@ -57,7 +58,7 @@ export const PurchasedItemCard: FC<Props> = ({ purchasedItem }) => (
               </span>
 
               <span className='hidden md:block mx-2'>•</span>
-              <span>${purchasedItem.amount.toFixed(2)}</span>
+              <span>{formatCurrency(purchasedItem.amount)}</span>
               <span className='hidden md:block mx-2'>•</span>
               <span>{purchasedItem.assetLicense?.license.name}</span>
               <span className='hidden md:block mx-2'>•</span>
