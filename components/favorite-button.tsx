@@ -82,7 +82,7 @@ export const FavoriteButton: FC<Props> = ({ assetId, favorite }) => {
     >
       <Heart
         className={cn(
-          'w-4 h-4 md:h-fit md:w-fit text-black group-hover:fill-[#FF385C] group-hover:text-[#FF385C]',
+          'w-4 h-4 text-black group-hover:fill-[#FF385C] group-hover:text-[#FF385C]',
           isFavorited && 'fill-current text-[#FF385C]',
         )}
       />

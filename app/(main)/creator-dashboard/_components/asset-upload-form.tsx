@@ -26,7 +26,7 @@ import { assetUploadSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AssetStatus, Category, LicenseType, Prisma } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { FC, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AssetImageUpload } from '../upload/_components/asset-image-upload'
@@ -49,8 +49,7 @@ interface Props {
 }
 
 export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
-  const [isUploading, setIsUploading] = useState(false)
-
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const form = useForm<FormData>({
     resolver: zodResolver(assetUploadSchema),
@@ -99,55 +98,53 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
       return
     }
 
-    try {
-      setIsUploading(true)
+    startTransition(async () => {
+      try {
+        const body: FormData = {
+          ...values,
+          featuredImage: values.featuredImage,
+          galleryImages: values.galleryImages,
+          assetFile: values.assetFile,
+          features: values.features,
+          requirements: values.requirements,
+          slug: values.title.toLowerCase().replace(/\s+/g, '-'),
+          licenses: values.licenses,
+        }
 
-      const body: FormData = {
-        ...values,
-        featuredImage: values.featuredImage,
-        galleryImages: values.galleryImages,
-        assetFile: values.assetFile,
-        features: values.features,
-        requirements: values.requirements,
-        slug: values.title.toLowerCase().replace(/\s+/g, '-'),
-        licenses: values.licenses,
-      }
-
-      const response = await fetch(API_ROUTES.assetsUpload(), {
-        method: initialData ? 'PATCH' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      })
-
-      if (!response.ok) {
-        toast.error('Error', {
-          description: `Failed to ${initialData ? 'update' : 'create'} asset. Please try again.`,
+        const response = await fetch(API_ROUTES.assetsUpload(), {
+          method: initialData ? 'PATCH' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
         })
 
-        return
+        if (!response.ok) {
+          toast.error('Error', {
+            description: `Failed to ${initialData ? 'update' : 'create'} asset. Please try again.`,
+          })
+
+          return
+        }
+
+        const data = await response.json()
+
+        toast.success('Asset uploaded successfully', {
+          description:
+            data.status === AssetStatus.PUBLISHED
+              ? 'Your asset is now live on the marketplace.'
+              : 'Your asset has been submitted for review.',
+        })
+
+        router.push(ROUTES.creatorDashboard())
+      } catch (error) {
+        console.error(error)
+
+        toast.error('Error', {
+          description: 'Failed to upload asset. Please try again.',
+        })
       }
-
-      const data = await response.json()
-
-      toast.success('Asset uploaded successfully', {
-        description:
-          data.status === AssetStatus.PUBLISHED
-            ? 'Your asset is now live on the marketplace.'
-            : 'Your asset has been submitted for review.',
-      })
-
-      router.push(ROUTES.creatorDashboard())
-    } catch (error) {
-      console.error(error)
-
-      toast.error('Error', {
-        description: 'Failed to upload asset. Please try again.',
-      })
-    } finally {
-      setIsUploading(false)
-    }
+    })
   }
 
   return (
@@ -330,14 +327,18 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
           <div className='mt-6'>
             <h3 className='text-lg font-medium mb-4'>License Options</h3>
-            <LicensePricing control={form.control} setValue={form.setValue} />
+            <LicensePricing
+              control={form.control}
+              setValue={form.setValue}
+              errors={form.formState.errors}
+            />
           </div>
 
           <div className='pt-4 flex justify-end'>
             <LoadingButton
-              isLoading={isUploading}
               type='submit'
-              disabled={isUploading}
+              isLoading={isPending}
+              disabled={isPending}
             >
               {initialData ? 'Edit' : 'Upload'} Asset
             </LoadingButton>

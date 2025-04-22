@@ -20,6 +20,7 @@ import { CheckCircle } from 'lucide-react'
 import { FC, PropsWithChildren, useEffect, useState } from 'react'
 import {
   Control,
+  FormState,
   useFieldArray,
   UseFormSetValue,
   useWatch,
@@ -31,11 +32,12 @@ type FormData = z.infer<typeof assetUploadSchema>
 interface Props {
   control: Control<FormData>
   setValue: UseFormSetValue<FormData>
+  errors: FormState<FormData>['errors']
 }
 
 const MULTIPLIER = 5
 
-export const LicensePricing: FC<Props> = ({ setValue, control }) => {
+export const LicensePricing: FC<Props> = ({ setValue, control, errors }) => {
   const [licenses, setLicenses] = useState<License[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -116,6 +118,8 @@ export const LicensePricing: FC<Props> = ({ setValue, control }) => {
           return (
             <LicenseCard
               key={field.licenseId}
+              index={index}
+              errors={errors}
               licenses={licenses}
               watchedLicenses={watchedLicenses}
               licenseType={
@@ -171,11 +175,13 @@ export const LicensePricing: FC<Props> = ({ setValue, control }) => {
 
 const LicenseCard: FC<
   PropsWithChildren & {
+    index: number
+    errors: FormState<FormData>['errors']
     watchedLicenses: Pick<LicenseOption, 'licenseId' | 'price'>[]
     licenses: License[]
     licenseType: LicenseType
   }
-> = ({ children, watchedLicenses, licenses, licenseType }) => {
+> = ({ children, index, watchedLicenses, errors, licenses, licenseType }) => {
   const license = licenses.find((l) => l.id === licenseType)
 
   return (
@@ -192,12 +198,6 @@ const LicenseCard: FC<
           <span className='absolute left-3 top-2 text-muted-foreground'>$</span>
 
           {children}
-
-          {watchedLicenses?.[1]?.price <= watchedLicenses[0].price && (
-            <p className='text-sm text-yellow-600 mt-1'>
-              Extended license should be priced higher than Standard license
-            </p>
-          )}
         </div>
       </div>
 
@@ -212,6 +212,18 @@ const LicenseCard: FC<
           ))}
         </ul>
       </div>
+
+      {errors?.licenses?.[index]?.price?.message && (
+        <p className='text-sm text-destructive my-2'>
+          {errors.licenses[index].price.message}
+        </p>
+      )}
+
+      {watchedLicenses?.[1]?.price <= watchedLicenses[0].price && (
+        <p className='text-sm text-destructive my-2'>
+          Extended license should be priced higher than Standard license
+        </p>
+      )}
     </div>
   )
 }

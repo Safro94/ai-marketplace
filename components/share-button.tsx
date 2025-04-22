@@ -49,7 +49,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
               setIsOpen(true)
             }}
           >
-            <Share className='w-4 h-4 md:h-fit md:w-fit text-black group-hover:text-primary' />
+            <Share className='w-4 h-4 text-black group-hover:text-primary' />
             <span className='sr-only'>Share button</span>
           </Button>
         </DialogTrigger>
