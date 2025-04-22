@@ -30,7 +30,7 @@ export default function LoginPage() {
         <CardHeader>
           <CardTitle>
             <h1 className='text-2xl font-semibold tracking-tight text-center'>
-              Sign in to {APP_DATA.name}
+              Sign in to AIAssetHub
             </h1>
           </CardTitle>
         </CardHeader>

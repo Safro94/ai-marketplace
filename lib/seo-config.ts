@@ -1,16 +1,16 @@
-import { APP_DATA, SUPPORT_EMAIL } from './constants'
+import { SUPPORT_EMAIL } from './constants'
 
 // Base SEO configuration
 export const siteConfig = {
-  name: APP_DATA.name,
-  url: APP_DATA.url,
+  name: 'AIAssetHub',
+  url: 'https://www.aiassethub.pro',
   ogImage: '/images/og-image.jpg',
   description: 'Discover and purchase high-quality AI assets for your projects',
   links: {
-    twitter: `https://twitter.com/${APP_DATA.lowercaseName}`,
-    github: `https://github.com/${APP_DATA.lowercaseName}`,
+    twitter: `https://twitter.com/aiassethub`,
+    github: `https://github.com/aiassethub`,
   },
-  creator: `@${APP_DATA.lowercaseName}`,
+  creator: `@aiassethub`,
   keywords: [
     'AI hub',
     'AI market hub',
@@ -25,8 +25,8 @@ export const siteConfig = {
   ],
   authors: [
     {
-      name: `${APP_DATA.name} Team`,
-      url: APP_DATA.url,
+      name: `AIAssetHub Team`,
+      url: 'https://www.aiassethub.pro',
     },
   ],
 }
@@ -52,14 +52,14 @@ export function generateProductJsonLd(product: {
     description: product.description,
     image: product.image,
     sku: `asset-${product.id}`,
-    mpn: `${APP_DATA.lowercaseName}-${product.id}`,
+    mpn: `aiassethub-${product.id}`,
     brand: {
       '@type': 'Brand',
-      name: APP_DATA.name,
+      name: 'AIAssetHub',
     },
     offers: {
       '@type': 'Offer',
-      url: `${APP_DATA.url}/assets/${product.id}`,
+      url: `https://www.aiassethub.pro/assets/${product.id}`,
       priceCurrency: 'USD',
       price: product.price,
       priceValidUntil: new Date(
@@ -85,13 +85,13 @@ export function generateOrganizationJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: APP_DATA.name,
-    url: APP_DATA.url,
-    logo: `${APP_DATA.url}/images/logo.png`,
+    name: 'AIAssetHub',
+    url: 'https://www.aiassethub.pro',
+    logo: `https://www.aiassethub.pro/images/logo.png`,
     sameAs: [
-      `https://twitter.com/${APP_DATA.lowercaseName}`,
-      `https://github.com/${APP_DATA.lowercaseName}`,
-      `https://linkedin.com/company/${APP_DATA.lowercaseName}`,
+      `https://twitter.com/aiassethub`,
+      `https://github.com/aiassethub`,
+      `https://linkedin.com/company/aiassethub`,
     ],
     contactPoint: {
       '@type': 'ContactPoint',

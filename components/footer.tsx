@@ -1,4 +1,4 @@
-import { APP_DATA, PAGE_PADDING, ROUTES } from '@/lib/constants'
+import { PAGE_PADDING, ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { Linkedin, TwitterIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -37,7 +37,7 @@ export const Footer = () => {
           <Section
             title='For Creators'
             items={[
-              { text: `Sell on ${APP_DATA.name}`, link: ROUTES.creators() },
+              { text: `Sell on AIAssetHub`, link: ROUTES.creators() },
               { text: 'Terms for Creators', link: ROUTES.creatorTerms() },
               { text: 'FAQ', link: ROUTES.creatorFAQ() },
             ]}
@@ -55,9 +55,7 @@ export const Footer = () => {
         </div>
 
         <div className='mt-8 border-t border-border/40 pt-8 text-center text-sm text-muted-foreground'>
-          <p>
-            © {new Date().getFullYear()} {APP_DATA.name}. All rights reserved.
-          </p>
+          <p>© {new Date().getFullYear()} AIAssetHub. All rights reserved.</p>
         </div>
       </div>
     </footer>
