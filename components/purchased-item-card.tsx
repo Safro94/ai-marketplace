@@ -36,7 +36,7 @@ export const PurchasedItemCard: FC<Props> = ({ purchasedItem }) => (
           src={purchasedItem.asset.featuredImage || '/placeholder.svg'}
           alt={purchasedItem.asset.title}
           fill
-          className='object-cover'
+          className='object-contain'
         />
       </div>
 
