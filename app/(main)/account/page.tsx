@@ -1,6 +1,5 @@
 import { PageContainer } from '@/components/page-container'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -10,19 +9,17 @@ import {
 } from '@/components/ui/card'
 import { getUserProfile } from '@/data-access/profile'
 import { APP_DATA, ROUTES } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
 import { Role } from '@prisma/client'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { UserProfileForm } from './_components/user-profile-form'
 
-enum TabsEnum {
-  PROFILE = 'profile',
-  PREFERENCES = 'preferences',
-  NOTIFICATIONS = 'notifications',
-}
+// enum TabsEnum {
+//   PROFILE = 'profile',
+//   PREFERENCES = 'preferences',
+//   NOTIFICATIONS = 'notifications',
+// }
 
 export const metadata: Metadata = {
   title: `Account Settings | ${APP_DATA.name}`,
@@ -108,20 +105,6 @@ export default async function AccountPage() {
                       : 'N/A'}
                   </span>
                 </div>
-              </div>
-
-              <div className='pt-2'>
-                {isAdminOrCreator(profile) ? (
-                  <Button className='w-full' asChild>
-                    <Link href={ROUTES.creatorDashboard()}>
-                      Creator Dashboard
-                    </Link>
-                  </Button>
-                ) : (
-                  <Button className='w-full' asChild>
-                    <Link href={ROUTES.creatorsApply()}>Become a Creator</Link>
-                  </Button>
-                )}
               </div>
             </CardContent>
           </Card>

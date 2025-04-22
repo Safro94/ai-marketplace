@@ -41,7 +41,8 @@ export const HeroSection = async () => {
         </div>
 
         <HomeSectionTitle className='text-white md:text-6xl'>
-          The marketplace for premium AI assets
+          The marketplace for premium AI-Powered Tools for Work, Automation &
+          Strategy
         </HomeSectionTitle>
 
         <HomeSectionDescription className='text-muted-foreground-primary-bg'>

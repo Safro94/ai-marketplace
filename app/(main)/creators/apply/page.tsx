@@ -1,8 +1,11 @@
 import { PageContainer } from '@/components/page-container'
+import { getUserProfile } from '@/data-access/profile'
 import { APP_DATA, ROUTES } from '@/lib/constants'
-import { getServerSession } from '@/lib/session'
+import { validateSession } from '@/lib/session'
+import { ApplicationStatus } from '@prisma/client'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { CreatorApplicationForm } from './_components/creator-application-form'
 
 export const metadata: Metadata = {
@@ -11,7 +14,14 @@ export const metadata: Metadata = {
 }
 
 export default async function CreatorApplicationPage() {
-  const session = await getServerSession()
+  const { user } = await validateSession()
+  const profile = await getUserProfile(user.id)
+
+  const hasPendingApplication =
+    profile?.creatorProfile?.creatorApplication?.status ===
+    ApplicationStatus.PENDING
+
+  if (hasPendingApplication) redirect(ROUTES.creators())
 
   return (
     <PageContainer>
@@ -25,7 +35,7 @@ export default async function CreatorApplicationPage() {
         </p>
       </div>
 
-      {session?.user && <CreatorApplicationForm user={session.user} />}
+      {user && <CreatorApplicationForm user={user} />}
 
       <div className='mt-8 text-center text-sm text-muted-foreground'>
         <p>

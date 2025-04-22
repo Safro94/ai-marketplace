@@ -18,17 +18,27 @@ import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
 import { formatCurrency } from '@/lib/utils'
-import { AssetStatus } from '@prisma/client'
+import { Asset, AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
 import { DollarSign, InfoIcon, Package, Star } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { CreatorDashboardAssetsList } from './_components/creator-dashboard-asset-list'
 
+interface AssetsByStatus {
+  all: Asset[]
+  published: Asset[]
+  pending: Asset[]
+  rejected: Asset[]
+  draft: Asset[]
+  archived: Asset[]
+}
+
 export default async function CreatorDashboard() {
   const { user } = await validateSession(ROUTES.creatorDashboard())
 
   const profile = await getUserProfile(user.id)
+
   if (!profile || !isAdminOrCreator(profile)) {
     redirect(ROUTES.creators())
   }
@@ -60,22 +70,40 @@ export default async function CreatorDashboard() {
     },
   })
 
-  const assetsByStatus = {
-    all: assets,
-    published: assets.filter((a) => a.status === AssetStatus.PUBLISHED),
-    pending: assets.filter((a) => a.status === AssetStatus.PENDING_REVIEW),
-    rejected: assets.filter((a) => a.status === AssetStatus.REJECTED),
-    draft: assets.filter((a) => a.status === AssetStatus.DRAFT),
-  }
+  const assetsByStatus = assets.reduce<AssetsByStatus>(
+    (acc, asset) => {
+      const statusMap: Record<AssetStatus, keyof Omit<AssetsByStatus, 'all'>> =
+        {
+          [AssetStatus.PUBLISHED]: 'published',
+          [AssetStatus.PENDING_REVIEW]: 'pending',
+          [AssetStatus.REJECTED]: 'rejected',
+          [AssetStatus.DRAFT]: 'draft',
+          [AssetStatus.ARCHIVED]: 'archived',
+        }
 
-  // Get total views
+      const statusKey = statusMap[asset.status]
+
+      // Only push to the category if we have a valid mapping
+      if (statusKey) {
+        acc[statusKey].push(asset)
+      }
+
+      return acc
+    },
+    {
+      all: assets,
+      published: [],
+      pending: [],
+      rejected: [],
+      draft: [],
+      archived: [],
+    },
+  )
+
   // const totalViews = assets.reduce((sum, asset) => sum + (asset.views || 0), 0)
 
-  // Get average rating
-  const assetsWithRatings = assets.filter((a) => a.averageRating !== null)
-  const avgRating = assetsWithRatings.length
-    ? assetsWithRatings.reduce((sum, a) => sum + (a.averageRating || 0), 0) /
-      assetsWithRatings.length
+  const avgRating = assets.length
+    ? assets.reduce((sum, a) => sum + a.averageRating, 0) / assets.length
     : 0
 
   return (
@@ -123,7 +151,7 @@ export default async function CreatorDashboard() {
             title: 'Avgerage Rating',
             description: (
               <div className='flex items-center'>
-                {avgRating.toFixed(1)}
+                {!avgRating ? '---' : avgRating.toFixed(1)}
                 <Star className='h-4 w-4 text-yellow-400 fill-yellow-400 ml-1' />
               </div>
             ),

@@ -339,7 +339,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
               type='submit'
               disabled={isUploading}
             >
-              Upload Asset
+              {initialData ? 'Edit' : 'Upload'} Asset
             </LoadingButton>
           </div>
         </div>

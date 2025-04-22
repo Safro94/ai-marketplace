@@ -9,7 +9,7 @@ import { ROUTES } from '@/lib/constants'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { getServerSession } from '@/lib/session'
 import { cn, formatDate } from '@/lib/utils'
-import { AssetStatus } from '@prisma/client'
+import { AssetStatus, Profile } from '@prisma/client'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
@@ -99,11 +99,17 @@ export default async function AssetPage({
 }: {
   params: Promise<{ id: string }>
 }) {
+  const assetId = (await params).id
   const session = await getServerSession()
-  const profile = await getUserProfile(session!.user.id)
-  const id = (await params).id
 
-  const asset = await getAssetById(id, {
+  let isPurchased = false
+  let profile: Profile | null = null
+
+  if (session?.user) {
+    profile = await getUserProfile(session.user.id)
+  }
+
+  const asset = await getAssetById(assetId, {
     favorite: {
       where: {
         profileId: profile?.id,
@@ -148,12 +154,7 @@ export default async function AssetPage({
 
   if (!asset) notFound()
 
-  // Check if the user has purchased this asset
-  let isPurchased = false
-  if (session?.user) {
-    const profile = await getUserProfile(session?.user.id)
-    if (!profile) return
-
+  if (profile) {
     isPurchased = await checkUserPurchasedAsset(profile.id, asset.id)
   }
 
