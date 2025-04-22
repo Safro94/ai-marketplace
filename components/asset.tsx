@@ -36,7 +36,7 @@ export const Asset: FC<ExploreAsset> = async ({
             fill
             src={featuredImage || '/placeholder.svg?height=400&width=600'}
             alt={title}
-            className='object-fill !max-h-[200px] !relative'
+            className='object-contain !max-h-[200px] !relative'
             priority
           />
 

@@ -86,6 +86,7 @@ export const FavoriteButton: FC<Props> = ({ assetId, favorite }) => {
           isFavorited && 'fill-current text-[#FF385C]',
         )}
       />
+      <span className='sr-only'>Favorite button</span>
     </Button>
   )
 }

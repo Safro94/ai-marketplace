@@ -57,9 +57,9 @@ export const TestimonialsCarousel: FC<Props> = ({ testimonials }) => {
             </Avatar>
 
             <div>
-              <h4 className='font-semibold'>
+              <h3 className='font-semibold'>
                 {testimonials[currentIndex].authorName}
-              </h4>
+              </h3>
 
               <p className='text-sm text-muted-foreground'>
                 {testimonials[currentIndex].authorRole}
