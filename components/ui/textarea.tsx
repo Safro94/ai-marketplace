@@ -21,6 +21,10 @@ const Textarea: FC<Props> = ({
           className,
         )}
         ref={ref}
+        autoComplete='off'
+        autoCorrect='off'
+        autoCapitalize='off'
+        spellCheck='false'
         {...props}
       />
 
