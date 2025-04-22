@@ -15,6 +15,7 @@ import { ROUTES } from '@/lib/constants'
 import { tryCatch } from '@/lib/utils'
 import { User } from 'better-auth'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { FC } from 'react'
 import { toast } from '../ui/toast'
 
@@ -24,6 +25,8 @@ interface Props {
 }
 
 export const HeaderDropdown: FC<Props> = ({ isCreator, user }) => {
+  const router = useRouter()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -80,6 +83,8 @@ export const HeaderDropdown: FC<Props> = ({ isCreator, user }) => {
                 description: 'There was an error while signing you out.',
               })
             }
+
+            router.push(ROUTES.home())
           }}
         >
           Log out

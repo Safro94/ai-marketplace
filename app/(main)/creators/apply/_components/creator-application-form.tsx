@@ -28,7 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { PaymentProvider } from '@prisma/client'
 import { User } from 'better-auth'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { FC, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { CreatorApplicationPaymentMethods } from './creator-application-payment-methods'
@@ -40,8 +40,7 @@ interface Props {
 export const CreatorApplicationForm: FC<Props> = ({ user }) => {
   const router = useRouter()
   const { validateCaptcha } = useValidateCaptcha()
-
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const form = useForm<z.infer<typeof creatorApplicationSchema>>({
     resolver: zodResolver(creatorApplicationSchema),
@@ -77,42 +76,40 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
 
     await validateCaptcha()
 
-    setIsLoading(true)
+    startTransition(async () => {
+      try {
+        // Submit the creator application
+        const response = await fetch(API_ROUTES.creatorsApply(), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...values,
+            userId: user.id,
+          }),
+        })
 
-    try {
-      // Submit the creator application
-      const response = await fetch(API_ROUTES.creatorsApply(), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...values,
-          userId: user.id,
-        }),
-      })
+        if (!response.ok) {
+          const data = await response.json()
+          throw new Error(data.error || 'Failed to submit application')
+        }
 
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to submit application')
+        toast.success('Application submitted', {
+          description:
+            "We've received your application and will review it shortly.",
+        })
+
+        router.push(ROUTES.creatorsThankYou())
+      } catch (error) {
+        toast.error('Error', {
+          description:
+            error instanceof Error
+              ? error.message
+              : 'Something went wrong. Please try again.',
+        })
       }
-
-      toast.success('Application submitted', {
-        description:
-          "We've received your application and will review it shortly.",
-      })
-
-      router.push(ROUTES.creatorsThankYou())
-    } catch (error) {
-      toast.error('Error', {
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong. Please try again.',
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   return (
@@ -352,8 +349,8 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
           <LoadingButton
             type='submit'
             size='lg'
-            isLoading={isLoading}
-            disabled={isLoading}
+            isLoading={isPending}
+            disabled={isPending}
           >
             Submit Application
           </LoadingButton>
