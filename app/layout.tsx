@@ -4,7 +4,6 @@ import { Toaster } from '@/components/ui/toast'
 import { generateOrganizationJsonLd, siteConfig } from '@/lib/seo-config'
 import { cn } from '@/lib/utils'
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
@@ -89,7 +88,6 @@ export default function RootLayout({
         className={cn('bg-background font-sans antialiased', inter.className)}
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
-        <SpeedInsights />
 
         <Providers>
           <div className='min-h-screen grid grid-rows-[max-content_1fr_max-content]'>

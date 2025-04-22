@@ -7,7 +7,7 @@ import { HeroSection } from './_components/hero-section'
 import { TestimonialSection } from './_components/testimonial-section'
 
 export const metadata: Metadata = {
-  title: 'Premium AI market hub | Buy and Sell AI Tools and Templates',
+  title: 'GPTs, Prompts, Workflows & AI Tools for Everyone',
   description:
     'Discover high-quality AI prompt systems, custom GPTs, and specialized tools created by experts. The leading marketplace for AI assets.',
   alternates: {
