@@ -70,7 +70,7 @@ export const FavoriteButton: FC<Props> = ({ assetId, favorite }) => {
 
   return (
     <Button
-      variant='ghost'
+      variant='outline'
       size='icon'
       onClick={handleClick}
       disabled={isLoading}

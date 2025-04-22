@@ -40,7 +40,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
         <DialogTrigger asChild>
           <Button
             size='icon'
-            variant='ghost'
+            variant='outline'
             className='w-6 h-6 md:h-10 md:w-10 z-50 bg-white rounded-full group'
             onClick={(e) => {
               e.preventDefault()
