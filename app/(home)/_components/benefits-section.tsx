@@ -5,7 +5,7 @@ import {
   HomeSectionTitle,
 } from '@/components/page-container'
 import { Motion } from '@/components/ui/motion'
-import { STAGGER } from '@/lib/constants'
+import { STAGGER, TRANSITION_DELAY } from '@/lib/constants'
 import { Shield, Sparkles, Zap } from 'lucide-react'
 
 const BENEFITS = [
@@ -53,7 +53,7 @@ export const BenefitsSection = () => {
             icon={Icon}
             title={title}
             description={description}
-            delay={0.5 * i}
+            delay={TRANSITION_DELAY * i}
           />
         ))}
       </Motion>

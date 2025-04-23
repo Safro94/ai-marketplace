@@ -40,7 +40,7 @@ export const Purchase: FC<Props> = ({
 }) => {
   return (
     <div className='bg-background border-primary border p-4 rounded-md'>
-      <div className='flex items-center justify-between mb-4'>
+      <div className='flex items-center justify-between flex-wrap mb-4 gap-4'>
         <div className='flex flex-col gap-1'>
           <h2 className='text-lg font-bold'>#{id}</h2>
           <h3 className='text-sm font-semibold text-muted-foreground'>

@@ -10,9 +10,9 @@ import { EXPLORE_PARAMS } from '@/lib/types'
 import { tryCatch } from '@/lib/utils'
 import { Prisma } from '@prisma/client'
 import type { Metadata } from 'next'
-import { AssetGrid } from './_components/asset-grid'
-import { AssetGridContainer } from './_components/asset-grid-container'
+import { AssetsGridContainer } from './_components/assets-grid'
 import { ExploreCategoriesSelector } from './_components/explore-categories-selector'
+import { ExploreGridContainer } from './_components/explore-grid-container'
 import { getExploreAssets } from './_components/explore-utils'
 
 interface Props {
@@ -88,12 +88,12 @@ export default async function ExplorePage({ searchParams }: Props) {
       </div>
 
       <div className='flex-1'>
-        <AssetGridContainer assets={assetData?.assets}>
-          <AssetGrid
+        <ExploreGridContainer assets={assetData?.assets}>
+          <AssetsGridContainer
             assets={assetData?.assets}
             pagination={assetData?.pagination}
           />
-        </AssetGridContainer>
+        </ExploreGridContainer>
       </div>
     </PageContainer>
   )

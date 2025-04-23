@@ -42,7 +42,7 @@ export const PurchasedItemCard: FC<Props> = ({ purchasedItem }) => (
       </div>
 
       <div className='flex-1'>
-        <div className='flex flex-col md:flex-row justify-between'>
+        <div className='flex flex-col md:flex-row justify-between gap-4'>
           <div>
             <h3 className='text-xl font-medium mb-2'>
               {purchasedItem.asset.title}
@@ -64,6 +64,7 @@ export const PurchasedItemCard: FC<Props> = ({ purchasedItem }) => (
               <span className='hidden md:block mx-2'>•</span>
               <span>Lincese Key: {purchasedItem.licenseKey}</span>
               <span className='hidden md:block mx-2'>•</span>
+
               <Badge variant='secondary'>
                 {purchasedItem.asset.category.name}
               </Badge>
@@ -78,7 +79,7 @@ export const PurchasedItemCard: FC<Props> = ({ purchasedItem }) => (
               fileName={purchasedItem.asset.title}
             />
 
-            <Button size='sm' variant='outline' asChild>
+            <Button variant='outline' asChild>
               <a
                 href={ROUTES.assetsDetail(purchasedItem.asset.id)}
                 target='_blank'

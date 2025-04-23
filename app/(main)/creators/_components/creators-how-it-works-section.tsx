@@ -4,6 +4,7 @@ import {
   HomeSectionTitle,
 } from '@/components/page-container'
 import { Motion } from '@/components/ui/motion'
+import { TRANSITION_DELAY } from '@/lib/constants'
 
 const STEPS = [
   {
@@ -44,7 +45,7 @@ export const CreatorsHowItWorksSection = () => {
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              transition={{ duration: 0.5, delay: i * TRANSITION_DELAY }}
               viewport={{ once: true }}
               className='flex flex-col items-center text-center relative'
             >

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Motion } from '@/components/ui/motion'
 import { getCategoriesWithCount } from '@/data-access/categories'
-import { FADE_IN_UP, ROUTES } from '@/lib/constants'
+import { FADE_IN_UP, ROUTES, TRANSITION_DELAY } from '@/lib/constants'
 import { EXPLORE_PARAMS } from '@/lib/types'
 import {
   Bot,
@@ -41,7 +41,7 @@ export const CategoryShowcase = async () => {
             initial='hidden'
             whileInView='visible'
             viewport={{ once: true, margin: '-100px' }}
-            variants={FADE_IN_UP(0.5 * i)}
+            variants={FADE_IN_UP(TRANSITION_DELAY * i)}
           >
             <Link
               href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}

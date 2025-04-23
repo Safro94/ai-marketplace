@@ -162,12 +162,12 @@ export default function CreatorTermsPage() {
 
           <h3>6.2 Payment Processing</h3>
           <p>
-            Payments are processed instantly after each sale. You will receive
+            Payments are processed instantly after each sale. You will receive{' '}
             {100 - SERVICE_CHARGE * 100}% of the sale price directly to your
             connected payment account immediately after a successful
-            transaction. The Platform retains the
-            {SERVICE_CHARGE * 100}% commission at the time of sale. There is no
-            minimum payout threshold or waiting period.
+            transaction. The Platform retains the {SERVICE_CHARGE * 100}%
+            commission at the time of sale. There is no minimum payout threshold
+            or waiting period.
           </p>
 
           <h3>6.3 Taxes</h3>

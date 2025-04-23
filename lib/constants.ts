@@ -99,6 +99,7 @@ export const SERVICE_CHARGE = 0.25
 export const CART_COOKIE_NAME = 'cart_session_id'
 export const CART_EXPIRY = 60 * 60 * 24 * 30 // 30 days in seconds
 export const PAGE_PADDING = 'px-4 md:px-8'
+export const TRANSITION_DELAY = 0.2
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },

@@ -13,7 +13,7 @@ interface Props extends PropsWithChildren {
   assets: ExploreAsset[] | undefined
 }
 
-export const AssetGridContainer: FC<Props> = ({ children, assets }) => {
+export const ExploreGridContainer: FC<Props> = ({ children, assets }) => {
   const [showDesktopFilters, setShowDesktopFilters] = useState(false)
 
   return (

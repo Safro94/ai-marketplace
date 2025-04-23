@@ -8,7 +8,7 @@ interface Props {
   pagination: Pagination | undefined
 }
 
-export const AssetGrid: FC<Props> = ({ assets, pagination }) => {
+export const AssetsGridContainer: FC<Props> = ({ assets, pagination }) => {
   return (
     <div>
       {!!assets?.length ? (

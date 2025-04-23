@@ -5,7 +5,11 @@ export const PageContainer: FC<PropsWithChildren & { className?: string }> = ({
   children,
   className,
 }) => {
-  return <div className={cn('container p-4 md:p-8', className)}>{children}</div>
+  return (
+    <div className={cn('container py-4 px-0 md:p-8', className)}>
+      {children}
+    </div>
+  )
 }
 
 export const HomeSection: FC<
@@ -28,7 +32,10 @@ export const HomeSectionTitle: FC<HTMLAttributes<HTMLHeadingElement>> = ({
 }) => {
   return (
     <h2
-      className={cn('text-5xl font-semibold tracking-tight', className)}
+      className={cn(
+        'text-4xl md:text-5xl font-semibold tracking-tight',
+        className,
+      )}
       {...rest}
     >
       {children}
@@ -42,7 +49,7 @@ export const HomeSectionDescription: FC<
   return (
     <p
       className={cn(
-        'text-base md:text-lg text-muted-foreground max-w-2xl mx-auto',
+        'text-sm md:text-lg text-muted-foreground max-w-sm md:max-w-2xl mx-auto',
         className,
       )}
       {...rest}

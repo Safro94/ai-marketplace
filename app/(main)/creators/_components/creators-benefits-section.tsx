@@ -5,7 +5,12 @@ import {
   HomeSectionTitle,
 } from '@/components/page-container'
 import { Motion } from '@/components/ui/motion'
-import { APP_DATA, SERVICE_CHARGE, STAGGER } from '@/lib/constants'
+import {
+  APP_DATA,
+  SERVICE_CHARGE,
+  STAGGER,
+  TRANSITION_DELAY,
+} from '@/lib/constants'
 import { BarChart, DollarSign, Shield } from 'lucide-react'
 
 const BENEFITS = [
@@ -52,7 +57,7 @@ export const CreatorsBenefitsSection = () => {
             icon={Icon}
             title={title}
             description={description}
-            delay={0.5 * i}
+            delay={TRANSITION_DELAY * i}
           />
         ))}
       </Motion>
