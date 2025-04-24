@@ -67,20 +67,25 @@ export const downloadAsset = async ({
   fileName: string
   assetId: string
 }) => {
-  // Fetch the file
-  const { data: response, error } = await tryCatch(
-    fetch(
+  try {
+    const response = await fetch(
       `${API_ROUTES.assetsDownload()}?url=${encodeURIComponent(url)}&assetId=${assetId}`,
-    ),
-  )
+    )
 
-  if (!response?.ok || error) {
-    throw Error(error?.message ?? 'Failed to fetch file')
+    if (!response?.ok) {
+      return { success: false, error: 'Failed to fetch file' }
+    }
+
+    const blob = await response.blob()
+    createDownloadLink(blob, fileName)
+    return { success: true }
+  } catch (e) {
+    console.error(e)
+    return {
+      success: false,
+      error: e instanceof Error ? e.message : 'Failed to fetch file',
+    }
   }
-
-  const blob = await response.blob()
-
-  createDownloadLink(blob, fileName)
 }
 
 export const createDownloadLink = (file: Blob, fileName: string) => {

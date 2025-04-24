@@ -133,12 +133,14 @@ export default async function DashboardPage() {
                         </div>
                       </div>
 
-                      <AssetDownloadButton
-                        assetId={download.purchaseItem.asset.id}
-                        purchaseItemId={download.purchaseItem.id}
-                        assetFileUrl={download.purchaseItem.asset.assetFile}
-                        fileName={download.purchaseItem.asset.title}
-                      />
+                      <div>
+                        <AssetDownloadButton
+                          assetId={download.purchaseItem.asset.id}
+                          purchaseItemId={download.purchaseItem.id}
+                          assetFileUrl={download.purchaseItem.asset.assetFile}
+                          fileName={download.purchaseItem.asset.title}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>

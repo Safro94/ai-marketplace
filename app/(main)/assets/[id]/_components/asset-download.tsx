@@ -1,6 +1,6 @@
 'use client'
 
-import { LoadingButton } from '@/components/ui/button'
+import { AssetDownloadButton } from '@/components/asset-download-button'
 import {
   Card,
   CardContent,
@@ -9,74 +9,35 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { toast } from '@/components/ui/toast'
-import { useAuth } from '@/hooks/use-auth'
-import { downloadAsset } from '@/lib/utils'
-import { AlertCircle, Check, Download } from 'lucide-react'
-import { FC, useState } from 'react'
+import { AlertCircle, Check } from 'lucide-react'
+import { FC } from 'react'
 
 interface Props {
   assetId: string
   assetUrl: string
   fileName: string
-  isPurchased: boolean
+  purchaseItemId: string
 }
 
 export const AssetDownload: FC<Props> = ({
   assetId,
   assetUrl,
   fileName,
-  isPurchased,
+  purchaseItemId,
 }) => {
-  const [isDownloading, setIsDownloading] = useState(false)
-  const { user } = useAuth()
-
-  const handleDownload = async () => {
-    if (!user) {
-      toast.error('Authentication required', {
-        description: 'Please log in to download this asset',
-      })
-      return
-    }
-
-    if (!isPurchased) {
-      toast.error('Purchase required', {
-        description: 'You need to purchase this asset before downloading',
-      })
-      return
-    }
-
-    setIsDownloading(true)
-
-    try {
-      await downloadAsset({ url: assetUrl, fileName, assetId })
-
-      toast.success('Download successful', {
-        description: 'Your asset has been downloaded successfully',
-      })
-    } catch (err) {
-      toast.error('Download failed', {
-        description:
-          'There was a problem downloading your asset. Please try again.',
-      })
-    } finally {
-      setIsDownloading(false)
-    }
-  }
-
   return (
     <Card>
       <CardHeader>
         <CardTitle>Download Asset</CardTitle>
         <CardDescription>
-          {isPurchased
+          {purchaseItemId
             ? 'You own this asset. Download it to start using it.'
             : 'Purchase this asset to download it.'}
         </CardDescription>
       </CardHeader>
 
       <CardContent>
-        {isPurchased ? (
+        {purchaseItemId ? (
           <div className='text-sm space-y-2'>
             <p className='flex items-center'>
               <Check className='h-4 w-4 text-green-500 mr-2' />
@@ -104,15 +65,12 @@ export const AssetDownload: FC<Props> = ({
       </CardContent>
 
       <CardFooter>
-        <LoadingButton
-          className='w-full'
-          onClick={handleDownload}
-          isLoading={isDownloading}
-          disabled={isDownloading || !isPurchased}
-        >
-          <Download className='mr-2 h-4 w-4' />
-          Download Asset
-        </LoadingButton>
+        <AssetDownloadButton
+          assetId={assetId}
+          assetFileUrl={assetUrl}
+          fileName={fileName}
+          purchaseItemId={purchaseItemId}
+        />
       </CardFooter>
     </Card>
   )

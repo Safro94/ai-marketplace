@@ -28,7 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Profile } from '@prisma/client'
 import { User } from 'better-auth'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { FC, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -41,7 +41,7 @@ interface Props {
 }
 
 export const UserProfileForm: FC<Props> = ({ initialData }) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
   const form = useForm<z.infer<typeof userAccountSchema>>({
@@ -56,39 +56,37 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
   })
 
   const onSubmit = async (values: z.infer<typeof userAccountSchema>) => {
-    setIsLoading(true)
+    startTransition(async () => {
+      try {
+        const response = await fetch(`${API_ROUTES.userProfile()}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...values,
+          }),
+        })
 
-    try {
-      const response = await fetch(`${API_ROUTES.userProfile()}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...values,
-        }),
-      })
+        if (!response.ok) {
+          const data = await response.json()
+          throw new Error(data.error || 'Failed to update profile')
+        }
 
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to update profile')
+        toast.success('Profile updated', {
+          description: 'Your profile has been updated successfully.',
+        })
+
+        router.refresh()
+      } catch (error) {
+        toast.error('Error', {
+          description:
+            error instanceof Error
+              ? error.message
+              : 'Something went wrong. Please try again.',
+        })
       }
-
-      toast.success('Profile updated', {
-        description: 'Your profile has been updated successfully.',
-      })
-
-      router.refresh()
-    } catch (error) {
-      toast.error('Error', {
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong. Please try again.',
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   return (
@@ -208,10 +206,10 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
 
           <CardFooter>
             <LoadingButton
-              isLoading={isLoading}
+              isLoading={isPending}
+              disabled={isPending}
               type='submit'
               className='ml-auto'
-              disabled={isLoading}
             >
               Save Changes
             </LoadingButton>

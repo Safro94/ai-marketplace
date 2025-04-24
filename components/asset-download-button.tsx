@@ -3,9 +3,9 @@
 import { saveDownload } from '@/actions/asset-download'
 import { LoadingButton } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
-import { downloadAsset, tryCatch } from '@/lib/utils'
+import { downloadAsset } from '@/lib/utils'
 import { Download } from 'lucide-react'
-import { FC, useState } from 'react'
+import { FC, useTransition } from 'react'
 
 interface Props {
   assetId: string
@@ -20,7 +20,7 @@ export const AssetDownloadButton: FC<Props> = ({
   assetId,
   purchaseItemId,
 }) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const handleDownload = async () => {
     if (!assetFileUrl) {
@@ -30,39 +30,45 @@ export const AssetDownloadButton: FC<Props> = ({
       return
     }
 
-    setIsLoading(true)
-
-    const { error: downloadError } = await tryCatch(
-      downloadAsset({ url: assetFileUrl, fileName, assetId }),
-    )
-
-    setIsLoading(false)
-
-    if (downloadError) {
-      toast.error('Error', {
-        description: 'Failed to download file',
+    startTransition(async () => {
+      const result = await downloadAsset({
+        url: assetFileUrl,
+        fileName,
+        assetId,
       })
-      return
-    }
 
-    const { error: saveError } = await tryCatch(
-      saveDownload(assetId, purchaseItemId),
-    )
+      if (!result.success) {
+        toast.error('Download Failed', {
+          description: result.error || 'Failed to download file',
+        })
+        return
+      }
 
-    if (saveError) {
-      toast.error('Error', {
-        description: 'Failed to save file download',
+      // Success handling here
+      toast.success('Download Successful', {
+        description: 'Your file has been downloaded successfully',
       })
-      return
-    }
+
+      startTransition(async () => {
+        const saveResult = await saveDownload(assetId, purchaseItemId)
+
+        if (!saveResult.success) {
+          toast.error('Save Failed', {
+            description: saveResult.error || 'Failed to save download',
+          })
+
+          return
+        }
+      })
+    })
   }
 
   return (
-    <div>
+    <div className='w-full'>
       <LoadingButton
         className='flex-1 w-full'
-        isLoading={isLoading}
-        disabled={isLoading}
+        isLoading={isPending}
+        disabled={isPending}
         onClick={handleDownload}
       >
         <Download className='mr-2 h-4 w-4' />

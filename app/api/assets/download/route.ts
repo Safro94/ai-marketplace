@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
     throw Error('Asset or url not found')
   }
 
-  const isAssetPurchased = await checkUserPurchasedAsset(profile.id, assetId)
+  const { isPurchased } = await checkUserPurchasedAsset(profile.id, assetId)
 
-  if (!isAssetPurchased) {
+  if (!isPurchased) {
     throw Error('Asset not purchased')
   }
 

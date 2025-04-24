@@ -8,6 +8,7 @@ import { checkUserPurchasedAsset } from '@/data-access/purchases'
 import { ROUTES } from '@/lib/constants'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { getServerSession } from '@/lib/session'
+import { AsyncReturnType } from '@/lib/types'
 import { cn, formatDate } from '@/lib/utils'
 import { AssetStatus, Profile } from '@prisma/client'
 import type { Metadata } from 'next'
@@ -102,7 +103,11 @@ export default async function AssetPage({
   const assetId = (await params).id
   const session = await getServerSession()
 
-  let isPurchased = false
+  let purchase: AsyncReturnType<typeof checkUserPurchasedAsset> = {
+    isPurchased: false,
+    purchase: null,
+  }
+
   let profile: Profile | null = null
 
   if (session?.user) {
@@ -155,7 +160,7 @@ export default async function AssetPage({
   if (!asset) notFound()
 
   if (profile) {
-    isPurchased = await checkUserPurchasedAsset(profile.id, asset.id)
+    purchase = await checkUserPurchasedAsset(profile.id, asset.id)
   }
 
   // Parse features and requirements from JSON strings
@@ -218,7 +223,7 @@ export default async function AssetPage({
               reviews={asset.reviews}
               features={features}
               requirements={requirements}
-              isPurchased={isPurchased}
+              isPurchased={purchase?.isPurchased}
             />
 
             {/* Creator Info (Mobile) */}
@@ -231,12 +236,13 @@ export default async function AssetPage({
 
           <div className='space-y-6 lg:sticky lg:top-20'>
             {/* Purchase Options or Download */}
-            {isPurchased ? (
+            {purchase.isPurchased &&
+            purchase.purchase?.purchaseItems?.[0].id ? (
               <AssetDownload
                 assetId={asset.id}
                 fileName={asset.title}
                 assetUrl={asset.assetFile}
-                isPurchased
+                purchaseItemId={purchase.purchase.purchaseItems[0].id}
               />
             ) : (
               <Suspense fallback={<LicenseSkeleton />}>

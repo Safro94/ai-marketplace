@@ -142,7 +142,16 @@ export const checkUserPurchasedAsset = async (
         },
       },
     },
+    include: {
+      purchaseItems: {
+        where: {
+          assetId: {
+            equals: assetId,
+          },
+        },
+      },
+    },
   })
 
-  return !!purchase
+  return { isPurchased: !!purchase, purchase }
 }

@@ -12,12 +12,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
+import { toast } from '@/components/ui/toast'
 import { API_ROUTES } from '@/lib/constants'
 import { assetUploadSchema } from '@/lib/schemas'
 import { LicenseOption } from '@/lib/types'
 import { License, LicenseType } from '@prisma/client'
 import { CheckCircle } from 'lucide-react'
-import { FC, PropsWithChildren, useEffect, useState } from 'react'
+import {
+  FC,
+  PropsWithChildren,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 import {
   Control,
   FormState,
@@ -38,8 +45,8 @@ interface Props {
 const MULTIPLIER = 5
 
 export const LicensePricing: FC<Props> = ({ setValue, control, errors }) => {
+  const [isPending, startTransition] = useTransition()
   const [licenses, setLicenses] = useState<License[]>([])
-  const [isLoading, setIsLoading] = useState(true)
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -53,25 +60,35 @@ export const LicensePricing: FC<Props> = ({ setValue, control, errors }) => {
 
   useEffect(() => {
     const fetchLicenses = async () => {
-      try {
-        setIsLoading(true)
-        const response = await fetch(API_ROUTES.licenses())
+      startTransition(async () => {
+        try {
+          const response = await fetch(API_ROUTES.licenses())
 
-        if (response.ok) {
+          if (!response?.ok) {
+            const data = await response?.json()
+            throw new Error(
+              data.error || 'There was an error while fetching the licenses',
+            )
+          }
+
           const data = await response.json()
-          setLicenses(data)
+
+          startTransition(() => {
+            setLicenses(data)
+          })
+        } catch (error) {
+          console.error('Error fetching licenses:', error)
+          toast.error('Error', {
+            description: 'There was an error while fetching the licenses',
+          })
         }
-      } catch (error) {
-        console.error('Error fetching licenses:', error)
-      } finally {
-        setIsLoading(false)
-      }
+      })
     }
 
     fetchLicenses()
   }, [])
 
-  if (isLoading) return <Skeleton className='h-20 rounded' />
+  if (isPending) return <Skeleton className='h-20 rounded' />
 
   const inputProps = {
     type: 'number',

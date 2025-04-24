@@ -5,14 +5,14 @@ import { authClient } from '@/lib/auth-client'
 import { ROUTES } from '@/lib/constants'
 import { OAuthProviders } from '@/lib/types'
 import { TwitterIcon } from 'lucide-react'
-import { FC, useState } from 'react'
+import { FC, useTransition } from 'react'
 import { GithubIcon, GoogleIcon } from './icons'
 import { Button } from './ui/button'
 import { toast } from './ui/toast'
 
 export const SocialButtons: FC<{ sign: 'in' | 'up' }> = ({ sign }) => {
   const { validateCaptcha } = useValidateCaptcha()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   return (
     <>
@@ -30,26 +30,22 @@ export const SocialButtons: FC<{ sign: 'in' | 'up' }> = ({ sign }) => {
             key={provider}
             variant='outline'
             type='button'
-            disabled={isLoading}
+            disabled={isPending}
             onClick={async () => {
               await validateCaptcha()
 
-              await authClient.signIn.social({
-                provider,
-                callbackURL: ROUTES.home(),
-                fetchOptions: {
-                  onRequest: () => {
-                    setIsLoading(true)
+              startTransition(async () => {
+                await authClient.signIn.social({
+                  provider,
+                  callbackURL: ROUTES.home(),
+                  fetchOptions: {
+                    onError(context) {
+                      toast.error('Error', {
+                        description: context.error.message,
+                      })
+                    },
                   },
-                  onResponse() {
-                    setIsLoading(false)
-                  },
-                  onError(context) {
-                    toast.error('Error', {
-                      description: context.error.message,
-                    })
-                  },
-                },
+                })
               })
             }}
           >

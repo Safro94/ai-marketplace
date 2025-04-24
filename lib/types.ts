@@ -5,6 +5,10 @@ import {
   Prisma,
 } from '@prisma/client'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AsyncReturnType<T extends (..._args: any) => Promise<any>> =
+  Awaited<ReturnType<T>>
+
 export enum OAuthProviders {
   GOOGLE = 'google',
   GITHUB = 'github',
