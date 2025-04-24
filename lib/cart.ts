@@ -38,9 +38,7 @@ export const addToCart = async (item: CartItem) => {
 
     // Check if item already exists in cart
     const existingItemIndex = cart.findIndex(
-      (cartItem) =>
-        cartItem.assetId === item.assetId &&
-        cartItem.assetLicenseId === item.assetLicenseId,
+      (cartItem) => cartItem.assetId === item.assetId,
     )
 
     if (existingItemIndex >= 0) {

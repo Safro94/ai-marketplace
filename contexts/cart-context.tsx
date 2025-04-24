@@ -44,6 +44,11 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
 
           if (!state.find((item) => item.assetId === newItem.assetId)) {
             updatedItems.push(newItem)
+          } else {
+            updatedItems.push({
+              ...newItem,
+              assetLicenseId: newItem.assetLicenseId,
+            })
           }
 
           return updatedItems
