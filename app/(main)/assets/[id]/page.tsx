@@ -233,25 +233,24 @@ export default async function AssetPage({
           </div>
 
           <div className='space-y-6 lg:sticky lg:top-20'>
-            {/* Purchase Options or Download */}
             {purchase.isPurchased &&
-            purchase.purchase?.purchaseItems?.[0].id ? (
-              <AssetDownload
-                assetId={asset.id}
-                fileName={asset.title}
-                assetUrl={asset.assetFile}
-                purchaseItemId={purchase.purchase.purchaseItems[0].id}
-              />
-            ) : (
-              <Suspense fallback={<LicenseSkeleton />}>
-                <PurchaseOptions
+              purchase.purchase?.purchaseItems?.[0].id && (
+                <AssetDownload
                   assetId={asset.id}
-                  assetImage={asset.featuredImage}
-                  assetTitle={asset.title}
-                  getLicenses={getLicenses(asset.id)}
+                  fileName={asset.title}
+                  assetUrl={asset.assetFile}
+                  purchaseItemId={purchase.purchase.purchaseItems[0].id}
                 />
-              </Suspense>
-            )}
+              )}
+
+            <Suspense fallback={<LicenseSkeleton />}>
+              <PurchaseOptions
+                assetId={asset.id}
+                assetImage={asset.featuredImage}
+                assetTitle={asset.title}
+                getLicenses={getLicenses(asset.id)}
+              />
+            </Suspense>
 
             {/* Creator Info (Desktop) */}
             <CreatorInfo

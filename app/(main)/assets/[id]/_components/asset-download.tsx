@@ -31,7 +31,7 @@ export const AssetDownload: FC<Props> = ({
         <CardTitle>Download Asset</CardTitle>
         <CardDescription>
           {purchaseItemId
-            ? 'You own this asset. Download it to start using it.'
+            ? 'You own this asset. Download it to start using it. You can also purchase another license type below.'
             : 'Purchase this asset to download it.'}
         </CardDescription>
       </CardHeader>
