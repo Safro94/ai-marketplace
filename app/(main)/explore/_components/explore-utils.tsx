@@ -1,11 +1,11 @@
 import { getPaginatedAssets } from '@/data-access/assets'
 import { EXPLORE_PARAMS } from '@/lib/types'
-import { AssetStatus, Category, Prisma } from '@prisma/client'
+import { AssetStatus, Prisma } from '@prisma/client'
 import 'server-only'
 
 export const getExploreAssets = async (
   searchParams: Promise<{ [key: string]: string }>,
-  categories?: Category[],
+  categoriesIds?: string[],
 ) => {
   const params = await searchParams
 
@@ -36,9 +36,9 @@ export const getExploreAssets = async (
   }
 
   // Category filter
-  if (categories?.length) {
+  if (categoriesIds?.length) {
     where.categoryId = {
-      in: categories.map((category) => category.id),
+      in: categoriesIds,
     }
   }
 

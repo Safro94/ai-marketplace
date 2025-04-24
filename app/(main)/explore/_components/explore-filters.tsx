@@ -6,25 +6,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
-
+import { ExploreFilters as ExploreFiltersType } from '@/lib/types'
 import { StarIcon } from 'lucide-react'
 import { Dispatch, FC, ReactNode, SetStateAction } from 'react'
 
 interface Props {
-  hasActiveFilters: boolean
-  priceRange: number[]
-  maxPrice: number
-  selectedRatings: string[]
-  selectedUseCases: string[]
-  setSelectedUseCases: Dispatch<SetStateAction<string[]>>
-  setSelectedRatings: Dispatch<SetStateAction<string[]>>
-  setPriceRange: Dispatch<SetStateAction<number[]>>
-  clearAllFilters: () => void
+  filters: ExploreFiltersType
+  setFilters: Dispatch<SetStateAction<ExploreFiltersType>>
 }
 
 enum EXPLORE_FITLERS {
@@ -35,60 +27,32 @@ enum EXPLORE_FITLERS {
 }
 
 const RATINGS = [
-  { id: '4-up', label: '4+' },
-  { id: '3-up', label: '3+' },
-  { id: '2-up', label: '2+' },
+  { id: 4, label: '4+' },
+  { id: 3, label: '3+' },
+  { id: 2, label: '2+' },
 ]
 
-export const FiltersContent: FC<Props> = ({
-  hasActiveFilters,
-  priceRange,
-  selectedRatings,
-  selectedUseCases,
-  setSelectedUseCases,
-  setSelectedRatings,
-  setPriceRange,
-  clearAllFilters,
-  maxPrice,
-}) => {
-  const handleUseCaseChange = (useCaseId: string) => {
-    setSelectedUseCases((prev) =>
-      prev.includes(useCaseId)
-        ? prev.filter((id) => id !== useCaseId)
-        : [...prev, useCaseId],
-    )
+export const ExploreFilters: FC<Props> = ({ filters, setFilters }) => {
+  const handleRatingChange = (ratingId: number) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      rating: prevState.rating.includes(ratingId)
+        ? prevState.rating.filter((id) => id !== ratingId)
+        : [...prevState.rating, ratingId],
+    }))
   }
 
-  const handleRatingChange = (ratingId: string) => {
-    setSelectedRatings((prev) =>
-      prev.includes(ratingId)
-        ? prev.filter((id) => id !== ratingId)
-        : [...prev, ratingId],
-    )
-  }
+  const maxPrice = filters.priceRange[1]
 
   return (
-    <>
-      <div className='flex items-center justify-between mb-4'>
-        {hasActiveFilters && (
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={clearAllFilters}
-            className='h-8 text-xs'
-          >
-            Clear all
-          </Button>
-        )}
-      </div>
-
+    <div className='bg-background z-50 p-4 h-full'>
       <Accordion
         type='multiple'
         defaultValue={Object.values(EXPLORE_FITLERS).map((value) => value)}
         className='space-y-2'
       >
         <AccordionItem value={EXPLORE_FITLERS.PRICE} className='border-b-0'>
-          <AccordionTrigger className='py-3 text-sm font-medium'>
+          <AccordionTrigger className='text-sm text-muted-foreground uppercase font-semibold'>
             Price Range
           </AccordionTrigger>
 
@@ -96,12 +60,17 @@ export const FiltersContent: FC<Props> = ({
             <div className='space-y-4'>
               <div className='p-4'>
                 <Slider
-                  defaultValue={[priceRange[0], priceRange[1]]}
-                  max={priceRange[1]}
+                  defaultValue={[filters.priceRange[0], maxPrice]}
+                  max={maxPrice}
                   min={0}
                   step={1}
-                  value={[priceRange[0], priceRange[1]]}
-                  onValueChange={setPriceRange}
+                  value={[filters.priceRange[0], maxPrice]}
+                  onValueChange={(e) => {
+                    setFilters((prevState) => ({
+                      ...prevState,
+                      priceRange: e,
+                    }))
+                  }}
                 />
               </div>
 
@@ -112,12 +81,15 @@ export const FiltersContent: FC<Props> = ({
                     type='number'
                     min={0}
                     max={maxPrice}
-                    value={priceRange[0]}
+                    value={filters.priceRange[0]}
                     onChange={(e) => {
                       const price = Number.parseInt(e.target.value)
                       if (price > maxPrice) return
 
-                      setPriceRange([price, priceRange[1]])
+                      setFilters((prevState) => ({
+                        ...prevState,
+                        priceRange: [price, maxPrice],
+                      }))
                     }}
                     className='h-8 text-xs'
                   />
@@ -131,8 +103,8 @@ export const FiltersContent: FC<Props> = ({
                   <span className='text-xs text-muted-foreground'>$</span>
                   <Input
                     type='number'
-                    value={priceRange[1]}
-                    max={priceRange[1]}
+                    value={maxPrice}
+                    max={maxPrice}
                     disabled
                     className='h-8 text-xs'
                   />
@@ -147,7 +119,7 @@ export const FiltersContent: FC<Props> = ({
             <>
               <Checkbox
                 id={`rating-${item.id}`}
-                checked={selectedRatings.includes(item.id)}
+                checked={filters.rating.includes(item.id)}
                 onCheckedChange={() => handleRatingChange(item.id)}
               />
 
@@ -162,11 +134,11 @@ export const FiltersContent: FC<Props> = ({
           )}
         </Filter>
       </Accordion>
-    </>
+    </div>
   )
 }
 
-const Filter = <T extends { id: string | null }>({
+const Filter = <T extends { id: number | null }>({
   items,
   title,
   value,
@@ -179,7 +151,7 @@ const Filter = <T extends { id: string | null }>({
 }) => {
   return (
     <AccordionItem value={value} className='border-b-0'>
-      <AccordionTrigger className='py-3 text-sm font-medium'>
+      <AccordionTrigger className='text-sm text-muted-foreground uppercase font-semibold'>
         {title}
       </AccordionTrigger>
 

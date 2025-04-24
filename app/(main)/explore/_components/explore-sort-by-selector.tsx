@@ -1,53 +1,67 @@
 'use client'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { EXPLORE_PARAMS } from '@/lib/types'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { EXPLORE_SORT_BY, ExploreFilters } from '@/lib/types'
+import { cn } from '@/lib/utils'
+import { Dispatch, FC, SetStateAction } from 'react'
 
-export const ExploreSortBySelector = () => {
-  const searchParams = useSearchParams()
-  const router = useRouter()
+interface Props {
+  filters: ExploreFilters
+  setFilters: Dispatch<SetStateAction<ExploreFilters>>
+}
 
-  const [sortOption, setSortOption] = useState(
-    searchParams.get(EXPLORE_PARAMS.SORT_BY) || 'featured',
-  )
+const SORT_BY = [
+  {
+    value: EXPLORE_SORT_BY.FEATURED,
+    text: 'Featured',
+  },
+  {
+    value: EXPLORE_SORT_BY.PRICE_LOW,
+    text: 'Price: Low to High',
+  },
+  {
+    value: EXPLORE_SORT_BY.PRICE_HIGH,
+    text: 'Price: High to Low',
+  },
+  {
+    value: EXPLORE_SORT_BY.RATING,
+    text: 'Highest Rated',
+  },
+  {
+    value: EXPLORE_SORT_BY.NEWEST,
+    text: 'Newest',
+  },
+]
 
-  // Update sort option and URL
-  const handleSortChange = (value: string) => {
-    setSortOption(value)
-
-    const params = new URLSearchParams(searchParams.toString())
-    params.set(EXPLORE_PARAMS.SORT_BY, value)
-
-    // Update URL without full page reload
-    window.history.pushState({}, '', `?${params.toString()}`)
-    router.refresh()
+export const ExploreSortBySelector: FC<Props> = ({ filters, setFilters }) => {
+  const handleSortChange = (value: EXPLORE_SORT_BY) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      sort: value,
+    }))
   }
 
   return (
-    <div className='flex items-center space-x-2'>
-      <p className='text-sm text-muted-foreground mr-2'>Sort by:</p>
+    <div className='flex flex-col gap-4 space-x-2 mt-4'>
+      <p className='text-sm text-muted-foreground uppercase font-semibold'>
+        Sort by:
+      </p>
 
-      <Select value={sortOption} onValueChange={handleSortChange}>
-        <SelectTrigger className='w-[180px]'>
-          <SelectValue placeholder='Sort by' />
-        </SelectTrigger>
-
-        <SelectContent>
-          <SelectItem value='featured'>Featured</SelectItem>
-          <SelectItem value='price-low'>Price: Low to High</SelectItem>
-          <SelectItem value='price-high'>Price: High to Low</SelectItem>
-          <SelectItem value='rating'>Highest Rated</SelectItem>
-          <SelectItem value='newest'>Newest</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className='flex flex-wrap gap-2'>
+        {SORT_BY.map((item) => (
+          <Button
+            key={item.value}
+            variant='outline'
+            onClick={() => handleSortChange(item.value)}
+            className={cn(
+              'rounded-full hover:bg-primary hover:text-white',
+              filters.sort === item.value && 'bg-primary text-white',
+            )}
+          >
+            {item.text}
+          </Button>
+        ))}
+      </div>
     </div>
   )
 }

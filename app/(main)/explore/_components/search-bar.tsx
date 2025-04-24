@@ -35,7 +35,7 @@ export const SearchBar: FC<Props> = ({ className }) => {
       <Input
         type='search'
         placeholder='Search assets...'
-        className='pl-10 w-full'
+        className='pl-10 w-full md:min-w-80'
         defaultValue={searchParams.get(EXPLORE_PARAMS.QUERY) || ''}
         onChange={(e) => {
           handleSearch(e.target.value)

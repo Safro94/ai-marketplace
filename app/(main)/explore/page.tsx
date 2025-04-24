@@ -1,19 +1,15 @@
 import { PageContainer } from '@/components/page-container'
+import { ExploreSkeleton } from '@/components/skeletons/explore-skeleton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { toast } from '@/components/ui/toast'
-import {
-  getCategoriesBySlug,
-  getCategoriesWithCount,
-} from '@/data-access/categories'
+import { getCategoriesWithCount } from '@/data-access/categories'
 import { ROUTES } from '@/lib/constants'
 import { EXPLORE_PARAMS } from '@/lib/types'
 import { tryCatch } from '@/lib/utils'
-import { Prisma } from '@prisma/client'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { AssetsGridContainer } from './_components/assets-grid'
 import { ExploreCategoriesSelector } from './_components/explore-categories-selector'
-import { ExploreGridContainer } from './_components/explore-grid-container'
-import { getExploreAssets } from './_components/explore-utils'
 
 interface Props {
   searchParams: Promise<{ category: string; q: string }>
@@ -35,22 +31,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ExplorePage({ searchParams }: Props) {
-  let categories: Prisma.PromiseReturnType<typeof getCategoriesBySlug> = []
   const categorySlug = (await searchParams)[EXPLORE_PARAMS.CATEGORY]
-
-  if (categorySlug) {
-    categories = await getCategoriesBySlug(categorySlug)
-  }
-
-  const { data: assetData, error: assetsError } = await tryCatch(
-    getExploreAssets(searchParams, categories),
-  )
-
-  if (assetsError) {
-    toast.error('An error occurred', {
-      description: 'There was an error while fetching the assets',
-    })
-  }
 
   const { data: categoriesWithCount, error } = await tryCatch(
     getCategoriesWithCount(),
@@ -61,6 +42,11 @@ export default async function ExplorePage({ searchParams }: Props) {
       description: 'There was an error while fetching the categories',
     })
   }
+
+  const urlCategoriesArray = categorySlug?.split(',')
+  const filteredCategoriesIds = categoriesWithCount
+    ?.filter((item) => urlCategoriesArray?.includes(item.slug))
+    ?.map((item) => item.id)
 
   return (
     <PageContainer className='min-h-screen'>
@@ -78,7 +64,7 @@ export default async function ExplorePage({ searchParams }: Props) {
             <div className='flex items-center gap-4'>
               <ExploreCategoriesSelector
                 categories={categoriesWithCount}
-                initialCategories={categorySlug}
+                initialCategories={urlCategoriesArray}
               />
             </div>
 
@@ -88,12 +74,15 @@ export default async function ExplorePage({ searchParams }: Props) {
       </div>
 
       <div className='flex-1'>
-        <ExploreGridContainer assets={assetData?.assets}>
+        <Suspense
+          key={JSON.stringify(await searchParams)}
+          fallback={<ExploreSkeleton />}
+        >
           <AssetsGridContainer
-            assets={assetData?.assets}
-            pagination={assetData?.pagination}
+            searchParams={searchParams}
+            filteredCategoriesIds={filteredCategoriesIds}
           />
-        </ExploreGridContainer>
+        </Suspense>
       </div>
     </PageContainer>
   )

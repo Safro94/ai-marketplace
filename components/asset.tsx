@@ -43,7 +43,7 @@ export const Asset: FC<ExploreAsset> = async ({
           <AssetOptions assetId={id} />
         </CardHeader>
 
-        <CardContent className='p-2 flex-1 grid'>
+        <CardContent className='p-2 grid'>
           <div className='grid grid-cols-[70%_1fr] gap-4 overflow-hidden'>
             <div>
               <h3 className='text-xl font-semibold truncate'>{title}</h3>

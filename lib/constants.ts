@@ -57,7 +57,6 @@ export const API_ROUTES = {
 
 export const CACHE_KEYS = {
   testimonials: () => 'testimonials',
-  categoriesBySlug: () => 'categories-by-slug',
   categoriesWithCount: () => 'categories-with-count',
   assetFavorite: (assetId: string) => `asset-favorite-${assetId}`,
   assetById: (assetId: string) => `asset-${assetId}`,

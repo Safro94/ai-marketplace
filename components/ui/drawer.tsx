@@ -1,14 +1,14 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { ComponentProps, FC } from 'react'
-import { Drawer as DrawerPrimitive } from 'vaul'
+import { ComponentProps, FC, ReactNode } from 'react'
+import { DialogProps, Drawer as DrawerPrimitive } from 'vaul'
 
 const DrawerTrigger = DrawerPrimitive.Trigger
 const DrawerPortal = DrawerPrimitive.Portal
 const DrawerClose = DrawerPrimitive.Close
 
-const Drawer: FC<ComponentProps<typeof DrawerPrimitive.Root>> = ({
+const DrawerRoot: FC<ComponentProps<typeof DrawerPrimitive.Root>> = ({
   shouldScaleBackground = true,
   ...props
 }) => (
@@ -46,7 +46,6 @@ const DrawerContent: FC<ComponentProps<typeof DrawerPrimitive.Content>> = ({
       )}
       {...props}
     >
-      <div className='mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted' />
       {children}
     </DrawerPrimitive.Content>
   </DrawerPortal>
@@ -89,6 +88,23 @@ const DrawerDescription: FC<
     className={cn('text-sm text-muted-foreground', className)}
     {...props}
   />
+)
+
+const Drawer: FC<DialogProps & { trigger: ReactNode; content: ReactNode }> = ({
+  trigger,
+  content,
+  direction = 'right',
+}) => (
+  <DrawerRoot direction={direction}>
+    <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+
+    <DrawerPortal>
+      <DrawerOverlay className='fixed inset-0 bg-black/40' />
+      <DrawerContent className='bg-white flex flex-col h-full md:w-[500px] left-auto p-4'>
+        {content}
+      </DrawerContent>
+    </DrawerPortal>
+  </DrawerRoot>
 )
 
 export {

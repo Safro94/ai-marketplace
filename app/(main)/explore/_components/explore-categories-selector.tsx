@@ -17,7 +17,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useState } from 'react'
 
 interface Props {
-  initialCategories?: string
+  initialCategories?: string[]
   categories: Category[] &
     {
       count: number
@@ -41,7 +41,7 @@ export const ExploreCategoriesSelector: FC<Props> = ({
   const searchParams = useSearchParams()
 
   const [selectedCategorySlugs, setSelectedCategorySlugs] = useState<string[]>(
-    initialCategories ? initialCategories.split(',') : [],
+    initialCategories ? initialCategories : [],
   )
 
   const handleClick = (slug: string) => {

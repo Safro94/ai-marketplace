@@ -93,3 +93,17 @@ export enum EXPLORE_PARAMS {
   PAGE = 'page',
   QUERY = 'q',
 }
+
+export enum EXPLORE_SORT_BY {
+  FEATURED = 'featured',
+  PRICE_LOW = 'price-low',
+  PRICE_HIGH = 'price-high',
+  RATING = 'rating',
+  NEWEST = 'newest',
+}
+
+export interface ExploreFilters {
+  sort: EXPLORE_SORT_BY
+  priceRange: number[]
+  rating: number[]
+}
