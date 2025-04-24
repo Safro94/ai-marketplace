@@ -24,6 +24,7 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
     EXPLORE_PARAMS.SORT_BY,
   ) as EXPLORE_SORT_BY
 
+  const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<ExploreFiltersType>({
     sort: urlSortByOption || EXPLORE_SORT_BY.FEATURED,
     priceRange: [urlMinPrice, maxPrice],
@@ -69,13 +70,22 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
 
   return (
     <>
+      <Button
+        variant='outline'
+        onClick={() => {
+          setShowFilters(true)
+        }}
+      >
+        <Filter className='mr-2 w-4 h-4' />
+        Sort & Filter
+      </Button>
+
       <Sheet
-        trigger={
-          <Button variant='outline'>
-            <Filter className='mr-2 w-4 h-4' />
-            Sort & Filter
-          </Button>
-        }
+        open={showFilters}
+        onOpenChange={() => {
+          console.log('hola')
+          setShowFilters((prevState) => !prevState)
+        }}
         header={<SheetTitle>Sort & Filter</SheetTitle>}
         content={
           <div className='flex-1'>

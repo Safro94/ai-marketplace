@@ -113,14 +113,14 @@ const SheetDescription: FC<
 
 const Sheet: FC<
   SheetPrimitive.DialogProps & {
-    trigger: ReactNode
+    trigger?: ReactNode
     header: ReactNode
     content: ReactNode
     footer: ReactNode
   }
-> = ({ trigger, header, content, footer }) => (
-  <SheetRoot>
-    <SheetTrigger asChild>{trigger}</SheetTrigger>
+> = ({ open, onOpenChange, trigger, header, content, footer }) => (
+  <SheetRoot open={open} onOpenChange={onOpenChange}>
+    {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
 
     <SheetPortal>
       <SheetOverlay className='fixed inset-0 bg-black/40' />
