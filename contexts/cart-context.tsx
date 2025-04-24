@@ -42,13 +42,16 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
           const newItem = action.item as CartItem
           const updatedItems = [...state]
 
-          if (!state.find((item) => item.assetId === newItem.assetId)) {
-            updatedItems.push(newItem)
+          // Check if item already exists in cart
+          const existingItemIndex = updatedItems.findIndex(
+            (cartItem) => cartItem.assetId === newItem.assetId,
+          )
+
+          if (existingItemIndex >= 0) {
+            // Replace the existing item (might be a different license)
+            updatedItems[existingItemIndex] = newItem
           } else {
-            updatedItems.push({
-              ...newItem,
-              assetLicenseId: newItem.assetLicenseId,
-            })
+            updatedItems.push(newItem)
           }
 
           return updatedItems

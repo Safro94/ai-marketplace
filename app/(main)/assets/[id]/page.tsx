@@ -73,7 +73,6 @@ export async function generateMetadata({
   }
 }
 
-// Add the generateStaticParams function at the top of the file
 export async function generateStaticParams() {
   // Get the most popular assets
   const popularAssets = await getAssets({
@@ -92,7 +91,6 @@ export async function generateStaticParams() {
   }))
 }
 
-// Add revalidation period
 export const revalidate = 3600 // Revalidate every hour
 
 export default async function AssetPage({

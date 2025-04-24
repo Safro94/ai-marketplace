@@ -131,6 +131,7 @@ export async function POST(request: Request) {
 
     revalidateTag(CACHE_KEYS.profile(profile.id))
     revalidateTag(CACHE_KEYS.exploreAssets())
+    revalidateTag(CACHE_KEYS.categoriesWithCount())
 
     return NextResponse.json({
       success: true,
@@ -255,6 +256,7 @@ export async function PATCH(request: Request) {
 
     revalidateTag(CACHE_KEYS.assetById(asset.id))
     revalidateTag(CACHE_KEYS.exploreAssets())
+    revalidateTag(CACHE_KEYS.categoriesWithCount())
 
     // // Notify admins if manual review is needed
     // if (moderationResult.status === AssetStatus.PENDING_REVIEW) {

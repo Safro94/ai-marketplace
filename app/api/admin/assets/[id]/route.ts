@@ -31,6 +31,7 @@ export async function POST(
       ...(status === AssetStatus.PUBLISHED ? { approvedAt: new Date() } : {}),
     })
 
+    revalidateTag(CACHE_KEYS.assetById(asset.id))
     revalidateTag(CACHE_KEYS.categoriesWithCount())
     revalidateTag(CACHE_KEYS.exploreAssets())
 
