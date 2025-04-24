@@ -57,6 +57,9 @@ export const ExploreCategoriesSelector: FC<Props> = ({
       params.delete(EXPLORE_PARAMS.CATEGORY)
     }
 
+    const pageUrlParam = params.get(EXPLORE_PARAMS.PAGE)
+    if (pageUrlParam) params.delete(EXPLORE_PARAMS.PAGE)
+
     setSelectedCategorySlugs(newSelectedCategories)
 
     router.push(`?${params.toString()}`)

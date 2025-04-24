@@ -1,9 +1,9 @@
 import { AssetsGrid } from '@/components/assets-grid'
 import { toast } from '@/components/ui/toast'
+import { getExploreAssets } from '@/data-access/assets'
 import { tryCatch } from '@/lib/utils'
 import { FC } from 'react'
 import { ExplorePagination } from './explore-pagination'
-import { getExploreAssets } from './explore-utils'
 import { SearchBar } from './search-bar'
 import { ShowFiltersButton } from './show-filters-button'
 

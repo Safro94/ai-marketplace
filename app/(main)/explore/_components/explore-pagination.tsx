@@ -18,9 +18,7 @@ export const ExplorePagination: FC<Props> = ({ pagination }) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set(EXPLORE_PARAMS.PAGE, newPage.toString())
 
-    // Update URL with new page
-    window.location.search = params.toString()
-    router.refresh()
+    router.replace(`?${params.toString()}`)
   }
 
   return (

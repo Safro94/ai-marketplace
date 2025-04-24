@@ -1,6 +1,7 @@
 import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
+import { EXPLORE_PARAMS, EXPLORE_SORT_BY } from '@/lib/types'
+import { AssetStatus, Prisma } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import { cache } from 'react'
 import 'server-only'
@@ -107,4 +108,113 @@ export const deleteAssetById = async (assetId: string) => {
   return await prisma.asset.delete({
     where: { id: assetId },
   })
+}
+
+export const getExploreAssets = async (
+  searchParams: Promise<{ [key: string]: string }>,
+  categoriesIds?: string[],
+) => {
+  const params = await searchParams
+
+  const query = params[EXPLORE_PARAMS.QUERY]
+  const useCase = params[EXPLORE_PARAMS.USE_CASES]
+  const minPrice = params[EXPLORE_PARAMS.MIN_PRICE]
+    ? Number(params[EXPLORE_PARAMS.MIN_PRICE])
+    : undefined
+  const minRating = params[EXPLORE_PARAMS.MIN_RATING]
+    ? Number(params[EXPLORE_PARAMS.MIN_RATING])
+    : undefined
+  const sortBy = params[EXPLORE_PARAMS.SORT_BY] || 'featured'
+  const page = Number(params[EXPLORE_PARAMS.PAGE] || '1')
+  const limit = Number(params.limit || '20')
+  const skip = (page - 1) * limit
+
+  const where: Prisma.AssetWhereInput = {
+    status: AssetStatus.PUBLISHED,
+  }
+
+  // Text search
+  if (query) {
+    where.OR = [
+      { title: { contains: query, mode: 'insensitive' } },
+      { description: { contains: query, mode: 'insensitive' } },
+      { tags: { hasSome: [query] } },
+    ]
+  }
+
+  // Category filter
+  if (categoriesIds?.length) {
+    where.categoryId = {
+      in: categoriesIds,
+    }
+  }
+
+  // Use case filter
+  if (useCase) {
+    where.useCase = useCase
+  }
+
+  // Price range filter
+  if (minPrice !== undefined) {
+    where.basePrice = {
+      gte: minPrice,
+    }
+  }
+
+  // Rating filter
+  if (minRating !== undefined) {
+    where.averageRating = { gte: minRating }
+  }
+
+  // Determine sort order
+  let orderBy:
+    | Prisma.AssetOrderByWithRelationInput
+    | Prisma.AssetOrderByWithRelationInput[]
+
+  switch (sortBy) {
+    case EXPLORE_SORT_BY.PRICE_LOW:
+      orderBy = { basePrice: 'asc' }
+      break
+    case EXPLORE_SORT_BY.PRICE_HIGH:
+      orderBy = { basePrice: 'desc' }
+      break
+    case EXPLORE_SORT_BY.RATING:
+      orderBy = { averageRating: 'desc' }
+      break
+    case EXPLORE_SORT_BY.NEWEST:
+      orderBy = { createdAt: 'desc' }
+      break
+    default:
+      // "featured" - sort by a combination of factors
+      orderBy = [
+        { averageRating: 'desc' },
+        { sales: 'desc' },
+        { createdAt: 'desc' },
+      ]
+  }
+
+  // Execute the query
+  const [assets, totalCount] = await getPaginatedAssets({
+    where,
+    orderBy,
+    skip,
+    limit,
+  })
+
+  // Calculate pagination info
+  const totalPages = Math.ceil(totalCount / limit)
+  const hasNextPage = page < totalPages
+  const hasPrevPage = page > 1
+
+  return {
+    assets,
+    pagination: {
+      page,
+      limit,
+      totalCount,
+      totalPages,
+      hasNextPage,
+      hasPrevPage,
+    },
+  }
 }

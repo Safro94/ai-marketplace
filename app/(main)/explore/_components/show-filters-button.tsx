@@ -51,6 +51,9 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
       params.delete(EXPLORE_PARAMS.MIN_PRICE)
     }
 
+    const pageUrlParam = params.get(EXPLORE_PARAMS.PAGE)
+    if (pageUrlParam) params.delete(EXPLORE_PARAMS.PAGE)
+
     router.push(`?${params.toString()}`)
   }
 
