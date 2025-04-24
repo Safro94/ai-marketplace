@@ -31,16 +31,6 @@ export const getCreatorsLinks = (
   })
 }
 
-export async function tryCatch<T, E = Error>(promise: Promise<T>) {
-  try {
-    const data = await promise
-    return { data, error: null }
-  } catch (error) {
-    console.error(error)
-    return { data: null, error: error as E }
-  }
-}
-
 export const formatCurrency = (
   amount: number,
   currency: string = 'USD',

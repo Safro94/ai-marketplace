@@ -1,14 +1,14 @@
+import { ErrorToast } from '@/components/error-toast'
 import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
-import { toast } from '@/components/ui/toast'
 import { getAssetById } from '@/data-access/assets'
 import { getCategoriesWithCount } from '@/data-access/categories'
 import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
-import { tryCatch } from '@/lib/utils'
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 import { AssetUploadForm } from '../../../_components/asset-upload-form'
 
 export default async function EditAssetPage({
@@ -53,14 +53,7 @@ export default async function EditAssetPage({
     redirect(ROUTES.creatorDashboard())
   }
 
-  const { data, error } = await tryCatch(getCategoriesWithCount())
-
-  if (error) {
-    toast.error('Error', {
-      description: 'Failed to fetch categories',
-    })
-    redirect(ROUTES.creatorDashboard())
-  }
+  const { data, error } = await getCategoriesWithCount()
 
   return (
     <PageContainer>
@@ -73,6 +66,12 @@ export default async function EditAssetPage({
         ]}
       />
 
+      <Suspense>
+        {error && (
+          <ErrorToast error='There was an error while fetching the categories' />
+        )}
+      </Suspense>
+
       <div className='mb-8'>
         <h1 className='text-3xl font-bold tracking-tight mb-2'>
           Edit {asset.title}
@@ -83,7 +82,7 @@ export default async function EditAssetPage({
         </p>
       </div>
 
-      <AssetUploadForm categories={data} initialData={asset} />
+      {data && <AssetUploadForm categories={data} initialData={asset} />}
     </PageContainer>
   )
 }

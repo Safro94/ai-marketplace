@@ -1,7 +1,6 @@
 import { AssetsGrid } from '@/components/assets-grid'
-import { toast } from '@/components/ui/toast'
+import { ErrorToast } from '@/components/error-toast'
 import { getExploreAssets } from '@/data-access/assets'
-import { tryCatch } from '@/lib/utils'
 import { FC } from 'react'
 import { ExplorePagination } from './explore-pagination'
 import { SearchBar } from './search-bar'
@@ -16,18 +15,17 @@ export const AssetsGridContainer: FC<Props> = async ({
   filteredCategoriesIds,
   searchParams,
 }) => {
-  const { data, error } = await tryCatch(
-    getExploreAssets(searchParams, filteredCategoriesIds),
+  const { data, error } = await getExploreAssets(
+    searchParams,
+    filteredCategoriesIds,
   )
-
-  if (error) {
-    toast.error('An error occurred', {
-      description: 'There was an error while fetching the assets',
-    })
-  }
 
   return (
     <div>
+      {error && (
+        <ErrorToast error='There was an error while fetching the assets' />
+      )}
+
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4'>
         <SearchBar />
 

@@ -1,10 +1,11 @@
+import { withErrorHandler } from '@/lib/actions-error-handling'
 import { CACHE_KEYS } from '@/lib/constants'
 import { AssetStatus } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
 import prisma from '../lib/prisma'
 
-export const getCategoriesWithCount = async () => {
+export const getCategoriesWithCount = withErrorHandler(async () => {
   'use cache'
 
   unstable_cacheTag(CACHE_KEYS.categoriesWithCount())
@@ -36,4 +37,4 @@ export const getCategoriesWithCount = async () => {
   )
 
   return categoriesWithData
-}
+})

@@ -50,11 +50,11 @@ export const AssetDownloadButton: FC<Props> = ({
       })
 
       startTransition(async () => {
-        const saveResult = await saveDownload(assetId, purchaseItemId)
+        const { error } = await saveDownload(assetId, purchaseItemId)
 
-        if (!saveResult.success) {
+        if (error) {
           toast.error('Save Failed', {
-            description: saveResult.error || 'Failed to save download',
+            description: error || 'Failed to save download',
           })
 
           return

@@ -1,33 +1,40 @@
 /**
- * A higher order function that wraps server actions to provide consistent error handling
+ * A higher order function that wraps functions to provide consistent error handling
  *
- * @param serverAction - The server action function to wrap
+ * @param fn - The function to wrap
  * @returns A wrapped function that returns a standardized result object
  */
 
-export const withServerActionErrorHandler = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends (...args: any[]) => Promise<any>,
->(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const withErrorHandler = <T extends (...args: any[]) => Promise<any>>(
   serverAction: T,
 ) => {
   return async (
     ...args: Parameters<T>
   ): Promise<{
-    success: boolean
     data?: Awaited<ReturnType<T>>
     error?: string
   }> => {
     try {
       const result = await serverAction(...args)
-      return { success: true, data: result }
+      return { data: result }
     } catch (error) {
       console.error('Server action error:', error)
+      // Return error instead of re-throwing it
       return {
-        success: false,
         error:
           error instanceof Error ? error.message : 'An unknown error occurred',
       }
     }
+  }
+}
+
+export async function tryCatch<T, E = Error>(promise: Promise<T>) {
+  try {
+    const data = await promise
+    return { data, error: null }
+  } catch (error) {
+    console.error(error)
+    return { data: null, error: error as E }
   }
 }

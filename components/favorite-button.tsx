@@ -3,7 +3,7 @@
 import { addOrRemoveFavorite } from '@/actions/favorite'
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
-import { cn, tryCatch } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Favorite } from '@prisma/client'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -41,28 +41,26 @@ export const FavoriteButton: FC<Props> = ({ assetId, favorite }) => {
     }
 
     startTransition(async () => {
-      const { data, error } = await tryCatch(addOrRemoveFavorite(assetId))
+      const { data, error } = await addOrRemoveFavorite(assetId)
 
       if (error) {
-        console.error('Error toggling favorite:', error)
-
         toast.error('Error', {
           description: 'Failed to update favorites. Please try again.',
         })
 
-        throw Error('Failed to update favorites. Please try again')
+        return
       }
 
       startTransition(() => {
-        setIsFavorited(data.favorited)
+        setIsFavorited(!!data?.favorited)
       })
 
       router.refresh()
 
       toast.success(
-        data.favorited ? 'Added to favorites' : 'Removed from favorites',
+        data?.favorited ? 'Added to favorites' : 'Removed from favorites',
         {
-          description: data.favorited
+          description: data?.favorited
             ? 'This asset has been added to your favorites'
             : 'This asset has been removed from your favorites',
         },

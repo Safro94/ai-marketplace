@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ROUTES } from '@/lib/constants'
-import { tryCatch } from '@/lib/utils'
 import { User } from 'better-auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -76,12 +75,13 @@ export const HeaderDropdown: FC<Props> = ({ isCreator, user }) => {
 
         <DropdownMenuItem
           onClick={async () => {
-            const { error } = await tryCatch(signUserOut())
+            const { error } = await signUserOut()
 
             if (error) {
               toast.error('Error', {
                 description: 'There was an error while signing you out.',
               })
+              return
             }
 
             router.push(ROUTES.home())

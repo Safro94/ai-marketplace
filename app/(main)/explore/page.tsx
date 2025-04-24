@@ -1,11 +1,10 @@
+import { ErrorToast } from '@/components/error-toast'
 import { PageContainer } from '@/components/page-container'
 import { ExploreSkeleton } from '@/components/skeletons/explore-skeleton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { toast } from '@/components/ui/toast'
 import { getCategoriesWithCount } from '@/data-access/categories'
 import { ROUTES } from '@/lib/constants'
 import { EXPLORE_PARAMS } from '@/lib/types'
-import { tryCatch } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { AssetsGridContainer } from './_components/assets-grid'
@@ -33,15 +32,8 @@ export const metadata: Metadata = {
 export default async function ExplorePage({ searchParams }: Props) {
   const categorySlug = (await searchParams)[EXPLORE_PARAMS.CATEGORY]
 
-  const { data: categoriesWithCount, error } = await tryCatch(
-    getCategoriesWithCount(),
-  )
-
-  if (error) {
-    toast.error('An error occurred', {
-      description: 'There was an error while fetching the categories',
-    })
-  }
+  const { data: categoriesWithCount, error: categoriesWithCountError } =
+    await getCategoriesWithCount()
 
   const urlCategoriesArray = categorySlug?.split(',')
   const filteredCategoriesIds = categoriesWithCount
@@ -50,6 +42,12 @@ export default async function ExplorePage({ searchParams }: Props) {
 
   return (
     <PageContainer className='min-h-screen'>
+      <Suspense>
+        {categoriesWithCountError && (
+          <ErrorToast error='There was an error while fetching the categories' />
+        )}
+      </Suspense>
+
       <div className='mb-6'>
         <h1 className='text-3xl font-bold tracking-tight mb-2'>
           Explore AI Assets

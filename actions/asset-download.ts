@@ -2,12 +2,12 @@
 
 import { downloadCreate } from '@/data-access/download'
 import { getUserProfile } from '@/data-access/profile'
-import { withServerActionErrorHandler } from '@/lib/actions-error-handling'
+import { withErrorHandler } from '@/lib/actions-error-handling'
 import { CACHE_KEYS } from '@/lib/constants'
 import { validateSession } from '@/lib/session'
 import { revalidateTag } from 'next/cache'
 
-export const saveDownload = withServerActionErrorHandler(
+export const saveDownload = withErrorHandler(
   async (assetId: string, purchaseItemId: string) => {
     const { user } = await validateSession()
     const profile = await getUserProfile(user.id)

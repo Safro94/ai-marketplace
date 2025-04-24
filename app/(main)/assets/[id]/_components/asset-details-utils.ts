@@ -1,6 +1,6 @@
+import { tryCatch } from '@/lib/actions-error-handling'
 import { API_ROUTES, CACHE_KEYS } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
-import { tryCatch } from '@/lib/utils'
 
 export const getLicenses = async (assetId: string) => {
   const { data: response, error } = await tryCatch(

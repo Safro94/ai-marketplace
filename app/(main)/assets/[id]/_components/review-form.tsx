@@ -9,7 +9,7 @@ import { toast } from '@/components/ui/toast'
 import { useAuth } from '@/hooks/use-auth'
 import { StarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { FC, useState, useTransition } from 'react'
 
 interface Props {
   assetId: string
@@ -18,12 +18,12 @@ interface Props {
 export const ReviewForm: FC<Props> = ({ assetId }) => {
   const { user } = useAuth()
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [title, setTitle] = useState('')
   const [comment, setComment] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,10 +56,8 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
       return
     }
 
-    setIsSubmitting(true)
-
-    try {
-      await createReviewAction({
+    startTransition(async () => {
+      const { error } = await createReviewAction({
         asset: { connect: { id: assetId } },
         userProfile: { connect: { userId: user.id } },
         rating,
@@ -67,26 +65,28 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
         comment,
       })
 
+      if (error) {
+        toast.error('Error', {
+          description:
+            'There was a problem submitting your review. Please try again.',
+        })
+
+        return
+      }
+
       toast.success('Review submitted', {
         description: 'Thank you for your feedback!',
       })
 
-      // Reset form
-      setRating(0)
-      setTitle('')
-      setComment('')
+      startTransition(() => {
+        // Reset form
+        setRating(0)
+        setTitle('')
+        setComment('')
 
-      router.refresh()
-    } catch (error) {
-      console.error('Review submission error:', error)
-
-      toast.error('Error', {
-        description:
-          'There was a problem submitting your review. Please try again.',
+        router.refresh()
       })
-    } finally {
-      setIsSubmitting(false)
-    }
+    })
   }
 
   return (
@@ -147,14 +147,11 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
           placeholder='Share your experience with this asset'
           className='min-h-[100px]'
           maxLength={1000}
+          currentLength={comment?.length}
         />
       </div>
 
-      <LoadingButton
-        isLoading={isSubmitting}
-        type='submit'
-        disabled={isSubmitting}
-      >
+      <LoadingButton type='submit' isLoading={isPending} disabled={isPending}>
         Submit Review
       </LoadingButton>
 

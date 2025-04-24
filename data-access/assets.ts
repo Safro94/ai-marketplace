@@ -1,3 +1,4 @@
+import { withErrorHandler } from '@/lib/actions-error-handling'
 import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { EXPLORE_PARAMS, EXPLORE_SORT_BY } from '@/lib/types'
@@ -110,111 +111,113 @@ export const deleteAssetById = async (assetId: string) => {
   })
 }
 
-export const getExploreAssets = async (
-  searchParams: Promise<{ [key: string]: string }>,
-  categoriesIds?: string[],
-) => {
-  const params = await searchParams
+export const getExploreAssets = withErrorHandler(
+  async (
+    searchParams: Promise<{ [key: string]: string }>,
+    categoriesIds?: string[],
+  ) => {
+    const params = await searchParams
 
-  const query = params[EXPLORE_PARAMS.QUERY]
-  const useCase = params[EXPLORE_PARAMS.USE_CASES]
-  const minPrice = params[EXPLORE_PARAMS.MIN_PRICE]
-    ? Number(params[EXPLORE_PARAMS.MIN_PRICE])
-    : undefined
-  const minRating = params[EXPLORE_PARAMS.MIN_RATING]
-    ? Number(params[EXPLORE_PARAMS.MIN_RATING])
-    : undefined
-  const sortBy = params[EXPLORE_PARAMS.SORT_BY] || 'featured'
-  const page = Number(params[EXPLORE_PARAMS.PAGE] || '1')
-  const limit = Number(params.limit || '20')
-  const skip = (page - 1) * limit
+    const query = params[EXPLORE_PARAMS.QUERY]
+    const useCase = params[EXPLORE_PARAMS.USE_CASES]
+    const minPrice = params[EXPLORE_PARAMS.MIN_PRICE]
+      ? Number(params[EXPLORE_PARAMS.MIN_PRICE])
+      : undefined
+    const minRating = params[EXPLORE_PARAMS.MIN_RATING]
+      ? Number(params[EXPLORE_PARAMS.MIN_RATING])
+      : undefined
+    const sortBy = params[EXPLORE_PARAMS.SORT_BY] || 'featured'
+    const page = Number(params[EXPLORE_PARAMS.PAGE] || '1')
+    const limit = Number(params.limit || '20')
+    const skip = (page - 1) * limit
 
-  const where: Prisma.AssetWhereInput = {
-    status: AssetStatus.PUBLISHED,
-  }
-
-  // Text search
-  if (query) {
-    where.OR = [
-      { title: { contains: query, mode: 'insensitive' } },
-      { description: { contains: query, mode: 'insensitive' } },
-      { tags: { hasSome: [query] } },
-    ]
-  }
-
-  // Category filter
-  if (categoriesIds?.length) {
-    where.categoryId = {
-      in: categoriesIds,
+    const where: Prisma.AssetWhereInput = {
+      status: AssetStatus.PUBLISHED,
     }
-  }
 
-  // Use case filter
-  if (useCase) {
-    where.useCase = useCase
-  }
-
-  // Price range filter
-  if (minPrice !== undefined) {
-    where.basePrice = {
-      gte: minPrice,
-    }
-  }
-
-  // Rating filter
-  if (minRating !== undefined) {
-    where.averageRating = { gte: minRating }
-  }
-
-  // Determine sort order
-  let orderBy:
-    | Prisma.AssetOrderByWithRelationInput
-    | Prisma.AssetOrderByWithRelationInput[]
-
-  switch (sortBy) {
-    case EXPLORE_SORT_BY.PRICE_LOW:
-      orderBy = { basePrice: 'asc' }
-      break
-    case EXPLORE_SORT_BY.PRICE_HIGH:
-      orderBy = { basePrice: 'desc' }
-      break
-    case EXPLORE_SORT_BY.RATING:
-      orderBy = { averageRating: 'desc' }
-      break
-    case EXPLORE_SORT_BY.NEWEST:
-      orderBy = { createdAt: 'desc' }
-      break
-    default:
-      // "featured" - sort by a combination of factors
-      orderBy = [
-        { averageRating: 'desc' },
-        { sales: 'desc' },
-        { createdAt: 'desc' },
+    // Text search
+    if (query) {
+      where.OR = [
+        { title: { contains: query, mode: 'insensitive' } },
+        { description: { contains: query, mode: 'insensitive' } },
+        { tags: { hasSome: [query] } },
       ]
-  }
+    }
 
-  // Execute the query
-  const [assets, totalCount] = await getPaginatedAssets({
-    where,
-    orderBy,
-    skip,
-    limit,
-  })
+    // Category filter
+    if (categoriesIds?.length) {
+      where.categoryId = {
+        in: categoriesIds,
+      }
+    }
 
-  // Calculate pagination info
-  const totalPages = Math.ceil(totalCount / limit)
-  const hasNextPage = page < totalPages
-  const hasPrevPage = page > 1
+    // Use case filter
+    if (useCase) {
+      where.useCase = useCase
+    }
 
-  return {
-    assets,
-    pagination: {
-      page,
+    // Price range filter
+    if (minPrice !== undefined) {
+      where.basePrice = {
+        gte: minPrice,
+      }
+    }
+
+    // Rating filter
+    if (minRating !== undefined) {
+      where.averageRating = { gte: minRating }
+    }
+
+    // Determine sort order
+    let orderBy:
+      | Prisma.AssetOrderByWithRelationInput
+      | Prisma.AssetOrderByWithRelationInput[]
+
+    switch (sortBy) {
+      case EXPLORE_SORT_BY.PRICE_LOW:
+        orderBy = { basePrice: 'asc' }
+        break
+      case EXPLORE_SORT_BY.PRICE_HIGH:
+        orderBy = { basePrice: 'desc' }
+        break
+      case EXPLORE_SORT_BY.RATING:
+        orderBy = { averageRating: 'desc' }
+        break
+      case EXPLORE_SORT_BY.NEWEST:
+        orderBy = { createdAt: 'desc' }
+        break
+      default:
+        // "featured" - sort by a combination of factors
+        orderBy = [
+          { averageRating: 'desc' },
+          { sales: 'desc' },
+          { createdAt: 'desc' },
+        ]
+    }
+
+    // Execute the query
+    const [assets, totalCount] = await getPaginatedAssets({
+      where,
+      orderBy,
+      skip,
       limit,
-      totalCount,
-      totalPages,
-      hasNextPage,
-      hasPrevPage,
-    },
-  }
-}
+    })
+
+    // Calculate pagination info
+    const totalPages = Math.ceil(totalCount / limit)
+    const hasNextPage = page < totalPages
+    const hasPrevPage = page > 1
+
+    return {
+      assets,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasNextPage,
+        hasPrevPage,
+      },
+    }
+  },
+)
