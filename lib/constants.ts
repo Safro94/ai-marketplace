@@ -90,7 +90,6 @@ export const APP_DATA = {
 export const EMAIL_FROM = `${APP_DATA.name} <${process.env.NEXT_PUBLIC_RESEND_EMAIL}>`
 export const PAYPAL_EMAIL = process.env.NEXT_PUBLIC_PAYPAL_EMAIL
 export const SUPPORT_EMAIL = `support@${APP_DATA.lowercaseName}.pro`
-export const INFO_EMAIL = `info@${APP_DATA.lowercaseName}.pro`
 export const PRIVACY_EMAIL = `privacy@${APP_DATA.lowercaseName}.pro`
 export const CREATORS_EMAIL = `creators@${APP_DATA.lowercaseName}.pro`
 export const BIO_MAX_LENGTH = 500
@@ -99,6 +98,8 @@ export const CART_COOKIE_NAME = 'cart_session_id'
 export const CART_EXPIRY = 60 * 60 * 24 * 30 // 30 days in seconds
 export const PAGE_PADDING = 'px-4 md:px-8'
 export const TRANSITION_DELAY = 0.2
+export const TWITTER_URL = 'https://x.com/AIAssetHub'
+export const LINKEDIN_URL = 'https://www.linkedin.com/company/aiassethub'
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },

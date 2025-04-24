@@ -1,3 +1,4 @@
+import { ErrorToast } from '@/components/error-toast'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Motion } from '@/components/ui/motion'
 import { getCategoriesWithCount } from '@/data-access/categories'
@@ -13,6 +14,7 @@ import {
   Workflow,
 } from 'lucide-react'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 const iconMap: Record<string, LucideIcon> = {
   MessageSquare: MessageSquare,
@@ -24,50 +26,58 @@ const iconMap: Record<string, LucideIcon> = {
 }
 
 export const CategoryShowcase = async () => {
-  const categories = await getCategoriesWithCount()
+  const { data, error } = await getCategoriesWithCount()
 
   return (
-    <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-      {categories.map((category, i) => {
-        // Get the icon component or default to MessageSquare
-        const IconComponent =
-          category.iconName && iconMap[category.iconName]
-            ? iconMap[category.iconName]
-            : MessageSquare
+    <>
+      <Suspense>
+        {error && (
+          <ErrorToast error='There was an error while fetching the categories' />
+        )}
+      </Suspense>
 
-        return (
-          <Motion
-            key={category.id}
-            initial='hidden'
-            whileInView='visible'
-            viewport={{ once: true, margin: '-100px' }}
-            variants={FADE_IN_UP(TRANSITION_DELAY * i)}
-          >
-            <Link
-              href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
+      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        {data?.map((category, i) => {
+          // Get the icon component or default to MessageSquare
+          const IconComponent =
+            category.iconName && iconMap[category.iconName]
+              ? iconMap[category.iconName]
+              : MessageSquare
+
+          return (
+            <Motion
+              key={category.id}
+              initial='hidden'
+              whileInView='visible'
+              viewport={{ once: true, margin: '-100px' }}
+              variants={FADE_IN_UP(TRANSITION_DELAY * i)}
             >
-              <Card className='h-full transition-colors card-hover'>
-                <CardHeader>
-                  <div
-                    className={`rounded-lg ${category.colorClass || 'bg-primary/10 text-primary'}`}
-                  >
-                    <IconComponent className='h-10 w-10' />
-                  </div>
-                </CardHeader>
+              <Link
+                href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
+              >
+                <Card className='h-full transition-colors card-hover'>
+                  <CardHeader>
+                    <div
+                      className={`rounded-lg ${category.colorClass || 'bg-primary/10 text-primary'}`}
+                    >
+                      <IconComponent className='h-10 w-10' />
+                    </div>
+                  </CardHeader>
 
-                <CardContent className='flex items-start space-x-4'>
-                  <div className='space-y-1'>
-                    <h3 className='font-medium text-lg'>{category.name}</h3>
-                    <p className='text-sm text-muted-foreground'>
-                      {category.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          </Motion>
-        )
-      })}
-    </div>
+                  <CardContent className='flex items-start space-x-4'>
+                    <div className='space-y-1'>
+                      <h3 className='font-medium text-lg'>{category.name}</h3>
+                      <p className='text-sm text-muted-foreground'>
+                        {category.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </Motion>
+          )
+        })}
+      </div>
+    </>
   )
 }

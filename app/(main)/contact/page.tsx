@@ -1,5 +1,4 @@
 import { PageContainer } from '@/components/page-container'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -7,8 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { INFO_EMAIL, SUPPORT_EMAIL } from '@/lib/constants'
-import { ExternalLink, Mail } from 'lucide-react'
+import { LINKEDIN_URL, SUPPORT_EMAIL, TWITTER_URL } from '@/lib/constants'
+import { ExternalLink, Linkedin, Mail, TwitterIcon } from 'lucide-react'
 
 export default function ContactPage() {
   return (
@@ -45,13 +44,6 @@ export default function ContactPage() {
                     >
                       {SUPPORT_EMAIL} <ExternalLink className='w-4 h-4' />
                     </a>
-
-                    <a
-                      href={`mailto:${INFO_EMAIL}`}
-                      className='text-sm text-muted-foreground flex items-center gap-2'
-                    >
-                      {INFO_EMAIL} <ExternalLink className='w-4 h-4' />
-                    </a>
                   </div>
                 </div>
               </div>
@@ -60,42 +52,15 @@ export default function ContactPage() {
                 <h3 className='font-medium mb-2'>Follow Us</h3>
                 <div className='flex space-x-2'>
                   {/* Twitter icon */}
-                  <Button variant='outline' size='icon'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      width='20'
-                      height='20'
-                      viewBox='0 0 24 24'
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      className='lucide lucide-twitter'
-                    >
-                      <path d='M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z' />
-                    </svg>
-                  </Button>
+                  <a href={TWITTER_URL} target='_blank' rel='noreferrer'>
+                    <TwitterIcon className='w-5 h-5' />
+                    <span className='sr-only'>Twitter</span>
+                  </a>
 
-                  {/* Linkedin Icon */}
-                  <Button variant='outline' size='icon'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      width='20'
-                      height='20'
-                      viewBox='0 0 24 24'
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      className='lucide lucide-linkedin'
-                    >
-                      <path d='M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z' />
-                      <rect width='4' height='12' x='2' y='9' />
-                      <circle cx='4' cy='4' r='2' />
-                    </svg>
-                  </Button>
+                  <a href={LINKEDIN_URL} target='_blank' rel='noreferrer'>
+                    <Linkedin className='w-5 h-5 dark:fill-white' />
+                    <span className='sr-only'>Linkedin</span>
+                  </a>
                 </div>
               </div>
             </CardContent>

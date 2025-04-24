@@ -1,8 +1,10 @@
+import { ErrorToast } from '@/components/error-toast'
 import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { getCategoriesWithCount } from '@/data-access/categories'
 import { ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { AssetUploadForm } from '../_components/asset-upload-form'
 
 export const metadata: Metadata = {
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
 }
 
 export default async function UploadAssetPage() {
-  const categories = await getCategoriesWithCount()
+  const { data, error } = await getCategoriesWithCount()
 
   return (
     <PageContainer>
@@ -31,6 +33,12 @@ export default async function UploadAssetPage() {
         ]}
       />
 
+      <Suspense>
+        {error && (
+          <ErrorToast error='There was an error while fetching the categories' />
+        )}
+      </Suspense>
+
       <div className='mb-8'>
         <h1 className='text-3xl font-bold tracking-tight mb-2'>
           Upload New Asset
@@ -40,7 +48,7 @@ export default async function UploadAssetPage() {
         </p>
       </div>
 
-      <AssetUploadForm categories={categories} />
+      {data && <AssetUploadForm categories={data} />}
 
       <div className='mt-8 text-center text-sm text-muted-foreground'>
         <p>

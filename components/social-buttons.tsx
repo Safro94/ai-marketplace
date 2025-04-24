@@ -4,7 +4,6 @@ import { useValidateCaptcha } from '@/hooks/use-validate-captcha'
 import { authClient } from '@/lib/auth-client'
 import { ROUTES } from '@/lib/constants'
 import { OAuthProviders } from '@/lib/types'
-import { TwitterIcon } from 'lucide-react'
 import { FC, useTransition } from 'react'
 import { GithubIcon, GoogleIcon } from './icons'
 import { Button } from './ui/button'
@@ -20,7 +19,6 @@ export const SocialButtons: FC<{ sign: 'in' | 'up' }> = ({ sign }) => {
         const icon = {
           google: GoogleIcon,
           github: GithubIcon,
-          twitter: TwitterIcon,
         }
 
         const Icon = icon[provider]

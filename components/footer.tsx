@@ -1,4 +1,9 @@
-import { PAGE_PADDING, ROUTES } from '@/lib/constants'
+import {
+  LINKEDIN_URL,
+  PAGE_PADDING,
+  ROUTES,
+  TWITTER_URL,
+} from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { Linkedin, TwitterIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -17,12 +22,12 @@ export const Footer = () => {
             </p>
 
             <div className='flex gap-4'>
-              <a href='https://twitter.com' target='_blank' rel='noreferrer'>
+              <a href={TWITTER_URL} target='_blank' rel='noreferrer'>
                 <TwitterIcon className='w-5 h-5' />
                 <span className='sr-only'>Twitter</span>
               </a>
 
-              <a href='https://github.com' target='_blank' rel='noreferrer'>
+              <a href={LINKEDIN_URL} target='_blank' rel='noreferrer'>
                 <Linkedin className='w-5 h-5 dark:fill-white' />
                 <span className='sr-only'>Linkedin</span>
               </a>

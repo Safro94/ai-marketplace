@@ -7,8 +7,8 @@ export const siteConfig = {
   ogImage: '/images/og-image.jpg',
   description: 'Discover and purchase high-quality AI assets for your projects',
   links: {
-    twitter: `https://twitter.com/aiassethub`,
-    github: `https://github.com/aiassethub`,
+    twitter: 'https://x.com/AIAssetHub',
+    linkedin: '',
   },
   creator: `@aiassethub`,
   keywords: [
@@ -89,8 +89,7 @@ export function generateOrganizationJsonLd() {
     url: 'https://www.aiassethub.pro',
     logo: `https://www.aiassethub.pro/images/logo.png`,
     sameAs: [
-      `https://twitter.com/aiassethub`,
-      `https://github.com/aiassethub`,
+      `https://x.com/AIAssetHub`,
       `https://linkedin.com/company/aiassethub`,
     ],
     contactPoint: {

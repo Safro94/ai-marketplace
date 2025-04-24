@@ -12,7 +12,6 @@ export type AsyncReturnType<T extends (..._args: any) => Promise<any>> =
 export enum OAuthProviders {
   GOOGLE = 'google',
   GITHUB = 'github',
-  TWITTER = 'twitter',
 }
 
 export enum USER_TYPES {
