@@ -24,6 +24,7 @@ export const ROUTES = {
   creatorFAQ: () => '/creators/faq',
   creatorDashboard: () => '/creator-dashboard',
   creatorDashboardUpload: () => '/creator-dashboard/upload',
+  creatorDashboarAnalytics: () => '/creator-dashboard/analytics',
   creatorDashboardAssetEdit: (assetId: string) =>
     `/creator-dashboard/assets/${assetId}/edit`,
   creatorDashboardThankYou: () => '/creator-dashboard/thank-you',
@@ -48,6 +49,9 @@ export const API_ROUTES = {
   assetAdminFeature: (assetId: string) =>
     `/api/admin/assets/${assetId}/feature`,
   creatorsApply: () => '/api/creators/apply',
+  creatorsAnalyticsSales: () => '/api/creators/analytics/sales',
+  creatorsAnalyticsVisits: () => '/api/creators/analytics/visits',
+  creatorsAnalyticsAssets: () => '/api/creators/analytics/assets',
   notifications: () => '/api/notifications',
   notificationsReadAll: () => '/api/notifications/read-all',
   notificationRead: (id: string) => `/api/notifications/${id}/read`,

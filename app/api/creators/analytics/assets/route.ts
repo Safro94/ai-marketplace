@@ -1,3 +1,5 @@
+import { getUserProfile } from '@/data-access/profile'
+import { SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
@@ -11,10 +13,7 @@ export async function GET() {
   }
 
   // Get user profile
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-    include: { creatorProfile: true },
-  })
+  const profile = await getUserProfile(session.user.id)
 
   if (!profile || !isAdminOrCreator(profile) || !profile.creatorProfile) {
     return NextResponse.json(
@@ -30,6 +29,11 @@ export async function GET() {
         creatorId: profile.id,
       },
       include: {
+        assetAnalytics: {
+          select: {
+            uniqueViews: true,
+          },
+        },
         PurchaseItem: {
           where: {
             purchase: {
@@ -43,8 +47,9 @@ export async function GET() {
     // Calculate sales and revenue for each asset
     const assetPerformance = assets.map((asset) => {
       const sales = asset.PurchaseItem.length
+      const uniqueViews = asset.assetAnalytics?.uniqueViews
       const revenue = asset.PurchaseItem.reduce(
-        (total, purchase) => total + purchase.amount,
+        (total, purchase) => total + (purchase.amount - SERVICE_CHARGE * 100),
         0,
       )
 
@@ -52,6 +57,7 @@ export async function GET() {
         name: asset.title,
         sales,
         revenue,
+        uniqueViews,
       }
     })
 

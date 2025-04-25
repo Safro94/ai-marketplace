@@ -1,3 +1,5 @@
+import { getUserProfile } from '@/data-access/profile'
+import { SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
@@ -11,10 +13,7 @@ export async function GET() {
   }
 
   // Get user profile
-  const profile = await prisma.profile.findUnique({
-    where: { userId: session.user.id },
-    include: { creatorProfile: true },
-  })
+  const profile = await getUserProfile(session.user.id)
 
   if (!profile || !isAdminOrCreator(profile) || !profile.creatorProfile) {
     return NextResponse.json(
@@ -33,7 +32,7 @@ export async function GET() {
     const purchases = await prisma.purchase.findMany({
       where: {
         purchaseItems: {
-          every: {
+          some: {
             asset: {
               creatorId: profile.id,
             },
@@ -73,7 +72,7 @@ export async function GET() {
       }
 
       dayData.sales += 1
-      dayData.revenue += purchase.amount
+      dayData.revenue += purchase.amount - SERVICE_CHARGE * 100
 
       salesByDate.set(dateStr, dayData)
     })
