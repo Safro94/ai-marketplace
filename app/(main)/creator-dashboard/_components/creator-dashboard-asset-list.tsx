@@ -21,17 +21,25 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/toast'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
+import { CreatorDashboardAssetWithAnalytics } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
-import { Asset, AssetStatus } from '@prisma/client'
+import { AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
-import { AlertCircle, MoreHorizontal, Pencil, Star, Trash } from 'lucide-react'
+import {
+  AlertCircle,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Star,
+  Trash,
+} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 
 interface Props {
-  assets: Asset[]
+  assets: CreatorDashboardAssetWithAnalytics[]
 }
 
 export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
@@ -108,10 +116,10 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
                 </h3>
 
                 <div className='flex flex-wrap justify-center md:justify-start items-center space-x-4 mt-2 text-sm text-muted-foreground'>
-                  {/* <div className='flex items-center'>
+                  <div className='flex items-center'>
                     <Eye className='h-4 w-4 mr-1' />
-                    {asset.views || 0}
-                  </div> */}
+                    {asset.assetAnalytics?.views || 0}
+                  </div>
 
                   <div className='flex items-center'>
                     {formatCurrency(asset.totalSales)}

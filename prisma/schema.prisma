@@ -302,21 +302,6 @@ model Favorite {
   @@index([assetId])
 }
 
-model PageVisit {
-  id        String   @id @default(cuid())
-  path      String
-  profileId String?
-  sessionId String
-  referrer  String?
-  userAgent String?
-  ipAddress String?
-  createdAt DateTime @default(now())
-
-  @@index([path])
-  @@index([profileId])
-  @@index([sessionId])
-}
-
 model Testimonial {
   id           String   @id @default(cuid())
   content      String   @db.Text

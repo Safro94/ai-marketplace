@@ -14,7 +14,6 @@ export const saveAssetDetailVisit = withErrorHandler(
     const viewRelation = await getViewedAssetsByProfile(profileId, assetId)
     const isUniqueView = !viewRelation
 
-    console.log(viewRelation, isUniqueView)
     await updateAssetAnalytics(assetId, isUniqueView)
 
     if (isUniqueView) {

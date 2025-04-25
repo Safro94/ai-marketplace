@@ -17,21 +17,22 @@ import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/pur
 import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
+import { CreatorDashboardAssetWithAnalytics } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
-import { Asset, AssetStatus } from '@prisma/client'
+import { AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
-import { DollarSign, InfoIcon, Package, Star } from 'lucide-react'
+import { DollarSign, Eye, InfoIcon, Package, Star } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { CreatorDashboardAssetsList } from './_components/creator-dashboard-asset-list'
 
 interface AssetsByStatus {
-  all: Asset[]
-  published: Asset[]
-  pending: Asset[]
-  rejected: Asset[]
-  draft: Asset[]
-  archived: Asset[]
+  all: CreatorDashboardAssetWithAnalytics[]
+  published: CreatorDashboardAssetWithAnalytics[]
+  pending: CreatorDashboardAssetWithAnalytics[]
+  rejected: CreatorDashboardAssetWithAnalytics[]
+  draft: CreatorDashboardAssetWithAnalytics[]
+  archived: CreatorDashboardAssetWithAnalytics[]
 }
 
 export default async function CreatorDashboard() {
@@ -64,6 +65,13 @@ export default async function CreatorDashboard() {
   const assets = await getAssets({
     where: {
       creatorId: profile.id,
+    },
+    include: {
+      assetAnalytics: {
+        select: {
+          views: true,
+        },
+      },
     },
     orderBy: {
       createdAt: 'desc',
@@ -100,7 +108,10 @@ export default async function CreatorDashboard() {
     },
   )
 
-  // const totalViews = assets.reduce((sum, asset) => sum + (asset.views || 0), 0)
+  const totalViews = assets.reduce(
+    (sum, asset) => sum + (asset.assetAnalytics?.views || 0),
+    0,
+  )
 
   const avgRating = assets.length
     ? assets.reduce((sum, a) => sum + a.averageRating, 0) / assets.length
@@ -115,7 +126,7 @@ export default async function CreatorDashboard() {
         </Button>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
         {[
           {
             title: (
@@ -142,11 +153,11 @@ export default async function CreatorDashboard() {
             description: `${creatorStats?.totalSales || 0}`,
             icon: <Package className='h-5 w-5 text-primary' />,
           },
-          // {
-          //   title: 'Total Views',
-          //   description: totalViews,
-          //   icon: <Users className='h-5 w-5 text-primary' />,
-          // },
+          {
+            title: 'Total Views',
+            description: totalViews,
+            icon: <Eye className='h-5 w-5 text-primary' />,
+          },
           {
             title: 'Avgerage Rating',
             description: (
@@ -192,12 +203,15 @@ export default async function CreatorDashboard() {
                   <TabsTrigger value='all'>
                     All ({assetsByStatus.all.length})
                   </TabsTrigger>
+
                   <TabsTrigger value='published'>
                     Published ({assetsByStatus.published.length})
                   </TabsTrigger>
+
                   <TabsTrigger value='pending'>
                     Pending ({assetsByStatus.pending.length})
                   </TabsTrigger>
+
                   <TabsTrigger value='rejected'>
                     Rejected ({assetsByStatus.rejected.length})
                   </TabsTrigger>

@@ -110,3 +110,13 @@ export interface ExploreFilters {
   priceRange: number[]
   rating: number[]
 }
+
+export type CreatorDashboardAssetWithAnalytics = Prisma.AssetGetPayload<{
+  include: {
+    assetAnalytics: {
+      select: {
+        views: true
+      }
+    }
+  }
+}>
