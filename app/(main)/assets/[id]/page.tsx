@@ -1,3 +1,4 @@
+import { saveAssetDetailVisit } from '@/actions/asset-view'
 import { PageContainer } from '@/components/page-container'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
@@ -14,6 +15,7 @@ import { AssetStatus, Profile } from '@prisma/client'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
+import { after } from 'next/server'
 import { FC, Suspense } from 'react'
 import { AssetDetailCarousel } from './_components/asset-detail-carousel'
 import { AssetDetailHeader } from './_components/asset-detail-header'
@@ -156,6 +158,10 @@ export default async function AssetPage({
   })
 
   if (!asset) notFound()
+
+  after(async () => {
+    await saveAssetDetailVisit(asset.id, profile?.id)
+  })
 
   if (profile) {
     purchase = await checkUserPurchasedAsset(profile.id, asset.id)

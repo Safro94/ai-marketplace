@@ -11,23 +11,25 @@ datasource db {
 }
 
 model Profile {
-  id             String          @id @default(cuid())
-  userId         String          @unique
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio            String?         @db.Text
-  website        String?
-  twitterHandle  String?
-  githubHandle   String?
-  role           Role            @default(USER)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  totalAssets    Int             @default(0)
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio           String?  @db.Text
+  website       String?
+  twitterHandle String?
+  githubHandle  String?
+  role          Role     @default(USER)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  totalAssets   Int      @default(0)
+
   assets         Asset[]
   reviews        Review[]
   purchases      Purchase[]
   creatorProfile CreatorProfile?
   notifications  Notification[]
   Download       Download[]
+  viewedAssets   Asset[]         @relation("ProfileViewedAssets")
 }
 
 model CreatorProfile {
@@ -142,6 +144,7 @@ model Asset {
   featuredOrder   Int? // Optional field for controlling the order of featured assets
 
   // Relations
+  viewedBy       Profile[]       @relation("ProfileViewedAssets")
   assetLicenses  AssetLicense[]
   reviews        Review[]
   totalReviews   Int             @default(0)

@@ -13,13 +13,7 @@ export const saveDownload = withErrorHandler(
     const profile = await getUserProfile(user.id)
     if (!profile) throw Error('Profile not found')
 
-    try {
-      await downloadCreate({ assetId, purchaseItemId, profileId: profile.id })
-
-      revalidateTag(CACHE_KEYS.dashboardDownloads(profile?.id))
-    } catch (e) {
-      console.error(e)
-      throw Error('There was an error while downloading your asset')
-    }
+    await downloadCreate({ assetId, purchaseItemId, profileId: profile.id })
+    revalidateTag(CACHE_KEYS.dashboardDownloads(profile?.id))
   },
 )

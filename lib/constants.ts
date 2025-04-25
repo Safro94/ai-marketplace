@@ -60,6 +60,8 @@ export const CACHE_KEYS = {
   categoriesWithCount: () => 'categories-with-count',
   assetFavorite: (assetId: string) => `asset-favorite-${assetId}`,
   assetById: (assetId: string) => `asset-${assetId}`,
+  viewedAssetsByProfile: (assetId: string, profileId: string) =>
+    `viewed-asset-${assetId}-${profileId}`,
   assetLicenses: (assetId: string) => `asset-licenses-${assetId}`,
   exploreAssets: () => `explore-assets`,
   dashboardFavorites: (profileId: string) => `favorites-${profileId}`,

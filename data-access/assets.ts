@@ -17,6 +17,27 @@ export const getAssetBySlug = async (slug: string) => {
   })
 }
 
+export const getViewedAssetsByProfile = async (
+  profileId: string,
+  assetId: string,
+) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.viewedAssetsByProfile(assetId, profileId))
+  unstable_cacheLife('hours')
+
+  return await prisma.profile.findFirst({
+    where: {
+      id: profileId,
+      viewedAssets: {
+        some: {
+          id: assetId,
+        },
+      },
+    },
+  })
+}
+
 export const getAssetById = async <T extends Prisma.AssetInclude | undefined>(
   id: string,
   args?: T,
