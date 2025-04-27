@@ -38,13 +38,13 @@ export const HeroSection = async () => {
                 Just Launched
               </span>
 
-              <span className='mx-2 h-0.5 w-0.5 rounded-full bg-border'></span>
+              <span className='mx-2 h-0.5 w-0.5 rounded-full bg-border' />
               <span className='text-xs md:text-sm text-white'>
                 Discover our AI asset marketplace
               </span>
             </div>
 
-            <h1 className='text-4xl md:text-8xl font-bold text-primary dark:text-primary-foreground px-2'>
+            <h1 className='text-3xl md:text-8xl font-bold text-primary dark:text-primary-foreground px-2'>
               The marketplace for <br />
               premium AI-Powered Tools
             </h1>

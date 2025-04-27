@@ -24,20 +24,6 @@ export default withUt({
       },
     },
     extend: {
-      fontFamily: {
-        sans: [
-          'Inter',
-          'ui-sans-serif',
-          'system-ui',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Roboto',
-          'Helvetica Neue',
-          'Arial',
-          'sans-serif',
-        ],
-      },
       colors: {
         'main-background': 'hsl(var(--main-background))',
         border: 'hsl(var(--border))',

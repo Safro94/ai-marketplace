@@ -10,7 +10,7 @@ export const LampContainer: FC<Props> = ({ children, className }) => {
   return (
     <div
       className={cn(
-        'relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-white dark:bg-slate-950 w-full rounded-md z-0',
+        'relative flex md:min-h-screen flex-col items-center justify-center overflow-hidden bg-white dark:bg-slate-950 w-full rounded-md z-0',
         className,
       )}
     >
@@ -84,7 +84,7 @@ export const LampContainer: FC<Props> = ({ children, className }) => {
         <div className='absolute inset-auto z-40 h-44 w-full -translate-y-[12.5rem] bg-white dark:bg-slate-950' />
       </div>
 
-      <div className='relative z-50 flex -translate-y-[22rem] flex-col items-center px-5'>
+      <div className='relative z-50 flex md:-translate-y-[22rem] flex-col items-center px-5'>
         {children}
       </div>
     </div>
