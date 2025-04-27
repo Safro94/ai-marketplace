@@ -1,34 +1,37 @@
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 
 export const AssetSkeleton = () => {
   return (
-    <Card className='overflow-hidden shadow-md grid gap-2 h-[375px]'>
-      <div className='flex-1 grid grid-rows-[200px,1fr]'>
-        <CardHeader className='p-0 block relative w-full'>
-          <Skeleton className='w-full h-[200px]' />
-        </CardHeader>
-
-        <CardContent className='p-2 grid'>
-          <div className='grid grid-cols-[70%_1fr] gap-4 overflow-hidden'>
-            <div>
-              <Skeleton className='w-3/4 h-[28px]' />
-              <Skeleton className='w-3/4 h-4' />
-            </div>
-
-            <Skeleton className='w-full h-[28px] justify-self-end' />
-          </div>
-
-          <div className='flex justify-between mt-auto'>
-            <Skeleton className='w-2/4 h-5' />
-            <Skeleton className='w-1/4 h-5' />
-          </div>
-        </CardContent>
-
-        <CardFooter className='p-2'>
-          <Skeleton className='h-10 w-full' />
-        </CardFooter>
+    <div className='relative bg-white rounded-xl shadow-md overflow-hidden border border-gray-100'>
+      <div className='aspect-video overflow-hidden'>
+        <Skeleton className='w-full h-[200px]' />
       </div>
-    </Card>
+
+      <div className='absolute top-3 left-3'>
+        <Skeleton className='w-3/4 h-[22px]' />
+      </div>
+
+      <div className='p-5'>
+        <div className='flex items-center justify-between mb-2'>
+          <div className='flex items-center space-x-2'>
+            <Skeleton className='h-6 w-6 rounded-full' />
+            <Skeleton className='h-5 w-28' />
+          </div>
+
+          <div className='flex items-center'>
+            <Skeleton className='w-5 h-5 rounded-full' />
+            <Skeleton className='w-10 h-5' />
+          </div>
+        </div>
+
+        <Skeleton className='w-1/2 h-[28px] mb-1' />
+        <Skeleton className='w-full h-10 mb-4' />
+
+        <div className='flex items-center justify-between'>
+          <Skeleton className='w-1/4 h-[28px]' />
+          <Skeleton className='h-[36px] w-1/2 rounded-full' />
+        </div>
+      </div>
+    </div>
   )
 }

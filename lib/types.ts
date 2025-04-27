@@ -47,6 +47,7 @@ export type ExploreAsset = Prisma.AssetGetPayload<{
         user: {
           select: {
             name: true
+            image: true
           }
         }
       }

@@ -3,49 +3,44 @@ import {
   HomeSection,
   HomeSectionDescription,
   HomeSectionTitle,
+  HomeSectionTitleContainer,
 } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { getAssets } from '@/data-access/assets'
+import { getPaginatedAssets } from '@/data-access/assets'
 import { ROUTES } from '@/lib/constants'
 import { AssetStatus } from '@prisma/client'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export const FeaturedSection = async () => {
-  const featuredAssets = await getAssets({
+  const [featuredAssets] = await getPaginatedAssets({
     where: {
       status: AssetStatus.PUBLISHED,
       featured: true,
     },
-    include: {
-      category: true,
-      creator: {
-        include: {
-          user: true,
-        },
-      },
-    },
     orderBy: [{ featuredOrder: 'asc' }, { createdAt: 'desc' }],
-    take: 4,
+    limit: 4,
+    skip: 0,
   })
 
   if (!featuredAssets.length) return null
 
   return (
-    <HomeSection className='bg-muted'>
-      <div className='grid gap-1 mb-8'>
-        <HomeSectionTitle className='text-center'>
-          Featured Assets
+    <HomeSection>
+      <HomeSectionTitleContainer>
+        <HomeSectionTitle className='text-primary'>
+          Featured Products
         </HomeSectionTitle>
 
         <HomeSectionDescription>
-          Handpicked premium assets from our marketplace
+          Discover our most popular digital products created by talented
+          creators
         </HomeSectionDescription>
-      </div>
+      </HomeSectionTitleContainer>
 
-      <div className='grid items-center '>
-        <div className='grid gap-4'>
+      <div className='grid items-center'>
+        <div className='grid gap-4 mb-4'>
           <ScrollArea className='py-4'>
             <AssetsGrid items={featuredAssets} />
             <ScrollBar orientation='horizontal' />

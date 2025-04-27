@@ -1,6 +1,6 @@
 'use client'
 
-import { Skeleton } from '@/components/ui/skeleton'
+import { PaypalButtonsSkeleton } from '@/components/skeletons/paypal-buttons-skeleton'
 import { toast } from '@/components/ui/toast'
 import { useCart } from '@/contexts/cart-context'
 import { tryCatch } from '@/lib/actions-error-handling'
@@ -68,7 +68,7 @@ export const PaypalButtons: FC<PaypalButtonsProps> = ({
     fetchAssets()
   }, [])
 
-  if (isLoading) return <ButtonsSkeleton />
+  if (isLoading) return <PaypalButtonsSkeleton />
 
   return (
     <>
@@ -116,6 +116,9 @@ const Buttons: FC<ButtonsProps> = ({
         '!opacity-100 relative',
         (!cartTotal || isPurchasing) && '!opacity-50 pointer-events-none',
       )}
+      style={{
+        borderRadius: 25,
+      }}
       disabled={isPaypalButtonDisabled}
       createOrder={async () => {
         setIsPurchasing(true)
@@ -212,11 +215,3 @@ const Buttons: FC<ButtonsProps> = ({
     />
   )
 }
-
-const ButtonsSkeleton = () => (
-  <div className='flex flex-col items-center'>
-    <Skeleton className='w-full h-[45px] mb-3.5' />
-    <Skeleton className='w-full h-[45px] mb-3.5' />
-    <Skeleton className='w-28 h-3 mb-0.5' />
-  </div>
-)

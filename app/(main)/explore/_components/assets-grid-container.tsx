@@ -38,7 +38,7 @@ export const AssetsGridContainer: FC<Props> = async ({
         />
       </div>
 
-      <p className='text-sm text-center md:text-right text-muted-foreground self-end mb-2'>
+      <p className='text-sm text-center md:text-right text-muted-foreground self-end'>
         Showing{' '}
         <span className='font-medium text-foreground'>
           {data?.assets?.length || 0}

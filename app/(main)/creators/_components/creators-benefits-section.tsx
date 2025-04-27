@@ -3,15 +3,11 @@ import {
   HomeSection,
   HomeSectionDescription,
   HomeSectionTitle,
+  HomeSectionTitleContainer,
 } from '@/components/page-container'
 import { Motion } from '@/components/ui/motion'
-import {
-  APP_DATA,
-  SERVICE_CHARGE,
-  STAGGER,
-  TRANSITION_DELAY,
-} from '@/lib/constants'
-import { BarChart, DollarSign, Shield } from 'lucide-react'
+import { SERVICE_CHARGE, STAGGER, TRANSITION_DELAY } from '@/lib/constants'
+import { Clock, DollarSign, Package, Shield } from 'lucide-react'
 
 const BENEFITS = [
   {
@@ -20,10 +16,16 @@ const BENEFITS = [
     description: `Keep ${100 - SERVICE_CHARGE * 100}% of your sales with our industry-leading commission structure.`,
   },
   {
-    Icon: BarChart,
-    title: 'Powerful Analytics',
+    Icon: Package,
+    title: 'Manage Products',
     description:
-      'Track your sales, customer engagement, and performance with detailed analytics (coming soon).',
+      'Easy-to-use dashboard to handle your product listings, sales, and analytics(analytics is a premium feature, coming soon)',
+  },
+  {
+    Icon: Clock,
+    title: 'Instant Payouts',
+    description:
+      'Get paid quickly instantly with our streamlined payment process and multiple options',
   },
   {
     Icon: Shield,
@@ -36,20 +38,22 @@ const BENEFITS = [
 export const CreatorsBenefitsSection = () => {
   return (
     <HomeSection id='benefits' className='bg-muted grid md:grid-cols-2'>
-      <div className='flex flex-col justify-center gap-2'>
-        <HomeSectionTitle>Why Sell on {APP_DATA.name}?</HomeSectionTitle>
+      <HomeSectionTitleContainer className='justify-center text-left'>
+        <HomeSectionTitle>Why Sell on our platform?</HomeSectionTitle>
 
-        <HomeSectionDescription>
-          Join a growing community of AI creators and reach customers worldwide
+        <HomeSectionDescription className='text-left'>
+          Join thousands of creators who are earning a living by selling their
+          digital products on our marketplace. No technical skills required to
+          get started.
         </HomeSectionDescription>
-      </div>
+      </HomeSectionTitleContainer>
 
       <Motion
         initial='hidden'
         whileInView='visible'
         viewport={{ once: true, margin: '-100px' }}
         variants={STAGGER}
-        className='grid gap-4'
+        className='grid md:grid-cols-2 gap-4'
       >
         {BENEFITS.map(({ Icon, title, description }, i) => (
           <Benefit

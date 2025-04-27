@@ -9,6 +9,9 @@ export const getTestimonials = async (limit = 5) => {
   unstable_cacheLife('weeks')
 
   return await prisma.testimonial.findMany({
+    where: {
+      isPublished: true,
+    },
     orderBy: {
       createdAt: 'desc',
     },

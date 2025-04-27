@@ -1,12 +1,10 @@
-import {
-  HomeSectionDescription,
-  HomeSectionTitle,
-} from '@/components/page-container'
+import { HomeSectionDescription } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { FloatingPaths } from '@/components/ui/floating-path'
+import { Motion } from '@/components/ui/motion'
 import { ROUTES } from '@/lib/constants'
 import { ArrowRight, InfoIcon } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { FC } from 'react'
 
@@ -15,30 +13,68 @@ interface Props {
   hasPendingApplication: boolean
 }
 
-const Spline = dynamic(() => import('@splinetool/react-spline'))
-
 export const CreatorsHeroSection: FC<Props> = ({
   isCreator,
   hasPendingApplication,
 }) => {
+  const title = 'Share your AI expertise with the world'.split(' ')
+  const description =
+    'Join our marketplace as a creator and turn your AI assets into a sustainable revenue stream.'.split(
+      ' ',
+    )
+
   return (
-    <section className='relative min-h-[75vh] bg-black overflow-hidden flex'>
-      <Spline
-        className='absolute scale-125'
-        scene='https://prod.spline.design/k5BofMnTaYCm2Pnu/scene.splinecode'
-      />
+    <section className='relative min-h-[65vh] overflow-hidden flex'>
+      <div className='absolute inset-0'>
+        <FloatingPaths position={1} />
+        <FloatingPaths position={-1} />
+      </div>
 
-      <div className='flex flex-col items-center justify-center text-center space-y-6 max-w-3xl mx-auto z-20'>
-        <HomeSectionTitle className='text-white md:text-6xl'>
-          Share your AI expertise with the world
-        </HomeSectionTitle>
+      <div className='flex flex-col items-center justify-center text-center space-y-6 max-w-7xl mx-auto z-20'>
+        <h1 className='text-4xl md:text-8xl font-bold text-primary dark:text-primary-foreground px-2'>
+          {title.map((el, i) => (
+            <Motion<'span'>
+              key={i}
+              type='span'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 0.3,
+                delay: i / 10,
+              }}
+            >
+              {el}{' '}
+            </Motion>
+          ))}
+        </h1>
 
-        <HomeSectionDescription className='text-muted-foreground-primary-bg'>
-          Join our marketplace as a creator and turn your AI assets into a
-          sustainable revenue stream.
+        <HomeSectionDescription className='text-slate-400 md:text-4xl md:max-w-4xl'>
+          {description.map((el, i) => (
+            <Motion<'span'>
+              key={i}
+              type='span'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 0.25,
+                delay: i / 10,
+              }}
+            >
+              {el}{' '}
+            </Motion>
+          ))}
         </HomeSectionDescription>
 
-        <div className='flex flex-col sm:flex-row gap-4 pt-4'>
+        <Motion<'div'>
+          initial={{ opacity: 0, y: 150 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.3,
+            duration: 0.3,
+            ease: 'easeInOut',
+          }}
+          className='flex flex-col sm:flex-row gap-4 pt-4'
+        >
           {isCreator ? (
             <Button size='lg' asChild>
               <Link href={ROUTES.creatorDashboard()}>
@@ -70,7 +106,7 @@ export const CreatorsHeroSection: FC<Props> = ({
               <Link href='#benefits'>Learn More</Link>
             </Button>
           )}
-        </div>
+        </Motion>
       </div>
     </section>
   )

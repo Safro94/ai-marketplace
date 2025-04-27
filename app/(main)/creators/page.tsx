@@ -1,11 +1,11 @@
+import { CreatorCTASection } from '@/app/(home)/_components/creator-cta-section'
 import { getUserProfile } from '@/data-access/profile'
 import { isAdminOrCreator } from '@/lib/permissions'
-import { validateSession } from '@/lib/session'
+import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { AlertCircle } from 'lucide-react'
 import type { Metadata } from 'next'
 import { CreatorsBenefitsSection } from './_components/creators-benefits-section'
-import { CreatorsCTASection } from './_components/creators-cta-section'
 import { CreatorsFAQSection } from './_components/creators-faq-section'
 import { CreatorsHeroSection } from './_components/creators-hero-section'
 import { CreatorsHowItWorksSection } from './_components/creators-how-it-works-section'
@@ -31,8 +31,12 @@ export default async function CreatorsPage({
 }: {
   searchParams: Promise<{ error?: string }>
 }) {
-  const { user } = await validateSession()
-  const profile = await getUserProfile(user.id)
+  const session = await getServerSession()
+  let profile
+
+  if (session?.user) {
+    profile = await getUserProfile(session.user.id)
+  }
 
   const isCreator = isAdminOrCreator(profile)
   const hasPendingApplication =
@@ -72,7 +76,13 @@ export default async function CreatorsPage({
       <CreatorsHowItWorksSection />
       <CreatorsTypesSection />
       <CreatorsFAQSection />
-      {!isCreator && <CreatorsCTASection />}
+      <CreatorCTASection
+        btnVariant='default'
+        classNames={{
+          section: 'bg-muted',
+          title: 'text-primary',
+        }}
+      />
     </div>
   )
 }

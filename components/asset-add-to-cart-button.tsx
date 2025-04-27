@@ -14,7 +14,10 @@ import { Skeleton } from './ui/skeleton'
 
 interface Props
   extends Pick<ExploreAsset, 'id' | 'title' | 'basePrice' | 'featuredImage'>,
-    Pick<ComponentProps<typeof LoadingButton>, 'variant' | 'className'> {
+    Pick<
+      ComponentProps<typeof LoadingButton>,
+      'variant' | 'className' | 'size'
+    > {
   assetLicenseId?: LicenseType
   licenseName?: string
   licensePrice?: number
@@ -28,6 +31,7 @@ export const AssetAddToCartButton: FC<Props> = ({
   assetLicenseId,
   licenseName,
   licensePrice,
+  size,
   ...props
 }) => {
   const router = useRouter()
@@ -89,12 +93,13 @@ export const AssetAddToCartButton: FC<Props> = ({
   return (
     <>
       {isLoading ? (
-        <Skeleton className='h-10 w-full' />
+        <Skeleton className='h-10 w-full rounded-full' />
       ) : (
         <LoadingButton
           onClick={handleAddToCart}
           isLoading={isLoading || isPending}
           disabled={isLoading || isPending}
+          size={size}
           {...props}
         >
           {isItemInCart ? (

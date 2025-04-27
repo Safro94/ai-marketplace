@@ -25,6 +25,16 @@ export const HomeSection: FC<
   )
 }
 
+export const HomeSectionTitleContainer: FC<
+  PropsWithChildren & { className?: string }
+> = ({ children, className }) => (
+  <div
+    className={cn('flex flex-col gap-1 mb-8 text-center mx-auto', className)}
+  >
+    {children}
+  </div>
+)
+
 export const HomeSectionTitle: FC<HTMLAttributes<HTMLHeadingElement>> = ({
   children,
   className,
@@ -33,7 +43,7 @@ export const HomeSectionTitle: FC<HTMLAttributes<HTMLHeadingElement>> = ({
   return (
     <h2
       className={cn(
-        'text-4xl md:text-5xl font-semibold tracking-tight',
+        'text-3xl md:text-4xl font-bold tracking-tight dark:text-primary-foreground',
         className,
       )}
       {...rest}

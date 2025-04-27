@@ -1,17 +1,14 @@
-import {
-  HomeSectionDescription,
-  HomeSectionTitle,
-} from '@/components/page-container'
+import { HomeSectionDescription } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
+import { GoogleGeminiEffect } from '@/components/ui/google-gemini-effect'
+import { LampContainer } from '@/components/ui/lamp-container'
+import { Motion } from '@/components/ui/motion'
 import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { ArrowRight } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
-
-const Spline = dynamic(() => import('@splinetool/react-spline'))
 
 export const HeroSection = async () => {
   let profile
@@ -22,54 +19,68 @@ export const HeroSection = async () => {
   }
 
   return (
-    <section className='relative min-h-[75vh] bg-black overflow-hidden flex'>
-      <Spline
-        className='absolute scale-125'
-        scene='https://prod.spline.design/eCjzFag6WDawhhgS/scene.splinecode'
-      />
+    <section className='relative overflow-hidden flex'>
+      <GoogleGeminiEffect>
+        <LampContainer>
+          <Motion<'div'>
+            className='mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium text-transparent md:text-7xl space-y-4'
+            initial={{ opacity: 0.5, y: 200 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              delay: 0.3,
+              duration: 0.8,
+              ease: 'easeInOut',
+            }}
+          >
+            <div className='inline-flex items-center bg-primary rounded-lg border border-white px-4 py-1.5 text-sm font-medium mb-4'>
+              <span className='text-xs md:text-sm bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600 font-medium'>
+                Just Launched
+              </span>
 
-      <div className='flex flex-col items-center justify-center text-center space-y-6 max-w-3xl mx-auto z-20'>
-        <div className='inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium mb-4'>
-          <span className='text-xs md:text-sm bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600 font-medium'>
-            Just Launched
-          </span>
+              <span className='mx-2 h-0.5 w-0.5 rounded-full bg-border'></span>
+              <span className='text-xs md:text-sm text-white'>
+                Discover our AI asset marketplace
+              </span>
+            </div>
 
-          <span className='mx-2 h-0.5 w-0.5 rounded-full bg-border'></span>
-          <span className='text-xs md:text-sm text-white'>
-            Discover our AI asset marketplace
-          </span>
-        </div>
+            <h1 className='text-4xl md:text-8xl font-bold text-primary dark:text-primary-foreground px-2'>
+              The marketplace for <br />
+              premium AI-Powered Tools
+            </h1>
 
-        <HomeSectionTitle className='text-white md:text-6xl'>
-          The marketplace for premium AI-Powered Tools for Work, Automation &
-          Strategy
-        </HomeSectionTitle>
+            <HomeSectionDescription className='text-slate-400 md:text-3xl max-w-none'>
+              Discover high-quality AI prompt systems, custom GPTs, and
+              specialized tools created by experts.
+            </HomeSectionDescription>
 
-        <HomeSectionDescription className='text-muted-foreground-primary-bg'>
-          Discover high-quality AI prompt systems, custom GPTs, and specialized
-          tools created by experts.
-        </HomeSectionDescription>
+            <div className='flex flex-col md:flex-row md:justify-center gap-4 pt-4'>
+              <Button size='lg' asChild>
+                <Link href={ROUTES.explore()}>
+                  Explore Marketplace
+                  <ArrowRight className='ml-2 h-4 w-4' />
+                </Link>
+              </Button>
 
-        <div className='flex flex-col sm:flex-row gap-4 pt-4'>
-          <Button size='lg' asChild>
-            <Link href={ROUTES.explore()}>
-              Explore Marketplace
-              <ArrowRight className='ml-2 h-4 w-4' />
-            </Link>
-          </Button>
-
-          <Button size='lg' variant='outline' asChild>
-            {isAdminOrCreator(profile) ? (
-              <Link href={ROUTES.creatorDashboard()}>
-                Go to Creator Dashboard
-                <ArrowRight className='ml-2 h-4 w-4' />
-              </Link>
-            ) : (
-              <Link href={ROUTES.creators()}>Become a Creator</Link>
-            )}
-          </Button>
-        </div>
-      </div>
+              <Button
+                size='lg'
+                variant='outline'
+                asChild
+                className='text-accent-foreground'
+              >
+                {isAdminOrCreator(profile) ? (
+                  <Link href={ROUTES.creatorDashboard()}>
+                    Go to Creator Dashboard
+                    <ArrowRight className='ml-2 h-4 w-4' />
+                  </Link>
+                ) : (
+                  <Link href={ROUTES.creators()}>Become a Creator</Link>
+                )}
+              </Button>
+            </div>
+          </Motion>
+        </LampContainer>
+      </GoogleGeminiEffect>
     </section>
   )
 }

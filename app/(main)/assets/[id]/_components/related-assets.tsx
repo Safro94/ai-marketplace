@@ -23,8 +23,13 @@ export const RelatedAssets: FC<Props> = async ({
     include: {
       category: true,
       creator: {
-        include: {
-          user: true,
+        select: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
         },
       },
     },

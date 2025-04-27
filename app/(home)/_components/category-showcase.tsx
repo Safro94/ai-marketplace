@@ -1,9 +1,8 @@
 import { ErrorToast } from '@/components/error-toast'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Motion } from '@/components/ui/motion'
 import { getCategoriesWithCount } from '@/data-access/categories'
-import { FADE_IN_UP, ROUTES, TRANSITION_DELAY } from '@/lib/constants'
+import { ROUTES } from '@/lib/constants'
 import { EXPLORE_PARAMS } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import {
   Bot,
   Briefcase,
@@ -36,7 +35,7 @@ export const CategoryShowcase = async () => {
         )}
       </Suspense>
 
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
+      <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
         {data?.map((category, i) => {
           // Get the icon component or default to MessageSquare
           const IconComponent =
@@ -45,36 +44,35 @@ export const CategoryShowcase = async () => {
               : MessageSquare
 
           return (
-            <Motion
-              key={category.id}
-              initial='hidden'
-              whileInView='visible'
-              viewport={{ once: true, margin: '-100px' }}
-              variants={FADE_IN_UP(TRANSITION_DELAY * i)}
+            <Link
+              key={i}
+              href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
+              className={cn(
+                'group bg-gray-50 dark:bg-background dark:border dark:border-primary rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden',
+                (i === 4 || i === 5) && 'lg:col-span-2',
+              )}
             >
-              <Link
-                href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
-              >
-                <Card className='h-full transition-colors card-hover'>
-                  <CardHeader>
-                    <div
-                      className={`rounded-lg ${category.colorClass || 'bg-primary/10 text-primary'}`}
-                    >
-                      <IconComponent className='h-10 w-10' />
-                    </div>
-                  </CardHeader>
+              <div className='absolute inset-0 bg-primary/5 transform origin-bottom scale-y-0 transition-transform group-hover:scale-y-100' />
 
-                  <CardContent className='flex items-start space-x-4'>
-                    <div className='space-y-1'>
-                      <h3 className='font-medium text-lg'>{category.name}</h3>
-                      <p className='text-sm text-muted-foreground'>
-                        {category.description}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </Motion>
+              <div className='relative z-10'>
+                <div className='w-16 h-16 rounded-2xl mb-4 flex items-center justify-center bg-primary/10 dark:bg-primary-foreground text-primary dark:text-secondary-foreground p-3 transform group-hover:scale-110 transition-transform duration-300'>
+                  <IconComponent />
+                </div>
+
+                <h3 className='text-xl font-semibold text-gray-900 dark:text-primary-foreground mb-2'>
+                  {category.name}
+                </h3>
+
+                <p className='text-sm text-gray-500 dark:text-secondary-foreground mb-2'>
+                  {category.description}
+                </p>
+
+                <p className='text-sm font-medium text-primary dark:text-secondary-foreground'>
+                  {category.count}{' '}
+                  {category.count === 1 ? 'product' : 'products'}
+                </p>
+              </div>
+            </Link>
           )
         })}
       </div>

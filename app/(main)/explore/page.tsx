@@ -7,7 +7,7 @@ import { ROUTES } from '@/lib/constants'
 import { EXPLORE_PARAMS } from '@/lib/types'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
-import { AssetsGridContainer } from './_components/assets-grid'
+import { AssetsGridContainer } from './_components/assets-grid-container'
 import { ExploreCategoriesSelector } from './_components/explore-categories-selector'
 
 interface Props {

@@ -76,7 +76,7 @@ export const FavoriteButton: FC<Props> = ({ assetId, favorite }) => {
       disabled={isPending}
       aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
       className={cn(
-        'w-6 h-6 md:h-10 md:w-10 group hover:text-[#FF385C] z-10 bg-white rounded-full',
+        'w-6 h-6 md:h-10 md:w-10 group hover:text-[#FF385C] z-10 bg-white',
         isFavorited && 'text-[#FF385C]',
       )}
     >

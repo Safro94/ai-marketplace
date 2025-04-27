@@ -82,7 +82,14 @@ export const getPaginatedAssets = async ({
   return await Promise.all([
     prisma.asset.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        featuredImage: true,
+        totalReviews: true,
+        title: true,
+        description: true,
+        averageRating: true,
+        basePrice: true,
         category: {
           select: {
             name: true,
@@ -93,6 +100,7 @@ export const getPaginatedAssets = async ({
             user: {
               select: {
                 name: true,
+                image: true,
               },
             },
           },
