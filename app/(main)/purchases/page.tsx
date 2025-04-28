@@ -51,7 +51,7 @@ export default async function PurchasesPage() {
         </TabsList>
 
         <TabsContent value='all'>
-          {!purchases.length ? (
+          {!purchases?.length ? (
             <NotFound
               title='No purchases yet'
               description="You haven't purchased any assets yet. Explore our marketplace to find AI assets that can help you."
@@ -65,7 +65,7 @@ export default async function PurchasesPage() {
         </TabsContent>
 
         <TabsContent value='recent'>
-          {!purchases.length ? (
+          {!purchases?.length ? (
             <NotFound
               title='No recent purchases'
               description="You haven't purchased any assets recently. Explore our marketplace to find AI assets that can help you."

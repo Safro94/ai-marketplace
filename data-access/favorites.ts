@@ -16,7 +16,7 @@ export const getFavorite = async (
   return await prisma.favorite.findUnique(args)
 }
 
-export const getFavoritesByProfileId = async (profileId: string) => {
+export const getDashboardFavoritesByProfileId = async (profileId: string) => {
   'use cache'
 
   unstable_cacheTag(CACHE_KEYS.dashboardFavorites(profileId))
@@ -32,13 +32,24 @@ export const getFavoritesByProfileId = async (profileId: string) => {
         select: {
           id: true,
           featuredImage: true,
+          totalReviews: true,
           title: true,
           description: true,
+          averageRating: true,
           basePrice: true,
-          creator: true,
           category: {
             select: {
               name: true,
+            },
+          },
+          creator: {
+            select: {
+              user: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
             },
           },
         },
