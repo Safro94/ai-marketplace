@@ -19,6 +19,7 @@ export const LampContainer: FC<Props> = ({ children, className }) => {
         <Motion<'div'>
           initial={{ opacity: 0.5, width: '15rem' }}
           whileInView={{ opacity: 1, width: '30rem' }}
+          viewport={{ once: true }}
           transition={{
             delay: 0.3,
             duration: 0.8,
@@ -37,6 +38,7 @@ export const LampContainer: FC<Props> = ({ children, className }) => {
         <Motion<'div'>
           initial={{ opacity: 0.5, width: '15rem' }}
           whileInView={{ opacity: 1, width: '30rem' }}
+          viewport={{ once: true }}
           transition={{
             delay: 0.3,
             duration: 0.8,
@@ -55,12 +57,13 @@ export const LampContainer: FC<Props> = ({ children, className }) => {
         <div className='absolute top-1/2 z-50 h-48 w-full bg-transparent opacity-10 backdrop-blur-md' />
 
         {/* Full beam glow */}
-        <div className='absolute inset-auto z-50 h-36 w-[28rem] -translate-y-1/2 rounded-full bg-purple-500 opacity-50 blur-3xl' />
+        <div className='absolute inset-auto z-50 h-36 w-[28rem] -translate-y-1/2 rounded-full bg-purple-400 opacity-50 blur-3xl' />
 
         {/* Beam del centro de lampara */}
         <Motion<'div'>
           initial={{ width: '8rem' }}
           whileInView={{ width: '16rem' }}
+          viewport={{ once: true }}
           transition={{
             delay: 0.3,
             duration: 0.8,
@@ -73,6 +76,7 @@ export const LampContainer: FC<Props> = ({ children, className }) => {
         <Motion<'div'>
           initial={{ width: '15rem' }}
           whileInView={{ width: '30rem' }}
+          viewport={{ once: true }}
           transition={{
             delay: 0.3,
             duration: 0.8,

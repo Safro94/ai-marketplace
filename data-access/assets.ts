@@ -134,9 +134,12 @@ export const updateAsset = async ({
   })
 }
 
-export const deleteAssetById = async (assetId: string) => {
-  return await prisma.asset.delete({
+export const softDeleteAssetById = async (assetId: string) => {
+  return await prisma.asset.update({
     where: { id: assetId },
+    data: {
+      status: AssetStatus.ARCHIVED,
+    },
   })
 }
 

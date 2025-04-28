@@ -24,12 +24,12 @@ export const HeroSection = async () => {
         <LampContainer>
           <Motion<'div'>
             className='mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium text-transparent md:text-7xl space-y-4'
-            initial={{ opacity: 0.5, y: 200 }}
+            initial={{ opacity: 0.3, y: 350 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{
               delay: 0.3,
-              duration: 0.8,
+              duration: 0.6,
               ease: 'easeInOut',
             }}
           >

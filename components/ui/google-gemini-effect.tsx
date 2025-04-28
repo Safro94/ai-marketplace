@@ -65,7 +65,7 @@ const Effect = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{
-          delay: 0.3,
+          delay: 0.6,
           duration: 0.8,
           ease: 'easeInOut',
         }}

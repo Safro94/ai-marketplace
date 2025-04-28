@@ -1,5 +1,7 @@
 import { getAssetCount, updateAsset } from '@/data-access/assets'
+import { CACHE_KEYS } from '@/lib/constants'
 import { validateRouteProfilePermissions } from '@/lib/permissions'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(
@@ -30,6 +32,9 @@ export async function POST(
             featuredOrder: { set: null },
           }),
     })
+
+    revalidateTag(CACHE_KEYS.assetById(asset.id))
+    revalidateTag(CACHE_KEYS.exploreAssets())
 
     return NextResponse.json({
       success: true,

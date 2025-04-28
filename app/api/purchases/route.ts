@@ -4,8 +4,11 @@ import { createOrUpdateCreatorAnalytics } from '@/data-access/creator-analytics'
 import { updateCreatorProfile } from '@/data-access/creator-profile'
 import { getUserProfile } from '@/data-access/profile'
 import { createPurchaseItem } from '@/data-access/purchase-item'
-import { createPurchase } from '@/data-access/purchases'
-import { CACHE_KEYS } from '@/lib/constants'
+import {
+  createPurchase,
+  getAllPurchasesByProfileId,
+} from '@/data-access/purchases'
+import { CACHE_KEYS, INFINITE_SCROLL_NUMBER_OF_ITEMS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
 import { getServerSession } from '@/lib/session'
 import {
@@ -14,13 +17,58 @@ import {
 } from '@/services/emails/email'
 import { PaymentProvider, PurchaseStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET(request: NextRequest) {
+  const session = await getServerSession()
+
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const profile = await getUserProfile(session.user.id)
+
+  if (!profile) {
+    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+  }
+
+  const searchParams = request.nextUrl.searchParams
+  const page = parseInt(searchParams.get('page') || '1')
+  const limit = parseInt(
+    searchParams.get('limit') || INFINITE_SCROLL_NUMBER_OF_ITEMS.toString(),
+  )
+
+  // Calculate offset based on page and limit
+  const offset = page * limit
+
+  try {
+    const purchases = await getAllPurchasesByProfileId({
+      profileId: profile.id,
+      offset,
+      limit,
+    })
+
+    return NextResponse.json(purchases)
+  } catch (error) {
+    console.error('Error fetching purchases:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch purchases' },
+      { status: 500 },
+    )
+  }
+}
 
 export async function POST(request: Request) {
   const session = await getServerSession()
 
   if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const profile = await getUserProfile(session.user.id)
+
+  if (!profile) {
+    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
   }
 
   try {
@@ -31,13 +79,6 @@ export async function POST(request: Request) {
       paypalOrderId: string
       paymentDetails: object
     } = await request.json()
-
-    // Get user profile
-    const profile = await getUserProfile(session.user.id)
-
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
 
     const { totalAmounts, assets, cart } = await getPurchaseAmounts()
 

@@ -11,7 +11,11 @@ import { getFavoritesByProfileId } from '@/data-access/favorites'
 import { getUserProfile } from '@/data-access/profile'
 import { getAllPurchasesByProfileId } from '@/data-access/purchases'
 import { getDashboardReviews } from '@/data-access/reviews'
-import { APP_DATA, ROUTES } from '@/lib/constants'
+import {
+  APP_DATA,
+  INFINITE_SCROLL_NUMBER_OF_ITEMS,
+  ROUTES,
+} from '@/lib/constants'
 import { validateSession } from '@/lib/session'
 import { formatDate } from '@/lib/utils'
 import { PurchaseStatus } from '@prisma/client'
@@ -48,8 +52,13 @@ export default async function DashboardPage() {
   const downloadHistory = await getDashboardDownloads(profile.id)
   const reviews = await getDashboardReviews(profile.id)
   const favorites = await getFavoritesByProfileId(profile.id)
-  const purchases = await getAllPurchasesByProfileId(profile.id, {
-    status: PurchaseStatus.COMPLETED,
+  const purchases = await getAllPurchasesByProfileId({
+    profileId: profile.id,
+    offset: 0,
+    limit: INFINITE_SCROLL_NUMBER_OF_ITEMS,
+    where: {
+      status: PurchaseStatus.COMPLETED,
+    },
   })
 
   return (

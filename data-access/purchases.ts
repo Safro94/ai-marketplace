@@ -24,10 +24,17 @@ export const createPurchase = async (
   })
 }
 
-export const getAllPurchasesByProfileId = async (
-  profileId: string,
-  where?: Prisma.PurchaseWhereInput,
-) => {
+export const getAllPurchasesByProfileId = async ({
+  profileId,
+  where,
+  limit,
+  offset,
+}: {
+  profileId: string
+  where?: Prisma.PurchaseWhereInput
+  limit: number
+  offset: number
+}) => {
   'use cache'
 
   unstable_cacheTag(CACHE_KEYS.purchases(profileId))
@@ -63,6 +70,8 @@ export const getAllPurchasesByProfileId = async (
         },
       },
     },
+    take: limit,
+    skip: offset,
     orderBy: { createdAt: 'desc' },
   })
 }

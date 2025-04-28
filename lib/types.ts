@@ -5,6 +5,8 @@ import {
   Prisma,
 } from '@prisma/client'
 
+export type Unpacked<T> = T extends (infer U)[] ? U : T
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AsyncReturnType<T extends (..._args: any) => Promise<any>> =
   Awaited<ReturnType<T>>

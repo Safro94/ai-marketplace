@@ -55,7 +55,7 @@ export const API_ROUTES = {
   notifications: () => '/api/notifications',
   notificationsReadAll: () => '/api/notifications/read-all',
   notificationRead: (id: string) => `/api/notifications/${id}/read`,
-  purchase: () => '/api/purchases',
+  purchases: () => '/api/purchases',
   checkout: () => '/api/checkout',
 }
 
@@ -106,6 +106,7 @@ export const PAGE_PADDING = 'px-4 md:px-8'
 export const TRANSITION_DELAY = 0.2
 export const TWITTER_URL = 'https://x.com/AIAssetHub'
 export const LINKEDIN_URL = 'https://www.linkedin.com/company/aiassethub'
+export const INFINITE_SCROLL_NUMBER_OF_ITEMS = 10
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },

@@ -165,7 +165,7 @@ const Buttons: FC<ButtonsProps> = ({
         const { payer, purchase_units } = payment
 
         const { data: response, error: createPurchaseError } = await tryCatch(
-          fetch(`${API_ROUTES.purchase()}`, {
+          fetch(`${API_ROUTES.purchases()}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

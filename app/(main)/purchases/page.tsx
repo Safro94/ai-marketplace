@@ -3,12 +3,17 @@ import { PageContainer } from '@/components/page-container'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getUserProfile } from '@/data-access/profile'
 import { getAllPurchasesByProfileId } from '@/data-access/purchases'
-import { APP_DATA, ROUTES } from '@/lib/constants'
+import {
+  APP_DATA,
+  INFINITE_SCROLL_NUMBER_OF_ITEMS,
+  ROUTES,
+} from '@/lib/constants'
 import { validateSession } from '@/lib/session'
 import { ShoppingBag } from 'lucide-react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { Purchase } from './_components/purchase'
+import { PurchasesList } from './_components/purchases-list'
 
 export const metadata: Metadata = {
   title: `My Purchases | ${APP_DATA.name}`,
@@ -24,7 +29,11 @@ export default async function PurchasesPage() {
   const profile = await getUserProfile(user.id)
   if (!profile) redirect(ROUTES.home())
 
-  const purchases = await getAllPurchasesByProfileId(profile.id)
+  const purchases = await getAllPurchasesByProfileId({
+    profileId: profile.id,
+    offset: 0,
+    limit: INFINITE_SCROLL_NUMBER_OF_ITEMS,
+  })
 
   return (
     <PageContainer>
@@ -51,11 +60,7 @@ export default async function PurchasesPage() {
               btnText='Explore Assets'
             />
           ) : (
-            <div className='space-y-6'>
-              {purchases.map((purchase) => (
-                <Purchase key={purchase.id} {...purchase} />
-              ))}
-            </div>
+            <PurchasesList purchases={purchases} />
           )}
         </TabsContent>
 
