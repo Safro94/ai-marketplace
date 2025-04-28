@@ -57,6 +57,9 @@ export const API_ROUTES = {
   notificationRead: (id: string) => `/api/notifications/${id}/read`,
   purchases: () => '/api/purchases',
   checkout: () => '/api/checkout',
+  dashboardDownloads: () => '/api/dashboard/downloads',
+  dashboardReviews: () => '/api/dashboard/reviews',
+  dashboardFavorites: () => '/api/dashboard/favorites',
 }
 
 export const CACHE_KEYS = {

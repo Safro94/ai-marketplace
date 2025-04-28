@@ -14,6 +14,6 @@ export const saveDownload = withErrorHandler(
     if (!profile) throw Error('Profile not found')
 
     await downloadCreate({ assetId, purchaseItemId, profileId: profile.id })
-    revalidateTag(CACHE_KEYS.dashboardDownloads(profile?.id))
+    revalidateTag(CACHE_KEYS.dashboardDownloads(profile.id))
   },
 )

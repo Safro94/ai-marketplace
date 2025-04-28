@@ -1,14 +1,12 @@
-import { AssetDownloadButton } from '@/components/asset-download-button'
 import { NotFound } from '@/components/not-found'
 import { Card, CardContent } from '@/components/ui/card'
 import { getDashboardDownloads } from '@/data-access/download'
 import { getUserProfile } from '@/data-access/profile'
-import { ROUTES } from '@/lib/constants'
+import { INFINITE_SCROLL_NUMBER_OF_ITEMS, ROUTES } from '@/lib/constants'
 import { validateSession } from '@/lib/session'
-import { formatDate } from '@/lib/utils'
 import { Download } from 'lucide-react'
-import Image from 'next/image'
 import { redirect } from 'next/navigation'
+import { DownloadsList } from './_components/downloads-list'
 
 export default async function Downloads() {
   const { user } = await validateSession(ROUTES.dashboard())
@@ -18,7 +16,11 @@ export default async function Downloads() {
     redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.dashboard()}`)
   }
 
-  const downloadHistory = await getDashboardDownloads(profile.id)
+  const downloadHistory = await getDashboardDownloads({
+    profileId: profile.id,
+    offset: 0,
+    limit: INFINITE_SCROLL_NUMBER_OF_ITEMS,
+  })
 
   return (
     <>
@@ -26,46 +28,7 @@ export default async function Downloads() {
         {!!downloadHistory.length ? (
           <CardContent className='py-6'>
             <div className='space-y-4'>
-              {downloadHistory.map((download) => (
-                <div
-                  key={download.id}
-                  className='flex items-center justify-between border-b pb-4 last:border-0'
-                >
-                  <div className='flex items-center'>
-                    <div className='relative h-12 w-12 rounded overflow-hidden mr-4'>
-                      <Image
-                        src={
-                          download.purchaseItem.asset.featuredImage ||
-                          '/placeholder.svg?height=80&width=80'
-                        }
-                        alt={download.purchaseItem.asset.title}
-                        fill
-                        className='object-cover'
-                      />
-                    </div>
-
-                    <div>
-                      <h4 className='font-medium'>
-                        {download.purchaseItem.asset.title}
-                      </h4>
-
-                      <p className='text-xs text-muted-foreground'>
-                        Downloaded on{' '}
-                        {formatDate(download.purchaseItem.createdAt)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <AssetDownloadButton
-                      assetId={download.purchaseItem.asset.id}
-                      purchaseItemId={download.purchaseItem.id}
-                      assetFileUrl={download.purchaseItem.asset.assetFile}
-                      fileName={download.purchaseItem.asset.title}
-                    />
-                  </div>
-                </div>
-              ))}
+              <DownloadsList downloads={downloadHistory} />
             </div>
           </CardContent>
         ) : (

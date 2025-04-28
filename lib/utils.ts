@@ -1,6 +1,13 @@
 import { type ClassValue, clsx } from 'clsx'
+import { NextRequest } from 'next/server'
 import { twMerge } from 'tailwind-merge'
-import { API_ROUTES, HEADER_LINKS, ROUTES, SERVICE_CHARGE } from './constants'
+import {
+  API_ROUTES,
+  HEADER_LINKS,
+  INFINITE_SCROLL_NUMBER_OF_ITEMS,
+  ROUTES,
+  SERVICE_CHARGE,
+} from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -94,4 +101,17 @@ export const createDownloadLink = (file: Blob, fileName: string) => {
   // Clean up
   document.body.removeChild(link)
   window.URL.revokeObjectURL(blobUrl)
+}
+
+export const getInfiniteScrollRouteParams = (request: NextRequest) => {
+  const searchParams = request.nextUrl.searchParams
+  const page = parseInt(searchParams.get('page') || '1')
+  const limit = parseInt(
+    searchParams.get('limit') || INFINITE_SCROLL_NUMBER_OF_ITEMS.toString(),
+  )
+
+  // Calculate offset based on page and limit
+  const offset = page * limit
+
+  return { offset, limit }
 }

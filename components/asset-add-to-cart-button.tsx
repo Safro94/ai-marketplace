@@ -40,6 +40,8 @@ export const AssetAddToCartButton: FC<Props> = ({
   const [isPending, startTransition] = useTransition()
   const isItemInCart = cart.some((item) => item.assetId === id)
 
+  if (!user || (!user && isLoading)) return null
+
   const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation()

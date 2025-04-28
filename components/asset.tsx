@@ -1,5 +1,4 @@
 import { ROUTES } from '@/lib/constants'
-import { getServerSession } from '@/lib/session'
 import { ExploreAsset } from '@/lib/types'
 import { cn, formatCurrency } from '@/lib/utils'
 import { Star } from 'lucide-react'
@@ -24,7 +23,7 @@ export const Asset: FC<
     | 'totalReviews'
     | 'basePrice'
   >
-> = async ({
+> = ({
   id,
   featuredImage,
   title,
@@ -35,8 +34,6 @@ export const Asset: FC<
   totalReviews,
   basePrice,
 }) => {
-  const session = await getServerSession()
-
   return (
     <Link
       href={ROUTES.assetsDetail(id)}
@@ -98,30 +95,20 @@ export const Asset: FC<
           {description}
         </p>
 
-        <div
-          className={cn(
-            'flex items-center',
-            session?.user && 'justify-between',
-            !session?.user && 'justify-end',
-          )}
-        >
-          <div className='flex items-center'>
-            <span className='text-lg font-bold text-primary dark:text-primary-foreground'>
-              {formatCurrency(basePrice)}
-            </span>
+        <div className={cn('flex items-center justify-between')}>
+          <div>
+            <AssetAddToCartButton
+              id={id}
+              title={title}
+              basePrice={basePrice}
+              featuredImage={featuredImage}
+              size='sm'
+            />
           </div>
 
-          {session?.user && (
-            <div>
-              <AssetAddToCartButton
-                id={id}
-                title={title}
-                basePrice={basePrice}
-                featuredImage={featuredImage}
-                size='sm'
-              />
-            </div>
-          )}
+          <span className='text-lg font-bold text-primary dark:text-primary-foreground'>
+            {formatCurrency(basePrice)}
+          </span>
         </div>
       </div>
     </Link>

@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { Prisma, PurchaseStatus } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
+import { InfiniteRoute } from './../lib/types'
 
 export const getPurchasesCount = async () => {
   return await prisma.purchase.count()
@@ -29,11 +30,8 @@ export const getAllPurchasesByProfileId = async ({
   where,
   limit,
   offset,
-}: {
-  profileId: string
+}: InfiniteRoute & {
   where?: Prisma.PurchaseWhereInput
-  limit: number
-  offset: number
 }) => {
   'use cache'
 
@@ -45,26 +43,40 @@ export const getAllPurchasesByProfileId = async ({
       ...where,
       buyerId: profileId,
     },
-    include: {
+    select: {
+      id: true,
+      createdAt: true,
+      status: true,
+
       purchaseItems: {
-        include: {
-          asset: {
-            include: {
-              category: true,
-              creator: {
-                include: {
-                  user: {
-                    select: {
-                      name: true,
-                    },
-                  },
+        select: {
+          id: true,
+          amount: true,
+          createdAt: true,
+          licenseKey: true,
+
+          assetLicense: {
+            select: {
+              license: {
+                select: {
+                  name: true,
                 },
               },
             },
           },
-          assetLicense: {
-            include: {
-              license: true,
+          asset: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              featuredImage: true,
+              assetFile: true,
+
+              category: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
         },

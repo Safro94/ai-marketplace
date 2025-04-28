@@ -123,3 +123,9 @@ export type CreatorDashboardAssetWithAnalytics = Prisma.AssetGetPayload<{
     }
   }
 }>
+
+export interface InfiniteRoute {
+  profileId: string
+  limit: number
+  offset: number
+}

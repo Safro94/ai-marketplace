@@ -1,5 +1,6 @@
 import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { InfiniteRoute } from '@/lib/types'
 import { Prisma } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
@@ -16,7 +17,11 @@ export const getFavorite = async (
   return await prisma.favorite.findUnique(args)
 }
 
-export const getDashboardFavoritesByProfileId = async (profileId: string) => {
+export const getDashboardFavoritesByProfileId = async ({
+  profileId,
+  limit,
+  offset,
+}: InfiniteRoute) => {
   'use cache'
 
   unstable_cacheTag(CACHE_KEYS.dashboardFavorites(profileId))
@@ -55,6 +60,8 @@ export const getDashboardFavoritesByProfileId = async (profileId: string) => {
         },
       },
     },
+    take: limit,
+    skip: offset,
     orderBy: {
       createdAt: 'desc',
     },

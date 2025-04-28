@@ -8,9 +8,10 @@ import {
   createPurchase,
   getAllPurchasesByProfileId,
 } from '@/data-access/purchases'
-import { CACHE_KEYS, INFINITE_SCROLL_NUMBER_OF_ITEMS } from '@/lib/constants'
+import { CACHE_KEYS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
 import { getServerSession } from '@/lib/session'
+import { getInfiniteScrollRouteParams } from '@/lib/utils'
 import {
   notifyBuyerOrderCompleted,
   notifyCreatorSellCompleted,
@@ -32,14 +33,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
   }
 
-  const searchParams = request.nextUrl.searchParams
-  const page = parseInt(searchParams.get('page') || '1')
-  const limit = parseInt(
-    searchParams.get('limit') || INFINITE_SCROLL_NUMBER_OF_ITEMS.toString(),
-  )
-
-  // Calculate offset based on page and limit
-  const offset = page * limit
+  const { offset, limit } = getInfiniteScrollRouteParams(request)
 
   try {
     const purchases = await getAllPurchasesByProfileId({

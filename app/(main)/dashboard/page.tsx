@@ -31,10 +31,7 @@ export default async function Purchases() {
         <div className='space-y-6'>
           {purchases.map((purchase) => {
             return purchase.purchaseItems.map((purchasedItem) => (
-              <PurchasedItemCard
-                key={purchasedItem.id}
-                purchasedItem={purchasedItem}
-              />
+              <PurchasedItemCard key={purchasedItem.id} {...purchasedItem} />
             ))
           })}
         </div>

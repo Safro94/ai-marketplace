@@ -5,26 +5,40 @@ import { format } from 'date-fns'
 import { FC } from 'react'
 
 type Props = Prisma.PurchaseGetPayload<{
-  include: {
+  select: {
+    id: true
+    status: true
+    createdAt: true
+
     purchaseItems: {
-      include: {
-        asset: {
-          include: {
-            category: true
-            creator: {
-              include: {
-                user: {
-                  select: {
-                    name: true
-                  }
-                }
+      select: {
+        id: true
+        amount: true
+        createdAt: true
+        licenseKey: true
+
+        assetLicense: {
+          select: {
+            license: {
+              select: {
+                name: true
               }
             }
           }
         }
-        assetLicense: {
-          include: {
-            license: true
+        asset: {
+          select: {
+            id: true
+            title: true
+            description: true
+            featuredImage: true
+            assetFile: true
+
+            category: {
+              select: {
+                name: true
+              }
+            }
           }
         }
       }
@@ -33,8 +47,8 @@ type Props = Prisma.PurchaseGetPayload<{
 }>
 
 export const Purchase: FC<Props> = ({
-  createdAt,
   id,
+  createdAt,
   status,
   purchaseItems,
 }) => {
@@ -53,10 +67,7 @@ export const Purchase: FC<Props> = ({
 
       <div className='space-y-2'>
         {purchaseItems.map((purchasedItem) => (
-          <PurchasedItemCard
-            key={purchasedItem.id}
-            purchasedItem={purchasedItem}
-          />
+          <PurchasedItemCard key={purchasedItem.id} {...purchasedItem} />
         ))}
       </div>
     </div>

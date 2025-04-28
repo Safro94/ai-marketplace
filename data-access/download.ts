@@ -1,5 +1,6 @@
 import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { InfiniteRoute } from '@/lib/types'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import { headers } from 'next/headers'
 import 'server-only'
@@ -27,7 +28,11 @@ export const downloadCreate = async ({
   })
 }
 
-export const getDashboardDownloads = async (profileId: string) => {
+export const getDashboardDownloads = async ({
+  profileId,
+  limit,
+  offset,
+}: InfiniteRoute) => {
   'use cache'
 
   unstable_cacheTag(CACHE_KEYS.dashboardDownloads(profileId))
@@ -37,13 +42,25 @@ export const getDashboardDownloads = async (profileId: string) => {
     where: {
       profileId,
     },
-    include: {
+    select: {
+      id: true,
       purchaseItem: {
-        include: {
-          asset: true,
+        select: {
+          id: true,
+          createdAt: true,
+          asset: {
+            select: {
+              id: true,
+              title: true,
+              assetFile: true,
+              featuredImage: true,
+            },
+          },
         },
       },
     },
+    take: limit,
+    skip: offset,
     orderBy: {
       downloadedAt: 'desc',
     },

@@ -1,10 +1,15 @@
 import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
+import { InfiniteRoute } from '@/lib/types'
 import { Prisma } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
 
-export const getDashboardReviews = async (profileId: string) => {
+export const getDashboardReviews = async ({
+  profileId,
+  limit,
+  offset,
+}: InfiniteRoute) => {
   'use cache'
 
   unstable_cacheTag(CACHE_KEYS.dashboardReviews(profileId))
@@ -14,9 +19,20 @@ export const getDashboardReviews = async (profileId: string) => {
     where: {
       userProfileId: profileId,
     },
-    include: {
-      asset: true,
+    select: {
+      id: true,
+      title: true,
+      comment: true,
+      createdAt: true,
+
+      asset: {
+        select: {
+          title: true,
+        },
+      },
     },
+    take: limit,
+    skip: offset,
     orderBy: {
       createdAt: 'desc',
     },

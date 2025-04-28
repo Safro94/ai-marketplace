@@ -28,8 +28,8 @@ export const AssetSkeleton = () => {
         <Skeleton className='w-full h-10 mb-4' />
 
         <div className='flex items-center justify-between'>
-          <Skeleton className='w-1/4 h-[28px]' />
           <Skeleton className='h-[36px] w-1/2 rounded-full' />
+          <Skeleton className='w-1/4 h-[28px]' />
         </div>
       </div>
     </div>
