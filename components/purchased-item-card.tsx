@@ -55,8 +55,8 @@ export const PurchasedItemCard: FC<Props> = ({
   licenseKey,
 }) => (
   <Card className='p-6'>
-    <div className='flex flex-col md:flex-row md:items-center gap-4'>
-      <div className='relative w-full md:w-48 h-32 self-center'>
+    <div className='flex flex-col lg:flex-row lg:items-center gap-4'>
+      <div className='relative w-full md:w-48 h-32 self-center flex-shrink-0'>
         <Image
           src={asset.featuredImage || '/placeholder.svg'}
           alt={asset.title}
@@ -66,7 +66,7 @@ export const PurchasedItemCard: FC<Props> = ({
       </div>
 
       <div className='flex-1'>
-        <div className='flex flex-col md:flex-row justify-between gap-4'>
+        <div className='flex flex-col lg:flex-row justify-between gap-4'>
           <div>
             <h3 className='text-xl font-medium mb-2'>{asset.title}</h3>
 
@@ -74,9 +74,8 @@ export const PurchasedItemCard: FC<Props> = ({
               {asset.description}
             </p>
 
-            <div className='flex flex-col gap-4 md:gap-0 md:flex-row md:items-center text-sm text-muted-foreground'>
+            <div className='flex flex-col flex-wrap gap-4 md:gap-0 md:flex-row md:items-center text-sm text-muted-foreground'>
               <span>Purchased {format(new Date(createdAt), 'PPP')}</span>
-
               <span className='hidden md:block mx-2'>•</span>
               <span>{formatCurrency(amount)}</span>
               <span className='hidden md:block mx-2'>•</span>
