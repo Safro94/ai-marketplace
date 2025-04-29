@@ -7,7 +7,12 @@ import {
   removeItemFromCart,
 } from '@/actions/cart'
 import { useAuth } from '@/hooks/use-auth'
-import { CartContextActionType, CartContextType, CartItem } from '@/lib/types'
+import {
+  CartAction,
+  CartContextActionType,
+  CartContextType,
+  CartItem,
+} from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import {
   createContext,
@@ -19,11 +24,6 @@ import {
   useOptimistic,
   useState,
 } from 'react'
-
-type CartAction =
-  | { type: 'ADD_ITEM'; item: CartItem }
-  | { type: 'REMOVE_ITEM'; assetId: string; licenseId: LicenseType }
-  | { type: 'CLEAR_CART' }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 

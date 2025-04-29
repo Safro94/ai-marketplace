@@ -81,7 +81,7 @@ export const Logo: FC<Props> = ({
         {variant === 'full' && (
           <div className='flex items-center'>
             <span
-              className='font-bold bg-gradient-to-r from-[#6a2baa] to-[#1e0a46] text-transparent bg-clip-text'
+              className='font-bold bg-gradient-to-r from-[#6a2baa] to-[#1e0a46] text-transparent bg-clip-text after:content-["BETA"] after:text-[0.5em] after:align-text-bottom'
               style={{ fontSize: `${fontSize}px` }}
             >
               AI<span className='text-cyan-500'>Asset</span>Hub

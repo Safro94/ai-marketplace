@@ -129,3 +129,8 @@ export interface InfiniteRoute {
   limit: number
   offset: number
 }
+
+export type CartAction =
+  | { type: 'ADD_ITEM'; item: CartItem }
+  | { type: 'REMOVE_ITEM'; assetId: string; licenseId: LicenseType }
+  | { type: 'CLEAR_CART' }

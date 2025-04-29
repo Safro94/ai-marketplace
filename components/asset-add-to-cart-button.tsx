@@ -1,6 +1,6 @@
 'use client'
 
-import { LoadingButton } from '@/components/ui/button'
+import { Button, LoadingButton } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
 import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
@@ -9,7 +9,13 @@ import { ExploreAsset } from '@/lib/types'
 import { LicenseType } from '@prisma/client'
 import { ShoppingCart, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { ComponentProps, FC, MouseEvent, useTransition } from 'react'
+import {
+  ComponentProps,
+  FC,
+  MouseEvent,
+  useOptimistic,
+  useTransition,
+} from 'react'
 import { Skeleton } from './ui/skeleton'
 
 interface Props
@@ -35,12 +41,21 @@ export const AssetAddToCartButton: FC<Props> = ({
   ...props
 }) => {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, isPending } = useAuth()
   const { addToCart, removeItem, cart, isLoading } = useCart()
-  const [isPending, startTransition] = useTransition()
-  const isItemInCart = cart.some((item) => item.assetId === id)
+  const [, startTransition] = useTransition()
 
-  if (!user || (!user && isLoading)) return null
+  // Optimistic state for whether the item is in the cart
+  const [isItemInCart, optimisticallySetIsItemInCart] = useOptimistic(
+    cart.some((item) => item.assetId === id),
+    (state, action: { type: 'add' | 'remove' }) => {
+      if (action.type === 'add') return true
+      if (action.type === 'remove') return false
+      return state
+    },
+  )
+
+  if (!user && !isPending) return null
 
   const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -58,36 +73,60 @@ export const AssetAddToCartButton: FC<Props> = ({
       return
     }
 
-    try {
-      const price = licensePrice !== undefined ? licensePrice : basePrice
+    const price = licensePrice !== undefined ? licensePrice : basePrice
+    const licenseId = assetLicenseId || LicenseType.STANDARD
 
+    if (isItemInCart) {
+      // Optimistically update the state to remove the item
       startTransition(async () => {
-        const licenseId = assetLicenseId || LicenseType.STANDARD
+        optimisticallySetIsItemInCart({ type: 'remove' })
 
-        if (isItemInCart) {
+        try {
           await removeItem(id, licenseId)
           toast.success('Removed from cart', {
             description: `${title} has been removed from your cart.`,
           })
-        } else {
-          await addToCart({
+        } catch (error) {
+          console.error('Error removing from cart:', error)
+          toast.error('Error', {
+            description:
+              'There was a problem removing this item from your cart.',
+          })
+
+          // Revert the optimistic update
+          startTransition(() => optimisticallySetIsItemInCart({ type: 'add' }))
+        }
+      })
+    } else {
+      // Optimistically update the state to add the item
+      startTransition(async () => {
+        optimisticallySetIsItemInCart({ type: 'add' })
+
+        try {
+          const item = {
             assetId: id,
             assetLicenseId: licenseId,
             title,
             price,
             image: featuredImage,
             licenseName: licenseName || 'Standard License',
-          })
+          }
+
+          await addToCart(item)
           toast.success('Added to cart', {
             description: `${title} has been added to your cart.`,
           })
-        }
-      })
-    } catch (error) {
-      console.error('Error adding to cart:', error)
+        } catch (error) {
+          console.error('Error adding to cart:', error)
+          toast.error('Error', {
+            description: 'There was a problem adding this item to your cart.',
+          })
 
-      toast.error('Error', {
-        description: 'There was a problem adding this item to your cart.',
+          // Revert the optimistic update
+          startTransition(() =>
+            optimisticallySetIsItemInCart({ type: 'remove' }),
+          )
+        }
       })
     }
   }
@@ -95,23 +134,21 @@ export const AssetAddToCartButton: FC<Props> = ({
   return (
     <>
       {isLoading ? (
-        <Skeleton className='h-10 w-full rounded-full' />
+        <Skeleton className='h-9 w-40 rounded-full' />
       ) : (
-        <LoadingButton
-          onClick={handleAddToCart}
-          isLoading={isLoading || isPending}
-          disabled={isLoading || isPending}
-          size={size}
-          {...props}
-        >
+        <Button onClick={handleAddToCart} size={size} {...props}>
           {isItemInCart ? (
-            <Trash2 className='mr-2 h-5 w-5' />
+            <>
+              <Trash2 className='mr-2 h-5 w-5' />
+              Remove from cart
+            </>
           ) : (
-            <ShoppingCart className='mr-2 h-5 w-5' />
+            <>
+              <ShoppingCart className='mr-2 h-5 w-5' />
+              Add to Cart
+            </>
           )}
-
-          {isItemInCart ? 'Remove from cart' : 'Add to Cart'}
-        </LoadingButton>
+        </Button>
       )}
     </>
   )

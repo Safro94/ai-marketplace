@@ -75,6 +75,7 @@ export const Asset: FC<
                 {creator.user.name?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
+
             <span className='text-sm text-gray-500 dark:text-secondary-foreground'>
               {creator.user.name}
             </span>
@@ -82,6 +83,7 @@ export const Asset: FC<
 
           <div className='flex items-center'>
             <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
+
             <span className='ml-1 text-sm font-medium text-gray-600 dark:text-secondary-foreground'>
               {averageRating.toFixed(1)} ({totalReviews})
             </span>
