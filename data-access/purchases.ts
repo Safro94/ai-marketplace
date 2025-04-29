@@ -123,6 +123,7 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async (
             select: {
               id: true,
               title: true,
+              featuredImage: true,
             },
           },
         },

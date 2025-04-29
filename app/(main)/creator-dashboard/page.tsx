@@ -1,39 +1,27 @@
 import { PageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card } from '@/components/ui/card'
 import { Tooltip } from '@/components/ui/tooltip'
 import { getAssets } from '@/data-access/assets'
 import { getCreatorAnalyticsByCreatorProfileId } from '@/data-access/creator-analytics'
 import { getCreatorProfileByProfileId } from '@/data-access/creator-profile'
 import { getUserProfile } from '@/data-access/profile'
-import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/purchases'
 import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
-import { CreatorDashboardAssetWithAnalytics } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
-import { AssetStatus } from '@prisma/client'
-import { format } from 'date-fns'
-import { DollarSign, Eye, InfoIcon, Package, Star } from 'lucide-react'
+import {
+  ArrowRight,
+  DollarSign,
+  Eye,
+  InfoIcon,
+  List,
+  Package,
+  Star,
+  TrendingUp,
+} from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { CreatorDashboardAssetsList } from './_components/creator-dashboard-asset-list'
-
-interface AssetsByStatus {
-  all: CreatorDashboardAssetWithAnalytics[]
-  published: CreatorDashboardAssetWithAnalytics[]
-  pending: CreatorDashboardAssetWithAnalytics[]
-  rejected: CreatorDashboardAssetWithAnalytics[]
-  draft: CreatorDashboardAssetWithAnalytics[]
-  archived: CreatorDashboardAssetWithAnalytics[]
-}
 
 export default async function CreatorDashboard() {
   const { user } = await validateSession(ROUTES.creatorDashboard())
@@ -55,11 +43,6 @@ export default async function CreatorDashboard() {
     creatorProfile.id,
   )
 
-  // Get recent sales
-  const recentSales = await getAllCreatorDashboardPurchasesByAssetCreator(
-    profile.id,
-  )
-
   // Get assets by status
   const assets = await getAssets({
     where: {
@@ -68,7 +51,7 @@ export default async function CreatorDashboard() {
     include: {
       assetAnalytics: {
         select: {
-          views: true,
+          uniqueViews: true,
         },
       },
     },
@@ -77,38 +60,8 @@ export default async function CreatorDashboard() {
     },
   })
 
-  const assetsByStatus = assets.reduce<AssetsByStatus>(
-    (acc, asset) => {
-      const statusMap: Record<AssetStatus, keyof Omit<AssetsByStatus, 'all'>> =
-        {
-          [AssetStatus.PUBLISHED]: 'published',
-          [AssetStatus.PENDING_REVIEW]: 'pending',
-          [AssetStatus.REJECTED]: 'rejected',
-          [AssetStatus.DRAFT]: 'draft',
-          [AssetStatus.ARCHIVED]: 'archived',
-        }
-
-      const statusKey = statusMap[asset.status]
-
-      // Only push to the category if we have a valid mapping
-      if (statusKey) {
-        acc[statusKey].push(asset)
-      }
-
-      return acc
-    },
-    {
-      all: assets,
-      published: [],
-      pending: [],
-      rejected: [],
-      draft: [],
-      archived: [],
-    },
-  )
-
   const totalViews = assets.reduce(
-    (sum, asset) => sum + (asset.assetAnalytics?.views || 0),
+    (sum, asset) => sum + (asset.assetAnalytics?.uniqueViews || 0),
     0,
   )
 
@@ -117,22 +70,12 @@ export default async function CreatorDashboard() {
     : 0
 
   return (
-    <PageContainer>
-      <div className='flex flex-col gap-2 md:flex-row md:justify-between items-center mb-8'>
-        <h1 className='text-3xl font-bold'>Creator Dashboard</h1>
-
-        <div className='flex gap-2'>
-          {/* <Button asChild>
-            <Link href={ROUTES.creatorDashboarAnalytics()}>View analytics</Link>
-          </Button> */}
-
-          <Button asChild>
-            <Link href={ROUTES.creatorDashboardUpload()}>Upload New Asset</Link>
-          </Button>
-        </div>
+    <PageContainer className='md:p-0 h-full'>
+      <div className='mb-8'>
+        <h1 className='text-2xl md:text-3xl font-bold'>Creator Dashboard</h1>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         {[
           {
             title: (
@@ -141,164 +84,101 @@ export default async function CreatorDashboard() {
                 <Tooltip
                   content='Total sales - platform commission'
                   trigger={
-                    <InfoIcon className='h-4 w-4 text-primary cursor-pointer' />
+                    <InfoIcon className='h-4 w-4 text-primary dark:text-primary-foreground cursor-pointer' />
                   }
                 />
               </span>
             ),
-            description: formatCurrency(
+            value: formatCurrency(
               creatorStats?.totalRevenue
                 ? creatorStats.totalRevenue -
                     creatorStats.totalRevenue * SERVICE_CHARGE
                 : 0,
             ),
-            icon: <DollarSign className='h-5 w-5 text-primary' />,
+            icon: DollarSign,
+            description: 'Your accumulated earnings from all product sales',
           },
           {
             title: 'Total Sales',
-            description: `${creatorStats?.totalSales || 0}`,
-            icon: <Package className='h-5 w-5 text-primary' />,
+            value: `${creatorStats?.totalSales || 0}`,
+            icon: Package,
+            to: ROUTES.creatorDashboardSales(),
+            linkText: 'Go to sales',
+            description: 'Number of products sold across all your listings',
           },
           {
-            title: 'Total Views',
-            description: totalViews,
-            icon: <Eye className='h-5 w-5 text-primary' />,
+            title: 'Total Unique Views',
+            value: totalViews,
+            icon: Eye,
+            description:
+              'Total number of unique views across all your product pages',
+          },
+          {
+            title: 'Total Products',
+            value: assets.length,
+            icon: List,
+            to: ROUTES.creatorDashboardAssets(),
+            linkText: 'Go to products',
+            description: "Number of products you've listed in your store",
           },
           {
             title: 'Avgerage Rating',
-            description: (
+            value: (
               <div className='flex items-center'>
                 {!avgRating ? '---' : avgRating.toFixed(1)}
                 <Star className='h-4 w-4 text-yellow-400 fill-yellow-400 ml-1' />
               </div>
             ),
-            icon: <Star className='h-5 w-5 text-primary' />,
+            icon: Star,
+            to: ROUTES.creatorDashboardAssets(),
+            linkText: 'Go to products',
+            description: 'Average customer rating across all your products',
           },
-        ].map(({ title, description, icon }, i) => (
-          <Card key={i}>
-            <CardContent className='pt-6'>
-              <div className='flex items-center justify-between'>
-                <div>
-                  <p className='text-sm font-medium text-muted-foreground'>
-                    {title}
-                  </p>
-
-                  <h3 className='text-2xl font-bold mt-1'>{description}</h3>
-                </div>
-
-                <div className='p-2 bg-primary/10 rounded-full'>{icon}</div>
+          {
+            title: 'Conversion Rate',
+            value: `${
+              creatorStats?.totalSales
+                ? ((creatorStats.totalSales / totalViews) * 100).toFixed(1)
+                : 0
+            }%`,
+            icon: TrendingUp,
+            description: 'Percentage of unique views that convert into sales',
+            action: 'See details',
+            actionPath: '/analytics/conversion',
+          },
+        ].map(({ title, value, icon: Icon, linkText, to, description }, i) => (
+          <Card
+            key={i}
+            className='bg-background rounded-lg shadow-md p-4 transition-all duration-200 hover:shadow-lg'
+          >
+            <div className='flex items-center justify-between mb-2'>
+              <div className='w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-white/10'>
+                <span className='text-primary dark:text-primary-foreground'>
+                  <Icon className='h-5 w-5 text-primary dark:text-primary-foreground' />
+                </span>
               </div>
-            </CardContent>
+
+              <div className='text-right'>
+                <span className='text-xl font-bold'>{value}</span>
+              </div>
+            </div>
+
+            <h3 className='text-lg font-semibold mb-1 text-primary dark:text-primary-foreground'>
+              {title}
+            </h3>
+
+            <p className='text-gray-400 text-sm mb-4'>{description}</p>
+
+            {to && (
+              <Button asChild variant='ghost' className='p-0'>
+                <Link href={to}>
+                  {linkText}
+                  <ArrowRight className='ml-2 h-4 w-4' />
+                </Link>
+              </Button>
+            )}
           </Card>
         ))}
-      </div>
-
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-        <div className='lg:col-span-2'>
-          <Card className='h-full'>
-            <CardHeader>
-              <CardTitle>Your Assets</CardTitle>
-              <CardDescription>
-                Manage and monitor your assets on the marketplace
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <Tabs defaultValue='all'>
-                <TabsList className='mb-4'>
-                  <TabsTrigger value='all'>
-                    All ({assetsByStatus.all.length})
-                  </TabsTrigger>
-
-                  <TabsTrigger value='published'>
-                    Published ({assetsByStatus.published.length})
-                  </TabsTrigger>
-
-                  <TabsTrigger value='pending'>
-                    Pending ({assetsByStatus.pending.length})
-                  </TabsTrigger>
-
-                  <TabsTrigger value='rejected'>
-                    Rejected ({assetsByStatus.rejected.length})
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value='all'>
-                  <CreatorDashboardAssetsList assets={assetsByStatus.all} />
-                </TabsContent>
-
-                <TabsContent value='published'>
-                  <CreatorDashboardAssetsList
-                    assets={assetsByStatus.published}
-                  />
-                </TabsContent>
-
-                <TabsContent value='pending'>
-                  <CreatorDashboardAssetsList assets={assetsByStatus.pending} />
-                </TabsContent>
-
-                <TabsContent value='rejected'>
-                  <CreatorDashboardAssetsList
-                    assets={assetsByStatus.rejected}
-                  />
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div>
-          <Card className='h-full'>
-            <CardHeader>
-              <CardTitle>Recent Sales</CardTitle>
-              <CardDescription>
-                Your most recent asset purchases
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              {!recentSales.length ? (
-                <div className='text-center py-8'>
-                  <Package className='h-8 w-8 text-muted-foreground mx-auto mb-2' />
-                  <p className='text-muted-foreground'>No sales yet</p>
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    Sales will appear here once your assets start selling
-                  </p>
-                </div>
-              ) : (
-                <div className='space-y-4'>
-                  {recentSales.map((sale) => {
-                    return sale.purchaseItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className='flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0'
-                      >
-                        <div>
-                          <Link
-                            href={ROUTES.assetsDetail(item.assetId)}
-                            className='font-medium'
-                            target='_blank'
-                          >
-                            {item.asset.title}
-                          </Link>
-
-                          <p className='text-sm text-muted-foreground'>
-                            {item.assetLicense?.license.name} •{' '}
-                            {format(new Date(item.createdAt), 'MMM d')}
-                          </p>
-                        </div>
-
-                        <p className='font-medium'>
-                          {formatCurrency(item.amount)}
-                        </p>
-                      </div>
-                    ))
-                  })}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </PageContainer>
   )

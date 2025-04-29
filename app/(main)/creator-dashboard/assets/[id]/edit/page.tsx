@@ -9,7 +9,7 @@ import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { AssetUploadForm } from '../../../_components/asset-upload-form'
+import { AssetUploadForm } from '../../_components/asset-upload-form'
 
 export default async function EditAssetPage({
   params,

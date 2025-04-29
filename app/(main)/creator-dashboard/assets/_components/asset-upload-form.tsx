@@ -84,7 +84,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
     if (!values.featuredImage) {
       toast.error('Featured image required', {
-        description: 'Please upload a featured image for your asset',
+        description: 'Please upload a featured image for your product',
       })
 
       return
@@ -92,7 +92,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
     if (!values.assetFile) {
       toast.error('Asset file required', {
-        description: 'Please upload your asset file',
+        description: 'Please upload your product file',
       })
 
       return
@@ -121,7 +121,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
         if (!response.ok) {
           toast.error('Error', {
-            description: `Failed to ${initialData ? 'update' : 'create'} asset. Please try again.`,
+            description: `Failed to ${initialData ? 'update' : 'create'} product. Please try again.`,
           })
 
           return
@@ -129,11 +129,11 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
         const data = await response.json()
 
-        toast.success('Asset uploaded successfully', {
+        toast.success('Product uploaded successfully', {
           description:
             data.status === AssetStatus.PUBLISHED
-              ? 'Your asset is now live on the marketplace.'
-              : 'Your asset has been submitted for review.',
+              ? 'Your product is now live on the marketplace.'
+              : 'Your product has been submitted for review.',
         })
 
         router.push(ROUTES.creatorDashboard())
@@ -141,7 +141,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
         console.error(error)
 
         toast.error('Error', {
-          description: 'Failed to upload asset. Please try again.',
+          description: 'Failed to upload product. Please try again.',
         })
       }
     })
@@ -175,7 +175,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   <Input {...field} />
                 </FormControl>
                 <FormDescription>
-                  A clear, descriptive title for your asset
+                  A clear, descriptive title for your product
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -184,13 +184,13 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
           <div className='space-y-4'>
             <div>
-              <h3 className='text-lg font-medium mb-2'>Asset Files</h3>
+              <h3 className='text-lg font-medium mb-2'>Product Files</h3>
               <div className='grid md:grid-cols-2 md:items-stretch gap-4'>
                 <Card className='grid grid-rows-[max-content_1fr]'>
                   <CardHeader>
                     <CardTitle>Featured Image</CardTitle>
                     <CardDescription>
-                      The main image displayed for your asset. Tip: use 16 / 9
+                      The main image displayed for your product. Tip: use 16 / 9
                       aspect ratio so your image always looks good.
                     </CardDescription>
                   </CardHeader>
@@ -202,9 +202,9 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
                 <Card className='grid grid-rows-[max-content_1fr]'>
                   <CardHeader>
-                    <CardTitle>Asset File</CardTitle>
+                    <CardTitle>Product File</CardTitle>
                     <CardDescription>
-                      The actual asset file that buyers will download
+                      The actual product file that buyers will download
                     </CardDescription>
                   </CardHeader>
 
@@ -234,8 +234,8 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                 </FormControl>
 
                 <FormDescription>
-                  Detailed description of your asset, its capabilities, and use
-                  cases
+                  Detailed description of your product, its capabilities, and
+                  use cases
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -257,7 +257,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                 </FormControl>
 
                 <FormDescription>
-                  List the key features of your asset, comma separated
+                  List the key features of your product, comma separated
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -335,13 +335,13 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
             />
           </div>
 
-          <div className='pt-4 flex justify-end'>
+          <div className='pt-4 flex justify-center'>
             <LoadingButton
               type='submit'
               isLoading={isPending}
               disabled={isPending}
             >
-              {initialData ? 'Edit' : 'Upload'} Asset
+              {initialData ? 'Edit' : 'Upload'} Product
             </LoadingButton>
           </div>
         </div>

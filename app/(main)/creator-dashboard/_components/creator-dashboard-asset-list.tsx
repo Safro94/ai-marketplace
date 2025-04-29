@@ -96,18 +96,12 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
           <CardContent className='p-4'>
             <div className='flex flex-col items-center justify-center gap-2 md:flex-row space-x-4'>
               <div className='relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0'>
-                {asset.featuredImage ? (
-                  <Image
-                    src={asset.featuredImage || '/placeholder.svg'}
-                    alt={asset.title}
-                    fill
-                    className='object-cover'
-                  />
-                ) : (
-                  <div className='bg-muted h-full w-full flex items-center justify-center'>
-                    <AlertCircle className='h-6 w-6 text-muted-foreground' />
-                  </div>
-                )}
+                <Image
+                  src={asset.featuredImage || '/placeholder.svg'}
+                  alt={asset.title}
+                  fill
+                  className='object-cover'
+                />
               </div>
 
               <div className='flex-1 min-w-0'>

@@ -20,15 +20,15 @@ export default async function UploadAssetPage() {
   const { data, error } = await getCategoriesWithCount()
 
   return (
-    <PageContainer>
+    <PageContainer className='md:p-0'>
       <BreadcrumbNavigation
         items={[
           {
-            text: 'Creator Dashboard',
-            link: ROUTES.creatorDashboard(),
+            text: 'Creator Dashboard Products',
+            link: ROUTES.creatorDashboardAssets(),
           },
           {
-            text: 'Upload asset',
+            text: 'Upload product',
           },
         ]}
       />
@@ -41,10 +41,10 @@ export default async function UploadAssetPage() {
 
       <div className='mb-8'>
         <h1 className='text-3xl font-bold tracking-tight mb-2'>
-          Upload New Asset
+          Upload New Product
         </h1>
         <p className='text-muted-foreground'>
-          Fill out the form below to submit your AI asset for review
+          Fill out the form below to submit your AI product for review
         </p>
       </div>
 
@@ -52,7 +52,7 @@ export default async function UploadAssetPage() {
 
       <div className='mt-8 text-center text-sm text-muted-foreground'>
         <p>
-          All assets are reviewed by our team before being published on the
+          All products are reviewed by our team before being published on the
           marketplace. This process typically takes 1-2 business days.
         </p>
       </div>

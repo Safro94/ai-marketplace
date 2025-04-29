@@ -23,7 +23,9 @@ export const ROUTES = {
   creatorTerms: () => '/creators/terms',
   creatorFAQ: () => '/creators/faq',
   creatorDashboard: () => '/creator-dashboard',
-  creatorDashboardUpload: () => '/creator-dashboard/upload',
+  creatorDashboardAssets: () => '/creator-dashboard/assets',
+  creatorDashboardSales: () => '/creator-dashboard/sales',
+  creatorDashboardUpload: () => '/creator-dashboard/assets/upload',
   creatorDashboarAnalytics: () => '/creator-dashboard/analytics',
   creatorDashboardAssetEdit: (assetId: string) =>
     `/creator-dashboard/assets/${assetId}/edit`,
