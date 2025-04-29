@@ -6,12 +6,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { getAssetById, getAssets } from '@/data-access/assets'
 import { getUserProfile } from '@/data-access/profile'
 import { checkUserPurchasedAsset } from '@/data-access/purchases'
-import { ROUTES } from '@/lib/constants'
+import { INFINITE_SCROLL_NUMBER_OF_ITEMS, ROUTES } from '@/lib/constants'
 import { generateProductJsonLd } from '@/lib/seo-config'
 import { getServerSession } from '@/lib/session'
 import { AsyncReturnType } from '@/lib/types'
 import { cn, formatDate } from '@/lib/utils'
-import { AssetStatus, Profile } from '@prisma/client'
+import { AssetStatus, Profile, ReviewStatus } from '@prisma/client'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
@@ -138,6 +138,9 @@ export default async function AssetPage({
       },
     },
     reviews: {
+      where: {
+        status: ReviewStatus.APPROVED,
+      },
       include: {
         userProfile: {
           include: {
@@ -153,7 +156,7 @@ export default async function AssetPage({
       orderBy: {
         createdAt: 'desc',
       },
-      take: 5,
+      take: INFINITE_SCROLL_NUMBER_OF_ITEMS,
     },
   })
 

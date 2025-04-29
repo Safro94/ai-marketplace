@@ -1,7 +1,7 @@
 import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { InfiniteRoute } from '@/lib/types'
-import { Prisma } from '@prisma/client'
+import { Prisma, ReviewStatus } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
 
@@ -41,12 +41,45 @@ export const getDashboardReviews = async ({
 
 export const createReview = async (data: Prisma.ReviewCreateArgs['data']) => {
   return await prisma.review.create({
-    data,
+    data: {
+      ...data,
+      status: ReviewStatus.APPROVED,
+    },
   })
 }
 
-export const getReviewsByAssetId = async (assetId: string) => {
+export const getReviewsByAssetId = async ({
+  assetId,
+  limit,
+  offset,
+}: {
+  assetId: string
+  limit?: number
+  offset?: number
+}) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.assetReviews(assetId))
+  unstable_cacheLife('hours')
+
   return await prisma.review.findMany({
-    where: { assetId },
+    where: { assetId, status: ReviewStatus.APPROVED },
+    include: {
+      userProfile: {
+        select: {
+          user: {
+            select: {
+              image: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+    take: limit,
+    skip: offset,
+    orderBy: {
+      createdAt: 'desc',
+    },
   })
 }

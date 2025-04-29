@@ -20,17 +20,17 @@ export async function GET(request: NextRequest) {
   const { offset, limit } = getInfiniteScrollRouteParams(request)
 
   try {
-    const purchases = await getDashboardDownloads({
+    const downloads = await getDashboardDownloads({
       profileId: profile.id,
       offset,
       limit,
     })
 
-    return NextResponse.json(purchases)
+    return NextResponse.json(downloads)
   } catch (error) {
-    console.error('Error fetching purchases:', error)
+    console.error('Error fetching downloads:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch purchases' },
+      { error: 'Failed to fetch downloads' },
       { status: 500 },
     )
   }

@@ -16,7 +16,7 @@ export const createReviewAction = withErrorHandler(
     const assetId = data.asset.connect?.id as string
 
     // Update asset average rating
-    const assetReviews = await getReviewsByAssetId(assetId)
+    const assetReviews = await getReviewsByAssetId({ assetId })
 
     const totalRating = assetReviews.reduce(
       (sum, review) => sum + review.rating,
@@ -30,6 +30,7 @@ export const createReviewAction = withErrorHandler(
       totalReviews: assetReviews.length,
     })
 
+    revalidateTag(CACHE_KEYS.assetReviews(assetId))
     revalidateTag(CACHE_KEYS.exploreAssets())
     revalidateTag(
       CACHE_KEYS.dashboardReviews(data.userProfile.connect?.id as string),

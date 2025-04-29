@@ -20,17 +20,17 @@ export async function GET(request: NextRequest) {
   const { offset, limit } = getInfiniteScrollRouteParams(request)
 
   try {
-    const purchases = await getDashboardFavoritesByProfileId({
+    const favorites = await getDashboardFavoritesByProfileId({
       profileId: profile.id,
       offset,
       limit,
     })
 
-    return NextResponse.json(purchases)
+    return NextResponse.json(favorites)
   } catch (error) {
-    console.error('Error fetching purchases:', error)
+    console.error('Error fetching favorites:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch purchases' },
+      { error: 'Failed to fetch favorites' },
       { status: 500 },
     )
   }

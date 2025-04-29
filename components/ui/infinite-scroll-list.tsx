@@ -109,6 +109,8 @@ export const InfiniteScrollList = <T,>({
           ''
         )}
       </div>
+
+      {/* <Button onClick={loadMoreItems}>Load more</Button> */}
     </div>
   )
 }

@@ -44,6 +44,7 @@ export const API_ROUTES = {
   assetsUpload: () => '/api/assets/upload',
   assetsDownload: () => `/api/assets/download`,
   asset: (assetId: string) => `/api/assets/${assetId}`,
+  assetReviews: (assetId: string) => `/api/assets/${assetId}/reviews`,
   assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
   assetAdminModeration: (assetId: string) => `/api/admin/assets/${assetId}`,
   assetAdminFeature: (assetId: string) =>
@@ -67,6 +68,7 @@ export const CACHE_KEYS = {
   categoriesWithCount: () => 'categories-with-count',
   assetFavorite: (assetId: string) => `asset-favorite-${assetId}`,
   assetById: (assetId: string) => `asset-${assetId}`,
+  assetReviews: (assetId: string) => `reviews-asset-${assetId}`,
   viewedAssetsByProfile: (assetId: string, profileId: string) =>
     `viewed-asset-${assetId}-${profileId}`,
   assetLicenses: (assetId: string) => `asset-licenses-${assetId}`,
