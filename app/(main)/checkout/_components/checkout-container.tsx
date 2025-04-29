@@ -9,7 +9,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { ROUTES } from '@/lib/constants'
 import { CartItem } from '@/lib/types'
+import Link from 'next/link'
 import { FC, useState } from 'react'
 import { PaymentPriceSection } from './payment-price-section'
 import { PaypalButtons } from './paypal-buttons'
@@ -53,6 +55,16 @@ export const CheckoutContainer: FC<Props> = ({ cartItems, cartTotal }) => {
                 setIsPurchasing={setIsPurchasing}
                 cartTotal={cartTotal}
               />
+
+              <p className='text-sm text-muted-foreground mt-2'>
+                <strong>Important:</strong> All digital assets are final sale
+                and non-refundable once accessed or downloaded. By completing
+                this purchase, you agree to our{' '}
+                <Link href={ROUTES.terms()} className='underline'>
+                  Terms of Service
+                </Link>
+                .
+              </p>
             </div>
           </CardContent>
         </Card>

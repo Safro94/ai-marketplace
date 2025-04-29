@@ -3,9 +3,7 @@ import { NextRequest } from 'next/server'
 import { twMerge } from 'tailwind-merge'
 import {
   API_ROUTES,
-  HEADER_LINKS,
   INFINITE_SCROLL_NUMBER_OF_ITEMS,
-  ROUTES,
   SERVICE_CHARGE,
 } from './constants'
 
@@ -18,23 +16,6 @@ export function formatDate(date: Date): string {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-  })
-}
-
-export const getCreatorsLinks = (
-  isCreator: boolean,
-  hasPendingApplication: boolean,
-) => {
-  return HEADER_LINKS.map((link) => {
-    if (
-      isCreator &&
-      !hasPendingApplication &&
-      link.href === ROUTES.creators()
-    ) {
-      link.href = ROUTES.creatorDashboard()
-    }
-
-    return link
   })
 }
 

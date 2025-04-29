@@ -107,14 +107,33 @@ export default function TermsPage() {
             been downloaded may not be eligible for refunds.
           </p>
 
-          <h2>9. Intellectual Property</h2>
+          <h2>9. Fraudulent Activities and Chargebacks</h2>
+          <p>
+            The Platform is not responsible for any fraudulent activities
+            carried out by users, including but not limited to purchases made
+            using stolen payment methods. All transactions are the
+            responsibility of the parties involved, and the Platform acts only
+            as a facilitator.
+          </p>
+          <p>
+            Users acknowledge that digital assets sold on the Platform are
+            typically non-refundable, especially once they have been downloaded
+            or accessed. Chargebacks or refund requests made in contradiction to
+            this policy may result in account suspension or other actions.
+          </p>
+          <p>
+            If you suspect any fraudulent behavior, please contact us
+            immediately at {SUPPORT_EMAIL}.
+          </p>
+
+          <h2>10. Intellectual Property</h2>
           <p>
             The Platform and its content, features, and functionality are owned
             by the Platform and are protected by copyright, trademark, and other
             intellectual property laws.
           </p>
 
-          <h2>10. Termination</h2>
+          <h2>11. Termination</h2>
           <p>
             The Platform reserves the right to terminate or suspend your account
             and access to the Platform at any time, without notice, for conduct
@@ -122,14 +141,14 @@ export default function TermsPage() {
             harmful to other users, the Platform, or third parties.
           </p>
 
-          <h2>11. Disclaimer of Warranties</h2>
+          <h2>12. Disclaimer of Warranties</h2>
           <p>
             The Platform is provided &quot;as is&quot; and &quot;as
             available&quot; without warranties of any kind, either express or
             implied.
           </p>
 
-          <h2>12. Limitation of Liability</h2>
+          <h2>13. Limitation of Liability</h2>
           <p>
             To the maximum extent permitted by law, the Platform shall not be
             liable for any indirect, incidental, special, consequential, or
@@ -137,7 +156,7 @@ export default function TermsPage() {
             Platform.
           </p>
 
-          <h2>13. Changes to Terms</h2>
+          <h2>14. Changes to Terms</h2>
           <p>
             The Platform reserves the right to modify these Terms of Service at
             any time. We will provide notice of significant changes by posting
@@ -145,14 +164,14 @@ export default function TermsPage() {
             updated&quot; date.
           </p>
 
-          <h2>14. Governing Law</h2>
+          <h2>15. Governing Law</h2>
           <p>
             These Terms of Service shall be governed by and construed in
             accordance with the laws of [Jurisdiction], without regard to its
             conflict of law provisions.
           </p>
 
-          <h2>15. Contact Information</h2>
+          <h2>16. Contact Information</h2>
           <p>
             For questions about these Terms of Service, please contact us at{' '}
             {SUPPORT_EMAIL}

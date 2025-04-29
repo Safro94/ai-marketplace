@@ -11,10 +11,10 @@ import { Search, Shield, Sparkles, Zap } from 'lucide-react'
 
 const BENEFITS = [
   {
-    Icon: Sparkles,
-    title: 'Curated Quality',
+    Icon: Search,
+    title: 'All in one place',
     description:
-      'Every asset is reviewed for quality and effectiveness before being listed on our marketplace.',
+      'Find the perfect digital assets for your next project. Prompt Engineering Systems, Custom GPTs, AI Agents, and more - all in one place.',
   },
   {
     Icon: Zap,
@@ -29,10 +29,10 @@ const BENEFITS = [
       'Our platform ensures secure payments and protects both buyers and creators.',
   },
   {
-    Icon: Search,
-    title: 'All in one place',
+    Icon: Sparkles,
+    title: 'Curated Quality',
     description:
-      'Find the perfect digital assets for your next project. Prompt Engineering Systems, Custom GPTs, AI Agents, and more - all in one place.',
+      'Every asset is reviewed for quality and effectiveness before being listed on our marketplace.',
   },
 ]
 

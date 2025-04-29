@@ -3,7 +3,6 @@ import { getUserProfile } from '@/data-access/profile'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
-import { AlertCircle } from 'lucide-react'
 import type { Metadata } from 'next'
 import { CreatorsBenefitsSection } from './_components/creators-benefits-section'
 import { CreatorsFAQSection } from './_components/creators-faq-section'
@@ -26,11 +25,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function CreatorsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>
-}) {
+export default async function CreatorsPage() {
   const session = await getServerSession()
   let profile
 
@@ -43,31 +38,8 @@ export default async function CreatorsPage({
     profile?.creatorProfile?.creatorApplication?.status ===
     ApplicationStatus.PENDING
 
-  const error = (await searchParams).error
-
   return (
     <div className='flex flex-col'>
-      {/* Error message if needed */}
-      {error === 'not-creator' && (
-        <div className='bg-destructive/15 border-l-4 border-destructive p-4'>
-          <div className='flex'>
-            <div className='flex-shrink-0'>
-              <AlertCircle
-                className='h-5 w-5 text-destructive'
-                aria-hidden='true'
-              />
-            </div>
-
-            <div className='ml-3'>
-              <p className='text-sm text-destructive'>
-                You need to be an approved creator to access the creator
-                dashboard. Please apply below.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       <CreatorsHeroSection
         isCreator={isCreator}
         hasPendingApplication={hasPendingApplication}

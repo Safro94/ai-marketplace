@@ -1,6 +1,7 @@
 'use client'
 
-import { cn, getCreatorsLinks } from '@/lib/utils'
+import { HEADER_LINKS, ROUTES } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FC, PropsWithChildren } from 'react'
@@ -10,6 +11,23 @@ interface Props extends PropsWithChildren {
   hasPendingApplication: boolean
   onClick?: () => void
   className?: string
+}
+
+const getCreatorsLinks = (
+  isCreator: boolean,
+  hasPendingApplication: boolean,
+) => {
+  return HEADER_LINKS.map((link) => {
+    if (
+      isCreator &&
+      !hasPendingApplication &&
+      link.href === ROUTES.creators()
+    ) {
+      link.href = ROUTES.creatorDashboard()
+    }
+
+    return link
+  })
 }
 
 export const HeaderNav: FC<Props> = ({

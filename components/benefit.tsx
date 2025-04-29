@@ -17,7 +17,7 @@ export const Benefit: FC<Props> = ({
 }) => {
   return (
     <Motion
-      className='bg-background rounded-lg p-6  border flex items-center gap-4 card-hover'
+      className='bg-background rounded-lg p-6 border flex items-center gap-4 card-hover'
       variants={{
         hidden: { opacity: 0, x: 50 },
         visible: {
@@ -27,13 +27,13 @@ export const Benefit: FC<Props> = ({
         },
       }}
     >
-      <div className='flex-shrink-0 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4'>
+      <div className='flex-shrink-0 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center'>
         <Icon className='h-6 w-6 text-primary' aria-hidden='true' />
       </div>
 
-      <div className='grid'>
-        <h3 className='text-xl font-semibold mb-2'>{title}</h3>
-        <p className='text-muted-foreground'>{description}</p>
+      <div className='flex flex-col h-full'>
+        <h3 className='text-xl font-semibold'>{title}</h3>
+        <p className='text-muted-foreground flex-1'>{description}</p>
       </div>
     </Motion>
   )

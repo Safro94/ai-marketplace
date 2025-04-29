@@ -3,62 +3,74 @@ import { CheckoutPaymentDetails } from '@/lib/types'
 import paypal from '@paypal/checkout-server-sdk'
 import { NextResponse } from 'next/server'
 
-// Creating an environment
-const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string
-const clientSecret = process.env.PAYPAL_SECRET as string
+// Create PayPal Client
+function createPayPalClient() {
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string
+  const clientSecret = process.env.PAYPAL_SECRET as string
+  const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret)
+  return new paypal.core.PayPalHttpClient(environment)
+}
 
-const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret)
-const client = new paypal.core.PayPalHttpClient(environment)
+const client = createPayPalClient()
 
 export async function POST(req: Request) {
-  const request = new paypal.orders.OrdersCreateRequest()
-  const {
-    paypalData,
-  }: {
-    paypalData: CheckoutPaymentDetails[]
-  } = await req.json()
+  try {
+    const { paypalData }: { paypalData: CheckoutPaymentDetails[] } =
+      await req.json()
 
-  const { totalAmounts } = await getPurchaseAmounts()
+    const { totalAmounts } = await getPurchaseAmounts()
 
-  const units = paypalData.map((item, i) => {
-    return {
-      reference_id: `recipient_${i}`,
-      amount: {
-        value:
-          totalAmounts.purchasedAssets[
-            item.creatorProfileId!
-          ].creatorAmount.toFixed(2),
-        currency_code: 'USD',
-      },
-      payee: {
-        email_address: item.accountIdentifier,
-      }, // creator account
-    }
-  })
+    const units = paypalData.map((item, i) => {
+      const creatorAmount =
+        totalAmounts.purchasedAssets[
+          item.creatorProfileId!
+        ].creatorAmount.toFixed(2)
 
-  request.requestBody({
-    intent: 'CAPTURE',
-    application_context: {
-      shipping_preference: 'NO_SHIPPING',
-    },
-    purchase_units: [
-      ...units,
-      {
-        reference_id: 'recipient_2',
+      return {
+        reference_id: `recipient_${i}`,
         amount: {
-          value: totalAmounts.totalServiceCharge.toFixed(2),
           currency_code: 'USD',
+          value: creatorAmount,
         },
         payee: {
-          email_address: process.env.NEXT_PUBLIC_PAYPAL_EMAIL,
-        }, // my account
+          email_address: item.accountIdentifier,
+        },
+      }
+    })
+
+    const platformFeeUnit = {
+      reference_id: 'platform_fee',
+      amount: {
+        currency_code: 'USD',
+        value: totalAmounts.totalServiceCharge.toFixed(2),
       },
-    ],
-  })
+      payee: {
+        email_address: process.env.NEXT_PUBLIC_PAYPAL_EMAIL,
+      },
+    }
+    const request = new paypal.orders.OrdersCreateRequest()
 
-  const response = await client.execute(request)
+    request.prefer('return=representation')
+    request.requestBody({
+      intent: 'CAPTURE',
+      application_context: {
+        brand_name: 'AIAssetHub.pro',
+        shipping_preference: 'NO_SHIPPING',
+        user_action: 'PAY_NOW',
+      },
+      purchase_units: [...units, platformFeeUnit],
+    })
 
-  return NextResponse.json({
-    id: response.result.id,
-  })
+    const response = await client.execute(request)
+
+    return NextResponse.json({
+      id: response.result.id,
+    })
+  } catch (e) {
+    console.error('PayPal order creation failed:', e)
+    return NextResponse.json(
+      { error: 'Failed to create PayPal order' },
+      { status: 500 },
+    )
+  }
 }
