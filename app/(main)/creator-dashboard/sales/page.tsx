@@ -2,15 +2,12 @@ import { PageContainer } from '@/components/page-container'
 import { Card, CardContent } from '@/components/ui/card'
 import { getUserProfile } from '@/data-access/profile'
 import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/purchases'
-import { ROUTES } from '@/lib/constants'
+import { INFINITE_SCROLL_NUMBER_OF_ITEMS, ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { validateSession } from '@/lib/session'
-import { formatCurrency } from '@/lib/utils'
-import { format } from 'date-fns'
 import { Package } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { CreatorDashboardSalesList } from './_components/sales-list'
 
 export default async function Page() {
   const { user } = await validateSession(ROUTES.creatorDashboard())
@@ -21,9 +18,11 @@ export default async function Page() {
   }
 
   // Get recent sales
-  const recentSales = await getAllCreatorDashboardPurchasesByAssetCreator(
-    profile.id,
-  )
+  const recentSales = await getAllCreatorDashboardPurchasesByAssetCreator({
+    profileId: profile.id,
+    offset: 0,
+    limit: INFINITE_SCROLL_NUMBER_OF_ITEMS,
+  })
 
   return (
     <PageContainer className='md:p-0'>
@@ -44,44 +43,7 @@ export default async function Page() {
             </div>
           ) : (
             <div className='flex flex-col gap-4'>
-              {recentSales.map((sale) => {
-                return sale.purchaseItems.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={ROUTES.assetsDetail(item.assetId)}
-                    className='font-medium'
-                    target='_blank'
-                  >
-                    <div className='flex flex-col md:flex-row md:items-center gap-4'>
-                      <div className='relative w-full md:w-32 h-24 self-center'>
-                        <Image
-                          src={item.asset.featuredImage || '/placeholder.svg'}
-                          alt={item.asset.title}
-                          fill
-                          className='object-contain'
-                        />
-                      </div>
-
-                      <div className='flex-1 flex flex-col md:flex-row justify-between items-center gap-4'>
-                        <div>
-                          <h3 className='text-md font-medium'>
-                            {item.asset.title}
-                          </h3>
-
-                          <p className='text-muted-foreground text-sm'>
-                            {item.assetLicense?.license.name} •{' '}
-                            {format(new Date(item.createdAt), 'MMM d')}
-                          </p>
-                        </div>
-
-                        <span className='font-bold'>
-                          {formatCurrency(item.amount)}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))
-              })}
+              <CreatorDashboardSalesList recentSales={recentSales} />
             </div>
           )}
         </CardContent>

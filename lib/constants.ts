@@ -63,6 +63,7 @@ export const API_ROUTES = {
   dashboardDownloads: () => '/api/dashboard/downloads',
   dashboardReviews: () => '/api/dashboard/reviews',
   dashboardFavorites: () => '/api/dashboard/favorites',
+  creatorDashboardSales: () => '/api/creator-dashboard/sales',
 }
 
 export const CACHE_KEYS = {

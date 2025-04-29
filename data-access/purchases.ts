@@ -88,9 +88,11 @@ export const getAllPurchasesByProfileId = async ({
   })
 }
 
-export const getAllCreatorDashboardPurchasesByAssetCreator = async (
-  profileId: string,
-) => {
+export const getAllCreatorDashboardPurchasesByAssetCreator = async ({
+  profileId,
+  offset,
+  limit,
+}: InfiniteRoute) => {
   'use cache'
 
   unstable_cacheTag(CACHE_KEYS.creatorDashboardPurchases(profileId))
@@ -98,6 +100,7 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async (
 
   return await prisma.purchase.findMany({
     where: {
+      status: PurchaseStatus.COMPLETED,
       purchaseItems: {
         some: {
           asset: {
@@ -105,7 +108,6 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async (
           },
         },
       },
-      status: PurchaseStatus.COMPLETED,
     },
     include: {
       purchaseItems: {
@@ -141,7 +143,8 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async (
     orderBy: {
       createdAt: 'desc',
     },
-    take: 5,
+    take: limit,
+    skip: offset,
   })
 }
 

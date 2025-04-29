@@ -2,7 +2,7 @@ import { APP_DATA, ROUTES } from '@/lib/constants'
 import { validateAdminProfile } from '@/lib/permissions'
 import type { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
-import { AdminSidebar } from './_components/sidebar'
+import { AdminSidebar } from './_components/admin-sidebar'
 
 export const metadata: Metadata = {
   title: `Admin Dashboard | ${APP_DATA.name}`,

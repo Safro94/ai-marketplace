@@ -6,19 +6,21 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { toast } from './toast'
 
-interface Props<T> {
+interface Props<T, U> {
   initialData: T[]
   endpointUrl: string
   ItemComponent: FC<T>
   itemsContainerClassName?: string
+  transformResponse?: (response: U) => T[]
 }
 
-export const InfiniteScrollList = <T,>({
+export const InfiniteScrollList = <T, U = unknown>({
   initialData,
   endpointUrl,
   itemsContainerClassName,
   ItemComponent,
-}: Props<T>) => {
+  transformResponse,
+}: Props<T, U>) => {
   const [items, setItems] = useState<T[]>(initialData)
   const [page, setPage] = useState(1)
   const [hasMoreItems, setHasMoreItems] = useState(true)
@@ -43,7 +45,10 @@ export const InfiniteScrollList = <T,>({
         return
       }
 
-      const newItems = (await response.json()) as T[]
+      const result = await response.json()
+      const newItems = transformResponse
+        ? transformResponse(result)
+        : (result as T[])
 
       if (
         !newItems.length ||
@@ -63,7 +68,7 @@ export const InfiniteScrollList = <T,>({
     } finally {
       setIsLoading(false)
     }
-  }, [isLoading, hasMoreItems, endpointUrl, page])
+  }, [isLoading, hasMoreItems, endpointUrl, page, transformResponse])
 
   useEffect(() => {
     if (inView) {
