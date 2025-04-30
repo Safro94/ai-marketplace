@@ -8,7 +8,7 @@ export const siteConfig = {
   description: 'Discover and purchase high-quality AI assets for your projects',
   links: {
     twitter: 'https://x.com/AIAssetHub',
-    linkedin: '',
+    linkedin: 'https://www.linkedin.com/company/aiassethub',
   },
   creator: `@aiassethub`,
   keywords: [
@@ -22,6 +22,12 @@ export const siteConfig = {
     'AI workflows',
     'AI templates',
     'AI solutions',
+    'prompt-engineering',
+    'custom-gpts',
+    'ai-workflows',
+    'industry-solutions',
+    'content-templates',
+    'data-tools',
   ],
   authors: [
     {
