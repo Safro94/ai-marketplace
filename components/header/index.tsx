@@ -50,6 +50,7 @@ export const Header: FC<Props> = async ({ classNames }) => {
       >
         <div className='flex items-center gap-6 md:gap-10'>
           <Logo />
+
           <HeaderNav
             isCreator={isCreator}
             hasPendingApplication={hasPendingApplication}

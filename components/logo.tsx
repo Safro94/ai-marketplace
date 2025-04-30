@@ -2,6 +2,7 @@ import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { FC } from 'react'
+import { Badge } from './ui/badge'
 
 interface Props {
   size?: 'sm' | 'md' | 'lg' | 'xl'
@@ -79,13 +80,20 @@ export const Logo: FC<Props> = ({
 
         {/* Logo Text */}
         {variant === 'full' && (
-          <div className='flex items-center'>
+          <div className='flex items-center gap-1'>
             <span
-              className='font-bold bg-gradient-to-r from-[#6a2baa] to-[#1e0a46] text-transparent bg-clip-text after:content-["BETA"] after:text-[0.5em] after:align-text-bottom'
+              className='font-bold bg-gradient-to-r from-[#6a2baa] to-[#1e0a46] text-transparent bg-clip-text'
               style={{ fontSize: `${fontSize}px` }}
             >
               AI<span className='text-cyan-500'>Asset</span>Hub
             </span>
+
+            <Badge
+              variant='outline'
+              className='text-[10px] px-2 bg-purple-100 text-purple-800 border-purple-200'
+            >
+              BETA
+            </Badge>
           </div>
         )}
       </div>

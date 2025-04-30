@@ -1,4 +1,5 @@
 import { HomeSectionDescription } from '@/components/page-container'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { GoogleGeminiEffect } from '@/components/ui/google-gemini-effect'
 import { LampContainer } from '@/components/ui/lamp-container'
@@ -33,16 +34,9 @@ export const HeroSection = async () => {
               ease: 'easeInOut',
             }}
           >
-            <div className='inline-flex items-center bg-primary rounded-lg border border-white px-4 py-1.5 text-sm font-medium mb-4'>
-              <span className='text-xs md:text-sm bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-600 font-medium'>
-                Just Launched
-              </span>
-
-              <span className='mx-2 h-0.5 w-0.5 rounded-full bg-border' />
-              <span className='text-xs md:text-sm text-white'>
-                Discover our AI asset marketplace
-              </span>
-            </div>
+            <Badge className='mb-6 py-1.5 px-6 bg-transparent text-primary border-purple-200 hover:bg-[initial'>
+              Just Launched 🚀 Discover our AI-Powered Tools marketplace
+            </Badge>
 
             <h1 className='text-3xl md:text-8xl font-bold text-primary dark:text-primary-foreground px-2'>
               The marketplace for <br />
@@ -57,7 +51,7 @@ export const HeroSection = async () => {
             <div className='flex flex-col md:flex-row md:justify-center gap-4 pt-4'>
               <Button size='lg' asChild>
                 <Link href={ROUTES.explore()}>
-                  Explore Marketplace
+                  Browse AI Tools
                   <ArrowRight className='ml-2 h-4 w-4' />
                 </Link>
               </Button>
