@@ -1,11 +1,31 @@
 import { EMAIL_FROM } from '@/lib/constants'
 import { resend } from '@/lib/resend'
+import { Purchase } from '@prisma/client'
 import { AssetApproved } from './email-templates/asset-approved'
 import { AssetRejected } from './email-templates/asset-rejected'
 import { CreatorApplicationApproved } from './email-templates/creator-application-approved'
 import { CreatorApplicationRejected } from './email-templates/creator-application-rejected'
 import { CreatorAssetSell } from './email-templates/creator-asset-sell'
 import { CustomerPurchaseCompleted } from './email-templates/customer-purchase-completed'
+import { PlatformAssetPurchase } from './email-templates/platform-asset-purchase'
+
+export const notifyPlatformSellCompleted = async ({
+  purchase,
+}: {
+  purchase: Purchase
+}) => {
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: 'aiassethub@gmail.com',
+    subject: 'Congratulations! Someone has purchased an asset',
+    react: await PlatformAssetPurchase({
+      ...purchase,
+    }),
+  })
+
+  console.error(error)
+  if (error) throw new Error(error.message)
+}
 
 export const notifyCreatorSellCompleted = async ({
   creatorEmail,

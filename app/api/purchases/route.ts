@@ -15,6 +15,7 @@ import { getInfiniteScrollRouteParams } from '@/lib/utils'
 import {
   notifyBuyerOrderCompleted,
   notifyCreatorSellCompleted,
+  notifyPlatformSellCompleted,
 } from '@/services/emails/email'
 import { PaymentProvider, PurchaseStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
@@ -166,6 +167,10 @@ export async function POST(request: Request) {
 
     await notifyBuyerOrderCompleted({
       email: session.user.email,
+    })
+
+    await notifyPlatformSellCompleted({
+      purchase,
     })
 
     // // Create a notification for the buyer about the purchase
