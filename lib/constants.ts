@@ -82,6 +82,8 @@ export const CACHE_KEYS = {
   licenses: () => 'licenses',
   profile: (userId: string) => `profile-${userId}`,
   purchases: (profileId: string) => `purchases-${profileId}`,
+  analyticsSales: (profileId: string) =>
+    `purchases-analytics-sales-${profileId}`,
   purchasedAsset: (profileId: string, assetId: string) =>
     `purchases-${profileId}-${assetId}`,
   creatorDashboardCreatorProfile: (profileId: string) =>

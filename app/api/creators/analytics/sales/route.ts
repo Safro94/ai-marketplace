@@ -1,7 +1,7 @@
 import { getUserProfile } from '@/data-access/profile'
+import { getAllPurchasesBetweenDates } from '@/data-access/purchases'
 import { SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
-import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
 
@@ -29,24 +29,10 @@ export async function GET() {
 
   try {
     // Get all purchases for assets created by this creator
-    const purchases = await prisma.purchase.findMany({
-      where: {
-        purchaseItems: {
-          some: {
-            asset: {
-              creatorId: profile.id,
-            },
-          },
-        },
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-        status: 'COMPLETED',
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
+    const purchases = await getAllPurchasesBetweenDates({
+      startDate,
+      endDate,
+      profileId: profile.id,
     })
 
     // Group purchases by date

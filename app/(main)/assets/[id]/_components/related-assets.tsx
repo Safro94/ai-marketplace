@@ -21,7 +21,11 @@ export const RelatedAssets: FC<Props> = async ({
       status: AssetStatus.PUBLISHED,
     },
     include: {
-      category: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
       creator: {
         select: {
           user: {
@@ -45,10 +49,19 @@ export const RelatedAssets: FC<Props> = async ({
         status: AssetStatus.PUBLISHED,
       },
       include: {
-        category: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
         creator: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                name: true,
+                image: true,
+              },
+            },
           },
         },
       },

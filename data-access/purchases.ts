@@ -25,6 +25,41 @@ export const createPurchase = async (
   })
 }
 
+export const getAllPurchasesBetweenDates = async ({
+  profileId,
+  startDate,
+  endDate,
+}: {
+  profileId: string
+  startDate: Date
+  endDate: Date
+}) => {
+  'use cache'
+
+  unstable_cacheTag(CACHE_KEYS.analyticsSales(profileId))
+  unstable_cacheLife('hours')
+
+  return await prisma.purchase.findMany({
+    where: {
+      purchaseItems: {
+        some: {
+          asset: {
+            creatorId: profileId,
+          },
+        },
+      },
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+      status: 'COMPLETED',
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  })
+}
+
 export const getAllPurchasesByProfileId = async ({
   profileId,
   where,

@@ -1,7 +1,7 @@
+import { getAssets } from '@/data-access/assets'
 import { getUserProfile } from '@/data-access/profile'
 import { SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
-import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
 
@@ -24,7 +24,7 @@ export async function GET() {
 
   try {
     // Get all assets created by this creator
-    const assets = await prisma.asset.findMany({
+    const assets = await getAssets({
       where: {
         creatorId: profile.id,
       },
