@@ -38,7 +38,7 @@ export const ModerationActions: FC<Props> = ({ assetId, isFeatured }) => {
 
       if (!response.ok) throw new Error('Failed to update asset status')
 
-      toast(
+      toast[status === AssetStatus.PUBLISHED ? 'success' : 'error'](
         status === AssetStatus.PUBLISHED ? 'Asset approved' : 'Asset rejected',
         {
           description: 'The asset has been updated successfully.',
