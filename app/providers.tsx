@@ -14,9 +14,9 @@ const NextTopLoader = dynamic(() => import('nextjs-toploader'), { ssr: false })
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
-      api_host:
-        process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
-      person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+      api_host: '/ingest',
+      ui_host: 'https://us.posthog.com',
+      person_profiles: 'always',
     })
   }, [])
 
@@ -61,23 +61,21 @@ function SuspendedPostHogPageView() {
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <PostHogProvider>
-      <ThemeProvider
-        attribute='class'
-        defaultTheme='system'
-        enableSystem
-        disableTransitionOnChange
-      >
-        <CartProvider>
-          <NextTopLoader showSpinner={false} color='hsl(264.7 66.7% 20%)' />
+    <ThemeProvider
+      attribute='class'
+      defaultTheme='system'
+      enableSystem
+      disableTransitionOnChange
+    >
+      <CartProvider>
+        <NextTopLoader showSpinner={false} color='hsl(264.7 66.7% 20%)' />
 
-          <ReCaptchaProvider
-            reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-          >
-            {children}
-          </ReCaptchaProvider>
-        </CartProvider>
-      </ThemeProvider>
-    </PostHogProvider>
+        <ReCaptchaProvider
+          reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+        >
+          <PostHogProvider>{children}</PostHogProvider>
+        </ReCaptchaProvider>
+      </CartProvider>
+    </ThemeProvider>
   )
 }
