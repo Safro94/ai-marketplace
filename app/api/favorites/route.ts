@@ -1,28 +1,17 @@
 import { getFavorite } from '@/data-access/favorites'
-import { getUserProfile } from '@/data-access/profile'
-import { getServerSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../utils'
 
 export async function GET(request: NextRequest) {
-  const assetId = request.nextUrl.searchParams.get('assetId')
-
-  if (!assetId) {
-    return NextResponse.json({ error: 'Asset id not found' }, { status: 404 })
-  }
-
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const profile = await getUserProfile(session.user.id)
-
-  if (!profile) {
-    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  }
-
   try {
+    const assetId = request.nextUrl.searchParams.get('assetId')
+
+    if (!assetId) {
+      return NextResponse.json({ error: 'Asset id not found' }, { status: 404 })
+    }
+
+    const { profile } = await validateRouteProfilePermissions()
+
     const existingFavorite = await getFavorite(assetId, {
       where: {
         profileId_assetId: {

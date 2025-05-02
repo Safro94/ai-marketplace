@@ -3,12 +3,11 @@ import {
   getAssetLicensesByAssetId,
 } from '@/data-access/asset-licenses'
 import { getAssetById, softDeleteAssetById } from '@/data-access/assets'
-import { getUserProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
-import { getServerSession } from '@/lib/session'
 import { Role } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../../utils'
 import { validateAssetId } from './utils'
 
 export async function DELETE(
@@ -18,11 +17,11 @@ export async function DELETE(
   try {
     const { assetId } = await validateAssetId(params)
 
-    const session = await getServerSession()
-
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!assetId) {
+      return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
     }
+
+    const { profile, user } = await validateRouteProfilePermissions()
 
     // Check if user is the creator or an admin
     const asset = await getAssetById(assetId, {
@@ -33,13 +32,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
     }
 
-    const profile = await getUserProfile(session.user.id)
-
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
-
-    const isCreator = asset.creator.userId === session.user.id
+    const isCreator = asset.creator.userId === user.id
 
     if (!isCreator && profile.role !== Role.ADMIN) {
       return NextResponse.json(

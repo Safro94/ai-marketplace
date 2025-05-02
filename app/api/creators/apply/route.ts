@@ -6,27 +6,15 @@ import {
   createCreatorProfile,
   getCreatorProfileByProfileId,
 } from '@/data-access/creator-profile'
-import { getUserProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
 import { creatorApplicationSchema } from '@/lib/schemas'
-import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../../utils'
 
 export async function POST(request: Request) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  // Get user profile
-  const profile = await getUserProfile(session.user.id)
-
-  if (!profile) {
-    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  }
+  const { profile } = await validateRouteProfilePermissions()
 
   try {
     const data = await request.json()

@@ -1,22 +1,10 @@
-import { getUserProfile } from '@/data-access/profile'
 import prisma from '@/lib/prisma'
-import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../../utils'
 
-export async function POST(request: Request) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
+export async function POST() {
   try {
-    // Get user profile
-    const profile = await getUserProfile(session.user.id)
-
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
+    const { profile } = await validateRouteProfilePermissions()
 
     // Mark all notifications as read
     await prisma.notification.updateMany({

@@ -2,7 +2,6 @@ import { getPurchaseAmounts } from '@/app/(main)/checkout/_components/checkout-u
 import { updateAsset } from '@/data-access/assets'
 import { createOrUpdateCreatorAnalytics } from '@/data-access/creator-analytics'
 import { updateCreatorProfile } from '@/data-access/creator-profile'
-import { getUserProfile } from '@/data-access/profile'
 import { createPurchaseItem } from '@/data-access/purchase-item'
 import {
   createPurchase,
@@ -10,7 +9,6 @@ import {
 } from '@/data-access/purchases'
 import { CACHE_KEYS } from '@/lib/constants'
 import { generateLicenseKey } from '@/lib/license-utils'
-import { getServerSession } from '@/lib/session'
 import { getInfiniteScrollRouteParams } from '@/lib/utils'
 import {
   notifyBuyerOrderCompleted,
@@ -20,23 +18,14 @@ import {
 import { PaymentProvider, PurchaseStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../utils'
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const profile = await getUserProfile(session.user.id)
-
-  if (!profile) {
-    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  }
-
-  const { offset, limit } = getInfiniteScrollRouteParams(request)
-
   try {
+    const { profile } = await validateRouteProfilePermissions()
+
+    const { offset, limit } = getInfiniteScrollRouteParams(request)
+
     const purchases = await getAllPurchasesByProfileId({
       profileId: profile.id,
       offset,
@@ -54,19 +43,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const profile = await getUserProfile(session.user.id)
-
-  if (!profile) {
-    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  }
-
   try {
+    const { profile, user } = await validateRouteProfilePermissions()
+
     const {
       paypalOrderId,
       paymentDetails,
@@ -103,7 +82,7 @@ export async function POST(request: Request) {
           )
         }
 
-        const licenseKey = generateLicenseKey(session.user.id, asset.id)
+        const licenseKey = generateLicenseKey(user.id, asset.id)
         const assetLicense = asset.assetLicenses.find(
           (item) => item.licenseId === cartAsset.assetLicenseId,
         )
@@ -167,7 +146,7 @@ export async function POST(request: Request) {
     )
 
     await notifyBuyerOrderCompleted({
-      email: session.user.email,
+      email: user.email,
     })
 
     await notifyPlatformSellCompleted({

@@ -15,7 +15,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    await validateRouteProfilePermissions()
+    await validateRouteProfilePermissions({
+      checkAdminOrCreator: true,
+    })
 
     const { status, notes } = await request.json()
 

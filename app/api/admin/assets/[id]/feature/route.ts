@@ -9,7 +9,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    await validateRouteProfilePermissions()
+    await validateRouteProfilePermissions({
+      checkAdminOrCreator: true,
+    })
 
     const { featured } = await request.json()
     const assetId = (await params).id

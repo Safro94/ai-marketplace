@@ -1,7 +1,6 @@
 // app/api/assets/[id]/user-purchase/route.ts
-import { getUserProfile } from '@/data-access/profile'
+import { validateRouteProfilePermissions } from '@/app/api/utils'
 import { checkUserPurchasedAsset } from '@/data-access/purchases'
-import { getServerSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateAssetId } from '../utils'
 
@@ -11,18 +10,7 @@ export async function GET(
 ) {
   try {
     const { assetId } = await validateAssetId(params)
-
-    const session = await getServerSession()
-
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const profile = await getUserProfile(session.user.id)
-
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
+    const { profile } = await validateRouteProfilePermissions()
 
     const purchaseData = await checkUserPurchasedAsset(profile.id, assetId)
 

@@ -24,7 +24,9 @@ import { validateRouteProfilePermissions } from '../../utils'
 
 export async function POST(request: Request) {
   try {
-    const { profile, user } = await validateRouteProfilePermissions()
+    const { profile, user } = await validateRouteProfilePermissions({
+      checkAdminOrCreator: true,
+    })
 
     const data = (await request.json()) as typeof assetUploadSchema
 
@@ -147,7 +149,9 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    await validateRouteProfilePermissions()
+    await validateRouteProfilePermissions({
+      checkAdminOrCreator: true,
+    })
 
     const data = (await request.json()) as typeof assetUploadSchema
 

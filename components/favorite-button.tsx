@@ -47,8 +47,8 @@ export const FavoriteButton: FC<Props> = ({ assetId }) => {
       }
     }
 
-    fetchFavorite()
-  }, [assetId])
+    if (user) fetchFavorite()
+  }, [assetId, user])
 
   const handleClick = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,

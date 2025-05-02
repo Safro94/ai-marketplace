@@ -1,21 +1,10 @@
-import { getUserProfile } from '@/data-access/profile'
 import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/purchases'
-import { getServerSession } from '@/lib/session'
 import { getInfiniteScrollRouteParams } from '@/lib/utils'
 import { NextRequest, NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../../utils'
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const profile = await getUserProfile(session?.user.id)
-
-  if (!profile) {
-    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  }
+  const { profile } = await validateRouteProfilePermissions()
 
   const { offset, limit } = getInfiniteScrollRouteParams(request)
 

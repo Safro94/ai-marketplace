@@ -1,9 +1,12 @@
 import { toast } from '@/components/ui/toast'
 import { checkUserPurchasedAsset } from '@/data-access/purchases'
+import { useAuth } from '@/hooks/use-auth'
 import { API_ROUTES } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 
 export const useAssetDetail = (assetId: string) => {
+  const { user } = useAuth()
+
   const [userPurchaseData, setUserPurchaseData] = useState<Awaited<
     ReturnType<typeof checkUserPurchasedAsset>
   > | null>(null)
@@ -28,8 +31,8 @@ export const useAssetDetail = (assetId: string) => {
       }
     }
 
-    fetchUserData()
-  }, [assetId])
+    if (user) fetchUserData()
+  }, [assetId, user])
 
   return {
     userPurchaseData,
