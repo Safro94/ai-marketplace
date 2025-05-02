@@ -8,7 +8,7 @@ import { FC } from 'react'
 import { AssetActionsContainer } from './asset-actions-container'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
 import { ShareButton } from './share-button'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { Avatar } from './ui/avatar'
 import { Badge } from './ui/badge'
 
 export const Asset: FC<
@@ -68,16 +68,12 @@ export const Asset: FC<
       <div className='p-5'>
         <div className='flex items-center justify-between mb-2'>
           <div className='flex items-center space-x-2'>
-            <Avatar className='h-6 w-6'>
-              <AvatarImage
-                src={creator.user.image || ''}
-                alt={creator.user.name || ''}
-              />
-
-              <AvatarFallback>
-                {creator.user.name?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <Avatar
+              className='h-6 w-6'
+              src={creator.user.image}
+              alt={creator.user.name}
+              fallback={creator.user.name?.charAt(0).toUpperCase()}
+            />
 
             <span className='text-sm text-gray-500 dark:text-secondary-foreground'>
               {creator.user.name}

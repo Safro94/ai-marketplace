@@ -1,7 +1,7 @@
 'use client'
 
 import { signUserOut } from '@/actions/sign-out'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -30,13 +30,12 @@ export const HeaderDropdown: FC<Props> = ({ isCreator, user }) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
-          <Avatar className='h-8 w-8'>
-            <AvatarImage src={user.image || ''} alt={user.name || ''} />
-
-            <AvatarFallback>
-              {user.name?.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <Avatar
+            className='h-8 w-8'
+            src={user.image}
+            alt={user.name}
+            fallback={user.name?.charAt(0).toUpperCase()}
+          />
         </Button>
       </DropdownMenuTrigger>
 

@@ -4,7 +4,11 @@ import { cn } from '@/lib/utils'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import { ComponentProps, FC } from 'react'
 
-const Avatar: FC<ComponentProps<'span'>> = ({ className, ref, ...props }) => (
+const AvatarRoot: FC<ComponentProps<'span'>> = ({
+  className,
+  ref,
+  ...props
+}) => (
   <AvatarPrimitive.Root
     ref={ref}
     className={cn(
@@ -40,6 +44,19 @@ const AvatarFallback: FC<ComponentProps<typeof AvatarPrimitive.Fallback>> = ({
     )}
     {...props}
   />
+)
+
+const Avatar: FC<{
+  src?: string | null
+  alt?: string | null
+  fallback: string
+  className?: string
+}> = ({ src, alt, fallback, className }) => (
+  <AvatarRoot className={className}>
+    <AvatarImage src={src || ''} alt={alt || ''} />
+
+    <AvatarFallback>{fallback}</AvatarFallback>
+  </AvatarRoot>
 )
 
 export { Avatar, AvatarFallback, AvatarImage }

@@ -1,5 +1,5 @@
 import { PageContainer } from '@/components/page-container'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import {
   Card,
@@ -65,15 +65,12 @@ export default async function UsersPage() {
                   <TableRow key={user.id}>
                     <TableCell>
                       <div className='flex items-center gap-3'>
-                        <Avatar className='h-8 w-8'>
-                          <AvatarImage
-                            src={user.image || ''}
-                            alt={user.name || ''}
-                          />
-                          <AvatarFallback>
-                            {user.name?.charAt(0).toUpperCase() || 'U'}
-                          </AvatarFallback>
-                        </Avatar>
+                        <Avatar
+                          className='h-8 w-8'
+                          src={user.image}
+                          alt={user.name}
+                          fallback={user.name?.charAt(0).toUpperCase() || 'U'}
+                        />
 
                         <div>
                           <p className='font-medium'>

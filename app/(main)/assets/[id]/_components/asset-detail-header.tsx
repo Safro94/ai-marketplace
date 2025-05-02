@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import type { Prisma } from '@prisma/client'
 import { StarIcon } from 'lucide-react'
@@ -39,16 +39,12 @@ export const AssetDetailHeader: FC<Props> = ({
 
       <div className='flex items-center gap-4 flex-wrap'>
         <div className='flex items-center gap-2'>
-          <Avatar className='h-8 w-8'>
-            <AvatarImage
-              src={creator.user.image || '/placeholder.svg?height=40&width=40'}
-              alt={creator.user.name || 'Creator'}
-            />
-
-            <AvatarFallback>
-              {(creator.user.name || 'C').charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <Avatar
+            className='h-8 w-8'
+            src={creator.user.image || '/placeholder.svg?height=40&width=40'}
+            alt={creator.user.name || 'Creator'}
+            fallback={(creator.user.name || 'C').charAt(0)}
+          />
 
           <span className='text-sm'>
             by{' '}

@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { FC } from 'react'
@@ -11,14 +11,12 @@ export const AssetDetailCreatorInfo: FC<{
   <Card className={cn('hidden lg:block border-border/50', className)}>
     <CardContent className='p-6'>
       <div className='flex items-center space-x-4 mb-4'>
-        <Avatar className='h-12 w-12'>
-          <AvatarImage
-            src={name || '/placeholder.svg?height=40&width=40'}
-            alt={name || 'Creator'}
-          />
-
-          <AvatarFallback>{(name || 'C').charAt(0)}</AvatarFallback>
-        </Avatar>
+        <Avatar
+          className='h-12 w-12'
+          src={name || '/placeholder.svg?height=40&width=40'}
+          alt={name || 'Creator'}
+          fallback={(name || 'C').charAt(0)}
+        />
 
         <div>
           <h3 className='font-semibold'>{name || 'Unknown Creator'}</h3>

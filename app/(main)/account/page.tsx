@@ -1,5 +1,5 @@
 import { PageContainer } from '@/components/page-container'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import {
   Card,
   CardContent,
@@ -66,12 +66,12 @@ export default async function AccountPage() {
 
             <CardContent className='space-y-6'>
               <div className='flex flex-col items-center space-y-3'>
-                <Avatar className='h-24 w-24'>
-                  <AvatarImage src={user.image || ''} alt={user.name || ''} />
-                  <AvatarFallback>
-                    {user.name?.charAt(0).toUpperCase() || 'U'}
-                  </AvatarFallback>
-                </Avatar>
+                <Avatar
+                  className='h-24 w-24'
+                  src={user.image}
+                  alt={user.name}
+                  fallback={user.name?.charAt(0).toUpperCase() || 'U'}
+                />
 
                 <div className='text-center'>
                   <h3 className='font-medium text-lg'>{user.name}</h3>

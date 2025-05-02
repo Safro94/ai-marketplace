@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
 import { Prisma } from '@prisma/client'
@@ -33,18 +33,14 @@ export const AssetDetailReview: FC<Props> = ({
     <div key={id} className='border-b border-border/50 pb-6 last:border-0'>
       <div className='flex items-start justify-between mb-2'>
         <div className='flex items-center space-x-3'>
-          <Avatar className='h-8 w-8'>
-            <AvatarImage
-              src={
-                userProfile.user.image || '/placeholder.svg?height=40&width=40'
-              }
-              alt={userProfile.user.name || 'User'}
-            />
-
-            <AvatarFallback>
-              {(userProfile.user.name || 'U').charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <Avatar
+            className='h-8 w-8'
+            src={
+              userProfile.user.image || '/placeholder.svg?height=40&width=40'
+            }
+            alt={userProfile.user.name || 'User'}
+            fallback={(userProfile.user.name || 'U').charAt(0)}
+          />
 
           <div>
             <div className='font-medium'>

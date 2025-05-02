@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import { LoadingButton } from '@/components/ui/button'
 import {
   Card,
@@ -100,15 +100,12 @@ export const UserProfileForm: FC<Props> = ({ initialData }) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className='space-y-6'>
             <div className='flex flex-col items-center space-y-4'>
-              <Avatar className='h-24 w-24'>
-                <AvatarImage
-                  src={initialData.image || ''}
-                  alt={initialData.name}
-                />
-                <AvatarFallback>
-                  {initialData.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <Avatar
+                className='h-24 w-24'
+                src={initialData.image}
+                alt={initialData.name}
+                fallback={initialData.name.charAt(0).toUpperCase()}
+              />
             </div>
 
             <div className='space-y-4'>
