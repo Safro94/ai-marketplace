@@ -1,9 +1,8 @@
-import { getProfileByUserId, getUserProfile } from '@/data-access/profile'
+import { getProfileByUserId } from '@/data-access/profile'
 import { Profile, Role } from '@prisma/client'
 import { redirect } from 'next/navigation'
-import { NextResponse } from 'next/server'
 import { ROUTES } from './constants'
-import { getServerSession, validateSession } from './session'
+import { validateSession } from './session'
 import { USER_TYPES } from './types'
 
 export const isAdminOrCreator = (profile?: Profile | null) =>
@@ -21,20 +20,4 @@ export const validateAdminProfile = async (callbackUrl?: string) => {
     redirect('/?error=unauthorized')
 
   return { profile }
-}
-
-export const validateRouteProfilePermissions = async () => {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const profile = await getUserProfile(session.user.id)
-
-  if (!profile || !isAdminOrCreator(profile)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  }
-
-  return { profile, user: session.user }
 }

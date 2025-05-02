@@ -1,13 +1,14 @@
 import { getAssetLicensesByAssetId } from '@/data-access/asset-licenses'
 import { NextResponse } from 'next/server'
+import { validateAssetId } from '../utils'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const assetId = (await params).id
-
   try {
+    const { assetId } = await validateAssetId(params)
+
     const assetLicenses = await getAssetLicensesByAssetId(assetId, {
       include: {
         license: true,
@@ -30,6 +31,7 @@ export async function GET(
     return NextResponse.json(licenseOptions)
   } catch (error) {
     console.error('Error fetching asset licenses:', error)
+
     return NextResponse.json(
       { error: 'Failed to fetch license options' },
       { status: 500 },

@@ -1,7 +1,7 @@
+import { validateRouteProfilePermissions } from '@/app/api/utils'
 import { updateAsset } from '@/data-access/assets'
 import { getProfileById } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
-import { validateRouteProfilePermissions } from '@/lib/permissions'
 import {
   notifyAssetApproved,
   notifyAssetRejected,
@@ -14,9 +14,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  await validateRouteProfilePermissions()
-
   try {
+    await validateRouteProfilePermissions()
+
     const { status, notes } = await request.json()
 
     if (![AssetStatus.PUBLISHED, AssetStatus.REJECTED].includes(status)) {
@@ -75,7 +75,7 @@ export async function POST(
     console.error('Error updating asset status:', error)
     return NextResponse.json(
       { error: 'Failed to update asset status' },
-      { status: 500 },
+      { status: error instanceof Error ? (error.cause as number) : 500 },
     )
   }
 }

@@ -1,6 +1,6 @@
+import { validateRouteProfilePermissions } from '@/app/api/utils'
 import { getAssetCount, updateAsset } from '@/data-access/assets'
 import { CACHE_KEYS } from '@/lib/constants'
-import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
@@ -8,9 +8,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  await validateRouteProfilePermissions()
-
   try {
+    await validateRouteProfilePermissions()
+
     const { featured } = await request.json()
     const assetId = (await params).id
 
@@ -45,7 +45,7 @@ export async function POST(
     console.error('Error updating featured status:', error)
     return NextResponse.json(
       { error: 'Failed to update featured status' },
-      { status: 500 },
+      { status: error instanceof Error ? (error.cause as number) : 500 },
     )
   }
 }

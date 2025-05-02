@@ -83,7 +83,6 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
       <Sheet
         open={showFilters}
         onOpenChange={() => {
-          console.log('hola')
           setShowFilters((prevState) => !prevState)
         }}
         header={<SheetTitle>Sort & Filter</SheetTitle>}

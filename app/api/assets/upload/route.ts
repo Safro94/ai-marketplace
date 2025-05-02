@@ -11,7 +11,6 @@ import {
 } from '@/data-access/assets'
 import { updateProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
-import { validateRouteProfilePermissions } from '@/lib/permissions'
 import { assetUploadSchema } from '@/lib/schemas'
 import {
   notifyAssetApproved,
@@ -21,13 +20,12 @@ import { ModerationService } from '@/services/ModerationService'
 import { AssetStatus, LicenseType } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../../utils'
 
 export async function POST(request: Request) {
-  const result = await validateRouteProfilePermissions()
-  if (result instanceof NextResponse) return result
-  const { profile, user } = result
-
   try {
+    const { profile, user } = await validateRouteProfilePermissions()
+
     const data = (await request.json()) as typeof assetUploadSchema
 
     // Validate input data
@@ -148,10 +146,9 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const result = await validateRouteProfilePermissions()
-  if (result instanceof NextResponse) return result
-
   try {
+    await validateRouteProfilePermissions()
+
     const data = (await request.json()) as typeof assetUploadSchema
 
     // Validate input data
@@ -287,7 +284,7 @@ export async function PATCH(request: Request) {
     console.error('Error creating asset:', error)
     return NextResponse.json(
       { error: 'Failed to create asset' },
-      { status: 500 },
+      { status: error instanceof Error ? (error.cause as number) : 500 },
     )
   }
 }

@@ -9,20 +9,21 @@ import { getServerSession } from '@/lib/session'
 import { Role } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { validateAssetId } from './utils'
 
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession()
-
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const assetId = (await params).id
-
   try {
+    const { assetId } = await validateAssetId(params)
+
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     // Check if user is the creator or an admin
     const asset = await getAssetById(assetId, {
       creator: true,

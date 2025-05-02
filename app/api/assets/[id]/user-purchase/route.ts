@@ -3,18 +3,16 @@ import { getUserProfile } from '@/data-access/profile'
 import { checkUserPurchasedAsset } from '@/data-access/purchases'
 import { getServerSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
+import { validateAssetId } from '../utils'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const assetId = (await params).id
-    const session = await getServerSession()
+    const { assetId } = await validateAssetId(params)
 
-    if (!assetId) {
-      return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
-    }
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

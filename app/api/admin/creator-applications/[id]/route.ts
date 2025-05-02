@@ -1,10 +1,10 @@
+import { validateRouteProfilePermissions } from '@/app/api/utils'
 import {
   getCreatorApplicationById,
   updateCreatorApplication,
 } from '@/data-access/creator-application'
 import { getProfileById, updateProfile } from '@/data-access/profile'
 import { CACHE_KEYS } from '@/lib/constants'
-import { validateRouteProfilePermissions } from '@/lib/permissions'
 import {
   notifyCreatorApplicationApproved,
   notifyCreatorApplicationRejected,
@@ -17,9 +17,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  await validateRouteProfilePermissions()
-
   try {
+    await validateRouteProfilePermissions()
+
     const { status, reviewNotes } = await request.json()
 
     if (
@@ -114,7 +114,7 @@ export async function PATCH(
     console.error('Error updating creator application:', error)
     return NextResponse.json(
       { error: 'Failed to update application' },
-      { status: 500 },
+      { status: error instanceof Error ? (error.cause as number) : 500 },
     )
   }
 }
