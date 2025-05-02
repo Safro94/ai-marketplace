@@ -65,7 +65,6 @@ export async function POST(request: Request) {
         ? requirements.split(',').filter((r) => r.trim())
         : [],
       status: AssetStatus.PENDING_REVIEW,
-      views: 0,
       totalSales: 0,
       totalReviews: 0,
       featured: false,

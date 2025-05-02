@@ -136,7 +136,6 @@ model Asset {
   averageRating   Float       @default(0)
   moderationNotes String?
   approvedAt      DateTime?
-  views           Int         @default(0)
   totalSales      Int         @default(0)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -280,7 +279,6 @@ model AssetAnalytics {
   id             String   @id @default(cuid())
   assetId        String   @unique
   asset          Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  views          Int      @default(0)
   uniqueViews    Int      @default(0)
   conversionRate Float    @default(0)
   dailyStats     Json?

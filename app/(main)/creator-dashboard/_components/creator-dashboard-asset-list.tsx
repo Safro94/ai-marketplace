@@ -112,7 +112,7 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
                 <div className='flex flex-wrap justify-center md:justify-start items-center space-x-4 mt-2 text-sm text-muted-foreground'>
                   <div className='flex items-center'>
                     <Eye className='h-4 w-4 mr-1' />
-                    {asset.assetAnalytics?.views || 0}
+                    {asset.assetAnalytics?.uniqueViews || 0}
                   </div>
 
                   <div className='flex items-center'>

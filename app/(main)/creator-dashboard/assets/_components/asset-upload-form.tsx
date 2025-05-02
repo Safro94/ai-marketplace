@@ -191,7 +191,8 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                     <CardTitle>Featured Image</CardTitle>
                     <CardDescription>
                       The main image displayed for your product. Tip: use 16 / 9
-                      aspect ratio so your image always looks good.
+                      aspect ratio so your image always looks good and make sure
+                      to optmize your image for faster loading.
                     </CardDescription>
                   </CardHeader>
 

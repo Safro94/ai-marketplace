@@ -249,10 +249,6 @@ export default async function AssetPage({
                       title: 'Category',
                       subtitle: asset.category.name,
                     },
-                    {
-                      title: 'Use Case',
-                      subtitle: asset.useCase,
-                    },
                   ].map(({ title, subtitle }) => (
                     <div key={title} className='flex justify-between'>
                       <span className='text-muted-foreground'>{title}</span>

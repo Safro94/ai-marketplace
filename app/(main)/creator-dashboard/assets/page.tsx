@@ -37,7 +37,7 @@ export default async function Page() {
     include: {
       assetAnalytics: {
         select: {
-          views: true,
+          uniqueViews: true,
         },
       },
     },

@@ -8,12 +8,10 @@ export const updateAssetAnalytics = async (
   return await prisma.assetAnalytics.upsert({
     where: { assetId },
     update: {
-      views: { increment: 1 },
       uniqueViews: { increment: isUniqueView ? 1 : 0 },
     },
     create: {
       assetId,
-      views: 1,
       uniqueViews: 1,
     },
   })

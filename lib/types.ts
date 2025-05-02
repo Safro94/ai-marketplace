@@ -118,7 +118,7 @@ export type CreatorDashboardAssetWithAnalytics = Prisma.AssetGetPayload<{
   include: {
     assetAnalytics: {
       select: {
-        views: true
+        uniqueViews: true
       }
     }
   }
