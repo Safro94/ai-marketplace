@@ -45,17 +45,6 @@ export const CheckoutContainer: FC<Props> = ({ cartItems, cartTotal }) => {
             <Separator />
 
             <div className='space-y-4'>
-              <p className='text-sm text-muted-foreground'>
-                By completing this purchase, you agree to our Terms of Service
-                and Privacy Policy.
-              </p>
-
-              <PaypalButtons
-                isPurchasing={isPurchasing}
-                setIsPurchasing={setIsPurchasing}
-                cartTotal={cartTotal}
-              />
-
               <p className='text-sm text-muted-foreground mt-2'>
                 <strong>Important:</strong> All digital assets are final sale
                 and non-refundable once accessed or downloaded. By completing
@@ -65,6 +54,12 @@ export const CheckoutContainer: FC<Props> = ({ cartItems, cartTotal }) => {
                 </Link>
                 .
               </p>
+
+              <PaypalButtons
+                isPurchasing={isPurchasing}
+                setIsPurchasing={setIsPurchasing}
+                cartTotal={cartTotal}
+              />
             </div>
           </CardContent>
         </Card>

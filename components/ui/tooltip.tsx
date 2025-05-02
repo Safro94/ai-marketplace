@@ -26,17 +26,22 @@ const TooltipContent: FC<ComponentProps<typeof TooltipPrimitive.Content>> = ({
   />
 )
 
-const Tooltip: FC<{ trigger: ReactNode; content: ReactNode }> = ({
-  trigger,
-  content,
-}) => {
+const Tooltip: FC<
+  TooltipPrimitive.TooltipContentProps & {
+    trigger: ReactNode
+    content: ReactNode
+  }
+> = ({ trigger, content, ...rest }) => {
   return (
     <TooltipProvider delayDuration={200}>
       <RootTooltip>
         <TooltipTrigger asChild>{trigger}</TooltipTrigger>
 
         <TooltipPortal>
-          <TooltipContent className='bg-primary text-background'>
+          <TooltipContent
+            {...rest}
+            className='bg-primary text-background dark:text-primary-foreground'
+          >
             <div>{content}</div>
           </TooltipContent>
         </TooltipPortal>

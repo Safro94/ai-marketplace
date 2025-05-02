@@ -6,7 +6,7 @@ export const ExploreSkeleton = () => {
     <div>
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4'>
         <Skeleton className='h-10 w-full md:w-80' />
-        <Skeleton className='h-10 w-full md:w-36 rounded-full' />
+        <Skeleton className='h-10 w-full md:w-36' />
       </div>
 
       <div className='flex justify-center md:justify-end mb-2'>

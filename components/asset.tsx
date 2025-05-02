@@ -1,15 +1,16 @@
 import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
-import { cn, formatCurrency } from '@/lib/utils'
+import { formatCurrency } from '@/lib/utils'
 import { Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
 import { AssetActionsContainer } from './asset-actions-container'
-import { AssetAddToCartButton } from './asset-add-to-cart-button'
+import { AssetAddToCartButtonWrapper } from './asset-add-to-cart-wrapper'
 import { ShareButton } from './share-button'
 import { Avatar } from './ui/avatar'
 import { Badge } from './ui/badge'
+import { Tooltip } from './ui/tooltip'
 
 export const Asset: FC<
   Pick<
@@ -56,15 +57,6 @@ export const Asset: FC<
         </AssetActionsContainer>
       </div>
 
-      <div className='absolute top-3 left-3'>
-        <Badge
-          variant='secondary'
-          className='bg-primary text-white w-fit shadow-lg'
-        >
-          {category.name}
-        </Badge>
-      </div>
-
       <div className='p-5'>
         <div className='flex items-center justify-between mb-2'>
           <div className='flex items-center space-x-2'>
@@ -89,27 +81,43 @@ export const Asset: FC<
           </div>
         </div>
 
-        <h3 className='text-lg font-semibold text-gray-900 dark:text-secondary-foreground mb-1'>
-          {title}
-        </h3>
-        <p className='text-sm text-gray-500 dark:text-secondary-foreground mb-4 line-clamp-2'>
+        <Tooltip
+          align='start'
+          content={title}
+          trigger={
+            <h3 className='text-lg font-semibold text-gray-900 dark:text-secondary-foreground mb-1 line-clamp-1'>
+              {title}
+            </h3>
+          }
+        />
+
+        <p className='text-sm text-gray-500 dark:text-secondary-foreground mb-4 line-clamp-3'>
           {description}
         </p>
 
-        <div className={cn('flex items-center justify-between')}>
-          <div>
-            <AssetAddToCartButton
+        <div className='flex items-center justify-between'>
+          <Badge
+            variant='secondary'
+            className='bg-primary text-white hover:bg-primary self-center text-[11px]'
+          >
+            {category.name}
+          </Badge>
+
+          <div className='flex items-center gap-2'>
+            <span className='text-md font-bold text-primary dark:text-primary-foreground'>
+              {formatCurrency(basePrice)}
+            </span>
+
+            <AssetAddToCartButtonWrapper
               id={id}
               title={title}
               basePrice={basePrice}
               featuredImage={featuredImage}
-              size='sm'
+              size='icon'
+              showText={false}
+              className='w-[30px] h-[30px]'
             />
           </div>
-
-          <span className='text-lg font-bold text-primary dark:text-primary-foreground'>
-            {formatCurrency(basePrice)}
-          </span>
         </div>
       </div>
     </Link>

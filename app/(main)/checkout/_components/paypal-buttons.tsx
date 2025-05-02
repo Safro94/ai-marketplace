@@ -116,9 +116,6 @@ const Buttons: FC<ButtonsProps> = ({
         '!opacity-100 relative',
         (!cartTotal || isPurchasing) && '!opacity-50 pointer-events-none',
       )}
-      style={{
-        borderRadius: 25,
-      }}
       disabled={isPaypalButtonDisabled}
       createOrder={async () => {
         setIsPurchasing(true)

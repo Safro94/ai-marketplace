@@ -1,7 +1,6 @@
 'use client'
 
 import { AssetActionsContainer } from '@/components/asset-actions-container'
-import { FavoriteButton } from '@/components/favorite-button'
 import { ShareButton } from '@/components/share-button'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,6 +12,7 @@ import {
 } from '@/components/ui/carousel'
 import { ExploreAsset } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
 
@@ -20,6 +20,14 @@ type Props = Pick<
   ExploreAsset,
   'id' | 'featuredImage' | 'galleryImages' | 'title'
 >
+
+const FavoriteButton = dynamic(
+  () =>
+    import('@/components/favorite-button').then((item) => item.FavoriteButton),
+  {
+    ssr: false,
+  },
+)
 
 export const AssetDetailCarousel: FC<Props> = ({
   id: assetId,
@@ -63,9 +71,8 @@ export const AssetDetailCarousel: FC<Props> = ({
           ))}
 
           <AssetActionsContainer>
-            <FavoriteButton assetId={assetId} />
-
             <ShareButton assetId={assetId} />
+            <FavoriteButton assetId={assetId} />
           </AssetActionsContainer>
         </CarouselContent>
         <CarouselThumbnails images={galleryImages} />

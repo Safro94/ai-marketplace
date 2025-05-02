@@ -6,6 +6,7 @@ import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import { LicenseType } from '@prisma/client'
 import { ShoppingCart, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -17,6 +18,7 @@ import {
   useTransition,
 } from 'react'
 import { Skeleton } from './ui/skeleton'
+import { Tooltip } from './ui/tooltip'
 
 interface Props
   extends Pick<ExploreAsset, 'id' | 'title' | 'basePrice' | 'featuredImage'>,
@@ -27,6 +29,7 @@ interface Props
   assetLicenseId?: LicenseType
   licenseName?: string
   licensePrice?: number
+  showText?: boolean
 }
 
 export const AssetAddToCartButton: FC<Props> = ({
@@ -38,6 +41,7 @@ export const AssetAddToCartButton: FC<Props> = ({
   licenseName,
   licensePrice,
   size,
+  showText,
   ...props
 }) => {
   const router = useRouter()
@@ -134,21 +138,28 @@ export const AssetAddToCartButton: FC<Props> = ({
   return (
     <>
       {isLoading ? (
-        <Skeleton className='h-9 w-40 rounded-full' />
+        <Skeleton className='h-[30px] w-[30px]' />
       ) : (
-        <Button onClick={handleAddToCart} size={size} {...props}>
-          {isItemInCart ? (
-            <>
-              <Trash2 className='mr-2 h-5 w-5' />
-              Remove from cart
-            </>
-          ) : (
-            <>
-              <ShoppingCart className='mr-2 h-5 w-5' />
-              Add to Cart
-            </>
-          )}
-        </Button>
+        <Tooltip
+          trigger={
+            <Button onClick={handleAddToCart} size={size} {...props}>
+              {isItemInCart ? (
+                <>
+                  <Trash2 className={cn('mr-2 h-4 w-4', !showText && 'mr-0')} />
+                  {showText && 'Remove from cart'}
+                </>
+              ) : (
+                <>
+                  <ShoppingCart
+                    className={cn('mr-2 h-4 w-4', !showText && 'mr-0')}
+                  />
+                  {showText && 'Add to Cart'}
+                </>
+              )}
+            </Button>
+          }
+          content={isItemInCart ? 'Remove from cart' : 'Add to cart'}
+        />
       )}
     </>
   )

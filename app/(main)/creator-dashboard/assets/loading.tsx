@@ -12,7 +12,7 @@ export default function Loading() {
           <Skeleton className='h-6 w-52' />
         </div>
 
-        <Skeleton className='h-10 w-36 rounded-full' />
+        <Skeleton className='h-10 w-36' />
       </div>
 
       <Card className='pt-4'>
@@ -70,7 +70,7 @@ export default function Loading() {
                       <Skeleton className='w-32 h-5' />
 
                       <div className='flex items-center space-x-2'>
-                        <Skeleton className='w-32 h-9 rounded-full' />
+                        <Skeleton className='w-[57px] h-9' />
                         <Skeleton className='w-8 h-9' />
                       </div>
                     </div>

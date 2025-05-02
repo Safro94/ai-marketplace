@@ -66,7 +66,7 @@ export const RelatedAssets: FC<Props> = async ({
         },
       },
       orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
-      take: 3,
+      take: 4,
     })
 
     return <RelatedAssetsList assets={topAssets} />
@@ -77,7 +77,7 @@ export const RelatedAssets: FC<Props> = async ({
 
 const RelatedAssetsList: FC<{ assets: ExploreAsset[] }> = ({ assets }) => {
   return (
-    <div className='grid  md:grid-cols-3 gap-6'>
+    <div className='grid md:grid-cols-4 gap-6'>
       {assets.map((asset) => {
         return <Asset key={asset.id} {...asset} />
       })}

@@ -261,7 +261,7 @@ export default async function AssetPage({
           </div>
 
           {/* Related Assets */}
-          <div>
+          <div className='md:col-span-2'>
             <h2 className='text-2xl font-bold tracking-tight mb-6'>
               You May Also Like
             </h2>

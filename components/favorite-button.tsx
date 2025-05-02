@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const FavoriteButton: FC<Props> = ({ assetId }) => {
-  const { user } = useAuth()
+  const { user, isPending: isLoadingUser } = useAuth()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -26,8 +26,6 @@ export const FavoriteButton: FC<Props> = ({ assetId }) => {
   useEffect(() => {
     const fetchFavorite = async () => {
       try {
-        setIsLoading(true)
-
         const response = await fetch(
           `${API_ROUTES.favorites()}?assetId=${assetId}`,
         )
@@ -93,9 +91,11 @@ export const FavoriteButton: FC<Props> = ({ assetId }) => {
     })
   }
 
+  if (!isLoadingUser && !user) return null
+
   return (
     <>
-      {isLoading ? (
+      {isLoading || isLoadingUser ? (
         <Skeleton className='w-10 h-10 rounded-full' />
       ) : (
         <Button
@@ -107,7 +107,7 @@ export const FavoriteButton: FC<Props> = ({ assetId }) => {
             isFavorited ? 'Remove from favorites' : 'Add to favorites'
           }
           className={cn(
-            'w-6 h-6 md:h-10 md:w-10 group hover:text-[#FF385C] bg-white',
+            'w-6 h-6 md:h-10 md:w-10 group hover:text-[#FF385C] bg-white rounded-full',
             isFavorited && 'text-[#FF385C]',
           )}
         >

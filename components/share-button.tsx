@@ -41,7 +41,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
           <Button
             size='icon'
             variant='outline'
-            className='w-6 h-6 md:h-10 md:w-10 z-50 bg-white group'
+            className='w-6 h-6 md:h-10 md:w-10 z-50 bg-white group rounded-full'
             onClick={(e) => {
               e.preventDefault()
               e.nativeEvent.stopImmediatePropagation()

@@ -19,8 +19,7 @@ export const AssetSkeleton = () => {
           </div>
 
           <div className='flex items-center'>
-            <Skeleton className='w-5 h-5 rounded-full' />
-            <Skeleton className='w-10 h-5' />
+            <Skeleton className='w-16 h-5' />
           </div>
         </div>
 
@@ -28,8 +27,12 @@ export const AssetSkeleton = () => {
         <Skeleton className='w-full h-10 mb-4' />
 
         <div className='flex items-center justify-between'>
-          <Skeleton className='h-9 w-1/2 rounded-full' />
-          <Skeleton className='w-1/4 h-7' />
+          <Skeleton className='h-[22px] w-1/2 rounded-full' />
+
+          <div className='flex items-center gap-2'>
+            <Skeleton className='w-12 h-[30px]' />
+            <Skeleton className='w-[30px] h-[30px]' />
+          </div>
         </div>
       </div>
     </div>

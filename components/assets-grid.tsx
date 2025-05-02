@@ -35,7 +35,7 @@ interface Props {
 
 export const AssetsGrid: FC<Props> = ({ items }) => {
   return (
-    <div className='py-4 grid grid-cols-[repeat(auto-fill, minmax(0,1fr))] md:grid-cols-[repeat(auto-fill,minmax(325px,1fr))] gap-3'>
+    <div className='py-4 grid grid-cols-[repeat(auto-fill, minmax(0,1fr))] md:grid-cols-[repeat(auto-fill,minmax(325px,1fr))] gap-2'>
       {items?.map((asset) => (
         <Asset
           key={asset.id}
