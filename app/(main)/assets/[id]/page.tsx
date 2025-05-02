@@ -1,23 +1,18 @@
-import { saveAssetDetailVisit } from '@/actions/asset-view'
 import { PageContainer } from '@/components/page-container'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
 import { Card, CardContent } from '@/components/ui/card'
 import { getAssetById, getAssets } from '@/data-access/assets'
-import { getUserProfile } from '@/data-access/profile'
-import { checkUserPurchasedAsset } from '@/data-access/purchases'
 import { INFINITE_SCROLL_NUMBER_OF_ITEMS, ROUTES } from '@/lib/constants'
 import { generateProductJsonLd } from '@/lib/seo-config'
-import { getServerSession } from '@/lib/session'
-import { AsyncReturnType } from '@/lib/types'
-import { cn, formatDate } from '@/lib/utils'
-import { AssetStatus, Profile, ReviewStatus } from '@prisma/client'
+import { formatDate } from '@/lib/utils'
+import { AssetStatus, ReviewStatus } from '@prisma/client'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
-import { after } from 'next/server'
-import { FC, Suspense } from 'react'
+import { Suspense } from 'react'
+import { AssetDetailAnalytics } from './_components/asset-detail-analytics'
 import { AssetDetailCarousel } from './_components/asset-detail-carousel'
+import { AssetDetailCreatorInfo } from './_components/asset-detail-creator-info'
 import { AssetDetailHeader } from './_components/asset-detail-header'
 import { AssetDetailsTabs } from './_components/asset-details-tabs'
 import { getLicenses } from './_components/asset-details-utils'
@@ -101,26 +96,8 @@ export default async function AssetPage({
   params: Promise<{ id: string }>
 }) {
   const assetId = (await params).id
-  const session = await getServerSession()
-
-  let purchase: AsyncReturnType<typeof checkUserPurchasedAsset> = {
-    isPurchased: false,
-    purchase: null,
-  }
-
-  let profile: Profile | null = null
-
-  if (session?.user) {
-    profile = await getUserProfile(session.user.id)
-  }
 
   const asset = await getAssetById(assetId, {
-    favorite: {
-      where: {
-        profileId: profile?.id,
-      },
-      take: 1,
-    },
     category: {
       select: {
         name: true,
@@ -161,14 +138,6 @@ export default async function AssetPage({
   })
 
   if (!asset) notFound()
-
-  after(async () => {
-    await saveAssetDetailVisit(asset.id, profile?.id)
-  })
-
-  if (profile) {
-    purchase = await checkUserPurchasedAsset(profile.id, asset.id)
-  }
 
   // Parse features and requirements from JSON strings
   const features = Array.isArray(asset.features)
@@ -220,7 +189,6 @@ export default async function AssetPage({
               featuredImage={asset.featuredImage}
               galleryImages={asset.galleryImages}
               title={asset.title}
-              favorite={asset.favorite}
             />
 
             {/* Asset Details */}
@@ -230,11 +198,10 @@ export default async function AssetPage({
               reviews={asset.reviews}
               features={features}
               requirements={requirements}
-              isPurchased={purchase?.isPurchased}
             />
 
             {/* Creator Info (Mobile) */}
-            <CreatorInfo
+            <AssetDetailCreatorInfo
               name={asset.creator.user.name}
               bio={asset.creator.bio}
               className='lg:hidden'
@@ -242,15 +209,11 @@ export default async function AssetPage({
           </div>
 
           <div className='space-y-6 lg:sticky lg:top-20'>
-            {purchase.isPurchased &&
-              purchase.purchase?.purchaseItems?.[0].id && (
-                <AssetDownload
-                  assetId={asset.id}
-                  fileName={asset.title}
-                  assetUrl={asset.assetFile}
-                  purchaseItemId={purchase.purchase.purchaseItems[0].id}
-                />
-              )}
+            <AssetDownload
+              assetId={asset.id}
+              fileName={asset.title}
+              assetUrl={asset.assetFile}
+            />
 
             <Suspense fallback={<LicenseSkeleton />}>
               <PurchaseOptions
@@ -262,7 +225,7 @@ export default async function AssetPage({
             </Suspense>
 
             {/* Creator Info (Desktop) */}
-            <CreatorInfo
+            <AssetDetailCreatorInfo
               name={asset.creator.user.name}
               bio={asset.creator.bio}
             />
@@ -314,34 +277,8 @@ export default async function AssetPage({
           </div>
         </div>
       </PageContainer>
+
+      <AssetDetailAnalytics assetId={asset.id} />
     </>
   )
 }
-
-const CreatorInfo: FC<{
-  className?: string
-  name: string
-  bio: string | null
-}> = ({ className, name, bio }) => (
-  <Card className={cn('hidden lg:block border-border/50', className)}>
-    <CardContent className='p-6'>
-      <div className='flex items-center space-x-4 mb-4'>
-        <Avatar className='h-12 w-12'>
-          <AvatarImage
-            src={name || '/placeholder.svg?height=40&width=40'}
-            alt={name || 'Creator'}
-          />
-
-          <AvatarFallback>{(name || 'C').charAt(0)}</AvatarFallback>
-        </Avatar>
-
-        <div>
-          <h3 className='font-semibold'>{name || 'Unknown Creator'}</h3>
-          <p className='text-sm text-muted-foreground'>Creator</p>
-        </div>
-      </div>
-
-      <p className='text-sm mb-4'>{bio || 'No bio available'}</p>
-    </CardContent>
-  </Card>
-)

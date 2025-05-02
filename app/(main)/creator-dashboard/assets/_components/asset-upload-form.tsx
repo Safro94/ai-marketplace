@@ -68,7 +68,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
           price: 20,
         },
       ],
-      categoryId: initialData?.categoryId || '',
+      categoryId: initialData?.categoryId || categories?.[0].id,
       slug: initialData?.slug || '',
     },
   })
@@ -296,12 +296,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
-                      defaultValue={
-                        categories.find(
-                          (category) =>
-                            category.id === form.getValues('categoryId'),
-                        )?.id ?? categories[0].id
-                      }
+                      defaultValue={field.value}
                       className='flex flex-col gap-2'
                     >
                       {categories.map((category) => (

@@ -1,6 +1,8 @@
 'use client'
 
-import { AssetOptions } from '@/components/asset-options'
+import { AssetActionsContainer } from '@/components/asset-actions-container'
+import { FavoriteButton } from '@/components/favorite-button'
+import { ShareButton } from '@/components/share-button'
 import { Button } from '@/components/ui/button'
 import {
   Carousel,
@@ -11,24 +13,19 @@ import {
 } from '@/components/ui/carousel'
 import { ExploreAsset } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { Favorite } from '@prisma/client'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
 
-interface Props
-  extends Pick<
-    ExploreAsset,
-    'id' | 'featuredImage' | 'galleryImages' | 'title'
-  > {
-  favorite: Favorite[]
-}
+type Props = Pick<
+  ExploreAsset,
+  'id' | 'featuredImage' | 'galleryImages' | 'title'
+>
 
 export const AssetDetailCarousel: FC<Props> = ({
-  id,
+  id: assetId,
   featuredImage,
   galleryImages,
   title,
-  favorite,
 }) => {
   const [carouselAPI, setCarouselAPI] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -61,11 +58,15 @@ export const AssetDetailCarousel: FC<Props> = ({
                   className='object-contain'
                   priority
                 />
-
-                <AssetOptions assetId={id} favorite={favorite} />
               </div>
             </CarouselItem>
           ))}
+
+          <AssetActionsContainer>
+            <FavoriteButton assetId={assetId} />
+
+            <ShareButton assetId={assetId} />
+          </AssetActionsContainer>
         </CarouselContent>
         <CarouselThumbnails images={galleryImages} />
       </Carousel>

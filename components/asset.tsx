@@ -5,8 +5,9 @@ import { Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
+import { AssetActionsContainer } from './asset-actions-container'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
-import { AssetOptions } from './asset-options'
+import { ShareButton } from './share-button'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Badge } from './ui/badge'
 
@@ -50,7 +51,9 @@ export const Asset: FC<
           priority
         />
 
-        <AssetOptions assetId={id} />
+        <AssetActionsContainer>
+          <ShareButton assetId={id} />
+        </AssetActionsContainer>
       </div>
 
       <div className='absolute top-3 left-3'>

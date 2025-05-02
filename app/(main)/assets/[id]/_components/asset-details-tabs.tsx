@@ -5,36 +5,33 @@ import { CheckCircle, InfoIcon } from 'lucide-react'
 import { FC } from 'react'
 import { AssetReviews } from './asset-reviews'
 
-enum TabsEnum {
-  DESCRIPTION = 'description',
-  FEATURES = 'features',
-  REVIEWS = 'reviews',
-}
-
-interface Props
-  extends Prisma.AssetGetPayload<{
-    select: {
-      id: true
-      description: true
-      features: true
-      requirements: true
-      reviews: {
-        include: {
-          userProfile: {
-            include: {
-              user: {
-                select: {
-                  name: true
-                  image: true
-                }
+type Props = Prisma.AssetGetPayload<{
+  select: {
+    id: true
+    description: true
+    features: true
+    requirements: true
+    reviews: {
+      include: {
+        userProfile: {
+          include: {
+            user: {
+              select: {
+                name: true
+                image: true
               }
             }
           }
         }
       }
     }
-  }> {
-  isPurchased: boolean
+  }
+}>
+
+enum TabsEnum {
+  DESCRIPTION = 'description',
+  FEATURES = 'features',
+  REVIEWS = 'reviews',
 }
 
 export const AssetDetailsTabs: FC<Props> = ({
@@ -43,7 +40,6 @@ export const AssetDetailsTabs: FC<Props> = ({
   features,
   requirements,
   reviews,
-  isPurchased,
 }) => {
   return (
     <Tabs defaultValue={TabsEnum.DESCRIPTION}>
@@ -91,11 +87,7 @@ export const AssetDetailsTabs: FC<Props> = ({
       </TabsContent>
 
       <TabsContent value={TabsEnum.REVIEWS} className='pt-6'>
-        <AssetReviews
-          assetId={id}
-          reviews={reviews}
-          isPurchased={isPurchased}
-        />
+        <AssetReviews assetId={id} reviews={reviews} />
       </TabsContent>
     </Tabs>
   )

@@ -11,20 +11,23 @@ import {
 } from '@/components/ui/card'
 import { AlertCircle, Check } from 'lucide-react'
 import { FC } from 'react'
+import { useAssetDetail } from './use-asset-detail'
 
 interface Props {
   assetId: string
   assetUrl: string
   fileName: string
-  purchaseItemId: string
 }
 
-export const AssetDownload: FC<Props> = ({
-  assetId,
-  assetUrl,
-  fileName,
-  purchaseItemId,
-}) => {
+export const AssetDownload: FC<Props> = ({ assetId, assetUrl, fileName }) => {
+  const { userPurchaseData } = useAssetDetail(assetId)
+
+  const purchaseItemId = userPurchaseData?.purchase?.purchaseItems[0].id
+
+  if (!userPurchaseData || !userPurchaseData.isPurchased || !purchaseItemId) {
+    return null
+  }
+
   return (
     <Card>
       <CardHeader>

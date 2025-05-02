@@ -5,7 +5,7 @@ import { LicenseOption } from '@/lib/types'
 export const getLicenses = async (assetId: string) => {
   const { data: response, error } = await tryCatch(
     fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}${API_ROUTES.assetsLicenses(assetId)}`,
+      `${process.env.NEXT_PUBLIC_APP_URL}${API_ROUTES.assetLicenses(assetId)}`,
       {
         next: {
           revalidate: 1800,

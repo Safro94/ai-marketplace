@@ -42,27 +42,38 @@ export const API_ROUTES = {
   adminCreatorApplications: () => '/api/admin/creator-applications',
   userProfile: () => '/api/user/profile',
   licenses: () => '/api/licenses',
+  favorites: () => '/api/favorites',
+
   assets: () => '/api/assets',
   assetsUpload: () => '/api/assets/upload',
   assetsDownload: () => `/api/assets/download`,
+
   asset: (assetId: string) => `/api/assets/${assetId}`,
   assetReviews: (assetId: string) => `/api/assets/${assetId}/reviews`,
-  assetsLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
+  assetLicenses: (assetId: string) => `/api/assets/${assetId}/licenses`,
+  assetUserPurchase: (assetId: string) =>
+    `/api/assets/${assetId}/user-purchase`,
+
   assetAdminModeration: (assetId: string) => `/api/admin/assets/${assetId}`,
   assetAdminFeature: (assetId: string) =>
     `/api/admin/assets/${assetId}/feature`,
+
   creatorsApply: () => '/api/creators/apply',
   creatorsAnalyticsSales: () => '/api/creators/analytics/sales',
   creatorsAnalyticsVisits: () => '/api/creators/analytics/visits',
   creatorsAnalyticsAssets: () => '/api/creators/analytics/assets',
+
   notifications: () => '/api/notifications',
   notificationsReadAll: () => '/api/notifications/read-all',
   notificationRead: (id: string) => `/api/notifications/${id}/read`,
+
   purchases: () => '/api/purchases',
   checkout: () => '/api/checkout',
+
   dashboardDownloads: () => '/api/dashboard/downloads',
   dashboardReviews: () => '/api/dashboard/reviews',
   dashboardFavorites: () => '/api/dashboard/favorites',
+
   creatorDashboardSales: () => '/api/creator-dashboard/sales',
 }
 

@@ -25,10 +25,9 @@ interface Props
     }
   }> {
   assetId: string
-  isPurchased: boolean
 }
 
-export const AssetReviews: FC<Props> = ({ assetId, reviews, isPurchased }) => {
+export const AssetReviews: FC<Props> = ({ assetId, reviews }) => {
   // Calculate rating distribution
   const ratingCounts = [0, 0, 0, 0, 0] // 1-5 stars
   reviews.forEach((review) => {
@@ -107,12 +106,7 @@ export const AssetReviews: FC<Props> = ({ assetId, reviews, isPurchased }) => {
         )}
       </div>
 
-      {isPurchased && (
-        <div className='mt-8 pt-8 border-t'>
-          <h3 className='text-xl font-semibold mb-4'>Write a Review</h3>
-          <ReviewForm assetId={assetId} />
-        </div>
-      )}
+      <ReviewForm assetId={assetId} />
     </div>
   )
 }
