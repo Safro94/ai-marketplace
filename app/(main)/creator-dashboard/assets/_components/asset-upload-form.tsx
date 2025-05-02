@@ -25,6 +25,7 @@ import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { assetUploadSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AssetStatus, Category, LicenseType, Prisma } from '@prisma/client'
+import DOMPurify from 'isomorphic-dompurify'
 import { useRouter } from 'next/navigation'
 import { FC, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
@@ -102,6 +103,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
       try {
         const body: FormData = {
           ...values,
+          description: DOMPurify.sanitize(values.description),
           featuredImage: values.featuredImage,
           galleryImages: values.galleryImages,
           assetFile: values.assetFile,
@@ -236,7 +238,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
                 <FormDescription>
                   Detailed description of your product, its capabilities, and
-                  use cases
+                  use cases. You can use HTML tags to format your description.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
