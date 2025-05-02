@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Prisma } from '@prisma/client'
+import DOMPurify from 'isomorphic-dompurify'
 import { CheckCircle, InfoIcon } from 'lucide-react'
 import { FC } from 'react'
 import { AssetReviews } from './asset-reviews'
@@ -53,9 +54,10 @@ export const AssetDetailsTabs: FC<Props> = ({
       </TabsList>
 
       <TabsContent value={TabsEnum.DESCRIPTION} className='pt-6'>
-        <p className='prose prose-invert max-w-none break-anywhere'>
-          {description}
-        </p>
+        <p
+          className='prose prose-invert max-w-none break-anywhere'
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description) }}
+        />
       </TabsContent>
 
       <TabsContent value={TabsEnum.FEATURES} className='pt-6'>

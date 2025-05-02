@@ -136,7 +136,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
               : 'Your product has been submitted for review.',
         })
 
-        router.push(ROUTES.creatorDashboard())
+        router.push(ROUTES.creatorDashboardAssets())
       } catch (error) {
         console.error(error)
 
