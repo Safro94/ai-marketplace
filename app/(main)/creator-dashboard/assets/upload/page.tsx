@@ -5,6 +5,7 @@ import { getCategoriesWithCount } from '@/data-access/categories'
 import { ROUTES } from '@/lib/constants'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
+import { validateCreatorDashboardAccess } from '../../utils'
 import { AssetUploadForm } from '../_components/asset-upload-form'
 
 export const metadata: Metadata = {
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
 }
 
 export default async function UploadAssetPage() {
+  await validateCreatorDashboardAccess()
+
   const { data, error } = await getCategoriesWithCount()
 
   return (

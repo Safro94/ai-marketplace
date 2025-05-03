@@ -64,6 +64,9 @@ export async function POST(request: Request) {
       status: PurchaseStatus.COMPLETED,
       paymentProvider: PaymentProvider.PAYPAL,
       paymentDetails: paymentDetails,
+      affiliateCode: {
+        conne,
+      },
     })
 
     revalidateTag(CACHE_KEYS.purchases(profile.id))

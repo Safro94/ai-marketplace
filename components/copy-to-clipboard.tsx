@@ -5,15 +5,15 @@ import { FC } from 'react'
 import { Button } from './ui/button'
 import { toast } from './ui/toast'
 
-export const CopyToClipboard: FC<{ url: string }> = ({ url }) => {
+export const CopyToClipboard: FC<{ data: string }> = ({ data }) => {
   return (
     <Button
       size='icon'
       variant='outline'
-      className='border-0'
+      className='w-8 h-8 border-0 absolute right-[4px] top-auto'
       onClick={async () => {
         try {
-          await navigator.clipboard.writeText(url)
+          await navigator.clipboard.writeText(data)
 
           toast.success('Copied')
         } catch (err) {

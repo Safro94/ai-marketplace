@@ -27,6 +27,7 @@ export const ROUTES = {
   creatorDashboardSales: () => '/creator-dashboard/sales',
   creatorDashboardUpload: () => '/creator-dashboard/assets/upload',
   creatorDashboarAnalytics: () => '/creator-dashboard/analytics',
+  creatorDashboarAffiliate: () => '/creator-dashboard/affiliate',
   creatorDashboardAssetEdit: (assetId: string) =>
     `/creator-dashboard/assets/${assetId}/edit`,
   creatorDashboardThankYou: () => '/creator-dashboard/thank-you',
@@ -78,31 +79,38 @@ export const API_ROUTES = {
 }
 
 export const CACHE_KEYS = {
+  licenses: () => 'licenses',
   testimonials: () => 'testimonials',
+  exploreAssets: () => `explore-assets`,
   categoriesWithCount: () => 'categories-with-count',
+
   assetFavorite: (assetId: string) => `asset-favorite-${assetId}`,
   assetById: (assetId: string) => `asset-${assetId}`,
-  assetReviews: (assetId: string) => `reviews-asset-${assetId}`,
-  viewedAssetsByProfile: (assetId: string, profileId: string) =>
-    `viewed-asset-${assetId}-${profileId}`,
+  assetReviews: (assetId: string) => `asset-reviews-${assetId}`,
   assetLicenses: (assetId: string) => `asset-licenses-${assetId}`,
-  exploreAssets: () => `explore-assets`,
-  dashboardFavorites: (profileId: string) => `favorites-${profileId}`,
-  dashboardReviews: (profileId: string) => `reviews-${profileId}`,
-  dashboardDownloads: (profileId: string) => `downloads-${profileId}`,
-  licenses: () => 'licenses',
-  profile: (userId: string) => `profile-${userId}`,
-  purchases: (profileId: string) => `purchases-${profileId}`,
-  analyticsSales: (profileId: string) =>
-    `purchases-analytics-sales-${profileId}`,
-  purchasedAsset: (profileId: string, assetId: string) =>
-    `purchases-${profileId}-${assetId}`,
+
+  dashboardFavorites: (profileId: string) => `dashboard-favorites-${profileId}`,
+  dashboardReviews: (profileId: string) => `dashboard-reviews-${profileId}`,
+  dashboardDownloads: (profileId: string) => `dashboard-downloads-${profileId}`,
+
   creatorDashboardCreatorProfile: (profileId: string) =>
     `creator-dashboard-creator-profile-${profileId}`,
   creatorDashboardPurchases: (profileId: string) =>
     `creator-dashboard-purchases-${profileId}`,
   creatorDashboardAnalytics: (creatorProfileId: string) =>
     `creator-dashboard-analytics-${creatorProfileId}`,
+
+  purchases: (profileId: string) => `purchases-${profileId}`,
+  analyticsSales: (profileId: string) =>
+    `purchases-analytics-sales-${profileId}`,
+  purchasedAsset: (profileId: string, assetId: string) =>
+    `purchases-${profileId}-${assetId}`,
+
+  creatorProfileDefaultAffiliateCode: (creatorProfileId: string) =>
+    `creator-profile-default-affiliate-code-${creatorProfileId}`,
+  profile: (userId: string) => `profile-${userId}`,
+  viewedAssetsByProfile: (assetId: string, profileId: string) =>
+    `viewed-asset-${assetId}-${profileId}`,
 }
 
 export const WS_EVENTS = {

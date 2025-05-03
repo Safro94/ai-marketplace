@@ -1,18 +1,23 @@
 import { PageContainer } from '@/components/page-container'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ROUTES } from '@/lib/constants'
+import Link from 'next/link'
 
 export default function Loading() {
   return (
     <PageContainer className='md:p-0'>
       <div className='mb-8 flex flex-col gap-4 md:flex-row md:justify-between'>
         <div>
-          <Skeleton className='h-9 w-40 mb-1' />
-          <Skeleton className='h-6 w-52' />
+          <h1 className='text-2xl md:text-3xl font-bold'>Products</h1>
+          <p>Manage and monitor your products</p>
         </div>
 
-        <Skeleton className='h-10 w-36' />
+        <Button asChild className='w-fit'>
+          <Link href={ROUTES.creatorDashboardUpload()}>Upload New Asset</Link>
+        </Button>
       </div>
 
       <Card className='pt-4'>

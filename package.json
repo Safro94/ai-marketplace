@@ -63,6 +63,7 @@
     "nextjs-toploader": "^3.8.16",
     "posthog-js": "^1.236.7",
     "prisma": "^6.4.1",
+    "randexp": "^0.5.3",
     "react": "^19",
     "react-dom": "^19",
     "react-hook-form": "latest",

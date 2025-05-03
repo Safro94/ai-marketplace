@@ -2,7 +2,7 @@
 
 import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { Home, List, LucideIcon, Package } from 'lucide-react'
+import { Handshake, Home, List, LucideIcon, Package } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -29,6 +29,12 @@ const NAVIGATION_LINKS: {
     href: ROUTES.creatorDashboardSales(),
     icon: Package,
     match: /^\/creator-dashboard\/sales/,
+  },
+  {
+    name: 'Affiliate program',
+    href: ROUTES.creatorDashboarAffiliate(),
+    icon: Handshake,
+    match: /^\/creator-dashboard\/affiliate/,
   },
   // { name: 'Analytics', href: ROUTES.creatorDashboarAnalytics(), icon: BarChart },
 ]

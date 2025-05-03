@@ -6,8 +6,8 @@ export default function Loading() {
   return (
     <PageContainer className='md:p-0'>
       <div className='mb-8'>
-        <Skeleton className='h-9 w-40 mb-1' />
-        <Skeleton className='h-6 w-52' />
+        <h1 className='text-3xl font-bold'>Recent Sales</h1>
+        <p>Your most recent asset purchases</p>
       </div>
 
       <Card className='pt-4'>

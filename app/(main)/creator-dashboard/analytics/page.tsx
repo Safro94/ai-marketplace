@@ -1,19 +1,12 @@
 import { PageContainer } from '@/components/page-container'
 import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
-import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/permissions'
-import { validateSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
+import { validateCreatorDashboardAccess } from '../utils'
 import CreatorAnalytics from './_components/creator-analytics'
 
 export default async function CreatorAnalyticsPage() {
-  const { user } = await validateSession(ROUTES.creatorDashboard())
-  const profile = await getUserProfile(user.id)
-
-  if (!profile || !isAdminOrCreator(profile)) {
-    redirect(ROUTES.creators())
-  }
+  await validateCreatorDashboardAccess()
 
   //TODO: remove once we have premium subscriptions
   redirect(ROUTES.creatorDashboard())

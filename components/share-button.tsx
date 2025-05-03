@@ -71,7 +71,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
               <Input readOnly id='link' defaultValue={url} />
             </div>
 
-            <CopyToClipboard url={url} />
+            <CopyToClipboard data={url} />
           </div>
 
           <div className='flex gap-2 items-center'>

@@ -1,21 +1,13 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent } from '@/components/ui/card'
-import { getUserProfile } from '@/data-access/profile'
 import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/purchases'
-import { INFINITE_SCROLL_NUMBER_OF_ITEMS, ROUTES } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/permissions'
-import { validateSession } from '@/lib/session'
+import { INFINITE_SCROLL_NUMBER_OF_ITEMS } from '@/lib/constants'
 import { Package } from 'lucide-react'
-import { redirect } from 'next/navigation'
+import { validateCreatorDashboardAccess } from '../utils'
 import { CreatorDashboardSalesList } from './_components/sales-list'
 
 export default async function Page() {
-  const { user } = await validateSession(ROUTES.creatorDashboard())
-  const profile = await getUserProfile(user.id)
-
-  if (!profile || !isAdminOrCreator(profile)) {
-    redirect(ROUTES.creators())
-  }
+  const { profile } = await validateCreatorDashboardAccess()
 
   // Get recent sales
   const recentSales = await getAllCreatorDashboardPurchasesByAssetCreator({

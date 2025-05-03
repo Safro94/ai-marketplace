@@ -23,13 +23,14 @@ model Profile {
   updatedAt     DateTime @updatedAt
   totalAssets   Int      @default(0)
 
-  assets         Asset[]
-  reviews        Review[]
-  purchases      Purchase[]
-  creatorProfile CreatorProfile?
-  notifications  Notification[]
-  Download       Download[]
-  viewedAssets   Asset[]         @relation("ProfileViewedAssets")
+  assets                Asset[]
+  reviews               Review[]
+  purchases             Purchase[]
+  creatorProfile        CreatorProfile?
+  notifications         Notification[]
+  Download              Download[]
+  viewedAssets          Asset[]         @relation("ProfileViewedAssets")
+  profileAffiliateCodes AffiliateCode[] @relation("ProfileAffiliateCodes")
 }
 
 model CreatorProfile {
@@ -50,6 +51,28 @@ model CreatorProfile {
   // Relations
   creatorApplication CreatorApplication?
   analytics          CreatorAnalytics?
+  affiliateCodes     AffiliateCode[]
+}
+
+model AffiliateCode {
+  id               String          @id @default(cuid())
+  code             String          @unique
+  creatorProfileId String?
+  creatorProfile   CreatorProfile? @relation(fields: [creatorProfileId], references: [id], onDelete: SetNull)
+  profileId        String?
+  profile          Profile?        @relation("ProfileAffiliateCodes", fields: [profileId], references: [id], onDelete: SetNull)
+  status           AffiliateStatus @default(ACTIVE)
+  isDefault        Boolean         @default(false)
+  totalUses        Int             @default(0)
+  totalRevenue     Float           @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  purchases        Purchase[]
+
+  @@index([code])
+  @@index([creatorProfileId])
+  @@index([profileId])
+  @@index([status])
 }
 
 model CreatorApplication {
@@ -169,12 +192,16 @@ model Purchase {
   updatedAt       DateTime        @updatedAt
   paymentProvider PaymentProvider
   paymentDetails  Json?
+  discountAmount  Float           @default(0)
+  discountType    DiscountType?
 
-  // Relations
-  purchaseItems PurchaseItem[] // New relation to individual purchased items
+  purchaseItems   PurchaseItem[]
+  affiliateCodeId String?
+  affiliateCode   AffiliateCode? @relation(fields: [affiliateCodeId], references: [id])
 
   @@index([buyerId])
   @@index([status])
+  @@index([affiliateCodeId])
 }
 
 model PurchaseItem {
@@ -426,4 +453,24 @@ enum ReviewStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum AffiliateStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum DiscountType {
+  AFFILIATE_REFERRAL // From user/creator affiliate code
+  FIRST_PURCHASE // First-time buyer discount
+  SEASONAL_PROMOTION // Holiday sales, seasonal events
+  EMAIL_CAMPAIGN // From email marketing
+  LOYALTY_REWARD // For repeat customers
+  BUNDLE_DISCOUNT // When buying multiple items
+  VOLUME_DISCOUNT // Based on purchase amount
+  ADMIN_OVERRIDE // Manually applied by admin
+  CREATOR_PROMOTION // Special promotion by a creator
+  ABANDONED_CART // Discount to recover abandoned cart
+  SOCIAL_MEDIA // From social media campaign
 }

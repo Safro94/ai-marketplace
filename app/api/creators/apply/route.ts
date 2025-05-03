@@ -6,9 +6,10 @@ import {
   createCreatorProfile,
   getCreatorProfileByProfileId,
 } from '@/data-access/creator-profile'
+import { createAffiliateCode } from '@/lib/affilate-codes'
 import { CACHE_KEYS } from '@/lib/constants'
 import { creatorApplicationSchema } from '@/lib/schemas'
-import { ApplicationStatus } from '@prisma/client'
+import { AffiliateStatus, ApplicationStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 import { validateRouteProfilePermissions } from '../../utils'
@@ -54,6 +55,15 @@ export async function POST(request: Request) {
       )
     }
 
+    const affiliateCode = await createAffiliateCode()
+
+    if (!affiliateCode) {
+      return NextResponse.json(
+        { error: 'Failed to generate affiliate code' },
+        { status: 500 },
+      )
+    }
+
     // Create creator profile (initially not approved)
     const creatorProfile = await createCreatorProfile({
       profileId: profile.id,
@@ -62,6 +72,15 @@ export async function POST(request: Request) {
       portfolio: validationResult.data.portfolio || null,
       paymentMethods: {
         create: validationResult.data.paymentMethods,
+      },
+      affiliateCodes: {
+        create: {
+          code: affiliateCode,
+          status: AffiliateStatus.ACTIVE,
+          isDefault: true,
+          totalUses: 0,
+          totalRevenue: 0,
+        },
       },
     })
 

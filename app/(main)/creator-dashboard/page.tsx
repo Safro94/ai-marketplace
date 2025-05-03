@@ -5,10 +5,7 @@ import { Tooltip } from '@/components/ui/tooltip'
 import { getAssets } from '@/data-access/assets'
 import { getCreatorAnalyticsByCreatorProfileId } from '@/data-access/creator-analytics'
 import { getCreatorProfileByProfileId } from '@/data-access/creator-profile'
-import { getUserProfile } from '@/data-access/profile'
 import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/permissions'
-import { validateSession } from '@/lib/session'
 import { formatCurrency } from '@/lib/utils'
 import {
   ArrowRight,
@@ -22,14 +19,10 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { validateCreatorDashboardAccess } from './utils'
 
 export default async function CreatorDashboard() {
-  const { user } = await validateSession(ROUTES.creatorDashboard())
-  const profile = await getUserProfile(user.id)
-
-  if (!profile || !isAdminOrCreator(profile)) {
-    redirect(ROUTES.creators())
-  }
+  const { profile } = await validateCreatorDashboardAccess()
 
   // Get creator profile
   const creatorProfile = await getCreatorProfileByProfileId(profile.id)

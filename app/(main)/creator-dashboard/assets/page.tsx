@@ -3,15 +3,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getAssets } from '@/data-access/assets'
-import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
-import { isAdminOrCreator } from '@/lib/permissions'
-import { validateSession } from '@/lib/session'
 import { CreatorDashboardAssetWithAnalytics } from '@/lib/types'
 import { AssetStatus } from '@prisma/client'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { CreatorDashboardAssetsList } from '../_components/creator-dashboard-asset-list'
+import { validateCreatorDashboardAccess } from '../utils'
 
 interface AssetsByStatus {
   all: CreatorDashboardAssetWithAnalytics[]
@@ -23,12 +20,7 @@ interface AssetsByStatus {
 }
 
 export default async function Page() {
-  const { user } = await validateSession(ROUTES.creatorDashboard())
-  const profile = await getUserProfile(user.id)
-
-  if (!profile || !isAdminOrCreator(profile)) {
-    redirect(ROUTES.creators())
-  }
+  const { profile } = await validateCreatorDashboardAccess()
 
   const assets = await getAssets({
     where: {
