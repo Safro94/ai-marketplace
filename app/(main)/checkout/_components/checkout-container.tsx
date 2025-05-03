@@ -13,6 +13,7 @@ import { ROUTES } from '@/lib/constants'
 import { CartItem } from '@/lib/types'
 import Link from 'next/link'
 import { FC, useState } from 'react'
+import { CheckoutCodeContainer } from './checkout-code-container'
 import { PaymentPriceSection } from './payment-price-section'
 import { PaypalButtons } from './paypal-buttons'
 
@@ -41,6 +42,8 @@ export const CheckoutContainer: FC<Props> = ({ cartItems, cartTotal }) => {
 
           <CardContent className='space-y-4 flex-1'>
             <PaymentPriceSection cartTotal={cartTotal} />
+
+            <CheckoutCodeContainer />
 
             <Separator />
 

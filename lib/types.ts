@@ -82,6 +82,8 @@ export interface CartContextType {
   clearCart: () => Promise<void>
   totalItems: number
   isLoading: boolean
+  affiliateCode: string | undefined
+  addOrClearAffiliateCode: (code: string) => void
 }
 
 export enum CartContextActionType {

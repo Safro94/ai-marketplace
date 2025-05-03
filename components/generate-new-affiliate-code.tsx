@@ -4,6 +4,7 @@ import { generateNewAffiliateCodeAction } from '@/actions/affiliate-codes'
 import { useRouter } from 'next/navigation'
 import { FC, useTransition } from 'react'
 import { LoadingButton } from './ui/button'
+import { toast } from './ui/toast'
 
 interface Props {
   id: string
@@ -16,7 +17,15 @@ export const GenerateNewAffiliateCode: FC<Props> = ({ id, isCreatorCode }) => {
 
   const handleClick = async () => {
     startTransition(async () => {
-      await generateNewAffiliateCodeAction(id, isCreatorCode)
+      const { error } = await generateNewAffiliateCodeAction(id, isCreatorCode)
+
+      if (error) {
+        toast.error('Code generation failed', {
+          description: error || 'Failed to generate new code',
+        })
+
+        return
+      }
 
       router.refresh()
     })

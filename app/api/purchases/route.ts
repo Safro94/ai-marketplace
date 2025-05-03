@@ -1,4 +1,8 @@
 import { getPurchaseAmounts } from '@/app/(main)/checkout/_components/checkout-utils'
+import {
+  getAffiliateCodeByCode,
+  updateAffiliateCode,
+} from '@/data-access/affiliate-codes'
 import { updateAsset } from '@/data-access/assets'
 import { createOrUpdateCreatorAnalytics } from '@/data-access/creator-analytics'
 import { updateCreatorProfile } from '@/data-access/creator-profile'
@@ -15,7 +19,7 @@ import {
   notifyCreatorSellCompleted,
   notifyPlatformSellCompleted,
 } from '@/services/emails/email'
-import { PaymentProvider, PurchaseStatus } from '@prisma/client'
+import { DiscountType, PaymentProvider, PurchaseStatus } from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateRouteProfilePermissions } from '../utils'
@@ -49,12 +53,16 @@ export async function POST(request: Request) {
     const {
       paypalOrderId,
       paymentDetails,
+      affiliateCode,
     }: {
       paypalOrderId: string
       paymentDetails: object
+      affiliateCode: string
     } = await request.json()
 
     const { totalAmounts, assets, cart } = await getPurchaseAmounts()
+
+    const dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
 
     // Create the purchase with multiple items
     const purchase = await createPurchase({
@@ -64,10 +72,27 @@ export async function POST(request: Request) {
       status: PurchaseStatus.COMPLETED,
       paymentProvider: PaymentProvider.PAYPAL,
       paymentDetails: paymentDetails,
-      affiliateCode: {
-        conne,
-      },
+      ...(dbAffiliateCode ? { affiliateCodeId: dbAffiliateCode.id } : {}),
+      ...(dbAffiliateCode?.discountPercentage
+        ? {
+            discountAmount:
+              totalAmounts.totalPrice *
+              (dbAffiliateCode?.discountPercentage / 100),
+            discountType: DiscountType.AFFILIATE_REFERRAL,
+          }
+        : {}), // Handle any discounts if the affiliate code applies one
     })
+
+    if (dbAffiliateCode?.code) {
+      await updateAffiliateCode(dbAffiliateCode?.code, {
+        totalUses: { increment: 1 },
+        totalRevenue: {
+          increment: totalAmounts.totalPrice - totalAmounts.totalServiceCharge, // revisar esto
+        },
+      })
+
+      revalidateTag(CACHE_KEYS.defaultAffiliateCode(dbAffiliateCode.code))
+    }
 
     revalidateTag(CACHE_KEYS.purchases(profile.id))
     revalidateTag(CACHE_KEYS.analyticsSales(profile.id))

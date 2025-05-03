@@ -31,9 +31,9 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [cart, setCart] = useState<CartItem[]>([])
+  const [affiliateCode, setAffiliateCode] = useState<string | undefined>()
 
   // Set up optimistic updates with useOptimistic
-
   const [optimisticCart, addOptimisticCartUpdate] = useOptimistic(
     cart,
     (state, action: CartAction) => {
@@ -154,6 +154,13 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     }
   }, [addOptimisticCartUpdate])
 
+  const addOrClearAffiliateCode = useCallback(
+    (code: string) => {
+      setAffiliateCode(code)
+    },
+    [setAffiliateCode],
+  )
+
   return useMemo(() => {
     return (
       <CartContext.Provider
@@ -163,13 +170,24 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
           addToCart,
           removeItem,
           clearCart,
+          affiliateCode,
+          addOrClearAffiliateCode,
           totalItems: optimisticCart.length,
         }}
       >
         {children}
       </CartContext.Provider>
     )
-  }, [addToCart, optimisticCart, children, clearCart, isLoading, removeItem])
+  }, [
+    optimisticCart,
+    isLoading,
+    addToCart,
+    removeItem,
+    clearCart,
+    affiliateCode,
+    addOrClearAffiliateCode,
+    children,
+  ])
 }
 
 export function useCart() {

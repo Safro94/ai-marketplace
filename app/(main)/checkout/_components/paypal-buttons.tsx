@@ -103,7 +103,7 @@ const Buttons: FC<ButtonsProps> = ({
   cartTotal,
 }) => {
   const router = useRouter()
-  const { clearCart } = useCart()
+  const { clearCart, affiliateCode, addOrClearAffiliateCode } = useCart()
   const [{ isPending }] = usePayPalScriptReducer()
   const [, startTransition] = useTransition()
   const loader = useTopLoader()
@@ -168,6 +168,7 @@ const Buttons: FC<ButtonsProps> = ({
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+              affiliateCode,
               paypalOrderId: payment.id,
               paymentDetails: {
                 ...payer,
@@ -198,6 +199,7 @@ const Buttons: FC<ButtonsProps> = ({
 
           startTransition(async () => {
             await clearCart()
+            addOrClearAffiliateCode('')
           })
         })
 

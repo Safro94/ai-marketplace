@@ -55,18 +55,20 @@ model CreatorProfile {
 }
 
 model AffiliateCode {
-  id               String          @id @default(cuid())
-  code             String          @unique
-  creatorProfileId String?
-  creatorProfile   CreatorProfile? @relation(fields: [creatorProfileId], references: [id], onDelete: SetNull)
+  id                 String          @id @default(cuid())
+  code               String          @unique
+  isDefault          Boolean         @default(false)
+  totalUses          Int             @default(0)
+  totalRevenue       Float           @default(0)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  discountPercentage Int?            @default(0)
+  status             AffiliateStatus @default(ACTIVE)
+
   profileId        String?
   profile          Profile?        @relation("ProfileAffiliateCodes", fields: [profileId], references: [id], onDelete: SetNull)
-  status           AffiliateStatus @default(ACTIVE)
-  isDefault        Boolean         @default(false)
-  totalUses        Int             @default(0)
-  totalRevenue     Float           @default(0)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  creatorProfileId String?
+  creatorProfile   CreatorProfile? @relation(fields: [creatorProfileId], references: [id], onDelete: SetNull)
   purchases        Purchase[]
 
   @@index([code])

@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { InputWithIcon } from '@/components/ui/input'
-import { getDefaultAffiliateCodeByCreatorProfileId } from '@/data-access/affiliate-codes'
+import { getDefaultAffiliateCodeById } from '@/data-access/affiliate-codes'
 import { getCreatorProfileByProfileId } from '@/data-access/creator-profile'
 import { ROUTES } from '@/lib/constants'
 import { redirect } from 'next/navigation'
@@ -25,9 +25,9 @@ export default async function Page() {
     redirect(ROUTES.creators())
   }
 
-  const data = await getDefaultAffiliateCodeByCreatorProfileId(
-    creatorProfile.id,
-  )
+  const data = await getDefaultAffiliateCodeById({
+    creatorProfile,
+  })
 
   return (
     <PageContainer className='md:p-0'>

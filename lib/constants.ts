@@ -106,9 +106,8 @@ export const CACHE_KEYS = {
   purchasedAsset: (profileId: string, assetId: string) =>
     `purchases-${profileId}-${assetId}`,
 
-  creatorProfileDefaultAffiliateCode: (creatorProfileId: string) =>
-    `creator-profile-default-affiliate-code-${creatorProfileId}`,
   profile: (userId: string) => `profile-${userId}`,
+  defaultAffiliateCode: (code: string) => `affiliate-code-${code}`,
   viewedAssetsByProfile: (assetId: string, profileId: string) =>
     `viewed-asset-${assetId}-${profileId}`,
 }
