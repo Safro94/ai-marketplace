@@ -86,9 +86,6 @@ export async function POST(request: Request) {
     if (dbAffiliateCode?.code) {
       await updateAffiliateCode(dbAffiliateCode?.code, {
         totalUses: { increment: 1 },
-        totalRevenue: {
-          increment: totalAmounts.totalPrice - totalAmounts.totalServiceCharge, // revisar esto
-        },
       })
 
       revalidateTag(CACHE_KEYS.defaultAffiliateCode(dbAffiliateCode.code))
