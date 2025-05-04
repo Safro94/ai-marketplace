@@ -5,7 +5,7 @@ import {
 } from '@/data-access/affiliate-codes'
 import { updateAsset } from '@/data-access/assets'
 import { createOrUpdateCreatorAnalytics } from '@/data-access/creator-analytics'
-import { updateCreatorProfile } from '@/data-access/creator-profile'
+import { getCreatorProfileById } from '@/data-access/creator-profile'
 import { createPurchaseItem } from '@/data-access/purchase-item'
 import {
   createPurchase,
@@ -117,6 +117,16 @@ export async function POST(request: Request) {
         )
         const assetPrice = assetLicense?.price || 0
 
+        const creatorProfile = await getCreatorProfileById(
+          asset.creator.creatorProfile!.id,
+        )
+
+        if (!creatorProfile) {
+          throw Error('Asset creator profile not found')
+        }
+
+        revalidateTag(CACHE_KEYS.profile(asset.creatorId))
+
         // Create the purchase item
         const purchaseItem = await createPurchaseItem({
           licenseKey,
@@ -124,6 +134,7 @@ export async function POST(request: Request) {
           assetId: asset.id,
           amount: assetPrice,
           assetLicenseId: assetLicense?.id,
+          commisionRate: creatorProfile.commissionRate,
         })
 
         // Update asset sales and revenue
@@ -136,26 +147,21 @@ export async function POST(request: Request) {
 
         revalidateTag(CACHE_KEYS.purchasedAsset(profile.id, asset.id))
 
-        const creatorProfile = await updateCreatorProfile({
-          where: { id: asset.creator.creatorProfile?.id },
-          data: {
-            totalSales: { increment: 1 },
-            totalRevenue: { increment: assetPrice },
-          },
-        })
-
-        revalidateTag(CACHE_KEYS.profile(asset.creatorId))
+        const revenue =
+          assetPrice - assetPrice * (creatorProfile.commissionRate / 100) // commissionRate es (25,20,etc)
 
         await createOrUpdateCreatorAnalytics({
           where: { creatorProfileId: creatorProfile.id },
           update: {
             totalSales: { increment: 1 },
-            totalRevenue: { increment: assetPrice },
+            totalRevenue: {
+              increment: revenue,
+            },
             updatedAt: new Date(),
           },
           create: {
             totalSales: 1,
-            totalRevenue: assetPrice,
+            totalRevenue: revenue,
             creatorProfile: {
               connect: { id: creatorProfile.id },
             },

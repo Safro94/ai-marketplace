@@ -34,6 +34,7 @@ export const CreatorDashboardSale: FC<Props> = ({
   assetLicense,
   amount,
   createdAt,
+  commisionRate,
 }) => {
   return (
     <Link
@@ -56,10 +57,13 @@ export const CreatorDashboardSale: FC<Props> = ({
           <div>
             <h3 className='text-md font-medium'>{asset.title}</h3>
 
-            <p className='text-muted-foreground text-sm'>
-              {assetLicense?.license.name} •{' '}
-              {format(new Date(createdAt), 'MMM d')}
-            </p>
+            <div className='flex flex-col gap-2 md:flex-row text-muted-foreground text-sm'>
+              <span>{assetLicense?.license.name}</span>
+              <span>•</span>
+              <span>{format(new Date(createdAt), 'MMM d')}</span>
+              <span>•</span>
+              <span>Commission: {commisionRate}%</span>
+            </div>
           </div>
 
           <span className='font-bold'>{formatCurrency(amount)}</span>

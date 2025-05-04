@@ -16,7 +16,14 @@ export const PurchasesList: FC<Props> = ({ purchases }) => {
     <InfiniteScrollList<PurchaseProps>
       initialData={purchases}
       endpointUrl={API_ROUTES.purchases()}
-      ItemComponent={(item) => <Purchase {...item} />}
+      ItemComponent={(item) => (
+        <Purchase
+          id={item.id}
+          status={item.status}
+          createdAt={item.createdAt}
+          purchaseItems={item.purchaseItems}
+        />
+      )}
     />
   )
 }

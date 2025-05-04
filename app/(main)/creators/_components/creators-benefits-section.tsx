@@ -1,4 +1,3 @@
-import { Benefit } from '@/components/benefit'
 import {
   HomeSection,
   HomeSectionDescription,
@@ -6,20 +5,29 @@ import {
   HomeSectionTitleContainer,
 } from '@/components/page-container'
 import { Motion } from '@/components/ui/motion'
-import { SERVICE_CHARGE, STAGGER, TRANSITION_DELAY } from '@/lib/constants'
-import { Clock, DollarSign, Package, Shield } from 'lucide-react'
+import { STAGGER } from '@/lib/constants'
+import creatorsImg from '@/public/creators.svg'
+import { Award, BarChart3, Clock, Gift } from 'lucide-react'
+import Image from 'next/image'
 
 const BENEFITS = [
   {
-    Icon: DollarSign,
-    title: 'Competitive Commission',
-    description: `Keep ${100 - SERVICE_CHARGE * 100}% of your sales with our industry-leading commission structure.`,
+    Icon: Award,
+    title: 'Creator Dashboard',
+    description:
+      'Access an advanced dashboard to track your product performance, sales, understand your audience, and optimize your referral strategy.',
   },
   {
-    Icon: Package,
-    title: 'Manage Products',
+    Icon: Gift,
+    title: 'Exclusive Creator Code',
     description:
-      'Easy-to-use dashboard to handle your product listings, sales, and analytics(analytics is a premium feature, coming soon)',
+      'Receive a special creator code in addition to your regular user code, allowing you to earn from two different referral streams.',
+  },
+  {
+    Icon: BarChart3,
+    title: 'Decreasing Commission Rates',
+    description:
+      'As your referrals generate more sales, your commission rate decreases from 25% down to as low as 15%, meaning you keep more of your earnings.',
   },
   {
     Icon: Clock,
@@ -27,44 +35,64 @@ const BENEFITS = [
     description:
       'Get paid quickly instantly with our streamlined payment process and multiple options',
   },
-  {
-    Icon: Shield,
-    title: 'Secure Platform',
-    description:
-      'We handle payments, delivery, and customer support so you can focus on creation.',
-  },
 ]
 
 export const CreatorsBenefitsSection = () => {
   return (
-    <HomeSection id='benefits' className='bg-muted grid md:grid-cols-2'>
-      <HomeSectionTitleContainer className='justify-center text-left'>
-        <HomeSectionTitle>Why Sell on our platform?</HomeSectionTitle>
+    <HomeSection id='benefits' className='bg-muted'>
+      <HomeSectionTitleContainer>
+        <HomeSectionTitle>Why Become a Creator?</HomeSectionTitle>
 
-        <HomeSectionDescription className='text-left'>
-          Join thousands of creators who are earning a living by selling their
-          digital products on our marketplace. No technical skills required to
-          get started.
+        <HomeSectionDescription>
+          As a creator, you&apos;ll unlock exclusive benefits and earn more from
+          your influence.
         </HomeSectionDescription>
       </HomeSectionTitleContainer>
 
-      <Motion
-        initial='hidden'
-        whileInView='visible'
-        viewport={{ once: true, margin: '-100px' }}
-        variants={STAGGER}
-        className='grid md:grid-cols-2 gap-4'
-      >
-        {BENEFITS.map(({ Icon, title, description }, i) => (
-          <Benefit
-            key={title}
-            icon={Icon}
-            title={title}
-            description={description}
-            delay={TRANSITION_DELAY * i}
+      <div className='grid md:grid-cols-2 gap-12 items-center'>
+        <div className='order-2 md:order-1'>
+          <Motion
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-100px' }}
+            variants={STAGGER}
+            className='space-y-8'
+          >
+            {BENEFITS.map(({ Icon, title, description }, i) => (
+              <Motion
+                key={i}
+                className='flex gap-4'
+                variants={{
+                  hidden: { opacity: 0.1, x: -50 },
+                  visible: {
+                    opacity: 1,
+                    x: 0,
+                    transition: { duration: 0.3, delay: i * 0.3 },
+                  },
+                }}
+              >
+                <div className='bg-primary p-3 rounded-full h-12 w-12 flex items-center justify-center text-white shrink-0'>
+                  <Icon className='h-6 w-6' />
+                </div>
+
+                <div>
+                  <h3 className='text-xl font-bold mb-1'>{title}</h3>
+                  <p className='text-muted-foreground'>{description}</p>
+                </div>
+              </Motion>
+            ))}
+          </Motion>
+        </div>
+
+        <div className='order-1 md:order-2'>
+          <Image
+            src={creatorsImg}
+            alt='Creator benefits illustration'
+            width={600}
+            height={500}
           />
-        ))}
-      </Motion>
+        </div>
+      </div>
     </HomeSection>
   )
 }

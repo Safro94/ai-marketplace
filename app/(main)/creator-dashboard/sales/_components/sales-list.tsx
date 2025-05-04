@@ -29,7 +29,20 @@ export const CreatorDashboardSalesList: FC<Props> = ({ recentSales }) => {
           ? response.flatMap((purchase) => purchase.purchaseItems)
           : []
       }}
-      ItemComponent={(item) => <CreatorDashboardSale {...item} />}
+      ItemComponent={(item) => (
+        <CreatorDashboardSale
+          id={item.id}
+          asset={item.asset}
+          amount={item.amount}
+          assetId={item.assetId}
+          createdAt={item.createdAt}
+          licenseKey={item.licenseKey}
+          purchaseId={item.purchaseId}
+          assetLicense={item.assetLicense}
+          commisionRate={item.commisionRate}
+          assetLicenseId={item.assetLicenseId}
+        />
+      )}
     />
   )
 }

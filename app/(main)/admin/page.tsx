@@ -4,7 +4,7 @@ import { getAssetCount } from '@/data-access/assets'
 import { getPendingCreatorApplicationsCount } from '@/data-access/creator-application'
 import { getPurchasesAmount, getPurchasesCount } from '@/data-access/purchases'
 import { getUserCount } from '@/data-access/users'
-import { APP_DATA, ROUTES, SERVICE_CHARGE } from '@/lib/constants'
+import { APP_DATA, ROUTES } from '@/lib/constants'
 import { validateAdminProfile } from '@/lib/permissions'
 import { formatCurrency } from '@/lib/utils'
 import { DollarSign, FileText, ShoppingBag, Users } from 'lucide-react'
@@ -29,7 +29,34 @@ export default async function AdminDashboardPage() {
   const sales = await getPurchasesAmount()
   const pendingApplicationsCount = await getPendingCreatorApplicationsCount()
 
-  const totalRevenue = sales.reduce((total, sale) => total + sale.amount, 0)
+  const totalSalesData = sales.reduce(
+    (total, sale) => {
+      const saleData = sale.purchaseItems.reduce(
+        (purchaseItemsTotal, currentItem) => {
+          const commission =
+            currentItem.amount * (currentItem.commisionRate / 100)
+
+          purchaseItemsTotal.purchaseCommission += commission
+          purchaseItemsTotal.purchaseAmount += currentItem.amount
+
+          return purchaseItemsTotal
+        },
+        {
+          purchaseAmount: 0,
+          purchaseCommission: 0,
+        },
+      )
+
+      total.totalSales += saleData.purchaseAmount
+      total.totalCommisions += saleData.purchaseCommission
+
+      return total
+    },
+    {
+      totalSales: 0,
+      totalCommisions: 0,
+    },
+  )
 
   return (
     <PageContainer>
@@ -61,9 +88,15 @@ export default async function AdminDashboardPage() {
             link: ROUTES.adminCreatorApplications(),
           },
           {
-            cardTitle: 'Total Revenue',
+            cardTitle: 'Total Sales',
             Icon: DollarSign,
-            cardContent: formatCurrency(totalRevenue * SERVICE_CHARGE),
+            cardContent: formatCurrency(totalSalesData.totalSales),
+            cardContentExtra: `${salesCount} sales`,
+          },
+          {
+            cardTitle: 'Total Commission Sum',
+            Icon: DollarSign,
+            cardContent: formatCurrency(totalSalesData.totalCommisions),
             cardContentExtra: `${salesCount} sales`,
           },
         ].map(({ cardTitle, link, Icon, cardContent, cardContentExtra }, i) => (

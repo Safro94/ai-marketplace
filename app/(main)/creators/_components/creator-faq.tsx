@@ -6,7 +6,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { APP_DATA, SERVICE_CHARGE } from '@/lib/constants'
+import {
+  APP_DATA,
+  LOWEST_SERVICE_CHARGE,
+  SERVICE_CHARGE,
+} from '@/lib/constants'
 import { generateFaqJsonLd } from '@/lib/seo-config'
 import { useEffect } from 'react'
 
@@ -18,11 +22,11 @@ const FAQs = [
   },
   {
     question: 'How much does it cost to become a creator?',
-    answer: `There is no upfront cost to become a creator on ${APP_DATA.name}. We operate on a commission model, taking ${SERVICE_CHARGE * 100}% of each sale. This means you only pay when you earn, and you keep ${100 - SERVICE_CHARGE * 100}% of your revenue.`,
+    answer: `There is no upfront cost to become a creator on ${APP_DATA.name}. We operate on a commission model, taking between ${LOWEST_SERVICE_CHARGE * 100}-${SERVICE_CHARGE * 100}% of each sale. This means you only pay when you earn, and you keep between ${100 - SERVICE_CHARGE * 100}-${100 - LOWEST_SERVICE_CHARGE * 100}% of your revenue.`,
   },
   {
     question: 'How do I get paid?',
-    answer: `Payments are processed through Paypal. You can set up your payout method in your creator application. Payments are processed instantly after each sale. You will receive ${100 - SERVICE_CHARGE * 100}% of the sale price directly to your connected payment account immediately after a successful transaction.`,
+    answer: `Payments are processed through Paypal. You can set up your payout method in your creator application. Payments are processed instantly after each sale. You will receive between ${100 - SERVICE_CHARGE * 100}-${100 - LOWEST_SERVICE_CHARGE * 100}% of the sale price directly to your connected payment account immediately after a successful transaction.`,
   },
   {
     question: 'How long does the review process take?',

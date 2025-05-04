@@ -1,6 +1,11 @@
 import { PageContainer } from '@/components/page-container'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { APP_DATA, CREATORS_EMAIL, SERVICE_CHARGE } from '@/lib/constants'
+import {
+  APP_DATA,
+  CREATORS_EMAIL,
+  LOWEST_SERVICE_CHARGE,
+  SERVICE_CHARGE,
+} from '@/lib/constants'
 
 export const metadata = {
   title: `Creator Terms | ${APP_DATA.name}`,
@@ -155,19 +160,20 @@ export default function CreatorTermsPage() {
           <h3>6.1 Commission Structure</h3>
           <p>
             The Platform charges a commission on each sale of your assets. The
-            current commission rate is {SERVICE_CHARGE * 100}% of the sale
-            price. We reserve the right to change the commission rate with 30
-            days notice.
+            current commission rate ranges between {LOWEST_SERVICE_CHARGE * 100}
+            -{SERVICE_CHARGE * 100}% of the sale price. We reserve the right to
+            change the commission rate with 30 days notice.
           </p>
 
           <h3>6.2 Payment Processing</h3>
           <p>
             Payments are processed instantly after each sale. You will receive{' '}
-            {100 - SERVICE_CHARGE * 100}% of the sale price directly to your
-            connected payment account immediately after a successful
-            transaction. The Platform retains the {SERVICE_CHARGE * 100}%
-            commission at the time of sale. There is no minimum payout threshold
-            or waiting period.
+            {100 - LOWEST_SERVICE_CHARGE * 100}-{100 - SERVICE_CHARGE * 100}% of
+            the sale price directly to your connected payment account
+            immediately after a successful transaction. The Platform retains the{' '}
+            {LOWEST_SERVICE_CHARGE * 100}-{SERVICE_CHARGE * 100}% commission at
+            the time of sale. There is no minimum payout threshold or waiting
+            period.
           </p>
 
           <h3>6.3 Taxes</h3>

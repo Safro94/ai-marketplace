@@ -67,7 +67,15 @@ export const Purchase: FC<Props> = ({
 
       <div className='space-y-2'>
         {purchaseItems.map((purchasedItem) => (
-          <PurchasedItemCard key={purchasedItem.id} {...purchasedItem} />
+          <PurchasedItemCard
+            key={purchasedItem.id}
+            id={purchasedItem.id}
+            asset={purchasedItem.asset}
+            amount={purchasedItem.amount}
+            createdAt={purchasedItem.createdAt}
+            licenseKey={purchasedItem.licenseKey}
+            assetLicense={purchasedItem.assetLicense}
+          />
         ))}
       </div>
     </div>

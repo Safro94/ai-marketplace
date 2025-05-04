@@ -20,7 +20,7 @@ export const CreatorCTASection: FC<{
     section?: string
     title?: string
   }
-}> = async ({ classNames, btnVariant }) => {
+}> = async ({ classNames, btnVariant = 'outline' }) => {
   const session = await getServerSession()
   let profile
 
@@ -48,7 +48,7 @@ export const CreatorCTASection: FC<{
           size='lg'
           asChild
           variant={btnVariant ?? 'outline'}
-          className='w-fit'
+          className={cn('w-fit', btnVariant === 'outline' && 'text-white')}
         >
           <Link href={ROUTES.creators()}>
             Get started now

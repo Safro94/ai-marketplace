@@ -19,7 +19,7 @@ export const Benefit: FC<Props> = ({
     <Motion
       className='bg-background rounded-lg p-6 border flex items-center gap-4 card-hover'
       variants={{
-        hidden: { opacity: 0, x: 50 },
+        hidden: { opacity: 0.1, x: 50 },
         visible: {
           opacity: 1,
           x: 0,

@@ -43,8 +43,6 @@ model CreatorProfile {
   paymentMethods CreatorApplicationPaymentMethod[]
   commissionRate Float                             @default(25.0) // Default 25%
   isExclusive    Boolean                           @default(false)
-  totalSales     Int                               @default(0)
-  totalRevenue   Float                             @default(0)
   createdAt      DateTime                          @default(now())
   updatedAt      DateTime                          @updatedAt
 
@@ -207,14 +205,15 @@ model Purchase {
 }
 
 model PurchaseItem {
-  id         String   @id @default(cuid())
-  purchaseId String
-  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
-  assetId    String
-  asset      Asset    @relation(fields: [assetId], references: [id])
-  amount     Float // Individual item price
-  licenseKey String?  @unique
-  createdAt  DateTime @default(now())
+  id            String   @id @default(cuid())
+  purchaseId    String
+  purchase      Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  assetId       String
+  asset         Asset    @relation(fields: [assetId], references: [id])
+  amount        Float // Individual item price
+  licenseKey    String?  @unique
+  createdAt     DateTime @default(now())
+  commisionRate Int      @default(25) // SERVICE_CHARGE
 
   // Relations
   downloads      Download[]

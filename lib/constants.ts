@@ -139,6 +139,7 @@ export const PRIVACY_EMAIL = `privacy@${APP_DATA.lowercaseName}.pro`
 export const CREATORS_EMAIL = `creators@${APP_DATA.lowercaseName}.pro`
 export const BIO_MAX_LENGTH = 500
 export const SERVICE_CHARGE = 0.25
+export const LOWEST_SERVICE_CHARGE = 0.15
 export const CART_COOKIE_NAME = 'cart_session_id'
 export const CART_EXPIRY = 60 * 60 * 24 * 30 // 30 days in seconds
 export const PAGE_PADDING = 'px-4 md:px-8'
@@ -155,7 +156,7 @@ export const HEADER_LINKS = [
 ]
 
 export const FADE_IN_UP = (delay?: number) => ({
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0.1, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
@@ -164,7 +165,7 @@ export const FADE_IN_UP = (delay?: number) => ({
 })
 
 export const STAGGER = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0.1 },
   visible: {
     opacity: 1,
     transition: {

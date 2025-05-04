@@ -1,6 +1,5 @@
 import { getAssets } from '@/data-access/assets'
 import { getUserProfile } from '@/data-access/profile'
-import { SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
@@ -49,7 +48,8 @@ export async function GET() {
       const sales = asset.PurchaseItem.length
       const uniqueViews = asset.assetAnalytics?.uniqueViews
       const revenue = asset.PurchaseItem.reduce(
-        (total, purchase) => total + (purchase.amount - SERVICE_CHARGE * 100),
+        (total, purchase) =>
+          total + (purchase.amount - profile.creatorProfile!.commissionRate), //TODO: Revisar esto, ver como diferenciar comision previa y actual
         0,
       )
 

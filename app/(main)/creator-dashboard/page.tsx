@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card'
 import { Tooltip } from '@/components/ui/tooltip'
 import { getAssets } from '@/data-access/assets'
 import { getCreatorAnalyticsByCreatorProfileId } from '@/data-access/creator-analytics'
-import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
+import { ROUTES } from '@/lib/constants'
 import { formatCurrency } from '@/lib/utils'
 import {
   ArrowRight,
@@ -75,10 +75,7 @@ export default async function CreatorDashboard() {
               </span>
             ),
             value: formatCurrency(
-              creatorStats?.totalRevenue
-                ? creatorStats.totalRevenue -
-                    creatorStats.totalRevenue * SERVICE_CHARGE
-                : 0,
+              creatorStats?.totalRevenue ? creatorStats.totalRevenue : 0,
             ),
             icon: DollarSign,
             description: 'Your accumulated earnings from all product sales',

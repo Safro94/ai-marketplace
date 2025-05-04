@@ -22,6 +22,16 @@ export const createCreatorProfile = async (
   })
 }
 
+export const getCreatorProfileById = async (id: string) => {
+  return await prisma.creatorProfile.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      commissionRate: true,
+    },
+  })
+}
+
 export const updateCreatorProfile = async (
   args: Prisma.CreatorProfileUpdateArgs,
 ) => {

@@ -4,6 +4,7 @@ import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { ApplicationStatus } from '@prisma/client'
 import type { Metadata } from 'next'
+import { CreatorReferralSection } from './_components/creator-referral-section'
 import { CreatorsBenefitsSection } from './_components/creators-benefits-section'
 import { CreatorsFAQSection } from './_components/creators-faq-section'
 import { CreatorsHeroSection } from './_components/creators-hero-section'
@@ -46,6 +47,7 @@ export default async function CreatorsPage() {
       />
       <CreatorsBenefitsSection />
       <CreatorsHowItWorksSection />
+      <CreatorReferralSection />
       <CreatorsTypesSection />
       <CreatorsFAQSection />
       <CreatorCTASection

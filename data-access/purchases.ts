@@ -13,6 +13,12 @@ export const getPurchasesAmount = async () => {
   return await prisma.purchase.findMany({
     select: {
       amount: true,
+      purchaseItems: {
+        select: {
+          amount: true,
+          commisionRate: true,
+        },
+      },
     },
   })
 }

@@ -1,6 +1,5 @@
 import { getUserProfile } from '@/data-access/profile'
 import { getAllPurchasesBetweenDates } from '@/data-access/purchases'
-import { SERVICE_CHARGE } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
@@ -58,7 +57,8 @@ export async function GET() {
       }
 
       dayData.sales += 1
-      dayData.revenue += purchase.amount - SERVICE_CHARGE * 100
+      dayData.revenue +=
+        purchase.amount - profile.creatorProfile!.commissionRate //TODO: Revisar esto, ver como diferenciar comision previa y actual
 
       salesByDate.set(dateStr, dayData)
     })
