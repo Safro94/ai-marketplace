@@ -21,8 +21,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
 
 const SOCIAL_MEDIA_POST_TEXT = 'Checkout my new AI product'
 
@@ -54,7 +52,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
           </Button>
         </DialogTrigger>
 
-        <DialogContent className='sm:max-w-[425px]'>
+        <DialogContent className='max-w-screen-sm'>
           <DialogHeader>
             <DialogTitle>Share link</DialogTitle>
             <DialogDescription>
@@ -62,17 +60,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className='flex items-center space-x-2'>
-            <div className='grid flex-1 gap-2'>
-              <Label htmlFor='link' className='sr-only'>
-                Link
-              </Label>
-
-              <Input readOnly id='link' defaultValue={url} />
-            </div>
-
-            <CopyToClipboard data={url} />
-          </div>
+          <CopyToClipboard data={url} />
 
           <div className='flex gap-2 items-center'>
             <RedditShareButton url={url} title={SOCIAL_MEDIA_POST_TEXT}>

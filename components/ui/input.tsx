@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { ComponentProps, FC, ReactNode } from 'react'
+import { ComponentProps, FC } from 'react'
 
 const Input: FC<ComponentProps<'input'>> = ({
   className,
@@ -20,22 +20,4 @@ const Input: FC<ComponentProps<'input'>> = ({
   )
 }
 
-const InputWithIcon: FC<ComponentProps<'input'> & { icon: ReactNode }> = ({
-  defaultValue,
-  icon,
-  ...props
-}) => {
-  return (
-    <div className='space-x-2 relative w-full md:w-fit flex items-center justify-center'>
-      <Input
-        readOnly
-        defaultValue={defaultValue}
-        className='w-full md:w-fit'
-        {...props}
-      />
-      {icon}
-    </div>
-  )
-}
-
-export { Input, InputWithIcon }
+export { Input }

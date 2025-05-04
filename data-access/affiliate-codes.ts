@@ -33,6 +33,8 @@ export const getDefaultAffiliateCodeById = async (
     select: {
       code: true,
       discountPercentage: true,
+      totalUses: true,
+      totalSales: true,
     },
   })
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { generateNewAffiliateCodeAction } from '@/actions/affiliate-codes'
+import { RefreshCcw } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useTransition } from 'react'
 import { LoadingButton } from './ui/button'
@@ -36,7 +37,10 @@ export const GenerateNewAffiliateCode: FC<Props> = ({ id, isCreatorCode }) => {
       isLoading={isPending}
       disabled={isPending}
       onClick={handleClick}
+      size='lg'
+      className='md:h-auto'
     >
+      <RefreshCcw className='w-5 h-5 mr-2' />
       Generate new code
     </LoadingButton>
   )

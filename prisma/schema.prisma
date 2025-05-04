@@ -59,6 +59,7 @@ model AffiliateCode {
   code               String          @unique
   isDefault          Boolean         @default(false)
   totalUses          Int             @default(0)
+  totalSales         Float           @default(0)
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   discountPercentage Int?            @default(0)

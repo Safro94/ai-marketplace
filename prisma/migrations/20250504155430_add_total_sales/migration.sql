@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "AffiliateCode" ADD COLUMN     "totalSales" DOUBLE PRECISION NOT NULL DEFAULT 0;

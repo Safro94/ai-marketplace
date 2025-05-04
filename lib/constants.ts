@@ -160,3 +160,10 @@ export const STAGGER = {
     },
   },
 }
+
+export const CREATOR_AFFILIATE_MILESTONES = [
+  { amount: 250, label: '$250' },
+  { amount: 1000, label: '$1K' },
+  { amount: 2500, label: '$2.5K' },
+  { amount: 5000, label: '$5K' },
+]
