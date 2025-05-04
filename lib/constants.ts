@@ -12,6 +12,7 @@ export const ROUTES = {
   purchases: () => '/purchases',
   cart: () => '/cart',
   explore: () => '/explore',
+  affiliate: () => '/affiliate',
 
   assets: () => '/assets',
   assetsDetail: (id: string) => `/assets/${id}`,
@@ -150,6 +151,7 @@ export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },
   { name: 'Explore', href: ROUTES.explore() },
   { name: 'For Creators', href: ROUTES.creators() },
+  { name: 'Affiliate Program', href: ROUTES.affiliate() },
 ]
 
 export const FADE_IN_UP = (delay?: number) => ({
