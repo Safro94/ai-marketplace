@@ -1,4 +1,4 @@
-import { PageContainer } from '@/components/page-container'
+import { DashboardPageContainer } from '@/components/page-container'
 import { Card, CardContent } from '@/components/ui/card'
 import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/purchases'
 import { INFINITE_SCROLL_NUMBER_OF_ITEMS } from '@/lib/constants'
@@ -17,12 +17,10 @@ export default async function Page() {
   })
 
   return (
-    <PageContainer className='md:p-0'>
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold'>Recent Sales</h1>
-        <p>Your most recent asset purchases</p>
-      </div>
-
+    <DashboardPageContainer
+      title='Recent Sales'
+      description='Your most recent asset purchases'
+    >
       <Card className='pt-4'>
         <CardContent>
           {!recentSales.length ? (
@@ -40,6 +38,6 @@ export default async function Page() {
           )}
         </CardContent>
       </Card>
-    </PageContainer>
+    </DashboardPageContainer>
   )
 }

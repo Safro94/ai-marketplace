@@ -4,7 +4,9 @@ import {
   PaymentProvider,
   Prisma,
 } from '@prisma/client'
+import * as LucideIcons from 'lucide-react'
 
+type LucideIconName = keyof typeof LucideIcons
 export type Unpacked<T> = T extends (infer U)[] ? U : T
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,3 +138,10 @@ export type CartAction =
   | { type: 'ADD_ITEM'; item: CartItem }
   | { type: 'REMOVE_ITEM'; assetId: string; licenseId: LicenseType }
   | { type: 'CLEAR_CART' }
+
+export interface SidebarLink {
+  name: string
+  href: string
+  icon: LucideIconName
+  match: string
+}

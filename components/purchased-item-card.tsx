@@ -66,25 +66,26 @@ export const PurchasedItemCard: FC<Props> = ({
       </div>
 
       <div className='flex-1'>
-        <div className='flex flex-col lg:flex-row justify-between gap-4'>
+        <div className='flex flex-col lg:flex-row justify-between gap-2'>
           <div>
-            <h3 className='text-xl font-medium mb-2'>{asset.title}</h3>
+            <div className='flex flex-col md:flex-row gap-2 items-center'>
+              <h3 className='text-xl font-medium'>{asset.title}</h3>
 
-            <p className='text-muted-foreground line-clamp-2 mb-4'>
+              <Badge variant='secondary'>{asset.category.name}</Badge>
+            </div>
+
+            <p className='text-muted-foreground line-clamp-2 mb-2'>
               {asset.description}
             </p>
 
-            <div className='flex flex-col flex-wrap gap-4 md:gap-0 md:flex-row md:items-center text-sm text-muted-foreground'>
-              <span>Purchased {format(new Date(createdAt), 'PPP')}</span>
-              <span className='hidden md:block mx-2'>•</span>
+            <div className='flex flex-col flex-wrap gap-2 md:flex-row md:items-center text-sm text-muted-foreground'>
+              <span>{format(new Date(createdAt), 'PPP')}</span>
+              <span className='hidden md:block'>•</span>
               <span>{formatCurrency(amount)}</span>
-              <span className='hidden md:block mx-2'>•</span>
+              <span className='hidden md:block'>•</span>
               <span>{assetLicense?.license.name}</span>
-              <span className='hidden md:block mx-2'>•</span>
+              <span className='hidden md:block'>•</span>
               <span>Lincese Key: {licenseKey}</span>
-              <span className='hidden md:block mx-2'>•</span>
-
-              <Badge variant='secondary'>{asset.category.name}</Badge>
             </div>
           </div>
 

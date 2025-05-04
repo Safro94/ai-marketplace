@@ -1,4 +1,4 @@
-import { PageContainer } from '@/components/page-container'
+import { DashboardPageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -8,18 +8,20 @@ import Link from 'next/link'
 
 export default function Loading() {
   return (
-    <PageContainer className='md:p-0'>
-      <div className='mb-8 flex flex-col gap-4 md:flex-row md:justify-between'>
-        <div>
-          <h1 className='text-2xl md:text-3xl font-bold'>Products</h1>
-          <p>Manage and monitor your products</p>
+    <DashboardPageContainer
+      customHeader={
+        <div className='mb-8 flex flex-col gap-4 md:flex-row md:justify-between'>
+          <div>
+            <h1 className='text-2xl font-bold'>Products</h1>
+            <p>Manage and monitor your products</p>
+          </div>
+
+          <Button asChild className='w-fit'>
+            <Link href={ROUTES.creatorDashboardUpload()}>Upload New Asset</Link>
+          </Button>
         </div>
-
-        <Button asChild className='w-fit'>
-          <Link href={ROUTES.creatorDashboardUpload()}>Upload New Asset</Link>
-        </Button>
-      </div>
-
+      }
+    >
       <Card className='pt-4'>
         <CardContent>
           <Tabs defaultValue='all'>
@@ -86,6 +88,6 @@ export default function Loading() {
           </Tabs>
         </CardContent>
       </Card>
-    </PageContainer>
+    </DashboardPageContainer>
   )
 }

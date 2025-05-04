@@ -1,5 +1,4 @@
-import { PageContainer } from '@/components/page-container'
-import { BreadcrumbNavigation } from '@/components/ui/breadcrumb'
+import { DashboardPageContainer } from '@/components/page-container'
 import { ROUTES } from '@/lib/constants'
 import { redirect } from 'next/navigation'
 import { validateCreatorDashboardAccess } from '../utils'
@@ -12,24 +11,12 @@ export default async function CreatorAnalyticsPage() {
   redirect(ROUTES.creatorDashboard())
 
   return (
-    <PageContainer>
-      <BreadcrumbNavigation
-        items={[
-          {
-            text: 'Creator Dashboard',
-            link: ROUTES.creatorDashboard(),
-          },
-          {
-            text: 'Analytics',
-          },
-        ]}
-      />
-
+    <DashboardPageContainer title='Analytics'>
       <div className='mb-8'>
         <h1 className='text-3xl font-bold tracking-tight'>Analytics</h1>
       </div>
 
       <CreatorAnalytics />
-    </PageContainer>
+    </DashboardPageContainer>
   )
 }

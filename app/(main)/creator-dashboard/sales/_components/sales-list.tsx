@@ -3,14 +3,15 @@
 import { InfiniteScrollList } from '@/components/ui/infinite-scroll-list'
 import { getAllCreatorDashboardPurchasesByAssetCreator } from '@/data-access/purchases'
 import { API_ROUTES } from '@/lib/constants'
+import { AsyncReturnType } from '@/lib/types'
 import { ComponentProps, FC } from 'react'
 import { CreatorDashboardSale } from './sale'
 
 type SalesProps = ComponentProps<typeof CreatorDashboardSale>
 
 interface Props {
-  recentSales: Awaited<
-    ReturnType<typeof getAllCreatorDashboardPurchasesByAssetCreator>
+  recentSales: AsyncReturnType<
+    typeof getAllCreatorDashboardPurchasesByAssetCreator
   >
 }
 

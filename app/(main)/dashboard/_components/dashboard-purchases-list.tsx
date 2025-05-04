@@ -4,12 +4,13 @@ import { PurchasedItemCard } from '@/components/purchased-item-card'
 import { InfiniteScrollList } from '@/components/ui/infinite-scroll-list'
 import { getAllPurchasesByProfileId } from '@/data-access/purchases'
 import { API_ROUTES } from '@/lib/constants'
+import { AsyncReturnType } from '@/lib/types'
 import { ComponentProps, FC } from 'react'
 
 type PurchasedItemCardProps = ComponentProps<typeof PurchasedItemCard>
 
 interface Props {
-  purchases: Awaited<ReturnType<typeof getAllPurchasesByProfileId>>
+  purchases: AsyncReturnType<typeof getAllPurchasesByProfileId>
 }
 
 export const DashboardPurchasesList: FC<Props> = ({ purchases }) => {

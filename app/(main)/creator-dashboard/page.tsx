@@ -1,4 +1,4 @@
-import { PageContainer } from '@/components/page-container'
+import { DashboardPageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tooltip } from '@/components/ui/tooltip'
@@ -59,11 +59,7 @@ export default async function CreatorDashboard() {
     : 0
 
   return (
-    <PageContainer className='md:p-0 h-full'>
-      <div className='mb-8'>
-        <h1 className='text-2xl md:text-3xl font-bold'>Creator Dashboard</h1>
-      </div>
-
+    <DashboardPageContainer className='h-full' title='Creator Dashboard'>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         {[
           {
@@ -169,6 +165,6 @@ export default async function CreatorDashboard() {
           </Card>
         ))}
       </div>
-    </PageContainer>
+    </DashboardPageContainer>
   )
 }

@@ -1,15 +1,13 @@
-import { PageContainer } from '@/components/page-container'
+import { DashboardPageContainer } from '@/components/page-container'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Loading() {
   return (
-    <PageContainer className='md:p-0'>
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold'>Recent Sales</h1>
-        <p>Your most recent asset purchases</p>
-      </div>
-
+    <DashboardPageContainer
+      title='Recent Sales'
+      description='Your most recent asset purchases'
+    >
       <Card className='pt-4'>
         <CardContent>
           <div className='flex flex-col gap-4'>
@@ -35,6 +33,6 @@ export default function Loading() {
           </div>
         </CardContent>
       </Card>
-    </PageContainer>
+    </DashboardPageContainer>
   )
 }

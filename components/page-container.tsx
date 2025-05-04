@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { FC, HTMLAttributes, PropsWithChildren } from 'react'
+import { FC, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
 export const PageContainer: FC<PropsWithChildren & { className?: string }> = ({
   children,
@@ -68,3 +68,25 @@ export const HomeSectionDescription: FC<
     </p>
   )
 }
+
+export const DashboardPageContainer: FC<
+  PropsWithChildren & {
+    className?: string
+    title?: string
+    description?: string
+    customHeader?: ReactNode
+  }
+> = ({ children, title, description, customHeader, className }) => (
+  <PageContainer className={cn('md:p-0', className)}>
+    <div className='mb-4'>
+      {customHeader || (
+        <>
+          <h1 className='text-2xl font-bold'>{title}</h1>
+          {description && <p>{description}</p>}
+        </>
+      )}
+    </div>
+
+    {children}
+  </PageContainer>
+)

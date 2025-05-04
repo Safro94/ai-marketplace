@@ -8,20 +8,23 @@ export const ROUTES = {
   about: () => '/about',
   contact: () => '/contact',
   resetPassword: () => '/reset-password',
-  dashboard: () => '/dashboard',
-  assets: () => '/assets',
-  assetsDetail: (id: string) => `/assets/${id}`,
   account: () => '/account',
   purchases: () => '/purchases',
   cart: () => '/cart',
+  explore: () => '/explore',
+
+  assets: () => '/assets',
+  assetsDetail: (id: string) => `/assets/${id}`,
+
   checkout: () => '/checkout',
   checkoutSuccess: () => '/checkout/success',
-  explore: () => '/explore',
+
   creators: () => '/creators',
   creatorsThankYou: () => '/creators/thank-you',
   creatorsApply: () => '/creators/apply',
   creatorTerms: () => '/creators/terms',
   creatorFAQ: () => '/creators/faq',
+
   creatorDashboard: () => '/creator-dashboard',
   creatorDashboardAssets: () => '/creator-dashboard/assets',
   creatorDashboardSales: () => '/creator-dashboard/sales',
@@ -31,12 +34,19 @@ export const ROUTES = {
   creatorDashboardAssetEdit: (assetId: string) =>
     `/creator-dashboard/assets/${assetId}/edit`,
   creatorDashboardThankYou: () => '/creator-dashboard/thank-you',
+
   admin: () => '/admin',
   adminUsers: () => '/admin/users',
   adminAssets: () => '/admin/assets',
   adminCreatorApplications: () => '/admin/creator-applications',
   adminAnalytics: () => '/admin/analytics',
   adminSettings: () => '/admin/settings',
+
+  dashboard: () => '/dashboard',
+  dashboardReviews: () => '/dashboard/reviews',
+  dashboardFavorites: () => '/dashboard/favorites',
+  dashboardDownloads: () => '/dashboard/downloads',
+  dashboardAffiliate: () => '/dashboard/affiliate',
 }
 
 export const API_ROUTES = {
@@ -167,3 +177,5 @@ export const CREATOR_AFFILIATE_MILESTONES = [
   { amount: 2500, label: '$2.5K' },
   { amount: 5000, label: '$5K' },
 ]
+
+export const USER_AFFILIATE_MILESTONES = [20, 100, 500, 1000]

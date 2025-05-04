@@ -1,16 +1,8 @@
-import { PageContainer } from '@/components/page-container'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { APP_DATA, ROUTES } from '@/lib/constants'
+import { SidebarLink } from '@/lib/types'
 import { Metadata } from 'next'
-import Link from 'next/link'
-
-enum TabsEnum {
-  ASSETS = 'assets',
-  DOWNLOADS = 'downloads',
-  FAVORITES = 'favorites',
-  REVIEWS = 'reviews',
-}
+import { PropsWithChildren } from 'react'
 
 export const metadata: Metadata = {
   title: `User Dashboard | ${APP_DATA.name}`,
@@ -21,45 +13,47 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Layout({
-  children,
-  downloads,
-  reviews,
-  favorites,
-}: {
-  children: React.ReactNode
-  downloads: React.ReactNode
-  reviews: React.ReactNode
-  favorites: React.ReactNode
-}) {
+const NAVIGATION_LINKS: SidebarLink[] = [
+  {
+    name: 'Overview',
+    href: ROUTES.dashboard(),
+    icon: 'Home',
+    match: '^\/dashboard$',
+  },
+  {
+    name: 'Downloads',
+    href: ROUTES.dashboardDownloads(),
+    icon: 'Download',
+    match: '^\/dashboard\/downloads',
+  },
+  {
+    name: 'Favorites',
+    href: ROUTES.dashboardFavorites(),
+    icon: 'Heart',
+    match: '^\/dashboard\/favorites',
+  },
+  {
+    name: 'Reviews',
+    href: ROUTES.dashboardReviews(),
+    icon: 'Star',
+    match: '^\/dashboard\/reviews',
+  },
+  {
+    name: 'Affiliate program',
+    href: ROUTES.dashboardAffiliate(),
+    icon: 'Handshake',
+    match: '^\/dashboard\/affiliate',
+  },
+]
+
+export default async function Layout({ children }: PropsWithChildren) {
   return (
-    <PageContainer>
-      <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-8'>
-        <div>
-          <h1 className='text-3xl font-bold tracking-tight'>Dashboard</h1>
-          <p className='text-muted-foreground'>
-            Manage your purchased assets and account
-          </p>
-        </div>
+    <div className='flex min-h-screen'>
+      <DashboardSidebar links={NAVIGATION_LINKS} />
 
-        <Button className='mt-4 md:mt-0' variant='outline' asChild>
-          <Link href={ROUTES.explore()}>Browse More Assets</Link>
-        </Button>
+      <div className='flex-1 p-4 md:p-8 overflow-hidden overflow-x-auto'>
+        {children}
       </div>
-
-      <Tabs defaultValue={TabsEnum.ASSETS}>
-        <TabsList className='mb-6'>
-          <TabsTrigger value={TabsEnum.ASSETS}>My Purchased Assets</TabsTrigger>
-          <TabsTrigger value={TabsEnum.DOWNLOADS}>Download History</TabsTrigger>
-          <TabsTrigger value={TabsEnum.FAVORITES}>Favorites</TabsTrigger>
-          <TabsTrigger value={TabsEnum.REVIEWS}>My Reviews</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value={TabsEnum.ASSETS}>{children}</TabsContent>
-        <TabsContent value={TabsEnum.DOWNLOADS}>{downloads}</TabsContent>
-        <TabsContent value={TabsEnum.FAVORITES}>{favorites}</TabsContent>
-        <TabsContent value={TabsEnum.REVIEWS}>{reviews}</TabsContent>
-      </Tabs>
-    </PageContainer>
+    </div>
   )
 }

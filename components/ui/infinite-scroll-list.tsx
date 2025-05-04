@@ -89,8 +89,11 @@ export const InfiniteScrollList = <T, U = unknown>({
         ))}
       </div>
 
-      <div ref={ref} className='py-4 flex justify-center'>
-        {isLoading ? (
+      <div
+        ref={ref}
+        className={cn('py-4 flex justify-center', !isLoading && 'py-0')}
+      >
+        {isLoading && (
           <div role='status'>
             <svg
               aria-hidden='true'
@@ -110,8 +113,6 @@ export const InfiniteScrollList = <T, U = unknown>({
             </svg>
             <span className='sr-only'>Loading...</span>
           </div>
-        ) : (
-          ''
         )}
       </div>
 

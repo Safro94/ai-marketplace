@@ -68,7 +68,7 @@ export const createAffiliateCodeDAL = async ({
     throw new Error('Failed to generate affiliate code')
   }
 
-  await prisma.affiliateCode.update({
+  const dbOutdatedCode = await prisma.affiliateCode.update({
     where: { code: currentCode },
     data: {
       isDefault: false,
@@ -80,6 +80,8 @@ export const createAffiliateCodeDAL = async ({
     data: {
       isDefault,
       code: newCode,
+      totalSales: dbOutdatedCode.totalSales,
+      totalUses: dbOutdatedCode.totalUses,
       ...(isCreatorCode ? { creatorProfileId: id } : { profileId: id }),
     },
   })

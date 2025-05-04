@@ -78,7 +78,6 @@ export async function POST(request: Request) {
           code: affiliateCode,
           status: AffiliateStatus.ACTIVE,
           isDefault: true,
-          totalUses: 0,
         },
       },
     })

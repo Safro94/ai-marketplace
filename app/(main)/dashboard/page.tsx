@@ -1,20 +1,14 @@
 import { NotFound } from '@/components/not-found'
-import { getUserProfile } from '@/data-access/profile'
+import { DashboardPageContainer } from '@/components/page-container'
 import { getAllPurchasesByProfileId } from '@/data-access/purchases'
 import { INFINITE_SCROLL_NUMBER_OF_ITEMS, ROUTES } from '@/lib/constants'
-import { validateSession } from '@/lib/session'
 import { PurchaseStatus } from '@prisma/client'
 import { FileText } from 'lucide-react'
-import { redirect } from 'next/navigation'
 import { DashboardPurchasesList } from './_components/dashboard-purchases-list'
+import { getCachedProfileData } from './utils'
 
 export default async function Purchases() {
-  const { user } = await validateSession(ROUTES.dashboard())
-  const profile = await getUserProfile(user.id)
-
-  if (!profile) {
-    redirect(`${ROUTES.login()}?callbackUrl=${ROUTES.dashboard()}`)
-  }
+  const { profile } = await getCachedProfileData()
 
   const purchases = await getAllPurchasesByProfileId({
     profileId: profile.id,
@@ -26,7 +20,7 @@ export default async function Purchases() {
   })
 
   return (
-    <>
+    <DashboardPageContainer title='Assets'>
       {!!purchases.length ? (
         <div className='space-y-6'>
           <DashboardPurchasesList purchases={purchases} />
@@ -40,6 +34,6 @@ export default async function Purchases() {
           btnText='Browse Marketplace'
         />
       )}
-    </>
+    </DashboardPageContainer>
   )
 }

@@ -1,6 +1,6 @@
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { GenerateNewAffiliateCode } from '@/components/generate-new-affiliate-code'
-import { PageContainer } from '@/components/page-container'
+import { DashboardPageContainer } from '@/components/page-container'
 import {
   Card,
   CardContent,
@@ -52,20 +52,14 @@ export default async function Page() {
   const amountLeft = currentMilestone.amount - data.totalSales
 
   return (
-    <PageContainer className='md:p-0'>
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold'>Coupon Performance</h1>
-      </div>
-
+    <DashboardPageContainer title='Code Performance'>
       <div className='grid gap-6 md:grid-cols-2'>
         <Card>
           <CardHeader className='pb-2'>
-            <CardTitle className='text-xl'>Coupon Details</CardTitle>
+            <CardTitle className='text-xl'>Code Details</CardTitle>
             <CardDescription>
-              Your active coupon code. Please avoid generating a new code unless
-              it is strictly necessary, as this may affect your metrics. If you
-              do need to generate a new code, kindly contact support so we can
-              assist you in transferring your data to the new code.
+              Your active code. Please avoid generating a new code unless it is
+              strictly necessary.
             </CardDescription>
           </CardHeader>
 
@@ -133,6 +127,7 @@ export default async function Page() {
                           : 'bg-gray-300'
                       }`}
                     />
+
                     <span className='text-xs font-medium'>
                       {milestone.label}
                     </span>
@@ -154,6 +149,6 @@ export default async function Page() {
           </CardContent>
         </Card>
       </div>
-    </PageContainer>
+    </DashboardPageContainer>
   )
 }

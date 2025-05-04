@@ -1,5 +1,6 @@
+import { createAffiliateCode } from '@/lib/affilate-codes'
 import { CACHE_KEYS } from '@/lib/constants'
-import { Prisma, Role } from '@prisma/client'
+import { AffiliateStatus, Prisma, Role } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import 'server-only'
 import prisma from '../lib/prisma'
@@ -54,11 +55,24 @@ export const getProfileById = async (profileId: string) => {
 }
 
 export const createProfile = async (userId: string) => {
+  const affiliateCode = await createAffiliateCode()
+
+  if (!affiliateCode) {
+    throw Error('Failed to generate affiliate code')
+  }
+
   await prisma.profile.create({
     data: {
       userId: userId,
       role: Role.USER,
       createdAt: new Date(),
+      profileAffiliateCodes: {
+        create: {
+          code: affiliateCode,
+          status: AffiliateStatus.ACTIVE,
+          isDefault: true,
+        },
+      },
     },
   })
 }
