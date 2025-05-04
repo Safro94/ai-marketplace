@@ -128,6 +128,7 @@ const Buttons: FC<ButtonsProps> = ({
             },
             body: JSON.stringify({
               paypalData,
+              affiliateCode,
             }),
           }),
         )

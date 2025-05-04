@@ -3,9 +3,10 @@ import { CACHE_KEYS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { AffiliateStatus, Prisma } from '@prisma/client'
 import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
+import { cache } from 'react'
 import 'server-only'
 
-export const getAffiliateCodeByCode = async (code: string) => {
+export const getAffiliateCodeByCode = cache(async (code: string) => {
   return await prisma.affiliateCode.findUnique({
     where: { code, isDefault: true, status: AffiliateStatus.ACTIVE },
     select: {
@@ -16,7 +17,7 @@ export const getAffiliateCodeByCode = async (code: string) => {
       discountPercentage: true,
     },
   })
-}
+})
 
 export const getDefaultAffiliateCodeById = async (
   where: Partial<Prisma.AffiliateCodeWhereInput>,

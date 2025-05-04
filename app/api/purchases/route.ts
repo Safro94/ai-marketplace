@@ -60,9 +60,12 @@ export async function POST(request: Request) {
       affiliateCode: string
     } = await request.json()
 
-    const { totalAmounts, assets, cart } = await getPurchaseAmounts()
-
     const dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
+
+    const { totalAmounts, assets, cart } = await getPurchaseAmounts(
+      dbAffiliateCode?.discountPercentage,
+      profile.creatorProfile?.commissionRate,
+    )
 
     // Create the purchase with multiple items
     const purchase = await createPurchase({

@@ -1,11 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { NextRequest } from 'next/server'
 import { twMerge } from 'tailwind-merge'
-import {
-  API_ROUTES,
-  INFINITE_SCROLL_NUMBER_OF_ITEMS,
-  SERVICE_CHARGE,
-} from './constants'
+import { API_ROUTES, INFINITE_SCROLL_NUMBER_OF_ITEMS } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -30,10 +26,6 @@ export const formatCurrency = (
     minimumFractionDigits: decimalPrecision,
     maximumFractionDigits: decimalPrecision,
   }).format(isNaN(amount) ? 0 : amount)
-}
-
-export const getServiceCharge = (price: number) => {
-  return price ? price * SERVICE_CHARGE : 0
 }
 
 export const downloadAsset = async ({

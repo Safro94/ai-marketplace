@@ -1,7 +1,9 @@
 import { getPurchaseAmounts } from '@/app/(main)/checkout/_components/checkout-utils'
+import { getAffiliateCodeByCode } from '@/data-access/affiliate-codes'
 import { CheckoutPaymentDetails } from '@/lib/types'
 import paypal from '@paypal/checkout-server-sdk'
 import { NextResponse } from 'next/server'
+import { validateRouteProfilePermissions } from '../utils'
 
 // Create PayPal Client
 function createPayPalClient() {
@@ -14,11 +16,21 @@ function createPayPalClient() {
 const client = createPayPalClient()
 
 export async function POST(req: Request) {
+  const { profile } = await validateRouteProfilePermissions()
+
   try {
-    const { paypalData }: { paypalData: CheckoutPaymentDetails[] } =
+    const {
+      paypalData,
+      affiliateCode,
+    }: { paypalData: CheckoutPaymentDetails[]; affiliateCode: string } =
       await req.json()
 
-    const { totalAmounts } = await getPurchaseAmounts()
+    const dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
+
+    const { totalAmounts } = await getPurchaseAmounts(
+      dbAffiliateCode?.discountPercentage,
+      profile.creatorProfile?.commissionRate,
+    )
 
     const units = paypalData.map((item, i) => {
       const creatorAmount =

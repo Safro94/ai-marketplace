@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card'
 import { Tooltip } from '@/components/ui/tooltip'
 import { getAssets } from '@/data-access/assets'
 import { getCreatorAnalyticsByCreatorProfileId } from '@/data-access/creator-analytics'
-import { getCreatorProfileByProfileId } from '@/data-access/creator-profile'
 import { ROUTES, SERVICE_CHARGE } from '@/lib/constants'
 import { formatCurrency } from '@/lib/utils'
 import {
@@ -24,16 +23,13 @@ import { validateCreatorDashboardAccess } from './utils'
 export default async function CreatorDashboard() {
   const { profile } = await validateCreatorDashboardAccess()
 
-  // Get creator profile
-  const creatorProfile = await getCreatorProfileByProfileId(profile.id)
-
-  if (!creatorProfile) {
+  if (!profile.creatorProfile) {
     redirect(ROUTES.creators())
   }
 
   // Get creator stats
   const creatorStats = await getCreatorAnalyticsByCreatorProfileId(
-    creatorProfile.id,
+    profile.creatorProfile.id,
   )
 
   // Get assets by status

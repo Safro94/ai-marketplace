@@ -2,9 +2,32 @@ import { tryCatch } from '@/lib/actions-error-handling'
 import { getCart } from '@/lib/cart'
 import prisma from '@/lib/prisma'
 import { validateSession } from '@/lib/session'
-import { getServiceCharge } from '@/lib/utils'
 
-export const getPurchaseAmounts = async () => {
+const getServiceCharge = ({
+  price,
+  commissionRate,
+  discountPercentage = 0,
+}: {
+  price: number
+  commissionRate: number
+  discountPercentage?: number | null
+}) => {
+  if (!price) return 0
+
+  // Calculate the service charge (before discount)
+  const serviceCharge = price * (commissionRate / 100)
+
+  // Calculate the discount amount (applied to the service charge)
+  const discount = discountPercentage ? price * (discountPercentage / 100) : 0
+
+  // Final service charge after applying the discount
+  return Math.max(serviceCharge - discount, 0)
+}
+
+export const getPurchaseAmounts = async (
+  discountPercentage: number | undefined | null,
+  commissionRate: number | undefined,
+) => {
   await validateSession()
   const cart = await getCart()
 
@@ -61,6 +84,10 @@ export const getPurchaseAmounts = async () => {
     throw new Error('No assets found')
   }
 
+  if (!commissionRate) {
+    throw new Error('Commission rate not found')
+  }
+
   const totalAmounts = assets.reduce<{
     totalPrice: number
     totalServiceCharge: number
@@ -77,13 +104,20 @@ export const getPurchaseAmounts = async () => {
       )
 
       const price = assetLicense?.price || 0
-      const serviceCharge = getServiceCharge(price)
+      const serviceCharge = getServiceCharge({
+        price,
+        discountPercentage,
+        commissionRate: commissionRate,
+      })
+
+      // Calculate the creator's amount (always based on the full price)
+      const creatorAmount = price - price * (commissionRate / 100)
 
       acc.totalPrice += price
       acc.totalServiceCharge += serviceCharge
 
       acc.purchasedAssets[asset.creator.creatorProfile?.id ?? ''] = {
-        creatorAmount: price - serviceCharge,
+        creatorAmount,
       }
 
       return acc
