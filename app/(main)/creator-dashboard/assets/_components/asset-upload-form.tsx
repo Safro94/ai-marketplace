@@ -207,7 +207,8 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   <CardHeader>
                     <CardTitle>Product File</CardTitle>
                     <CardDescription>
-                      The actual product file that buyers will download
+                      The actual product file that buyers will download. Please
+                      make sure you add clear instructions on how to use it.
                     </CardDescription>
                   </CardHeader>
 
@@ -238,7 +239,9 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
 
                 <FormDescription>
                   Detailed description of your product, its capabilities, and
-                  use cases. You can use HTML tags to format your description.
+                  use cases. Please describe what the buyer will get after they
+                  purchase your product. You can use HTML tags to format your
+                  description.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
