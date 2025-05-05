@@ -5,12 +5,12 @@ import {
   HomeSectionTitleContainer,
 } from '@/components/page-container'
 import { Motion } from '@/components/ui/motion'
-import { STAGGER } from '@/lib/constants'
+import { LOWEST_SERVICE_CHARGE, SERVICE_CHARGE, STAGGER } from '@/lib/constants'
 import creatorsImg from '@/public/creators.svg'
 import { Award, BarChart3, Clock, Gift } from 'lucide-react'
 import Image from 'next/image'
 
-const BENEFITS = [
+export const BENEFITS = [
   {
     Icon: Award,
     title: 'Creator Dashboard',
@@ -26,8 +26,7 @@ const BENEFITS = [
   {
     Icon: BarChart3,
     title: 'Decreasing Commission Rates',
-    description:
-      'As your referrals generate more sales, your commission rate decreases from 25% down to as low as 15%, meaning you keep more of your earnings.',
+    description: `As your referrals generate more sales, your commission rate decreases from ${SERVICE_CHARGE * 100}% to as low as ${LOWEST_SERVICE_CHARGE * 100}%, meaning you keep more of your earnings.`,
   },
   {
     Icon: Clock,

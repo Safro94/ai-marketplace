@@ -55,7 +55,7 @@ export const CategoryShowcase = async () => {
               <div className='absolute inset-0 bg-primary/5 transform origin-bottom scale-y-0 transition-transform group-hover:scale-y-100' />
 
               <div className='relative z-10'>
-                <div className='w-16 h-16 rounded-2xl mb-4 flex items-center justify-center bg-primary/10 dark:bg-primary-foreground text-primary p-3 transform group-hover:scale-110 transition-transform duration-300'>
+                <div className='w-16 h-16 rounded-2xl mb-4 flex items-center justify-center bg-primary dark:bg-primary-foreground text-white dark:text-primary p-3 transform group-hover:scale-110 transition-transform duration-300'>
                   <IconComponent />
                 </div>
 
