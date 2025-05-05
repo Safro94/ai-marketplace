@@ -52,7 +52,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
           </Button>
         </DialogTrigger>
 
-        <DialogContent className='max-w-screen-sm'>
+        <DialogContent className='max-w-3xl'>
           <DialogHeader>
             <DialogTitle>Share link</DialogTitle>
             <DialogDescription>
@@ -60,7 +60,7 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
             </DialogDescription>
           </DialogHeader>
 
-          <CopyToClipboard data={url} />
+          <CopyToClipboard data={url} className='text-lg' />
 
           <div className='flex gap-2 items-center'>
             <RedditShareButton url={url} title={SOCIAL_MEDIA_POST_TEXT}>

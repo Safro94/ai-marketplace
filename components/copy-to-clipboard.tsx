@@ -1,14 +1,23 @@
 'use client'
 
+import { cn } from '@/lib/utils'
 import { Copy } from 'lucide-react'
 import { FC } from 'react'
 import { Button } from './ui/button'
 import { toast } from './ui/toast'
 
-export const CopyToClipboard: FC<{ data: string }> = ({ data }) => {
+export const CopyToClipboard: FC<{ data: string; className?: string }> = ({
+  data,
+  className,
+}) => {
   return (
     <div className='w-full flex items-center justify-between gap-2 p-2 bg-primary rounded-md'>
-      <code className='text-xl font-mono font-bold text-white break-all'>
+      <code
+        className={cn(
+          'text-xl font-mono font-bold text-white break-all',
+          className,
+        )}
+      >
         {data}
       </code>
 
