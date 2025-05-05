@@ -1,4 +1,3 @@
-import { Benefit } from '@/components/benefit'
 import {
   HomeSection,
   HomeSectionDescription,
@@ -58,13 +57,27 @@ export const BenefitsSection = () => {
         className='grid md:grid-cols-2 gap-4'
       >
         {BENEFITS.map(({ Icon, title, description }, i) => (
-          <Benefit
-            key={title}
-            icon={Icon}
-            title={title}
-            description={description}
-            delay={TRANSITION_DELAY * i}
-          />
+          <Motion
+            key={i}
+            className='bg-background rounded-lg p-6 border flex items-center gap-4 card-hover'
+            variants={{
+              hidden: { opacity: 0.1, x: 50 },
+              visible: {
+                opacity: 1,
+                x: 0,
+                transition: { duration: 0.6, delay: TRANSITION_DELAY * i },
+              },
+            }}
+          >
+            <div className='flex-shrink-0 h-12 w-12 rounded-full bg-primary/10 dark:bg-primary-foreground flex items-center justify-center'>
+              <Icon className='h-6 w-6 text-primary' aria-hidden='true' />
+            </div>
+
+            <div className='flex flex-col h-full'>
+              <h3 className='text-xl font-semibold'>{title}</h3>
+              <p className='text-muted-foreground flex-1'>{description}</p>
+            </div>
+          </Motion>
         ))}
       </Motion>
     </HomeSection>

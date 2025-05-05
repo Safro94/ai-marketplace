@@ -128,7 +128,7 @@ export async function POST(request: Request) {
       },
     })
 
-    revalidateTag(CACHE_KEYS.profile(profile.id))
+    revalidateTag(CACHE_KEYS.profile(profile.userId))
     revalidateTag(CACHE_KEYS.exploreAssets())
     revalidateTag(CACHE_KEYS.categoriesWithCount())
 

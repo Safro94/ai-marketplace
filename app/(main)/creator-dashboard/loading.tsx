@@ -1,30 +1,34 @@
 import { DashboardPageContainer } from '@/components/page-container'
-import { Card, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Loading() {
   return (
     <DashboardPageContainer className='h-full' title='Creator Dashboard'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+      <div className='grid md:grid-cols-3 gap-4'>
         {[...Array(6)].map((_, i) => (
           <Card
             key={i}
-            className='bg-background rounded-lg shadow-md p-4 transition-all duration-200 hover:shadow-lg'
+            className='flex flex-col bg-background rounded-lg shadow-md transition-all duration-200 hover:shadow-lg'
           >
-            <div className='flex items-center justify-between mb-2'>
-              <div className='w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-white/10'>
-                <Skeleton className='h-5 w-5 rounded-full' />
+            <CardHeader className='p-0 pt-4 px-4 flex-row justify-between'>
+              <div className='flex items-center gap-2'>
+                <Skeleton className='w-10 h-10 rounded-full' />
+                <Skeleton className='h-7 w-32 mb-1 ' />
               </div>
 
-              <div className='text-right'>
-                <Skeleton className='h-6 w-20' />
+              <div className='text-right mt-0'>
+                <Skeleton className='h-8 w-20' />
               </div>
-            </div>
+            </CardHeader>
 
-            <Skeleton className='h-7 w-32 mb-1 ' />
-            <Skeleton className='h-5 w-64 mb-4' />
+            <CardContent className='py-2 px-4 flex-1'>
+              <Skeleton className='h-5 w-64 mb-4' />
+            </CardContent>
 
-            <CardFooter></CardFooter>
+            <CardFooter className='p-0 pt-0 pb-4 px-4'>
+              <Skeleton className='h-10 w-32' />
+            </CardFooter>
           </Card>
         ))}
       </div>

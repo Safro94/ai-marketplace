@@ -125,8 +125,6 @@ export async function POST(request: Request) {
           throw Error('Asset creator profile not found')
         }
 
-        revalidateTag(CACHE_KEYS.profile(asset.creatorId))
-
         // Create the purchase item
         const purchaseItem = await createPurchaseItem({
           licenseKey,

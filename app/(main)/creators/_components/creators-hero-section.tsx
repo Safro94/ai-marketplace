@@ -15,7 +15,6 @@ export const CreatorsHeroSection: FC<Props> = ({
   isCreator,
   hasPendingApplication,
 }) => {
-  const title = 'Share your AI expertise with the world'.split(' ')
   const description =
     'Unlock exclusive benefits as a creator. Get a special creator code, earn higher commissions, and access advanced tools to maximize your earnings.'.split(
       ' ',

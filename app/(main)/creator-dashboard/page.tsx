@@ -1,6 +1,6 @@
 import { DashboardPageContainer } from '@/components/page-container'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Tooltip } from '@/components/ui/tooltip'
 import { getAssets } from '@/data-access/assets'
 import { getCreatorAnalyticsByCreatorProfileId } from '@/data-access/creator-analytics'
@@ -60,7 +60,7 @@ export default async function CreatorDashboard() {
 
   return (
     <DashboardPageContainer className='h-full' title='Creator Dashboard'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+      <div className='grid md:grid-cols-3 gap-4'>
         {[
           {
             title: (
@@ -131,33 +131,37 @@ export default async function CreatorDashboard() {
         ].map(({ title, value, icon: Icon, linkText, to, description }, i) => (
           <Card
             key={i}
-            className='bg-background rounded-lg shadow-md p-4 transition-all duration-200 hover:shadow-lg'
+            className='flex flex-col bg-background rounded-lg shadow-md transition-all duration-200 hover:shadow-lg'
           >
-            <div className='flex items-center justify-between mb-2'>
-              <div className='w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-white/10'>
-                <span className='text-primary dark:text-primary-foreground'>
+            <CardHeader className='p-0 pt-4 px-4 flex-row justify-between'>
+              <div className='flex items-center gap-2'>
+                <div className='w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-white/10'>
                   <Icon className='h-5 w-5 text-primary dark:text-primary-foreground' />
-                </span>
+                </div>
+
+                <h3 className='text-lg font-semibold text-primary dark:text-primary-foreground'>
+                  {title}
+                </h3>
               </div>
 
-              <div className='text-right'>
+              <div className='text-right mt-0'>
                 <span className='text-xl font-bold'>{value}</span>
               </div>
-            </div>
+            </CardHeader>
 
-            <h3 className='text-lg font-semibold mb-1 text-primary dark:text-primary-foreground'>
-              {title}
-            </h3>
-
-            <p className='text-gray-400 text-sm mb-4'>{description}</p>
+            <CardContent className='py-2 px-4 flex-1'>
+              <p className='text-gray-400 text-sm'>{description}</p>
+            </CardContent>
 
             {to && (
-              <Button asChild variant='ghost' className='p-0'>
-                <Link href={to}>
-                  {linkText}
-                  <ArrowRight className='ml-2 h-4 w-4' />
-                </Link>
-              </Button>
+              <CardFooter className='p-0 pt-0 pb-4 px-4'>
+                <Button asChild variant='ghost' className='p-0'>
+                  <Link href={to}>
+                    {linkText}
+                    <ArrowRight className='ml-2 h-4 w-4' />
+                  </Link>
+                </Button>
+              </CardFooter>
             )}
           </Card>
         ))}

@@ -55,7 +55,7 @@ export async function PATCH(
       },
     })
 
-    const creatorUser = await getProfileById(
+    const creatorProfile = await getProfileById(
       application.creatorProfile.profileId,
     )
 
@@ -68,11 +68,11 @@ export async function PATCH(
         },
       })
 
-      revalidateTag(CACHE_KEYS.profile(application.creatorProfile.profileId))
+      if (creatorProfile) {
+        revalidateTag(CACHE_KEYS.profile(creatorProfile.user.id))
 
-      if (creatorUser) {
         await notifyCreatorApplicationApproved({
-          email: creatorUser.user.email,
+          email: creatorProfile.user.email,
         })
       }
 
@@ -88,9 +88,9 @@ export async function PATCH(
       //     },
       //   })
     } else {
-      if (creatorUser) {
+      if (creatorProfile) {
         await notifyCreatorApplicationRejected({
-          email: creatorUser.user.email,
+          email: creatorProfile.user.email,
           notes: reviewNotes,
         })
       }

@@ -7,12 +7,9 @@ import prisma from '../lib/prisma'
 
 export const getUserProfile = async (userId: string) => {
   'use cache'
+
   unstable_cacheTag(CACHE_KEYS.profile(userId))
-  unstable_cacheLife({
-    stale: 3600 * 12, // 12 hours
-    revalidate: 3600 * 6, // 6 hours
-    expire: 86400, // 1 day
-  })
+  unstable_cacheLife('hours')
 
   return await prisma.profile.findUnique({
     where: { userId },
@@ -20,6 +17,7 @@ export const getUserProfile = async (userId: string) => {
       creatorProfile: {
         include: {
           paymentMethods: true,
+
           creatorApplication: {
             select: {
               status: true,
@@ -46,6 +44,7 @@ export const getProfileById = async (profileId: string) => {
     select: {
       user: {
         select: {
+          id: true,
           name: true,
           email: true,
         },

@@ -14,13 +14,10 @@ export const Logo: FC<Props> = ({ className }) => {
   return (
     <Link href={ROUTES.home()} className={cn('flex items-center', className)}>
       <div className='flex items-center gap-1'>
-        {/* Logo Icon */}
         <Image src={icon} alt='AIAssetHub icon' priority className='w-8 h-8' />
 
-        {/* Logo Text */}
-
         <div className='flex items-center gap-1'>
-          <span className='text-lg font-bold bg-gradient-to-r from-[#6a2baa] to-[#1e0a46] text-transparent bg-clip-text'>
+          <span className='text-lg font-bold text-primary dark:text-[#6a2baa] bg-clip-text'>
             AI<span className='text-cyan-500'>Asset</span>Hub
           </span>
 

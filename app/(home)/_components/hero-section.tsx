@@ -34,7 +34,7 @@ export const HeroSection = async () => {
               ease: 'easeInOut',
             }}
           >
-            <Badge className='mb-6 py-1.5 px-6 bg-transparent text-primary border-purple-200 hover:bg-[initial'>
+            <Badge className='mb-6 py-1.5 px-6 bg-transparent text-primary dark:text-white border-purple-200 hover:bg-[initial'>
               Just Launched 🚀 Discover our AI-Powered Tools marketplace
             </Badge>
 

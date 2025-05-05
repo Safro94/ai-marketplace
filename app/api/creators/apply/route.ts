@@ -82,6 +82,7 @@ export async function POST(request: Request) {
       },
     })
 
+    revalidateTag(CACHE_KEYS.profile(profile.userId))
     revalidateTag(CACHE_KEYS.creatorDashboardCreatorProfile(profile.id))
 
     // Create creator application

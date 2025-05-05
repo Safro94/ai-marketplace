@@ -40,6 +40,7 @@ export const getCreatorApplicationById = async (id: string) => {
             select: {
               user: {
                 select: {
+                  id: true,
                   email: true,
                   name: true,
                   createdAt: true,
