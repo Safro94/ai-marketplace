@@ -8,6 +8,7 @@ import {
 } from '@/actions/cart'
 import { useAuth } from '@/hooks/use-auth'
 import {
+  AffiliateCodeContext,
   CartAction,
   CartContextActionType,
   CartContextType,
@@ -31,7 +32,9 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [cart, setCart] = useState<CartItem[]>([])
-  const [affiliateCode, setAffiliateCode] = useState<string | undefined>()
+  const [affiliateCode, setAffiliateCode] = useState<
+    AffiliateCodeContext | undefined
+  >()
 
   // Set up optimistic updates with useOptimistic
   const [optimisticCart, addOptimisticCartUpdate] = useOptimistic(
@@ -155,8 +158,8 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   }, [addOptimisticCartUpdate])
 
   const addOrClearAffiliateCode = useCallback(
-    (code: string) => {
-      setAffiliateCode(code)
+    (affiliateCode?: AffiliateCodeContext) => {
+      setAffiliateCode(affiliateCode)
     },
     [setAffiliateCode],
   )

@@ -26,7 +26,6 @@ const getServiceCharge = ({
 
 export const getPurchaseAmounts = async (
   discountPercentage: number | undefined | null,
-  commissionRate: number | undefined,
 ) => {
   await validateSession()
   const cart = await getCart()
@@ -55,6 +54,8 @@ export const getPurchaseAmounts = async (
             creatorProfile: {
               select: {
                 id: true,
+                commissionRate: true,
+
                 profile: {
                   select: {
                     user: {
@@ -84,10 +85,6 @@ export const getPurchaseAmounts = async (
     throw new Error('No assets found')
   }
 
-  if (!commissionRate) {
-    throw new Error('Commission rate not found')
-  }
-
   const totalAmounts = assets.reduce<{
     totalPrice: number
     totalServiceCharge: number
@@ -104,10 +101,12 @@ export const getPurchaseAmounts = async (
       )
 
       const price = assetLicense?.price || 0
+      const commissionRate = asset.creator.creatorProfile!.commissionRate
+
       const serviceCharge = getServiceCharge({
         price,
         discountPercentage,
-        commissionRate: commissionRate,
+        commissionRate,
       })
 
       // Calculate the creator's amount (always based on the full price)

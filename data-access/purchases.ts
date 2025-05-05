@@ -13,6 +13,8 @@ export const getPurchasesAmount = async () => {
   return await prisma.purchase.findMany({
     select: {
       amount: true,
+      discountAmount: true,
+
       purchaseItems: {
         select: {
           amount: true,
@@ -152,6 +154,11 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async ({
     },
     include: {
       purchaseItems: {
+        where: {
+          asset: {
+            creatorId: profileId, // Filter purchaseItems to include only those for this creator
+          },
+        },
         include: {
           assetLicense: {
             select: {

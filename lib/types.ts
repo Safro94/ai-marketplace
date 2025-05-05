@@ -77,6 +77,11 @@ export type CheckoutPaymentDetails = Pick<
   'accountIdentifier' | 'creatorProfileId'
 >
 
+export interface AffiliateCodeContext {
+  code: string | undefined
+  discount: number | undefined | null
+}
+
 export interface CartContextType {
   cart: CartItem[]
   addToCart: (item: CartItem) => Promise<void>
@@ -84,8 +89,8 @@ export interface CartContextType {
   clearCart: () => Promise<void>
   totalItems: number
   isLoading: boolean
-  affiliateCode: string | undefined
-  addOrClearAffiliateCode: (code: string) => void
+  affiliateCode: AffiliateCodeContext | undefined
+  addOrClearAffiliateCode: (affiliateCode?: AffiliateCodeContext) => void
 }
 
 export enum CartContextActionType {
@@ -119,7 +124,17 @@ export interface ExploreFilters {
 }
 
 export type CreatorDashboardAssetWithAnalytics = Prisma.AssetGetPayload<{
-  include: {
+  select: {
+    id: true
+    title: true
+    status: true
+    revenue: true
+    createdAt: true
+    totalReviews: true
+    averageRating: true
+    featuredImage: true
+    moderationNotes: true
+
     assetAnalytics: {
       select: {
         uniqueViews: true

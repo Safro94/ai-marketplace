@@ -8,7 +8,7 @@ import 'server-only'
 
 export const getAffiliateCodeByCode = cache(async (code: string) => {
   return await prisma.affiliateCode.findUnique({
-    where: { code, isDefault: true, status: AffiliateStatus.ACTIVE },
+    where: { code, status: AffiliateStatus.ACTIVE },
     select: {
       id: true,
       code: true,

@@ -154,7 +154,6 @@ model Asset {
   category        Category    @relation(fields: [categoryId], references: [id])
   useCase         String?
   tags            String[]
-  sales           Int         @default(0)
   revenue         Float       @default(0)
   averageRating   Float       @default(0)
   moderationNotes String?

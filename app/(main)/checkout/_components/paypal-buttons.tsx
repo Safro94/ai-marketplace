@@ -128,7 +128,7 @@ const Buttons: FC<ButtonsProps> = ({
             },
             body: JSON.stringify({
               paypalData,
-              affiliateCode,
+              affiliateCode: affiliateCode?.code,
             }),
           }),
         )
@@ -169,7 +169,7 @@ const Buttons: FC<ButtonsProps> = ({
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              affiliateCode,
+              affiliateCode: affiliateCode?.code,
               paypalOrderId: payment.id,
               paymentDetails: {
                 ...payer,
@@ -181,12 +181,15 @@ const Buttons: FC<ButtonsProps> = ({
 
         if (!response?.ok) {
           const data = await response?.json()
-          throw new Error(data.error || 'Failed to save purchase')
+          throw new Error(
+            data.error || 'Failed to save purchase, please contact support.',
+          )
         }
 
         if (createPurchaseError) {
           toast.error('Error', {
-            description: 'There was an error while saving the purchase',
+            description:
+              'There was an error while saving the purchase, please contact support.',
           })
         }
 
@@ -200,7 +203,7 @@ const Buttons: FC<ButtonsProps> = ({
 
           startTransition(async () => {
             await clearCart()
-            addOrClearAffiliateCode('')
+            addOrClearAffiliateCode()
           })
         })
 

@@ -23,8 +23,10 @@ export const notifyPlatformSellCompleted = async ({
     }),
   })
 
-  console.error(error)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error(error)
+    throw new Error(error.message)
+  }
 }
 
 export const notifyCreatorSellCompleted = async ({
@@ -46,8 +48,10 @@ export const notifyCreatorSellCompleted = async ({
     }),
   })
 
-  console.error(error)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error(error)
+    throw new Error(error.message)
+  }
 }
 
 export const notifyBuyerOrderCompleted = async ({
@@ -62,8 +66,10 @@ export const notifyBuyerOrderCompleted = async ({
     react: CustomerPurchaseCompleted(),
   })
 
-  console.error(error)
-  if (error) throw new Error(error.toString())
+  if (error) {
+    console.error(error)
+    throw new Error(error.toString())
+  }
 }
 
 export const notifyAssetApproved = async ({
@@ -80,8 +86,10 @@ export const notifyAssetApproved = async ({
     react: await AssetApproved({ assetName }),
   })
 
-  console.error(error)
-  if (error) throw new Error(error.toString())
+  if (error) {
+    console.error(error)
+    throw new Error(error.toString())
+  }
 }
 
 export const notifyAssetRejected = async ({
@@ -98,8 +106,10 @@ export const notifyAssetRejected = async ({
     react: await AssetRejected({ assetName }),
   })
 
-  console.error(error)
-  if (error) throw new Error(error.toString())
+  if (error) {
+    console.error(error)
+    throw new Error(error.toString())
+  }
 }
 
 export const notifyCreatorApplicationApproved = async ({
@@ -114,8 +124,10 @@ export const notifyCreatorApplicationApproved = async ({
     react: CreatorApplicationApproved(),
   })
 
-  console.error(error)
-  if (error) throw new Error(error.toString())
+  if (error) {
+    console.error(error)
+    throw new Error(error.toString())
+  }
 }
 
 export const notifyCreatorApplicationRejected = async ({
@@ -132,6 +144,8 @@ export const notifyCreatorApplicationRejected = async ({
     react: await CreatorApplicationRejected({ notes }),
   })
 
-  console.error(error)
-  if (error) throw new Error(error.toString())
+  if (error) {
+    console.error(error)
+    throw new Error(error.toString())
+  }
 }

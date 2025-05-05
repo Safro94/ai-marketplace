@@ -91,86 +91,90 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
 
   return (
     <div className='space-y-4'>
-      {assets.map((asset) => (
-        <Card key={asset.id}>
-          <CardContent className='p-4'>
-            <div className='flex flex-col items-center justify-center gap-2 md:flex-row space-x-4'>
-              <div className='relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0'>
-                <Image
-                  src={asset.featuredImage || '/placeholder.svg'}
-                  alt={asset.title}
-                  fill
-                  className='object-cover'
-                />
-              </div>
-
-              <div className='flex-1 min-w-0'>
-                <h3 className='font-medium text-center truncate whitespace-normal md:text-start'>
-                  {asset.title}
-                </h3>
-
-                <div className='flex flex-wrap justify-center md:justify-start items-center space-x-4 mt-2 text-sm text-muted-foreground'>
-                  <div className='flex items-center'>
-                    <Eye className='h-4 w-4 mr-1' />
-                    {asset.assetAnalytics?.uniqueViews || 0}
-                  </div>
-
-                  <div className='flex items-center'>
-                    {formatCurrency(asset.totalSales)}
-                  </div>
-
-                  <div className='flex items-center'>
-                    <Star className='h-4 w-4 mr-1 fill-yellow-400 text-yellow-400' />
-                    {asset.averageRating.toFixed(1)}({asset.totalReviews})
-                  </div>
-
-                  <div>{format(new Date(asset.createdAt), 'MMM d, yyyy')}</div>
+      {assets.map((asset) => {
+        return (
+          <Card key={asset.id}>
+            <CardContent className='p-4'>
+              <div className='flex flex-col items-center justify-center gap-2 md:flex-row space-x-4'>
+                <div className='relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0'>
+                  <Image
+                    src={asset.featuredImage || '/placeholder.svg'}
+                    alt={asset.title}
+                    fill
+                    className='object-contain'
+                  />
                 </div>
 
-                {asset.status === 'REJECTED' && asset.moderationNotes && (
-                  <div className='mt-2 text-sm text-red-600'>
-                    <span className='font-medium'>Rejection reason:</span>{' '}
-                    {asset.moderationNotes}
+                <div className='flex-1 min-w-0'>
+                  <h3 className='font-medium text-center truncate whitespace-normal md:text-start'>
+                    {asset.title}
+                  </h3>
+
+                  <div className='flex flex-wrap justify-center md:justify-start items-center space-x-4 mt-2 text-sm text-muted-foreground'>
+                    <div className='flex items-center'>
+                      <Eye className='h-4 w-4 mr-1' />
+                      {asset.assetAnalytics?.uniqueViews || 0}
+                    </div>
+
+                    <div className='flex items-center'>
+                      {formatCurrency(asset.revenue)}
+                    </div>
+
+                    <div className='flex items-center'>
+                      <Star className='h-4 w-4 mr-1 fill-yellow-400 text-yellow-400' />
+                      {asset.averageRating.toFixed(1)}({asset.totalReviews})
+                    </div>
+
+                    <div>
+                      {format(new Date(asset.createdAt), 'MMM d, yyyy')}
+                    </div>
                   </div>
-                )}
+
+                  {asset.status === 'REJECTED' && asset.moderationNotes && (
+                    <div className='mt-2 text-sm text-red-600'>
+                      <span className='font-medium'>Rejection reason:</span>{' '}
+                      {asset.moderationNotes}
+                    </div>
+                  )}
+                </div>
+
+                <StatusBadge status={asset.status} />
+
+                <div className='flex items-center space-x-2'>
+                  <Button variant='outline' size='sm' asChild>
+                    <Link href={ROUTES.assetsDetail(asset.id)}>View</Link>
+                  </Button>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant='ghost' size='icon'>
+                        <MoreHorizontal className='h-4 w-4' />
+                      </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align='end'>
+                      <DropdownMenuItem asChild>
+                        <Link href={ROUTES.creatorDashboardAssetEdit(asset.id)}>
+                          <Pencil className='h-4 w-4 mr-2' />
+                          Edit
+                        </Link>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        className='text-red-600 focus:text-red-600'
+                        onClick={() => setDeleteAssetId(asset.id)}
+                      >
+                        <Trash className='h-4 w-4 mr-2' />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
-
-              <StatusBadge status={asset.status} />
-
-              <div className='flex items-center space-x-2'>
-                <Button variant='outline' size='sm' asChild>
-                  <Link href={ROUTES.assetsDetail(asset.id)}>View</Link>
-                </Button>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant='ghost' size='icon'>
-                      <MoreHorizontal className='h-4 w-4' />
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align='end'>
-                    <DropdownMenuItem asChild>
-                      <Link href={ROUTES.creatorDashboardAssetEdit(asset.id)}>
-                        <Pencil className='h-4 w-4 mr-2' />
-                        Edit
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem
-                      className='text-red-600 focus:text-red-600'
-                      onClick={() => setDeleteAssetId(asset.id)}
-                    >
-                      <Trash className='h-4 w-4 mr-2' />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        )
+      })}
 
       <AlertDialog
         open={!!deleteAssetId}

@@ -25,11 +25,14 @@ export async function POST(req: Request) {
     }: { paypalData: CheckoutPaymentDetails[]; affiliateCode: string } =
       await req.json()
 
-    const dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
+    let dbAffiliateCode
+
+    if (affiliateCode) {
+      dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
+    }
 
     const { totalAmounts } = await getPurchaseAmounts(
       dbAffiliateCode?.discountPercentage,
-      profile.creatorProfile?.commissionRate,
     )
 
     const units = paypalData.map((item, i) => {

@@ -1,6 +1,7 @@
 'use client'
 
 import { AssetDownloadButton } from '@/components/asset-download-button'
+import { AssetDownloadSkeleton } from '@/components/skeletons/asset-download-skeleton'
 import {
   Card,
   CardContent,
@@ -20,9 +21,11 @@ interface Props {
 }
 
 export const AssetDownload: FC<Props> = ({ assetId, assetUrl, fileName }) => {
-  const { userPurchaseData } = useAssetDetail(assetId)
+  const { userPurchaseData, isLoading } = useAssetDetail(assetId)
 
   const purchaseItemId = userPurchaseData?.purchase?.purchaseItems[0].id
+
+  if (isLoading) return <AssetDownloadSkeleton />
 
   if (!userPurchaseData || !userPurchaseData.isPurchased || !purchaseItemId) {
     return null

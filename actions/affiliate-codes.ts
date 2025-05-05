@@ -43,6 +43,6 @@ export const validateAffiliateCodeAction = withErrorHandler(
 
     const dbCode = await getAffiliateCodeByCode(code)
 
-    return !!dbCode
+    return dbCode && { code: dbCode.code, discount: dbCode.discountPercentage }
   },
 )

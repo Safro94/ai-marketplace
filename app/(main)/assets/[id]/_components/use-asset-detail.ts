@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 
 export const useAssetDetail = (assetId: string) => {
   const { user } = useAuth()
+  const [isLoading, setIsLoading] = useState(true)
 
   const [userPurchaseData, setUserPurchaseData] = useState<AsyncReturnType<
     typeof checkUserPurchasedAsset
@@ -29,6 +30,8 @@ export const useAssetDetail = (assetId: string) => {
         setUserPurchaseData(data)
       } catch (error) {
         console.error('Failed to fetch user purchase data', error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -36,6 +39,7 @@ export const useAssetDetail = (assetId: string) => {
   }, [assetId, user])
 
   return {
+    isLoading,
     userPurchaseData,
   }
 }

@@ -71,7 +71,7 @@ export const PurchasedItemCard: FC<Props> = ({
             <div className='flex flex-col md:flex-row gap-2 items-center'>
               <h3 className='text-xl font-medium'>{asset.title}</h3>
 
-              <Badge variant='secondary'>{asset.category.name}</Badge>
+              <Badge>{asset.category.name}</Badge>
             </div>
 
             <p className='text-muted-foreground line-clamp-2 mb-2'>

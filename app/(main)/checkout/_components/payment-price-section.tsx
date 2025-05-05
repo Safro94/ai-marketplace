@@ -1,18 +1,28 @@
+'use client'
+
+import { useCart } from '@/contexts/cart-context'
 import { formatCurrency } from '@/lib/utils'
 import { FC } from 'react'
 
 export const PaymentPriceSection: FC<{ cartTotal: number }> = ({
   cartTotal,
 }) => {
-  // const serviceCharge = getServiceCharge(totalPrice)
-  const serviceCharge = 0
-  const totalWithServiceCharge = cartTotal + serviceCharge
+  const { affiliateCode } = useCart()
+
+  const discount = cartTotal * ((affiliateCode?.discount || 0) / 100)
 
   return (
     <>
       <div className='grid grid-cols-2 gap-2'>
         <span>Subtotal</span>
         <span className='text-right'>{formatCurrency(cartTotal)}</span>
+
+        {affiliateCode?.discount && (
+          <>
+            <span>Discount</span>
+            <span className='text-right'>{formatCurrency(discount)} </span>
+          </>
+        )}
 
         {/* <span className='flex items-center gap-1'>
             Service fee
@@ -38,7 +48,7 @@ export const PaymentPriceSection: FC<{ cartTotal: number }> = ({
 
         <span className='font-bold'>Total</span>
         <span className='text-right font-bold'>
-          {formatCurrency(totalWithServiceCharge)}
+          {formatCurrency(cartTotal - discount)}
         </span>
       </div>
     </>

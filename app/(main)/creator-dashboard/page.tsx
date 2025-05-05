@@ -119,7 +119,7 @@ export default async function CreatorDashboard() {
           {
             title: 'Conversion Rate',
             value: `${
-              creatorStats?.totalSales
+              creatorStats?.totalSales && !!totalViews
                 ? ((creatorStats.totalSales / totalViews) * 100).toFixed(1)
                 : 0
             }%`,

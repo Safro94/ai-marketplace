@@ -19,7 +19,12 @@ import {
   notifyCreatorSellCompleted,
   notifyPlatformSellCompleted,
 } from '@/services/emails/email'
-import { DiscountType, PaymentProvider, PurchaseStatus } from '@prisma/client'
+import {
+  AffiliateStatus,
+  DiscountType,
+  PaymentProvider,
+  PurchaseStatus,
+} from '@prisma/client'
 import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateRouteProfilePermissions } from '../utils'
@@ -60,11 +65,14 @@ export async function POST(request: Request) {
       affiliateCode: string
     } = await request.json()
 
-    const dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
+    let dbAffiliateCode
+
+    if (affiliateCode) {
+      dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
+    }
 
     const { totalAmounts, assets, cart } = await getPurchaseAmounts(
       dbAffiliateCode?.discountPercentage,
-      profile.creatorProfile?.commissionRate,
     )
 
     // Create the purchase with multiple items
@@ -90,6 +98,9 @@ export async function POST(request: Request) {
       await updateAffiliateCode(dbAffiliateCode?.code, {
         totalUses: { increment: 1 },
         totalSales: { increment: totalAmounts.totalPrice },
+        ...(dbAffiliateCode.discountPercentage && {
+          status: AffiliateStatus.EXPIRED,
+        }),
       })
 
       revalidateTag(CACHE_KEYS.defaultAffiliateCode(dbAffiliateCode.code))
@@ -135,18 +146,17 @@ export async function POST(request: Request) {
           commisionRate: creatorProfile.commissionRate,
         })
 
+        const revenue =
+          assetPrice - assetPrice * (creatorProfile.commissionRate / 100) // commissionRate es (25,20,etc)
+
         // Update asset sales and revenue
         const updatedAsset = await updateAsset({
           assetId: asset.id,
-          sales: { increment: 1 },
-          revenue: { increment: assetPrice },
+          revenue,
           totalSales: { increment: 1 },
         })
 
         revalidateTag(CACHE_KEYS.purchasedAsset(profile.id, asset.id))
-
-        const revenue =
-          assetPrice - assetPrice * (creatorProfile.commissionRate / 100) // commissionRate es (25,20,etc)
 
         await createOrUpdateCreatorAnalytics({
           where: { creatorProfileId: creatorProfile.id },

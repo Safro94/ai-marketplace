@@ -26,7 +26,17 @@ export default async function Page() {
     where: {
       creatorId: profile.id,
     },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      status: true,
+      revenue: true,
+      createdAt: true,
+      totalReviews: true,
+      averageRating: true,
+      featuredImage: true,
+      moderationNotes: true,
+
       assetAnalytics: {
         select: {
           uniqueViews: true,

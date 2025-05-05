@@ -47,14 +47,20 @@ export default async function AdminDashboardPage() {
         },
       )
 
+      const discountedAmount = sale.amount * (sale.discountAmount / 100)
+      const commissionAfterDiscount =
+        saleData.purchaseCommission - discountedAmount
+
       total.totalSales += saleData.purchaseAmount
-      total.totalCommisions += saleData.purchaseCommission
+      total.totalCommisions += commissionAfterDiscount
+      total.totalDiscounts += discountedAmount
 
       return total
     },
     {
       totalSales: 0,
       totalCommisions: 0,
+      totalDiscounts: 0,
     },
   )
 
@@ -94,9 +100,15 @@ export default async function AdminDashboardPage() {
             cardContentExtra: `${salesCount} sales`,
           },
           {
-            cardTitle: 'Total Commission Sum',
+            cardTitle: 'Platform revenue',
             Icon: DollarSign,
             cardContent: formatCurrency(totalSalesData.totalCommisions),
+            cardContentExtra: `${salesCount} sales`,
+          },
+          {
+            cardTitle: 'Platform discounts',
+            Icon: DollarSign,
+            cardContent: formatCurrency(totalSalesData.totalDiscounts),
             cardContentExtra: `${salesCount} sales`,
           },
         ].map(({ cardTitle, link, Icon, cardContent, cardContentExtra }, i) => (
@@ -119,50 +131,6 @@ export default async function AdminDashboardPage() {
           </Link>
         ))}
       </div>
-
-      {/* <Tabs defaultValue="overview">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Overview of recent platform activity</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Recent activity will be displayed here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="analytics" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Analytics</CardTitle>
-              <CardDescription>Platform performance metrics</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Analytics data will be displayed here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="reports" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Reports</CardTitle>
-              <CardDescription>Generated reports and exports</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Reports will be available here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs> */}
     </PageContainer>
   )
 }

@@ -48,7 +48,7 @@ export const Asset: FC<
           fill
           src={featuredImage || '/placeholder.svg?height=400&width=600'}
           alt={title}
-          className='object-cover transition-transform !relative  duration-300 group-hover:scale-105'
+          className='object-cover transition-transform !relative duration-300 group-hover:scale-105'
           priority
         />
 

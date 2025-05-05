@@ -39,7 +39,7 @@ export const Download: FC<Props> = ({ id, purchaseItem }) => {
             }
             alt={purchaseItem.asset.title}
             fill
-            className='object-cover'
+            className='object-contain'
           />
         </div>
 

@@ -55,7 +55,7 @@ export const CreatorDashboardSale: FC<Props> = ({
 
         <div className='flex-1 flex flex-col md:flex-row justify-between items-center gap-4'>
           <div>
-            <h3 className='text-md font-medium'>{asset.title}</h3>
+            <h3 className='text-md font-semibold'>{asset.title}</h3>
 
             <div className='flex flex-col gap-2 md:flex-row text-muted-foreground text-sm'>
               <span>{assetLicense?.license.name}</span>

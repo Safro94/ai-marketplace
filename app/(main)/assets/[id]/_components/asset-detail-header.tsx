@@ -68,9 +68,7 @@ export const AssetDetailHeader: FC<Props> = ({
 
         <div className='text-sm text-muted-foreground'>{sales} sales</div>
 
-        <Badge variant='secondary' className='bg-secondary/80 rounded-sm'>
-          {category.name}
-        </Badge>
+        <Badge>{category.name}</Badge>
       </div>
     </div>
   )

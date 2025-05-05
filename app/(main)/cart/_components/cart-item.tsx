@@ -47,7 +47,7 @@ export const CartItem: FC<Props> = ({ item, showActions }) => {
             <Image
               src={item.image || '/placeholder.svg'}
               alt={item.title}
-              className='object-cover'
+              className='object-contain'
               fill
               priority
             />
