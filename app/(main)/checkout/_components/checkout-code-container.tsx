@@ -41,7 +41,7 @@ export const CheckoutCodeContainer = () => {
 
   return (
     <div className='flex flex-col gap-2'>
-      <div className='flex flex-col items-center justify-between gap-4 md:flex-row'>
+      <div className='flex items-center justify-between gap-4 md:flex-row'>
         <Input
           value={affiliateCode}
           placeholder='Enter your code'

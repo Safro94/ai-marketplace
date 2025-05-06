@@ -42,12 +42,12 @@ export const CartItem: FC<Props> = ({ item, showActions }) => {
   return (
     <Card key={`${item.assetId}-${item.assetLicenseId}`}>
       <CardContent className='p-4'>
-        <div className='flex flex-col gap-4 md:items-center sm:flex-row'>
-          <div className='relative h-32 w-full md:h-16 md:w-16 rounded-md flex-shrink-0'>
+        <div className='flex flex-col gap-4 items-center text-center md:text-left md:flex-row'>
+          <div className='relative h-16 w-32 flex-shrink-0'>
             <Image
               src={item.image || '/placeholder.svg'}
               alt={item.title}
-              className='object-contain'
+              className='object-fill rounded-lg'
               fill
               priority
             />

@@ -40,7 +40,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
                     height={150}
                     src={item}
                     alt='Image'
-                    className='object-cover rounded-md'
+                    className='object-fill rounded-lg'
                     priority
                   />
                 ))}
@@ -67,7 +67,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
               height={150}
               src={form.getValues(formField)}
               alt='Featured Image'
-              className='w-full h-full object-cover rounded-md'
+              className='w-full h-full object-fill rounded-lg'
               priority
             />
 
