@@ -6,7 +6,6 @@ import {
   getCartItems,
   removeItemFromCart,
 } from '@/actions/cart'
-import { useAuth } from '@/hooks/use-auth'
 import {
   AffiliateCodeContext,
   CartAction,
@@ -29,7 +28,6 @@ import {
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [cart, setCart] = useState<CartItem[]>([])
   const [affiliateCode, setAffiliateCode] = useState<
@@ -89,8 +87,8 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       }
     }
 
-    if (user) fetchCart()
-  }, [user])
+    fetchCart()
+  }, [])
 
   const addToCart = useCallback(
     async (item: CartItem) => {

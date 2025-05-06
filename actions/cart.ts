@@ -16,7 +16,6 @@ import { revalidatePath } from 'next/cache'
 
 // Get cart items
 export const getCartItems = async () => {
-  await validateSession()
   return getCart()
 }
 

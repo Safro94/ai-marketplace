@@ -209,13 +209,11 @@ export default async function AssetPage({
           </div>
 
           <div className='space-y-6 lg:sticky lg:top-20'>
-            <Suspense fallback={<div>loading...</div>}>
-              <AssetDownload
-                assetId={asset.id}
-                fileName={asset.title}
-                assetUrl={asset.assetFile}
-              />
-            </Suspense>
+            <AssetDownload
+              assetId={asset.id}
+              fileName={asset.title}
+              assetUrl={asset.assetFile}
+            />
 
             <Suspense fallback={<LicenseSkeleton />}>
               <PurchaseOptions

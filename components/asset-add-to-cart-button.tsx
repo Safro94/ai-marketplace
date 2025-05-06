@@ -45,7 +45,7 @@ export const AssetAddToCartButton: FC<Props> = ({
   ...props
 }) => {
   const router = useRouter()
-  const { user, isPending } = useAuth()
+  const { user } = useAuth()
   const { addToCart, removeItem, cart, isLoading } = useCart()
   const [, startTransition] = useTransition()
 
@@ -58,8 +58,6 @@ export const AssetAddToCartButton: FC<Props> = ({
       return state
     },
   )
-
-  if (!user && !isPending) return null
 
   const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -141,6 +139,7 @@ export const AssetAddToCartButton: FC<Props> = ({
         <Skeleton className='h-[30px] w-[30px]' />
       ) : (
         <Tooltip
+          content={isItemInCart ? 'Remove from cart' : 'Add to cart'}
           trigger={
             <Button onClick={handleAddToCart} size={size} {...props}>
               {isItemInCart ? (
@@ -158,7 +157,6 @@ export const AssetAddToCartButton: FC<Props> = ({
               )}
             </Button>
           }
-          content={isItemInCart ? 'Remove from cart' : 'Add to cart'}
         />
       )}
     </>

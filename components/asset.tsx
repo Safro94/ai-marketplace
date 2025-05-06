@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
 import { AssetActionsContainer } from './asset-actions-container'
-import { AssetAddToCartButtonWrapper } from './asset-add-to-cart-wrapper'
+import { AssetAddToCartButton } from './asset-add-to-cart-button'
 import { ShareButton } from './share-button'
 import { Avatar } from './ui/avatar'
 import { Badge } from './ui/badge'
@@ -107,7 +107,7 @@ export const Asset: FC<
               {formatCurrency(basePrice)}
             </span>
 
-            <AssetAddToCartButtonWrapper
+            <AssetAddToCartButton
               id={id}
               title={title}
               basePrice={basePrice}

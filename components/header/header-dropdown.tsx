@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
 import { User } from 'better-auth'
 import Link from 'next/link'
@@ -25,6 +26,7 @@ interface Props {
 
 export const HeaderDropdown: FC<Props> = ({ isCreator, user }) => {
   const router = useRouter()
+  const { refetch } = useAuth()
 
   return (
     <DropdownMenu>
@@ -83,6 +85,7 @@ export const HeaderDropdown: FC<Props> = ({ isCreator, user }) => {
               return
             }
 
+            refetch()
             router.push(ROUTES.home())
           }}
         >

@@ -1,7 +1,7 @@
 import { authClient } from '@/lib/auth-client'
 
 export const useAuth = () => {
-  const { data, isPending, error } = authClient.useSession()
+  const { data, isPending, error, refetch } = authClient.useSession()
   const user = data?.user
   const session = data?.session
 
@@ -10,5 +10,6 @@ export const useAuth = () => {
     isPending,
     user,
     session,
+    refetch,
   }
 }

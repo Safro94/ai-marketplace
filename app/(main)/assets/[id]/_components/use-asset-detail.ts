@@ -35,7 +35,11 @@ export const useAssetDetail = (assetId: string) => {
       }
     }
 
-    if (user) fetchUserData()
+    if (user) {
+      fetchUserData()
+    } else {
+      setIsLoading(false)
+    }
   }, [assetId, user])
 
   return {
