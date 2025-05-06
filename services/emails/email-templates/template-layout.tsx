@@ -1,6 +1,7 @@
+import { Logo } from '@/components/logo'
 import { APP_DATA } from '@/lib/constants'
 import { ReactNode } from 'react'
-import { container, content, footer, header } from './styles'
+import { container, content, footer, footerRights, header } from './styles'
 
 interface TemplateLayoutProps {
   children: ReactNode
@@ -10,6 +11,8 @@ interface TemplateLayoutProps {
 export const TemplateLayout = ({ children, subject }: TemplateLayoutProps) => (
   <div style={container}>
     <div style={header}>
+      <Logo />
+
       <h2>{subject}</h2>
     </div>
 
@@ -25,7 +28,8 @@ export const TemplateLayout = ({ children, subject }: TemplateLayoutProps) => (
       <a href={APP_DATA.url} target='_blank'>
         {APP_DATA.url}
       </a>
-      <p>
+
+      <p style={footerRights}>
         © {new Date().getFullYear()} {APP_DATA.name}. All rights reserved.
       </p>
     </div>

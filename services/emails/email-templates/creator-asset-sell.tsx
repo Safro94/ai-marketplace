@@ -7,12 +7,12 @@ interface Props {
 }
 
 export const CreatorAssetSell: FC<Props> = ({ assetName, creatorUsername }) => (
-  <TemplateLayout subject='Congratulations! Your asset has been purchased'>
+  <TemplateLayout subject='Congratulations! Your product has been purchased'>
     <p>Dear {creatorUsername},</p>
 
     <p>
-      We are pleased to inform you that someone has bought your asset{' '}
-      <strong>{assetName}</strong>. The asset has been delivered to the
+      We are pleased to inform you that someone has purchased your product,{' '}
+      <strong>{assetName}</strong>. The product has been delivered to the
       customer, and your payment has been processed.
     </p>
 

@@ -52,213 +52,219 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
-  try {
-    const { profile, user } = await validateRouteProfilePermissions()
+  const { profile, user } = await validateRouteProfilePermissions()
 
-    const {
-      paypalOrderId,
-      paymentDetails,
-      affiliateCode,
-    }: {
-      paypalOrderId: string
-      paymentDetails: object
-      affiliateCode: string
-    } = await request.json()
+  const {
+    paypalOrderId,
+    paymentDetails,
+    affiliateCode,
+  }: {
+    paypalOrderId: string
+    paymentDetails: object
+    affiliateCode: string
+  } = await request.json()
 
-    let dbAffiliateCode
+  let dbAffiliateCode
 
-    if (affiliateCode) {
-      dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
-    }
+  if (affiliateCode) {
+    dbAffiliateCode = await getAffiliateCodeByCode(affiliateCode)
+  }
 
-    const { totalAmounts, assets, cart } = await getPurchaseAmounts(
-      dbAffiliateCode?.discountPercentage,
-    )
+  const { totalAmounts, assets, cart } = await getPurchaseAmounts(
+    dbAffiliateCode?.discountPercentage,
+  )
 
-    // Create the purchase with multiple items
-    const purchase = await createPurchase({
-      buyerId: profile.id,
-      amount: totalAmounts.totalPrice,
-      transactionId: paypalOrderId,
-      status: PurchaseStatus.COMPLETED,
-      paymentProvider: PaymentProvider.PAYPAL,
-      paymentDetails: paymentDetails,
-      ...(dbAffiliateCode ? { affiliateCodeId: dbAffiliateCode.id } : {}),
-      ...(dbAffiliateCode?.discountPercentage
-        ? {
-            discountAmount:
-              totalAmounts.totalPrice *
-              (dbAffiliateCode?.discountPercentage / 100),
-            discountType: DiscountType.AFFILIATE_REFERRAL,
-          }
-        : {}), // Handle any discounts if the affiliate code applies one
+  // Create the purchase with multiple items
+  const purchase = await createPurchase({
+    buyerId: profile.id,
+    amount: totalAmounts.totalPrice,
+    transactionId: paypalOrderId,
+    status: PurchaseStatus.COMPLETED,
+    paymentProvider: PaymentProvider.PAYPAL,
+    paymentDetails: paymentDetails,
+    ...(dbAffiliateCode ? { affiliateCodeId: dbAffiliateCode.id } : {}),
+    ...(dbAffiliateCode?.discountPercentage
+      ? {
+          discountAmount:
+            totalAmounts.totalPrice *
+            (dbAffiliateCode?.discountPercentage / 100),
+          discountType: DiscountType.AFFILIATE_REFERRAL,
+        }
+      : {}), // Handle any discounts if the affiliate code applies one
+  })
+
+  if (dbAffiliateCode?.code) {
+    await updateAffiliateCode(dbAffiliateCode?.code, {
+      totalUses: { increment: 1 },
+      totalSales: { increment: totalAmounts.totalPrice },
+      ...(dbAffiliateCode.discountPercentage && {
+        status: AffiliateStatus.EXPIRED,
+      }),
     })
 
-    if (dbAffiliateCode?.code) {
-      await updateAffiliateCode(dbAffiliateCode?.code, {
-        totalUses: { increment: 1 },
-        totalSales: { increment: totalAmounts.totalPrice },
-        ...(dbAffiliateCode.discountPercentage && {
-          status: AffiliateStatus.EXPIRED,
-        }),
+    revalidateTag(CACHE_KEYS.defaultAffiliateCode(dbAffiliateCode.code))
+  }
+
+  revalidateTag(CACHE_KEYS.purchases(profile.id))
+  revalidateTag(CACHE_KEYS.analyticsSales(profile.id))
+  revalidateTag(CACHE_KEYS.creatorDashboardPurchases(profile.id))
+
+  const creatorsEmailsData: {
+    assetName: string
+    creatorEmail: string
+    creatorUsername: string
+  }[] = []
+
+  // Process each purchase item
+  await Promise.all(
+    assets.map(async (asset) => {
+      // Generate a unique license key
+      const cartAsset = cart.find((item) => item.assetId === asset.id)
+      if (!cartAsset) {
+        return NextResponse.json(
+          { error: 'Cart asset does not match current asset' },
+          { status: 500 },
+        )
+      }
+
+      const licenseKey = generateLicenseKey(user.id, asset.id)
+      const assetLicense = asset.assetLicenses.find(
+        (item) => item.licenseId === cartAsset.assetLicenseId,
+      )
+      const assetPrice = assetLicense?.price || 0
+
+      const creatorProfile = await getCreatorProfileById(
+        asset.creator.creatorProfile!.id,
+      )
+
+      if (!creatorProfile) {
+        throw Error('Asset creator profile not found')
+      }
+
+      // Create the purchase item
+      const purchaseItem = await createPurchaseItem({
+        licenseKey,
+        purchaseId: purchase.id,
+        assetId: asset.id,
+        amount: assetPrice,
+        assetLicenseId: assetLicense?.id,
+        commisionRate: creatorProfile.commissionRate,
       })
 
-      revalidateTag(CACHE_KEYS.defaultAffiliateCode(dbAffiliateCode.code))
-    }
+      const revenue =
+        assetPrice - assetPrice * (creatorProfile.commissionRate / 100) // commissionRate es (25,20,etc)
 
-    revalidateTag(CACHE_KEYS.purchases(profile.id))
-    revalidateTag(CACHE_KEYS.analyticsSales(profile.id))
-    revalidateTag(CACHE_KEYS.creatorDashboardPurchases(profile.id))
+      // Update asset sales and revenue
+      const updatedAsset = await updateAsset({
+        assetId: asset.id,
+        revenue,
+        totalSales: { increment: 1 },
+      })
 
-    // Process each purchase item
-    await Promise.all(
-      assets.map(async (asset) => {
-        // Generate a unique license key
-        const cartAsset = cart.find((item) => item.assetId === asset.id)
-        if (!cartAsset) {
-          return NextResponse.json(
-            { error: 'Cart asset does not match current asset' },
-            { status: 500 },
-          )
-        }
+      revalidateTag(CACHE_KEYS.purchasedAsset(profile.id, asset.id))
 
-        const licenseKey = generateLicenseKey(user.id, asset.id)
-        const assetLicense = asset.assetLicenses.find(
-          (item) => item.licenseId === cartAsset.assetLicenseId,
-        )
-        const assetPrice = assetLicense?.price || 0
-
-        const creatorProfile = await getCreatorProfileById(
-          asset.creator.creatorProfile!.id,
-        )
-
-        if (!creatorProfile) {
-          throw Error('Asset creator profile not found')
-        }
-
-        // Create the purchase item
-        const purchaseItem = await createPurchaseItem({
-          licenseKey,
-          purchaseId: purchase.id,
-          assetId: asset.id,
-          amount: assetPrice,
-          assetLicenseId: assetLicense?.id,
-          commisionRate: creatorProfile.commissionRate,
-        })
-
-        const revenue =
-          assetPrice - assetPrice * (creatorProfile.commissionRate / 100) // commissionRate es (25,20,etc)
-
-        // Update asset sales and revenue
-        const updatedAsset = await updateAsset({
-          assetId: asset.id,
-          revenue,
+      await createOrUpdateCreatorAnalytics({
+        where: { creatorProfileId: creatorProfile.id },
+        update: {
           totalSales: { increment: 1 },
-        })
-
-        revalidateTag(CACHE_KEYS.purchasedAsset(profile.id, asset.id))
-
-        await createOrUpdateCreatorAnalytics({
-          where: { creatorProfileId: creatorProfile.id },
-          update: {
-            totalSales: { increment: 1 },
-            totalRevenue: {
-              increment: revenue,
-            },
-            updatedAt: new Date(),
+          totalRevenue: {
+            increment: revenue,
           },
-          create: {
-            totalSales: 1,
-            totalRevenue: revenue,
-            creatorProfile: {
-              connect: { id: creatorProfile.id },
-            },
+          updatedAt: new Date(),
+        },
+        create: {
+          totalSales: 1,
+          totalRevenue: revenue,
+          creatorProfile: {
+            connect: { id: creatorProfile.id },
           },
-        })
+        },
+      })
 
-        revalidateTag(CACHE_KEYS.creatorDashboardAnalytics(creatorProfile.id))
+      revalidateTag(CACHE_KEYS.creatorDashboardAnalytics(creatorProfile.id))
 
-        await notifyCreatorSellCompleted({
-          assetName: updatedAsset.title,
-          creatorEmail: asset.creator.creatorProfile!.profile.user.email,
-          creatorUsername: asset.creator.creatorProfile!.profile.user.name,
-        })
+      creatorsEmailsData.push({
+        assetName: updatedAsset.title,
+        creatorEmail: asset.creator.creatorProfile!.profile.user.email,
+        creatorUsername: asset.creator.creatorProfile!.profile.user.name,
+      })
 
-        return purchaseItem
-      }),
-    )
+      return purchaseItem
+    }),
+  )
 
-    await notifyBuyerOrderCompleted({
-      name: user.name,
-      email: user.email,
+  await notifyBuyerOrderCompleted({
+    name: user.name,
+    email: user.email,
+  })
+
+  await notifyPlatformSellCompleted({
+    purchase,
+  })
+
+  for (const creatorEmailData of creatorsEmailsData) {
+    await notifyCreatorSellCompleted({
+      assetName: creatorEmailData.assetName,
+      creatorEmail: creatorEmailData.creatorEmail,
+      creatorUsername: creatorEmailData.creatorUsername,
     })
-
-    await notifyPlatformSellCompleted({
-      purchase,
-    })
-
-    // // Create a notification for the buyer about the purchase
-    // await prisma.notification.create({
-    //   data: {
-    //     profileId: userProfile.id,
-    //     title: 'Purchase Completed',
-    //     message: `Your purchase of ${items.length} asset${items.length > 1 ? 's' : ''} has been completed successfully`,
-    //     type: 'SUCCESS',
-    //     data: {
-    //       purchaseId: purchase.id,
-    //     },
-    //   },
-    // })
-
-    // // Create individual notifications for each asset creator
-    // const creatorNotifications = new Map()
-
-    // for (const item of items) {
-    //   const asset = await prisma.asset.findUnique({
-    //     where: { id: item.assetId },
-    //     select: { title: true, creatorId: true },
-    //   })
-
-    //   if (asset?.creatorId) {
-    //     // Group notifications by creator to avoid sending multiple notifications
-    //     if (!creatorNotifications.has(asset.creatorId)) {
-    //       creatorNotifications.set(asset.creatorId, [])
-    //     }
-    //     creatorNotifications.get(asset.creatorId).push({
-    //       assetId: item.assetId,
-    //       assetTitle: asset.title,
-    //     })
-    //   }
-    // }
-
-    // // Send grouped notifications to creators
-    // for (const [creatorId, assets] of creatorNotifications.entries()) {
-    //   await prisma.notification.create({
-    //     data: {
-    //       profileId: creatorId,
-    //       title: 'New Sale',
-    //       message:
-    //         assets.length === 1
-    //           ? `Your asset "${assets[0].assetTitle}" has been purchased`
-    //           : `${assets.length} of your assets have been purchased`,
-    //       type: 'SUCCESS',
-    //       data: {
-    //         purchaseId: purchase.id,
-    //         assets: assets,
-    //       },
-    //     },
-    //   })
-    // }
-
-    return NextResponse.json({
-      success: true,
-      purchaseId: purchase.id,
-    })
-  } catch (error) {
-    console.error('Error creating purchase:', error)
-    return NextResponse.json(
-      { error: 'Failed to process purchase' },
-      { status: 500 },
-    )
   }
+
+  // // Create a notification for the buyer about the purchase
+  // await prisma.notification.create({
+  //   data: {
+  //     profileId: userProfile.id,
+  //     title: 'Purchase Completed',
+  //     message: `Your purchase of ${items.length} asset${items.length > 1 ? 's' : ''} has been completed successfully`,
+  //     type: 'SUCCESS',
+  //     data: {
+  //       purchaseId: purchase.id,
+  //     },
+  //   },
+  // })
+
+  // // Create individual notifications for each asset creator
+  // const creatorNotifications = new Map()
+
+  // for (const item of items) {
+  //   const asset = await prisma.asset.findUnique({
+  //     where: { id: item.assetId },
+  //     select: { title: true, creatorId: true },
+  //   })
+
+  //   if (asset?.creatorId) {
+  //     // Group notifications by creator to avoid sending multiple notifications
+  //     if (!creatorNotifications.has(asset.creatorId)) {
+  //       creatorNotifications.set(asset.creatorId, [])
+  //     }
+  //     creatorNotifications.get(asset.creatorId).push({
+  //       assetId: item.assetId,
+  //       assetTitle: asset.title,
+  //     })
+  //   }
+  // }
+
+  // // Send grouped notifications to creators
+  // for (const [creatorId, assets] of creatorNotifications.entries()) {
+  //   await prisma.notification.create({
+  //     data: {
+  //       profileId: creatorId,
+  //       title: 'New Sale',
+  //       message:
+  //         assets.length === 1
+  //           ? `Your asset "${assets[0].assetTitle}" has been purchased`
+  //           : `${assets.length} of your assets have been purchased`,
+  //       type: 'SUCCESS',
+  //       data: {
+  //         purchaseId: purchase.id,
+  //         assets: assets,
+  //       },
+  //     },
+  //   })
+  // }
+
+  return NextResponse.json({
+    success: true,
+    purchaseId: purchase.id,
+  })
 }

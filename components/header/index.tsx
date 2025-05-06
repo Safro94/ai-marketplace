@@ -7,7 +7,7 @@ import { getServerSession } from '@/lib/session'
 import { cn } from '@/lib/utils'
 import { ApplicationStatus } from '@prisma/client'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, Suspense } from 'react'
 import { Logo } from '../logo'
 import { CartButton } from './cart-button'
 import { HeaderDropdown } from './header-dropdown'
@@ -51,11 +51,13 @@ export const Header: FC<Props> = async ({ classNames }) => {
         <div className='flex items-center gap-6 md:gap-10'>
           <Logo />
 
-          <HeaderNav
-            isCreator={isCreator}
-            hasPendingApplication={hasPendingApplication}
-            className='hidden md:flex'
-          />
+          <Suspense>
+            <HeaderNav
+              isCreator={isCreator}
+              hasPendingApplication={hasPendingApplication}
+              className='hidden md:flex'
+            />
+          </Suspense>
         </div>
 
         <div className='flex items-center gap-2 md:gap-4'>

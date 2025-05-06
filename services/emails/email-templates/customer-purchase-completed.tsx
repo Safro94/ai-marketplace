@@ -10,14 +10,19 @@ export const CustomerPurchaseCompleted: FC<{ name: string }> = ({ name }) => {
       <p>Dear {name},</p>
 
       <p>
-        Thank you for using our services. Your payment has been processed. You
-        can see your puchased asset(s) and download them by clicking the link
-        below:
+        Thank you for using our services. Your payment has been processed
+        successfully. You can view and download your purchased asset(s) by
+        clicking the link below:
       </p>
 
       <a href={purchasesUrl} target='_blank'>
         {purchasesUrl}
       </a>
+
+      <p>
+        If you have any questions or need further assistance, please don&apos;t
+        hesitate to contact us.
+      </p>
     </TemplateLayout>
   )
 }

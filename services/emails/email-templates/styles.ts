@@ -22,3 +22,7 @@ export const footer: CSSProperties = {
   fontSize: '14px',
   padding: '10px',
 }
+
+export const footerRights: CSSProperties = {
+  margin: 0,
+}

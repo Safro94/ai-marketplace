@@ -16,8 +16,8 @@ interface Props {
 }
 
 export const FavoriteButton: FC<Props> = ({ assetId }) => {
-  const { user, isPending: isLoadingUser } = useAuth()
   const router = useRouter()
+  const { user, isPending: isLoadingUser } = useAuth()
   const [isPending, startTransition] = useTransition()
 
   const [isLoading, setIsLoading] = useState(true)

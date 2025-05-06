@@ -181,6 +181,8 @@ const Buttons: FC<ButtonsProps> = ({
 
         if (!response?.ok) {
           const data = await response?.json()
+          loader.remove()
+
           throw new Error(
             data.error || 'Failed to save purchase, please contact support.',
           )
@@ -191,6 +193,9 @@ const Buttons: FC<ButtonsProps> = ({
             description:
               'There was an error while saving the purchase, please contact support.',
           })
+
+          loader.remove()
+          throw new Error(createPurchaseError)
         }
 
         toast.success('Successful purchase', {
@@ -210,6 +215,8 @@ const Buttons: FC<ButtonsProps> = ({
         router.push(`${ROUTES.checkoutSuccess()}`)
       }}
       onError={() => {
+        loader.remove()
+
         toast.error('Error', {
           description:
             'There was an error processing your payment, please try again later or contact support',

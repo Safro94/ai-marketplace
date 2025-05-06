@@ -146,8 +146,8 @@ const Component = async () => {
           key={i}
           className='flex flex-col bg-background rounded-lg shadow-md transition-all duration-200 hover:shadow-lg'
         >
-          <CardHeader className='p-0 pt-4 px-4 flex-row justify-between'>
-            <div className='flex items-center gap-2'>
+          <CardHeader className='p-0 pt-4 px-4 flex-row justify-between flex-wrap'>
+            <div className='flex items-center gap-2 flex-wrap'>
               <div className='w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-white/10'>
                 <Icon className='h-5 w-5 text-primary dark:text-primary-foreground' />
               </div>

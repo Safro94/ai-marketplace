@@ -32,7 +32,7 @@ export default async function CheckoutPage() {
         <p className='text-muted-foreground'>Complete your purchase</p>
       </div>
 
-      <div className='grid md:grid-cols-3 gap-8'>
+      <div className='grid lg:grid-cols-3 gap-8'>
         <CheckoutContainer cartTotal={cartTotal} cartItems={cartItems} />
       </div>
     </PageContainer>
