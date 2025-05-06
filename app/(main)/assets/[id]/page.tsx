@@ -76,7 +76,7 @@ export async function generateStaticParams() {
     where: {
       status: AssetStatus.PUBLISHED,
     },
-    orderBy: [{ sales: 'desc' }, { averageRating: 'desc' }],
+    orderBy: [{ totalSales: 'desc' }, { averageRating: 'desc' }],
     take: 50, // Generate static pages for top 50 assets
     select: {
       id: true,

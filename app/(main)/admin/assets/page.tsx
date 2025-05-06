@@ -88,7 +88,7 @@ export default async function ModerationPage() {
                               src={asset.featuredImage || '/placeholder.svg'}
                               alt={asset.title}
                               fill
-                              className='object-cover'
+                              className='object-fill'
                               priority
                             />
                           </div>

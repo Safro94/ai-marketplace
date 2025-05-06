@@ -20,7 +20,7 @@ type Props = Prisma.ReviewGetPayload<{
 
 export const Review: FC<Props> = ({ id, asset, createdAt, title, comment }) => {
   return (
-    <div key={id} className='border-b last:border-0'>
+    <div key={id} className='border-b last:border-0 pb-4 last:pb-0'>
       <div className='flex items-start justify-between mb-2'>
         <div>
           <h4 className='font-medium'>{asset.title}</h4>

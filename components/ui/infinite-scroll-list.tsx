@@ -80,7 +80,7 @@ export const InfiniteScrollList = <T, U = unknown>({
     <div className='flex flex-col'>
       <div
         className={cn(
-          !itemsContainerClassName && 'space-y-6',
+          !itemsContainerClassName && 'space-y-4',
           itemsContainerClassName,
         )}
       >

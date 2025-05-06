@@ -16,8 +16,8 @@ export default function Loading() {
                 key={i}
                 className='flex flex-col md:flex-row md:items-center gap-4'
               >
-                <div className='relative w-full md:w-32 h-24 self-center'>
-                  <Skeleton className='w-32 h-24' />
+                <div className='relative h-24 w-48 self-center flex-shrink-0'>
+                  <Skeleton className='h-24 w-48' />
                 </div>
 
                 <div className='flex-1 flex flex-col md:flex-row justify-between items-center gap-4'>

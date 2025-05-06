@@ -42,12 +42,12 @@ export const Asset: FC<
       key={id}
       className='group relative bg-background rounded-xl shadow-md transition-shadow duration-300 overflow-hidden border border-white hover:border-primary dark:border-primary dark:hover:border-white'
     >
-      <div className='aspect-video overflow-hidden'>
+      <div className='relative aspect-video overflow-hidden'>
         <Image
           fill
           src={featuredImage || '/placeholder.svg?height=400&width=600'}
           alt={title}
-          className='object-cover transition-transform !relative duration-300 group-hover:scale-105'
+          className='object-fill transition-transform duration-300 group-hover:scale-105'
           priority
         />
 
@@ -94,7 +94,7 @@ export const Asset: FC<
           {description}
         </p>
 
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col md:flex-row items-center gap-2 justify-between'>
           <Badge
             variant='secondary'
             className='bg-primary text-white hover:bg-primary self-center text-[11px]'

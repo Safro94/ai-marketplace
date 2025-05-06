@@ -23,7 +23,7 @@ export const Logo: FC<Props> = ({ className }) => {
 
           <Badge
             variant='outline'
-            className='text-[10px] px-2 bg-purple-100 text-purple-800 border-purple-200'
+            className='hidden md:block text-[10px] px-2 bg-purple-100 text-purple-800 border-purple-200'
           >
             BETA
           </Badge>

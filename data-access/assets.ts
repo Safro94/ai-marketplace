@@ -222,7 +222,7 @@ export const getExploreAssets = withErrorHandler(
         // "featured" - sort by a combination of factors
         orderBy = [
           { averageRating: 'desc' },
-          { sales: 'desc' },
+          { totalSales: 'desc' },
           { createdAt: 'desc' },
         ]
     }

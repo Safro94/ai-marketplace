@@ -135,7 +135,7 @@ export default async function CreatorDashboard() {
           >
             <CardHeader className='p-0 pt-4 px-4 flex-row justify-between'>
               <div className='flex items-center gap-2'>
-                <div className='w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-white/10'>
+                <div className='w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-white/10'>
                   <Icon className='h-5 w-5 text-primary dark:text-primary-foreground' />
                 </div>
 
@@ -144,7 +144,7 @@ export default async function CreatorDashboard() {
                 </h3>
               </div>
 
-              <div className='text-right mt-0'>
+              <div className='text-right !mt-0'>
                 <span className='text-xl font-bold'>{value}</span>
               </div>
             </CardHeader>

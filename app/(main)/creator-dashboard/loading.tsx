@@ -13,7 +13,7 @@ export default function Loading() {
           >
             <CardHeader className='p-0 pt-4 px-4 flex-row justify-between'>
               <div className='flex items-center gap-2'>
-                <Skeleton className='w-10 h-10 rounded-full' />
+                <Skeleton className='w-8 h-8 md:w-10 md:h-10 rounded-full' />
                 <Skeleton className='h-7 w-32 mb-1 ' />
               </div>
 

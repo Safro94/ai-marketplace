@@ -48,8 +48,8 @@ export default function Loading() {
                 <Card key={i}>
                   <CardContent className='p-4'>
                     <div className='flex flex-col items-center justify-center gap-2 md:flex-row space-x-4'>
-                      <div className='relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0'>
-                        <Skeleton className='w-16 h-16' />
+                      <div className='relative h-24 w-48 self-center flex-shrink-0'>
+                        <Skeleton className='h-24 w-48' />
                       </div>
 
                       <div className='flex-1 min-w-0'>

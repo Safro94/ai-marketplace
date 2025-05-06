@@ -51,15 +51,13 @@ export const Carousel: FC<Props> = ({ slides, options }) => {
         <div className='embla__container'>
           {slides.map(({ image, title }, i) => (
             <div className='embla__slide aspect-video' key={i}>
-              <div className='embla__slide__content'>
-                <Image
-                  fill
-                  priority
-                  className='embla__slide__img'
-                  src={image || '/placeholder.svg?height=600&width=800'}
-                  alt={title}
-                />
-              </div>
+              <Image
+                fill
+                priority
+                className='embla__slide__img rounded-lg'
+                src={image || '/placeholder.svg?height=600&width=800'}
+                alt={title}
+              />
             </div>
           ))}
         </div>
@@ -74,11 +72,11 @@ export const Carousel: FC<Props> = ({ slides, options }) => {
                 onClick={() => onThumbClick(i)}
                 selected={i === selectedIndex}
               >
-                <div className='relative aspect-[4/3] w-full overflow-hidden'>
+                <div className='relative aspect-video w-full overflow-hidden'>
                   <Image
                     fill
                     priority
-                    className='object-contain rounded-lg'
+                    className='object-fill rounded-lg'
                     src={image || '/placeholder.svg?height=600&width=800'}
                     alt={title}
                   />

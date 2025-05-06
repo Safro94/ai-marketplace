@@ -21,9 +21,7 @@ export default async function Revieiws() {
       <Card>
         {!!reviews.length ? (
           <CardContent className='py-6'>
-            <div className='space-y-6'>
-              <ReviewsList reviews={reviews} />
-            </div>
+            <ReviewsList reviews={reviews} />
           </CardContent>
         ) : (
           <NotFound

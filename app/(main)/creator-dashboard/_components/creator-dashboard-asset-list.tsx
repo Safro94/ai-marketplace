@@ -1,5 +1,6 @@
 'use client'
 
+import { AssetImage } from '@/components/asset-image'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,7 +34,6 @@ import {
   Star,
   Trash,
 } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
@@ -96,14 +96,10 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
           <Card key={asset.id}>
             <CardContent className='p-4'>
               <div className='flex flex-col items-center justify-center gap-2 md:flex-row space-x-4'>
-                <div className='relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0'>
-                  <Image
-                    src={asset.featuredImage || '/placeholder.svg'}
-                    alt={asset.title}
-                    fill
-                    className='object-contain'
-                  />
-                </div>
+                <AssetImage
+                  src={asset.featuredImage || '/placeholder.svg'}
+                  alt={asset.title}
+                />
 
                 <div className='flex-1 min-w-0'>
                   <h3 className='font-medium text-center truncate whitespace-normal md:text-start'>

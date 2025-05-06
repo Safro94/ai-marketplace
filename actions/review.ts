@@ -32,9 +32,7 @@ export const createReviewAction = withErrorHandler(
 
     revalidateTag(CACHE_KEYS.assetReviews(assetId))
     revalidateTag(CACHE_KEYS.exploreAssets())
-    revalidateTag(
-      CACHE_KEYS.dashboardReviews(data.userProfile.connect?.id as string),
-    )
+    revalidateTag(CACHE_KEYS.dashboardReviews(review.userProfileId))
 
     return review
   },

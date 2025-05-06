@@ -37,7 +37,7 @@ export const RelatedAssets: FC<Props> = async ({
         },
       },
     },
-    orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
+    orderBy: [{ averageRating: 'desc' }, { totalSales: 'desc' }],
     take: 3,
   })
 
@@ -65,7 +65,7 @@ export const RelatedAssets: FC<Props> = async ({
           },
         },
       },
-      orderBy: [{ averageRating: 'desc' }, { sales: 'desc' }],
+      orderBy: [{ averageRating: 'desc' }, { totalSales: 'desc' }],
       take: 4,
     })
 

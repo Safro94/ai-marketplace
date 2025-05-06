@@ -7,9 +7,9 @@ import { formatCurrency } from '@/lib/utils'
 import { Prisma } from '@prisma/client'
 import { format } from 'date-fns'
 import { ExternalLink } from 'lucide-react'
-import Image from 'next/image'
 import { FC } from 'react'
 import { AssetDownloadButton } from './asset-download-button'
+import { AssetImage } from './asset-image'
 import { Badge } from './ui/badge'
 
 type Props = Prisma.PurchaseItemGetPayload<{
@@ -54,16 +54,12 @@ export const PurchasedItemCard: FC<Props> = ({
   createdAt,
   licenseKey,
 }) => (
-  <Card className='p-6'>
+  <Card className='p-4'>
     <div className='flex flex-col lg:flex-row lg:items-center gap-4'>
-      <div className='relative w-full md:w-48 h-32 self-center flex-shrink-0'>
-        <Image
-          src={asset.featuredImage || '/placeholder.svg'}
-          alt={asset.title}
-          fill
-          className='object-contain'
-        />
-      </div>
+      <AssetImage
+        src={asset.featuredImage || '/placeholder.svg'}
+        alt={asset.title}
+      />
 
       <div className='flex-1'>
         <div className='flex flex-col lg:flex-row justify-between gap-2'>
@@ -78,7 +74,7 @@ export const PurchasedItemCard: FC<Props> = ({
               {asset.description}
             </p>
 
-            <div className='flex flex-col flex-wrap gap-2 md:flex-row md:items-center text-sm text-muted-foreground'>
+            <div className='flex flex-col text-center md:text-left flex-wrap gap-2 md:flex-row md:items-center text-sm text-muted-foreground'>
               <span>{format(new Date(createdAt), 'PPP')}</span>
               <span className='hidden md:block'>•</span>
               <span>{formatCurrency(amount)}</span>
