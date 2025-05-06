@@ -1,7 +1,15 @@
-import { Logo } from '@/components/logo'
+/* eslint-disable @next/next/no-img-element */
 import { APP_DATA } from '@/lib/constants'
 import { ReactNode } from 'react'
-import { container, content, footer, footerRights, header } from './styles'
+import {
+  container,
+  content,
+  footer,
+  footerRights,
+  header,
+  logoContainer,
+  logoText,
+} from './styles'
 
 interface TemplateLayoutProps {
   children: ReactNode
@@ -11,7 +19,18 @@ interface TemplateLayoutProps {
 export const TemplateLayout = ({ children, subject }: TemplateLayoutProps) => (
   <div style={container}>
     <div style={header}>
-      <Logo />
+      <div style={logoContainer}>
+        <img
+          width={32}
+          height={32}
+          src='https://mc82uwjjhp.ufs.sh/f/IOa2jOFkt6BpHGICzfXx2X8pmYSuCqlQOWs39TDcvZVg6UKt'
+          alt='Logo'
+        />
+
+        <span style={logoText}>
+          AI<span style={{ color: '#06b6d4' }}>Asset</span>Hub
+        </span>
+      </div>
 
       <h2>{subject}</h2>
     </div>

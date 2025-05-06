@@ -74,7 +74,7 @@ export default async function PurchasesPage() {
               btnText='Explore Assets'
             />
           ) : (
-            <div className='space-y-6'>
+            <div className='space-y-4'>
               {purchases.slice(0, 5).map((purchase) => (
                 <Purchase key={purchase.id} {...purchase} />
               ))}
