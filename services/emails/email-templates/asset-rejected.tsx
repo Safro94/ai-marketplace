@@ -1,25 +1,19 @@
-import { APP_DATA } from '@/lib/constants'
 import { FC } from 'react'
 import { TemplateLayout } from './template-layout'
 
 interface Props {
+  name: string
   assetName: string
 }
 
-export const AssetRejected: FC<Props> = ({ assetName }) => (
+export const AssetRejected: FC<Props> = ({ name, assetName }) => (
   <TemplateLayout subject='Your asset has been rejected'>
-    <p>Dear Creator,</p>
+    <p>Dear {name},</p>
 
     <p>
       We are sorry to inform you that your asset <strong>{assetName}</strong>{' '}
       has been rejected and won&apos;t be added to our website. If you want to
       know why, you can see the reason in your creator dashboard.
-    </p>
-
-    <p>
-      Best Regards,
-      <br />
-      <strong>{APP_DATA.name} Team</strong>
     </p>
   </TemplateLayout>
 )

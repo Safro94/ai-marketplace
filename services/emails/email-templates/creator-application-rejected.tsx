@@ -1,14 +1,14 @@
-import { APP_DATA } from '@/lib/constants'
 import { FC } from 'react'
 import { TemplateLayout } from './template-layout'
 
 interface Props {
+  name: string
   notes: string | undefined
 }
 
-export const CreatorApplicationRejected: FC<Props> = ({ notes }) => (
+export const CreatorApplicationRejected: FC<Props> = ({ name, notes }) => (
   <TemplateLayout subject='Your application has been rejected'>
-    <p>Dear Creator,</p>
+    <p>Dear {name},</p>
 
     <p>
       We are sorry to inform you that your application has been rejected. You
@@ -16,11 +16,5 @@ export const CreatorApplicationRejected: FC<Props> = ({ notes }) => (
     </p>
 
     <p>{notes || 'No additional information'}</p>
-
-    <p>
-      Best Regards,
-      <br />
-      <strong>{APP_DATA.name} Team</strong>
-    </p>
   </TemplateLayout>
 )

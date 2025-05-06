@@ -2,7 +2,14 @@
 
 import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { FileText, Home, LucideIcon, ShoppingBag, Users } from 'lucide-react'
+import {
+  FileText,
+  Gift,
+  Home,
+  LucideIcon,
+  ShoppingBag,
+  Users,
+} from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -19,6 +26,7 @@ const NAVIGATION_LINKS: {
     href: ROUTES.adminCreatorApplications(),
     icon: FileText,
   },
+  { name: 'Rewards', href: ROUTES.adminRewards(), icon: Gift },
   // { name: 'Analytics', href: ROUTES.adminAnalytics(), icon: BarChart },
   // { name: 'Settings', href: ROUTES.adminSettings(), icon: Settings },
 ]

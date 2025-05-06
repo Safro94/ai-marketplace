@@ -15,6 +15,12 @@ export const TemplateLayout = ({ children, subject }: TemplateLayoutProps) => (
 
     <div style={content}>{children}</div>
 
+    <p>
+      Best Regards,
+      <br />
+      <strong>{APP_DATA.name} Team</strong>
+    </p>
+
     <div style={footer}>
       <a href={APP_DATA.url} target='_blank'>
         {APP_DATA.url}

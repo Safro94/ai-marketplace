@@ -72,6 +72,7 @@ export async function PATCH(
         revalidateTag(CACHE_KEYS.profile(creatorProfile.user.id))
 
         await notifyCreatorApplicationApproved({
+          name: creatorProfile.user.name,
           email: creatorProfile.user.email,
         })
       }
@@ -90,6 +91,7 @@ export async function PATCH(
     } else {
       if (creatorProfile) {
         await notifyCreatorApplicationRejected({
+          name: creatorProfile.user.name,
           email: creatorProfile.user.email,
           notes: reviewNotes,
         })

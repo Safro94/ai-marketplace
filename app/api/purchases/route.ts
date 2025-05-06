@@ -189,6 +189,7 @@ export async function POST(request: Request) {
     )
 
     await notifyBuyerOrderCompleted({
+      name: user.name,
       email: user.email,
     })
 

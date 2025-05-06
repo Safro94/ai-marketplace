@@ -14,7 +14,7 @@ export const header: CSSProperties = {
 }
 
 export const content: CSSProperties = {
-  padding: '20px',
+  padding: 0,
 }
 
 export const footer: CSSProperties = {

@@ -39,6 +39,7 @@ export const ROUTES = {
   admin: () => '/admin',
   adminUsers: () => '/admin/users',
   adminAssets: () => '/admin/assets',
+  adminRewards: () => '/admin/rewards',
   adminCreatorApplications: () => '/admin/creator-applications',
   adminAnalytics: () => '/admin/analytics',
   adminSettings: () => '/admin/settings',
@@ -51,10 +52,12 @@ export const ROUTES = {
 }
 
 export const API_ROUTES = {
-  adminCreatorApplications: () => '/api/admin/creator-applications',
   userProfile: () => '/api/user/profile',
   licenses: () => '/api/licenses',
   favorites: () => '/api/favorites',
+
+  adminCreatorApplications: () => '/api/admin/creator-applications',
+  adminRewards: () => '/api/admin/rewards',
 
   assets: () => '/api/assets',
   assetsUpload: () => '/api/assets/upload',

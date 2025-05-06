@@ -1,4 +1,3 @@
-import { APP_DATA } from '@/lib/constants'
 import { FC } from 'react'
 import { TemplateLayout } from './template-layout'
 
@@ -18,11 +17,5 @@ export const CreatorAssetSell: FC<Props> = ({ assetName, creatorUsername }) => (
     </p>
 
     <p>Thank you for your great work!</p>
-
-    <p>
-      Best Regards,
-      <br />
-      <strong>{APP_DATA.name} Team</strong>
-    </p>
   </TemplateLayout>
 )

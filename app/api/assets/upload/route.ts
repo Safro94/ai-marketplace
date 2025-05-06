@@ -95,9 +95,17 @@ export async function POST(request: Request) {
     revalidateTag(CACHE_KEYS.assetById(asset.id))
 
     if (moderationResult.status === AssetStatus.PUBLISHED) {
-      await notifyAssetApproved({ assetName: asset.title, email: user.email })
+      await notifyAssetApproved({
+        name: user.name,
+        email: user.email,
+        assetName: asset.title,
+      })
     } else if (moderationResult.status === AssetStatus.REJECTED) {
-      await notifyAssetRejected({ assetName: asset.title, email: user.email })
+      await notifyAssetRejected({
+        name: user.name,
+        email: user.email,
+        assetName: asset.title,
+      })
     }
 
     // // Notify admins if manual review is needed

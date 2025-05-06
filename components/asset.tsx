@@ -40,7 +40,6 @@ export const Asset: FC<
     <Link
       href={ROUTES.assetsDetail(id)}
       key={id}
-      prefetch
       className='group relative bg-background rounded-xl shadow-md transition-shadow duration-300 overflow-hidden border border-white hover:border-primary dark:border-primary dark:hover:border-white'
     >
       <div className='aspect-video overflow-hidden'>

@@ -44,7 +44,6 @@ export const HeaderNav: FC<Props> = ({
     <nav className={cn('flex gap-6', className)}>
       {links.map((item) => (
         <Link
-          prefetch
           key={item.name}
           href={item.href}
           onClick={onClick}

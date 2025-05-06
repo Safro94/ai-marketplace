@@ -1,14 +1,14 @@
-import { APP_DATA } from '@/lib/constants'
 import { FC } from 'react'
 import { TemplateLayout } from './template-layout'
 
 interface Props {
+  name: string
   assetName: string
 }
 
-export const AssetApproved: FC<Props> = ({ assetName }) => (
+export const AssetApproved: FC<Props> = ({ name, assetName }) => (
   <TemplateLayout subject='Congratulations! Your asset has been approved'>
-    <p>Dear Creator,</p>
+    <p>Dear {name},</p>
 
     <p>
       We are pleased to inform you that your asset <strong>{assetName}</strong>{' '}
@@ -17,11 +17,5 @@ export const AssetApproved: FC<Props> = ({ assetName }) => (
     </p>
 
     <p>Thank you for submitting your asset!</p>
-
-    <p>
-      Best Regards,
-      <br />
-      <strong>{APP_DATA.name} Team</strong>
-    </p>
   </TemplateLayout>
 )

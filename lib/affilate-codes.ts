@@ -2,7 +2,6 @@ import RandExp from 'randexp'
 import prisma from './prisma'
 
 const VALID_CHARS = '[a-zA-Z0-9!@#$%^&*_-]{8}'
-const VALID_LENGTH = 8
 
 export const createAffiliateCode = async () => {
   let isUnique = false
@@ -43,11 +42,4 @@ const generateAffiliateCode = () => {
       `Error generating affiliate code: ${error instanceof Error ? error.message : error}`,
     )
   }
-}
-
-export const isCodeValid = (code: string) => {
-  if (!code || code.length < VALID_LENGTH) return false
-
-  const regexPattern = new RegExp(VALID_CHARS)
-  return regexPattern.test(code)
 }

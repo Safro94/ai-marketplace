@@ -49,7 +49,7 @@ export const FeaturedSection = async () => {
 
         <div className='flex justify-center'>
           <Button asChild>
-            <Link href={ROUTES.explore()} prefetch>
+            <Link href={ROUTES.explore()}>
               View all assets
               <ArrowRight className='ml-2 h-4 w-4' />
             </Link>

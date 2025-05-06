@@ -11,7 +11,7 @@ export const CartButton = () => {
 
   return (
     <Button variant='outline' size='sm' asChild className='relative'>
-      <Link href={ROUTES.cart()} prefetch>
+      <Link href={ROUTES.cart()}>
         <ShoppingCart className='h-4 w-4' />
 
         {!!totalItems && (
