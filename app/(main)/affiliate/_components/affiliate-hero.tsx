@@ -1,11 +1,19 @@
 import { Button } from '@/components/ui/button'
+import { getUserProfile } from '@/data-access/profile'
 import { ROUTES } from '@/lib/constants'
+import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export const AffiliateHero = async () => {
   const session = await getServerSession()
+
+  let profile
+
+  if (session?.user) {
+    profile = await getUserProfile(session.user.id)
+  }
 
   return (
     <section className='relative bg-primary text-white overflow-hidden'>
@@ -42,11 +50,18 @@ export const AffiliateHero = async () => {
           </p>
 
           <div className='flex flex-col sm:flex-row gap-4'>
-            {!session?.user && (
-              <Button size='lg' variant='secondary' asChild>
+            <Button size='lg' variant='secondary' asChild>
+              {!session?.user ? (
                 <Link href={ROUTES.signUp()}>Sign Up</Link>
-              </Button>
-            )}
+              ) : isAdminOrCreator(profile) ? (
+                <Link href={ROUTES.creatorDashboard()}>
+                  Go to Creator Dashboard
+                  <ArrowRight className='ml-2 h-4 w-4' />
+                </Link>
+              ) : (
+                <Link href={ROUTES.dashboard()}>Go to dashboard</Link>
+              )}
+            </Button>
 
             <Button size='lg' variant='outline' asChild>
               <a href='#how-it-works'>

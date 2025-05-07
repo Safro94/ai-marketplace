@@ -43,7 +43,7 @@ export const HomeSectionTitle: FC<HTMLAttributes<HTMLHeadingElement>> = ({
   return (
     <h2
       className={cn(
-        'text-3xl md:text-4xl font-bold tracking-tight dark:text-primary-foreground',
+        'text-3xl md:text-4xl font-bold mb-2 dark:text-primary-foreground',
         className,
       )}
       {...rest}
@@ -59,7 +59,7 @@ export const HomeSectionDescription: FC<
   return (
     <p
       className={cn(
-        'text-sm md:text-lg text-muted-foreground max-w-sm md:max-w-2xl mx-auto',
+        'text-sm md:text-xl text-muted-foreground max-w-sm md:max-w-2xl mx-auto',
         className,
       )}
       {...rest}

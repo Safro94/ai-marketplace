@@ -1,3 +1,9 @@
+import {
+  HomeSection,
+  HomeSectionDescription,
+  HomeSectionTitle,
+  HomeSectionTitleContainer,
+} from '@/components/page-container'
 import { Card, CardContent } from '@/components/ui/card'
 import { ROUTES } from '@/lib/constants'
 import affiliate from '@/public/affiliate.svg'
@@ -13,21 +19,16 @@ export default function AffiliatePage() {
     <div>
       <AffiliateHero />
 
-      <section
-        id='how-it-works'
-        className='py-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto'
-      >
-        <div className='text-center mb-12'>
-          <h2 className='text-3xl md:text-4xl font-bold mb-4'>
-            How Our Affiliate Program Works
-          </h2>
+      <HomeSection id='how-it-works' className='max-w-7xl mx-auto'>
+        <HomeSectionTitleContainer>
+          <HomeSectionTitle>How Our Affiliate Program Works</HomeSectionTitle>
 
-          <p className='text-lg text-muted-foreground max-w-3xl mx-auto'>
+          <HomeSectionDescription>
             Everyone gets rewarded. Whether you&apos;re a regular user or a
             creator, our affiliate program offers increasing benefits as you
             grow.
-          </p>
-        </div>
+          </HomeSectionDescription>
+        </HomeSectionTitleContainer>
 
         <div className='grid md:grid-cols-2 gap-12 items-center'>
           <div>
@@ -91,20 +92,18 @@ export default function AffiliatePage() {
             </div>
           </div>
         </div>
-      </section>
+      </HomeSection>
 
-      <section className='py-16 px-4 md:px-6 lg:px-8 bg-background'>
+      <HomeSection className='bg-muted'>
         <div className='max-w-7xl mx-auto'>
-          <div className='text-center mb-12'>
-            <h2 className='text-3xl md:text-4xl font-bold mb-4'>
-              Affiliate Benefits
-            </h2>
+          <HomeSectionTitleContainer className='text-center mb-12'>
+            <HomeSectionTitle>Affiliate Benefits</HomeSectionTitle>
 
-            <p className='text-lg text-muted-foreground max-w-3xl mx-auto'>
+            <HomeSectionDescription>
               Our program rewards you more as your referrals grow. See how your
               benefits increase over time.
-            </p>
-          </div>
+            </HomeSectionDescription>
+          </HomeSectionTitleContainer>
 
           <div className='grid md:grid-cols-[500px_500px] justify-center gap-12'>
             <BenefitTiers
@@ -127,18 +126,16 @@ export default function AffiliatePage() {
             />
           </div>
         </div>
-      </section>
+      </HomeSection>
 
-      <section className='py-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto'>
-        <div className='text-center mb-12'>
-          <h2 className='text-3xl md:text-4xl font-bold mb-4'>
-            Frequently Asked Questions
-          </h2>
+      <HomeSection className='max-w-7xl mx-auto'>
+        <HomeSectionTitleContainer>
+          <HomeSectionTitle>Frequently Asked Questions</HomeSectionTitle>
 
-          <p className='text-lg text-muted-foreground max-w-3xl mx-auto'>
+          <HomeSectionDescription>
             Get answers to common questions about our affiliate program.
-          </p>
-        </div>
+          </HomeSectionDescription>
+        </HomeSectionTitleContainer>
 
         <div className='grid md:grid-cols-2 gap-6'>
           <Card>
@@ -198,7 +195,7 @@ export default function AffiliatePage() {
             </CardContent>
           </Card>
         </div>
-      </section>
+      </HomeSection>
 
       <AffiliateCTASection />
     </div>
