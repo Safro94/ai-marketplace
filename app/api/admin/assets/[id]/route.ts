@@ -41,13 +41,15 @@ export async function POST(
 
     if (status === AssetStatus.PUBLISHED && creatorUser) {
       await notifyAssetApproved({
-        assetName: asset.title,
+        name: creatorUser.user.name,
         email: creatorUser.user.email,
+        assetName: asset.title,
       })
     } else if (status === AssetStatus.REJECTED && creatorUser) {
       await notifyAssetRejected({
-        assetName: asset.title,
+        name: creatorUser.user.name,
         email: creatorUser.user.email,
+        assetName: asset.title,
       })
     }
 

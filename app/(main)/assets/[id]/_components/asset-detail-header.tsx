@@ -28,7 +28,7 @@ type Props = Prisma.AssetGetPayload<{
 export const AssetDetailHeader: FC<Props> = ({
   title,
   averageRating,
-  sales,
+  totalSales,
   creator,
   category,
   reviews,
@@ -66,7 +66,7 @@ export const AssetDetailHeader: FC<Props> = ({
           </span>
         </div>
 
-        <div className='text-sm text-muted-foreground'>{sales} sales</div>
+        <div className='text-sm text-muted-foreground'>{totalSales} sales</div>
 
         <Badge>{category.name}</Badge>
       </div>
