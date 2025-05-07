@@ -4,6 +4,7 @@ import { useValidateCaptcha } from '@/hooks/use-validate-captcha'
 import { authClient } from '@/lib/auth-client'
 import { ROUTES } from '@/lib/constants'
 import { OAuthProviders } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import { FC, useTransition } from 'react'
 import { GithubIcon, GoogleIcon } from './icons'
 import { Button } from './ui/button'
@@ -17,18 +18,27 @@ export const SocialButtons: FC<{ sign: 'in' | 'up' }> = ({ sign }) => {
     <>
       {Object.values(OAuthProviders).map((provider) => {
         const icon = {
-          google: GoogleIcon,
-          github: GithubIcon,
+          google: { icon: GoogleIcon, bgColor: '#FFF', textColor: '#000' },
+          github: { icon: GithubIcon, bgColor: '#444', textColor: '#FFF' },
         }
 
-        const Icon = icon[provider]
+        const Icon = icon[provider].icon
 
         return (
           <Button
             key={provider}
+            className={cn(
+              'h-[55px] font-bold',
+              provider === OAuthProviders.GOOGLE && 'hover:!bg-slate-100',
+              provider === OAuthProviders.GITHUB && 'hover:!bg-black',
+            )}
             variant='outline'
             type='button'
             disabled={isPending}
+            style={{
+              background: icon[provider].bgColor,
+              color: icon[provider].textColor,
+            }}
             onClick={async () => {
               await validateCaptcha()
 
@@ -47,7 +57,12 @@ export const SocialButtons: FC<{ sign: 'in' | 'up' }> = ({ sign }) => {
               })
             }}
           >
-            <Icon className='mr-2 h-4 w-4' />
+            <Icon
+              className='mr-2 h-4 w-4'
+              style={{
+                fill: icon[provider].textColor,
+              }}
+            />
             Sign {sign} with {provider}
           </Button>
         )

@@ -1,5 +1,3 @@
-import { Footer } from '@/components/footer'
-import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/toast'
 import { generateOrganizationJsonLd, siteConfig } from '@/lib/seo-config'
 import { cn } from '@/lib/utils'
@@ -91,9 +89,7 @@ export default function RootLayout({
 
         <Providers>
           <div className='min-h-screen grid grid-rows-[max-content_1fr_max-content]'>
-            <Header />
             <main className='bg-main-background overflow-auto'>{children}</main>
-            <Footer />
           </div>
 
           <Toaster richColors />
