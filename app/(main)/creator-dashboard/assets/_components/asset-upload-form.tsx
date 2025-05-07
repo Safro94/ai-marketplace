@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
+import { useBeforePageUnload } from '@/hooks/use-before-page-unload'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { assetUploadSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -50,8 +51,10 @@ interface Props {
 }
 
 export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
+  useBeforePageUnload(true)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+
   const form = useForm<FormData>({
     resolver: zodResolver(assetUploadSchema),
     defaultValues: {

@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { useBeforePageUnload } from '@/hooks/use-before-page-unload'
 import { ROUTES } from '@/lib/constants'
 import { CartItem } from '@/lib/types'
 import Link from 'next/link'
@@ -24,6 +25,7 @@ interface Props {
 
 export const CheckoutContainer: FC<Props> = ({ cartItems, cartTotal }) => {
   const [isPurchasing, setIsPurchasing] = useState(false)
+  useBeforePageUnload(isPurchasing)
 
   return (
     <>
