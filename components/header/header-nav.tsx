@@ -23,7 +23,10 @@ const getCreatorsLinks = (
       !hasPendingApplication &&
       link.href === ROUTES.creators()
     ) {
-      link.href = ROUTES.creatorDashboard()
+      return {
+        ...link,
+        href: ROUTES.creatorDashboard(),
+      }
     }
 
     return link
