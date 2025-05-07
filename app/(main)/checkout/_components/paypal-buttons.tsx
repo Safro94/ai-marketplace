@@ -120,20 +120,18 @@ const Buttons: FC<ButtonsProps> = ({
       createOrder={async () => {
         setIsPurchasing(true)
 
-        const { data: response, error } = await tryCatch(
-          fetch(API_ROUTES.checkout(), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              paypalData,
-              affiliateCode: affiliateCode?.code,
-            }),
+        const response = await fetch(API_ROUTES.checkout(), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            paypalData,
+            affiliateCode: affiliateCode?.code,
           }),
-        )
+        })
 
-        if (error || !response) {
+        if (!response.ok) {
           toast.error('Error', {
             description:
               'There was an error creating the order, please try again later or contact support',
@@ -144,6 +142,7 @@ const Buttons: FC<ButtonsProps> = ({
 
         const order = await response.json()
         setIsPurchasing(false)
+
         return order.id
       }}
       onApprove={async (_data, actions) => {
@@ -152,50 +151,35 @@ const Buttons: FC<ButtonsProps> = ({
 
         if (!actions.order) throw Error('Order not found')
 
-        const { data: payment, error } = await tryCatch(
-          actions.order?.capture(),
-        )
+        const { payer, purchase_units, id } = await actions.order?.capture()
 
-        if (error || !payment) {
-          throw Error('Error while capturing the payment')
-        }
-
-        const { payer, purchase_units } = payment
-
-        const { data: response, error: createPurchaseError } = await tryCatch(
-          fetch(`${API_ROUTES.purchases()}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
+        const response = await fetch(`${API_ROUTES.purchases()}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            affiliateCode: affiliateCode?.code,
+            paypalOrderId: id,
+            paymentDetails: {
+              ...payer,
+              ...purchase_units,
             },
-            body: JSON.stringify({
-              affiliateCode: affiliateCode?.code,
-              paypalOrderId: payment.id,
-              paymentDetails: {
-                ...payer,
-                ...purchase_units,
-              },
-            }),
           }),
-        )
+        })
 
         if (!response?.ok) {
           const data = await response?.json()
-          loader.remove()
+          loader.done()
+
+          toast.error('Error', {
+            description:
+              "There was an issue with processing your payment. Please review your purchases to confirm if the payment was completed. If it hasn't gone through, try again later or reach out to support for assistance.",
+          })
 
           throw new Error(
             data.error || 'Failed to save purchase, please contact support.',
           )
-        }
-
-        if (createPurchaseError) {
-          toast.error('Error', {
-            description:
-              'There was an error while saving the purchase, please contact support.',
-          })
-
-          loader.remove()
-          throw new Error(createPurchaseError)
         }
 
         toast.success('Successful purchase', {
@@ -215,11 +199,13 @@ const Buttons: FC<ButtonsProps> = ({
         router.push(`${ROUTES.checkoutSuccess()}`)
       }}
       onError={() => {
-        loader.remove()
+        setIsPurchasing(false)
+        loader.done()
 
         toast.error('Error', {
+          duration: 6000,
           description:
-            'There was an error processing your payment, please try again later or contact support',
+            "There was an issue with processing your payment. Please review your purchases to confirm if the payment was completed. If it hasn't gone through, try again later or reach out to support for assistance.",
         })
       }}
     />
