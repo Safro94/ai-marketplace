@@ -1,4 +1,4 @@
-import { EMAIL_FROM } from '@/lib/constants'
+import { EMAIL_FROM, EMAILS_DISABLED } from '@/lib/constants'
 import { resend } from '@/lib/resend'
 import { Purchase } from '@prisma/client'
 import { AssetApproved } from './email-templates/asset-approved'
@@ -16,6 +16,8 @@ export const notifyPlatformSellCompleted = async ({
 }: {
   purchase: Purchase
 }) => {
+  if (EMAILS_DISABLED) return
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: 'aiassethub@gmail.com',
@@ -40,6 +42,8 @@ export const notifyCreatorSellCompleted = async ({
   creatorUsername: string
   assetName: string
 }) => {
+  if (EMAILS_DISABLED) return
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: creatorEmail,
@@ -63,6 +67,8 @@ export const notifyBuyerOrderCompleted = async ({
   name: string
   email: string
 }) => {
+  if (EMAILS_DISABLED) return
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: email,
@@ -85,6 +91,8 @@ export const notifyAssetApproved = async ({
   email: string
   assetName: string
 }) => {
+  if (EMAILS_DISABLED) return
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: email,
@@ -107,6 +115,8 @@ export const notifyAssetRejected = async ({
   email: string
   assetName: string
 }) => {
+  if (EMAILS_DISABLED) return
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: email,
@@ -127,6 +137,8 @@ export const notifyCreatorApplicationApproved = async ({
   name: string
   email: string
 }) => {
+  if (EMAILS_DISABLED) return
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: email,
@@ -149,6 +161,8 @@ export const notifyCreatorApplicationRejected = async ({
   email: string
   notes: string | undefined
 }) => {
+  if (EMAILS_DISABLED) return
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: email,

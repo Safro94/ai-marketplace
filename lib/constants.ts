@@ -150,6 +150,7 @@ export const TRANSITION_DELAY = 0.2
 export const TWITTER_URL = 'https://x.com/AIAssetHub'
 export const LINKEDIN_URL = 'https://www.linkedin.com/company/aiassethub'
 export const INFINITE_SCROLL_NUMBER_OF_ITEMS = 10
+export const EMAILS_DISABLED = process.env.NODE_ENV === 'development'
 
 export const HEADER_LINKS = [
   { name: 'Home', href: ROUTES.home() },
