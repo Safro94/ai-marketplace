@@ -35,23 +35,23 @@ export const HeroSection = async () => {
             }}
           >
             <Badge className='mb-6 py-1.5 px-6 bg-transparent text-primary dark:text-white border-purple-200 hover:bg-[initial'>
-              Just Launched 🚀 Discover our AI-Powered Tools marketplace
+              Just Launched 🚀 Discover our AI-Powered Products marketplace
             </Badge>
 
             <h1 className='text-3xl md:text-8xl font-bold text-primary dark:text-primary-foreground px-2'>
               The marketplace for <br />
-              premium AI-Powered Tools
+              premium AI-Powered Products
             </h1>
 
-            <HomeSectionDescription className='text-slate-400 md:text-3xl max-w-none'>
-              Discover high-quality AI prompt systems, custom GPTs, and
-              specialized tools created by experts.
+            <HomeSectionDescription className='text-slate-400 md:text-3xl md:max-w-3xl'>
+              Discover high-quality AI prompt systems, custom GPTs, AI Artwork,
+              and specialized tools created by experts.
             </HomeSectionDescription>
 
             <div className='flex flex-col md:flex-row md:justify-center gap-4 pt-4'>
               <Button size='lg' asChild>
                 <Link href={ROUTES.explore()}>
-                  Browse AI Tools
+                  Browse AI Products
                   <ArrowRight className='ml-2 h-4 w-4' />
                 </Link>
               </Button>

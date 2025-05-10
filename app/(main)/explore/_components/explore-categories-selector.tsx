@@ -4,15 +4,7 @@ import { Button } from '@/components/ui/button'
 import { EXPLORE_PARAMS } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { Category } from '@prisma/client'
-import {
-  Bot,
-  Briefcase,
-  Database,
-  FileText,
-  LucideIcon,
-  MessageSquare,
-  Workflow,
-} from 'lucide-react'
+import * as LucideIcons from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useState } from 'react'
 
@@ -22,15 +14,6 @@ interface Props {
     {
       count: number
     }[]
-}
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  MessageSquare: MessageSquare,
-  Bot: Bot,
-  Workflow: Workflow,
-  Briefcase: Briefcase,
-  FileText: FileText,
-  Database: Database,
 }
 
 export const ExploreCategoriesSelector: FC<Props> = ({
@@ -70,9 +53,8 @@ export const ExploreCategoriesSelector: FC<Props> = ({
       {categories.map((category) => {
         // Get the icon component or default to MessageSquare
         const IconComponent =
-          category.iconName && ICON_MAP[category.iconName]
-            ? ICON_MAP[category.iconName]
-            : MessageSquare
+          // @ts-expect-error error
+          LucideIcons[category.iconName ?? 'MessageSquare']
 
         return (
           <Button

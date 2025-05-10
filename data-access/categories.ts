@@ -12,11 +12,7 @@ export const getCategoriesWithCount = withErrorHandler(async () => {
   unstable_cacheLife('hours')
 
   // Fetch categories from the database
-  const categories = await prisma.category.findMany({
-    orderBy: {
-      name: 'asc',
-    },
-  })
+  const categories = await prisma.category.findMany()
 
   // Count assets in each category and get featured assets
   const categoriesWithData = await Promise.all(
@@ -35,6 +31,8 @@ export const getCategoriesWithCount = withErrorHandler(async () => {
       }
     }),
   )
+
+  categoriesWithData.sort((a, b) => b.count - a.count)
 
   return categoriesWithData
 })

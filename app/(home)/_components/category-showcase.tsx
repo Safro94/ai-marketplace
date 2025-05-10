@@ -2,27 +2,9 @@ import { ErrorToast } from '@/components/error-toast'
 import { getCategoriesWithCount } from '@/data-access/categories'
 import { ROUTES } from '@/lib/constants'
 import { EXPLORE_PARAMS } from '@/lib/types'
-import { cn } from '@/lib/utils'
-import {
-  Bot,
-  Briefcase,
-  Database,
-  FileText,
-  LucideIcon,
-  MessageSquare,
-  Workflow,
-} from 'lucide-react'
+import * as LucideIcons from 'lucide-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
-
-const iconMap: Record<string, LucideIcon> = {
-  MessageSquare: MessageSquare,
-  Bot: Bot,
-  Workflow: Workflow,
-  Briefcase: Briefcase,
-  FileText: FileText,
-  Database: Database,
-}
 
 export const CategoryShowcase = async () => {
   const { data, error } = await getCategoriesWithCount()
@@ -37,20 +19,15 @@ export const CategoryShowcase = async () => {
 
       <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
         {data?.map((category, i) => {
-          // Get the icon component or default to MessageSquare
           const IconComponent =
-            category.iconName && iconMap[category.iconName]
-              ? iconMap[category.iconName]
-              : MessageSquare
+            // @ts-expect-error error
+            LucideIcons[category.iconName ?? 'MessageSquare']
 
           return (
             <Link
               key={i}
               href={`${ROUTES.explore()}?${[EXPLORE_PARAMS.CATEGORY]}=${category.slug}`}
-              className={cn(
-                'group bg-gray-50 dark:bg-background dark:border dark:border-primary rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden',
-                (i === 4 || i === 5) && 'lg:col-span-2',
-              )}
+              className='group bg-gray-50 dark:bg-background dark:border dark:border-primary rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden'
             >
               <div className='absolute inset-0 bg-primary/5 transform origin-bottom scale-y-0 transition-transform group-hover:scale-y-100' />
 

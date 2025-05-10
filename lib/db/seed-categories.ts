@@ -7,7 +7,7 @@ const CATEGORIES = [
     description:
       'Advanced prompt frameworks and systems for optimizing AI outputs',
     iconName: 'MessageSquare',
-    colorClass: 'bg-purple-500/10 text-purple-500',
+    colorClass: 'text-purple-500',
   },
   {
     name: 'Custom GPTs & AI Agents',
@@ -15,14 +15,14 @@ const CATEGORIES = [
     description:
       'Specialized AI assistants designed for specific tasks and industries',
     iconName: 'Bot',
-    colorClass: 'bg-blue-500/10 text-blue-500',
+    colorClass: 'text-blue-500',
   },
   {
     name: 'AI Workflow Automations',
     slug: 'ai-workflows',
     description: 'Ready-to-use automation templates for business processes',
     iconName: 'Workflow',
-    colorClass: 'bg-green-500/10 text-green-500',
+    colorClass: 'text-green-500',
   },
   {
     name: 'Industry-Specific Solutions',
@@ -30,21 +30,36 @@ const CATEGORIES = [
     description:
       'Tailored AI assets for specific industries and business needs',
     iconName: 'Briefcase',
-    colorClass: 'bg-amber-500/10 text-amber-500',
+    colorClass: 'text-amber-500',
   },
   {
     name: 'Content Creation Templates',
     slug: 'content-templates',
     description: 'Templates for creating various types of content efficiently',
     iconName: 'FileText',
-    colorClass: 'bg-pink-500/10 text-pink-500',
+    colorClass: 'text-pink-500',
   },
   {
     name: 'Data Analysis Tools',
     slug: 'data-tools',
     description: 'AI tools for analyzing and visualizing data effectively',
     iconName: 'Database',
-    colorClass: 'bg-cyan-500/10 text-cyan-500',
+    colorClass: 'text-cyan-500',
+  },
+  {
+    name: 'AI Image Generation',
+    slug: 'ai-images',
+    description:
+      'Tools and prompts for creating and editing AI-generated images',
+    iconName: 'Image',
+    colorClass: 'text-red-500',
+  },
+  {
+    name: 'AI Artwork',
+    slug: 'ai-artwork',
+    description: 'Upload and showcase your AI-generated artwork and designs',
+    iconName: 'Upload',
+    colorClass: 'text-fuschia-500',
   },
 ]
 
