@@ -29,6 +29,7 @@ export const RelatedAssets: FC<Props> = async ({
       totalReviews: true,
       basePrice: true,
       primaryMediaType: true,
+      galleryImages: true,
 
       category: {
         select: {
@@ -66,6 +67,7 @@ export const RelatedAssets: FC<Props> = async ({
         totalReviews: true,
         basePrice: true,
         primaryMediaType: true,
+        galleryImages: true,
 
         category: {
           select: {

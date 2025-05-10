@@ -30,9 +30,10 @@ type Props = Prisma.PurchaseGetPayload<{
           select: {
             id: true
             title: true
+            assetFile: true
             description: true
             featuredImage: true
-            assetFile: true
+            primaryMediaType: true
 
             category: {
               select: {

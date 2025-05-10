@@ -50,7 +50,7 @@ export const FavoritesList: FC<Props> = ({ favorites }) => {
       initialData={favorites}
       endpointUrl={API_ROUTES.dashboardFavorites()}
       ItemComponent={(item) => <Asset {...item.asset} />}
-      itemsContainerClassName='py-4 grid grid-cols-[repeat(auto-fill, minmax(0,1fr))] md:grid-cols-[repeat(auto-fill,minmax(325px,1fr))] gap-3'
+      itemsContainerClassName='py-4 grid grid-cols-[repeat(auto-fill, minmax(0,1fr))] lg:grid-cols-3 gap-3'
     />
   )
 }

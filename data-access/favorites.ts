@@ -42,6 +42,8 @@ export const getDashboardFavoritesByProfileId = async ({
           description: true,
           averageRating: true,
           basePrice: true,
+          primaryMediaType: true,
+
           category: {
             select: {
               name: true,
