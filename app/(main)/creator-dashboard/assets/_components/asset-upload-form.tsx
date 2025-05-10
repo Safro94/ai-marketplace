@@ -309,9 +309,8 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                       Well-documented products receive higher ratings and fewer
                       support requests. Consider including: A README file with
                       clear instructions | Configuration guides and exampless |
-                      Troubleshooting tips for common issues | Links to any
-                      additional resources or documentation | Contact
-                      information for support questions
+                      Troubleshooting tips for common issues | Links to
+                      resources | Contact information for support questions
                     </CardDescription>
                   </CardHeader>
 
