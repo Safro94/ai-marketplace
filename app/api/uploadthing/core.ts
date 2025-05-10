@@ -39,6 +39,14 @@ export const fileRouter = {
     }),
 
   assetUploadFile: f({
+    image: {
+      maxFileCount: 1,
+      maxFileSize: '2MB',
+    },
+    'application/xslt+xml': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
     'application/json': {
       maxFileCount: 1,
       maxFileSize: '4MB',
