@@ -90,7 +90,7 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='flex flex-col gap-4'>
       {assets.map((asset) => {
         return (
           <Card key={asset.id}>

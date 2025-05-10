@@ -46,9 +46,7 @@ const Component = async () => {
           </p>
         </div>
       ) : (
-        <div className='flex flex-col gap-4'>
-          <CreatorDashboardSalesList recentSales={recentSales} />
-        </div>
+        <CreatorDashboardSalesList recentSales={recentSales} />
       )}
     </>
   )
