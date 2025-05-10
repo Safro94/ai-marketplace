@@ -20,7 +20,16 @@ export const RelatedAssets: FC<Props> = async ({
       categoryId: categoryId,
       status: AssetStatus.PUBLISHED,
     },
-    include: {
+    select: {
+      id: true,
+      featuredImage: true,
+      title: true,
+      description: true,
+      averageRating: true,
+      totalReviews: true,
+      basePrice: true,
+      primaryMediaType: true,
+
       category: {
         select: {
           name: true,
@@ -48,7 +57,16 @@ export const RelatedAssets: FC<Props> = async ({
         id: { not: currentAssetId },
         status: AssetStatus.PUBLISHED,
       },
-      include: {
+      select: {
+        id: true,
+        featuredImage: true,
+        title: true,
+        description: true,
+        averageRating: true,
+        totalReviews: true,
+        basePrice: true,
+        primaryMediaType: true,
+
         category: {
           select: {
             name: true,

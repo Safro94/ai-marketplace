@@ -19,13 +19,20 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { useBeforePageUnload } from '@/hooks/use-before-page-unload'
 import { API_ROUTES, ROUTES } from '@/lib/constants'
 import { assetUploadSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AssetStatus, Category, LicenseType, Prisma } from '@prisma/client'
+import {
+  AssetStatus,
+  Category,
+  LicenseType,
+  PrimaryMediaType,
+  Prisma,
+} from '@prisma/client'
 import DOMPurify from 'isomorphic-dompurify'
 import { useRouter } from 'next/navigation'
 import { FC, useTransition } from 'react'
@@ -64,6 +71,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
       features: initialData?.features.join(',') || '',
       requirements: initialData?.requirements.join(',') || '',
       featuredImage: initialData?.featuredImage || '',
+      primaryMediaType: initialData?.primaryMediaType || PrimaryMediaType.IMAGE,
       assetFile: initialData?.assetFile || '',
       galleryImages: initialData?.galleryImages || [],
       licenses: initialData?.assetLicenses || [
@@ -152,6 +160,46 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
     })
   }
 
+  const getPrimaryMediaCopy = () => {
+    switch (watchedPrimaryMediaType) {
+      case PrimaryMediaType.IMAGE:
+        return (
+          <div>
+            The main image displayed for your product. This is what customers
+            will see first.
+            <ul className='list-disc px-4'>
+              <li>Use 16:9 aspect ratio for optimal display across devices</li>
+              <li>
+                Optimize your image for faster loading (under 2MB recommended)
+              </li>
+              <li>High-quality, well-lit photos increase conversion rates</li>
+            </ul>
+          </div>
+        )
+      case PrimaryMediaType.VIDEO:
+        return (
+          <div>
+            The featured video showcasing your product in action.
+            <ul className='list-disc px-4'>
+              <li>Keep videos under 30 seconds for best engagement</li>
+              <li>Use 16:9 aspect ratio for consistent display</li>
+              <li>Include captions as many viewers watch without sound</li>
+            </ul>
+          </div>
+        )
+
+      default:
+        return null
+    }
+  }
+
+  const handleTabClick = (tab: PrimaryMediaType) => {
+    form.setValue('primaryMediaType', tab)
+    form.setValue('featuredImage', '')
+  }
+
+  const watchedPrimaryMediaType = form.watch('primaryMediaType')
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -190,19 +238,62 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
           <div className='space-y-4'>
             <div>
               <h3 className='text-lg font-medium mb-2'>Product Files</h3>
-              <div className='grid md:grid-cols-2 md:items-stretch gap-4'>
+              <div className='grid lg:grid-cols-2 lg:items-stretch gap-4'>
                 <Card className='grid grid-rows-[max-content_1fr]'>
                   <CardHeader>
-                    <CardTitle>Featured Image</CardTitle>
-                    <CardDescription>
-                      The main image displayed for your product. Tip: use 16 / 9
-                      aspect ratio so your image always looks good and make sure
-                      to optmize your image for faster loading.
-                    </CardDescription>
+                    <CardTitle>Primary Media</CardTitle>
+                    <CardDescription>{getPrimaryMediaCopy()}</CardDescription>
                   </CardHeader>
 
-                  <CardContent className='flex'>
-                    <AssetImageUpload formField='featuredImage' form={form} />
+                  <CardContent>
+                    <Tabs defaultValue={form.getValues('primaryMediaType')}>
+                      <TabsList>
+                        <TabsTrigger
+                          value={PrimaryMediaType.IMAGE}
+                          onClick={() => handleTabClick(PrimaryMediaType.IMAGE)}
+                        >
+                          Image
+                        </TabsTrigger>
+
+                        <TabsTrigger
+                          value={PrimaryMediaType.VIDEO}
+                          onClick={() => handleTabClick(PrimaryMediaType.VIDEO)}
+                        >
+                          Video
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value={PrimaryMediaType.IMAGE}>
+                        <AssetImageUpload
+                          formField='featuredImage'
+                          form={form}
+                        />
+                      </TabsContent>
+
+                      <TabsContent value={PrimaryMediaType.VIDEO}>
+                        <FormField
+                          control={form.control}
+                          name='featuredImage'
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Video URL</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+
+                              <FormDescription>
+                                Please provide the embed URL for your video
+                                (e.g., YouTube, Vimeo). Note: Regular video URLs
+                                (e.g., https://www.youtube.com/watch?v=example)
+                                will not work. Use the embed format instead
+                                (e.g., https://www.youtube.com/embed/example).
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </TabsContent>
+                    </Tabs>
                   </CardContent>
                 </Card>
 
@@ -210,8 +301,17 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   <CardHeader>
                     <CardTitle>Product File</CardTitle>
                     <CardDescription>
-                      The actual product file that buyers will download. Please
-                      make sure you add clear instructions on how to use it.
+                      This downloadable file contains all the necessary
+                      components of your AI product. After purchase, buyers will
+                      receive either this single file or a zip folder containing
+                      all required elements. Important: Please ensure your file
+                      includes clear setup and usage instructions.
+                      Well-documented products receive higher ratings and fewer
+                      support requests. Consider including: A README file with
+                      clear instructions | Configuration guides and exampless |
+                      Troubleshooting tips for common issues | Links to any
+                      additional resources or documentation | Contact
+                      information for support questions
                     </CardDescription>
                   </CardHeader>
 

@@ -1,3 +1,4 @@
+import { AssetPrimaryMedia } from '@/components/asset-primary-media'
 import { PageContainer } from '@/components/page-container'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -15,7 +16,6 @@ import { validateAdminProfile } from '@/lib/permissions'
 import { AssetStatus } from '@prisma/client'
 import { format } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
-import Image from 'next/image'
 import { AllCaughtUp } from '../_components/all-caught-up'
 import { ModerationActions } from './_components/moderation-actions'
 
@@ -83,15 +83,14 @@ export default async function ModerationPage() {
                     <div className='grid  md:grid-cols-3 gap-6'>
                       <div>
                         {asset.featuredImage ? (
-                          <div className='relative aspect-video rounded-md overflow-hidden'>
-                            <Image
-                              src={asset.featuredImage || '/placeholder.svg'}
-                              alt={asset.title}
-                              fill
-                              className='object-fill'
-                              priority
-                            />
-                          </div>
+                          <AssetPrimaryMedia
+                            alt={asset.title}
+                            src={asset.featuredImage}
+                            type={asset.primaryMediaType}
+                            classNames={{
+                              container: 'h-full w-full',
+                            }}
+                          />
                         ) : (
                           <div className='aspect-video bg-muted rounded-md flex items-center justify-center'>
                             <AlertCircle className='h-8 w-8 text-muted-foreground' />

@@ -1,5 +1,6 @@
 'use client'
 
+import { AssetPrimaryMedia } from '@/components/asset-primary-media'
 import { LoadingButton } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from '@/components/ui/toast'
@@ -8,7 +9,6 @@ import { ROUTES } from '@/lib/constants'
 import { CartItem as CartItemType } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
 import { Trash2 } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useTransition } from 'react'
 
@@ -43,15 +43,11 @@ export const CartItem: FC<Props> = ({ item, showActions }) => {
     <Card key={`${item.assetId}-${item.assetLicenseId}`}>
       <CardContent className='p-4'>
         <div className='flex flex-col gap-4 items-center text-center md:text-left md:flex-row'>
-          <div className='relative h-16 w-32 flex-shrink-0'>
-            <Image
-              src={item.image || '/placeholder.svg'}
-              alt={item.title}
-              className='object-fill rounded-lg'
-              fill
-              priority
-            />
-          </div>
+          <AssetPrimaryMedia
+            alt={item.title}
+            src={item.primaryMedia}
+            type={item.primaryMediaType}
+          />
 
           <div className='flex-1'>
             <div className='flex flex-col items-center md:items-start md:flex-row md:justify-between'>

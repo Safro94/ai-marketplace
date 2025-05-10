@@ -90,6 +90,8 @@ export const getPaginatedAssets = async ({
         description: true,
         averageRating: true,
         basePrice: true,
+        primaryMediaType: true,
+
         category: {
           select: {
             name: true,

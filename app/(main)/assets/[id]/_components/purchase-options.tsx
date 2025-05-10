@@ -7,7 +7,7 @@ import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
 import { LicenseOption } from '@/lib/types'
-import { LicenseType } from '@prisma/client'
+import { LicenseType, PrimaryMediaType } from '@prisma/client'
 import { ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, use, useState, useTransition } from 'react'
@@ -18,6 +18,7 @@ interface Props {
   assetTitle: string
   assetImage: string
   getLicenses: Promise<{ data: LicenseOption[] }>
+  primaryMediaType: PrimaryMediaType
 }
 
 export const PurchaseOptions: FC<Props> = ({
@@ -25,6 +26,7 @@ export const PurchaseOptions: FC<Props> = ({
   assetImage,
   assetTitle,
   getLicenses,
+  primaryMediaType,
 }) => {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -63,11 +65,12 @@ export const PurchaseOptions: FC<Props> = ({
     startTransition(async () => {
       await addToCart({
         assetId,
-        assetLicenseId: selectedLicense.licenseId,
+        primaryMediaType,
         title: assetTitle,
+        primaryMedia: assetImage,
         price: selectedLicense.price,
         licenseName: selectedLicense.name,
-        image: assetImage,
+        assetLicenseId: selectedLicense.licenseId,
       })
 
       toast.success('Added to cart', {

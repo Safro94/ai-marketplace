@@ -186,9 +186,10 @@ export default async function AssetPage({
           <div className='space-y-8'>
             <AssetDetailCarousel
               id={asset.id}
+              title={asset.title}
               featuredImage={asset.featuredImage}
               galleryImages={asset.galleryImages}
-              title={asset.title}
+              primaryMediaType={asset.primaryMediaType}
             />
 
             {/* Asset Details */}
@@ -218,9 +219,10 @@ export default async function AssetPage({
             <Suspense fallback={<LicenseSkeleton />}>
               <PurchaseOptions
                 assetId={asset.id}
-                assetImage={asset.featuredImage}
                 assetTitle={asset.title}
+                assetImage={asset.featuredImage}
                 getLicenses={getLicenses(asset.id)}
+                primaryMediaType={asset.primaryMediaType}
               />
             </Suspense>
 

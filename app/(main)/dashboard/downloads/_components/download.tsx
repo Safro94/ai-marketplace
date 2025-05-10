@@ -1,5 +1,5 @@
 import { AssetDownloadButton } from '@/components/asset-download-button'
-import { AssetImage } from '@/components/asset-image'
+import { AssetPrimaryMedia } from '@/components/asset-primary-media'
 import { formatDate } from '@/lib/utils'
 import { Prisma } from '@prisma/client'
 import { FC } from 'react'
@@ -17,6 +17,7 @@ type Props = Prisma.DownloadGetPayload<{
             title: true
             assetFile: true
             featuredImage: true
+            primaryMediaType: true
           }
         }
       }
@@ -31,12 +32,13 @@ export const Download: FC<Props> = ({ id, purchaseItem }) => {
       className='flex flex-col md:flex-row gap-4 items-center justify-between border-b pb-4 last:border-0'
     >
       <div className='flex flex-col md:flex-row items-center '>
-        <AssetImage
+        <AssetPrimaryMedia
+          type={purchaseItem.asset.primaryMediaType}
+          alt={purchaseItem.asset.title}
           src={
             purchaseItem.asset.featuredImage ||
             '/placeholder.svg?height=80&width=80'
           }
-          alt={purchaseItem.asset.title}
         />
 
         <div>

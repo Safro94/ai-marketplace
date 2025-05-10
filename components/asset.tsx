@@ -2,11 +2,11 @@ import { ROUTES } from '@/lib/constants'
 import { ExploreAsset } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
 import { Star } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
 import { AssetActionsContainer } from './asset-actions-container'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
+import { AssetPrimaryMedia } from './asset-primary-media'
 import { ShareButton } from './share-button'
 import { Avatar } from './ui/avatar'
 import { Badge } from './ui/badge'
@@ -24,6 +24,7 @@ export const Asset: FC<
     | 'averageRating'
     | 'totalReviews'
     | 'basePrice'
+    | 'primaryMediaType'
   >
 > = ({
   id,
@@ -35,6 +36,7 @@ export const Asset: FC<
   averageRating,
   totalReviews,
   basePrice,
+  primaryMediaType,
 }) => {
   return (
     <Link
@@ -43,12 +45,15 @@ export const Asset: FC<
       className='group relative bg-background rounded-xl shadow-md transition-shadow duration-300 overflow-hidden border border-white hover:border-primary dark:border-primary dark:hover:border-white'
     >
       <div className='relative aspect-video overflow-hidden'>
-        <Image
-          fill
-          src={featuredImage || '/placeholder.svg?height=400&width=600'}
+        <AssetPrimaryMedia
           alt={title}
-          className='object-fill transition-transform duration-300 group-hover:scale-105'
-          priority
+          src={featuredImage}
+          type={primaryMediaType}
+          classNames={{
+            container: 'h-full w-full',
+            image:
+              'object-fill transition-transform duration-300 group-hover:scale-105',
+          }}
         />
 
         <AssetActionsContainer>
@@ -109,12 +114,13 @@ export const Asset: FC<
 
             <AssetAddToCartButton
               id={id}
-              title={title}
-              basePrice={basePrice}
-              featuredImage={featuredImage}
               size='icon'
+              title={title}
               showText={false}
+              basePrice={basePrice}
               className='w-[30px] h-[30px]'
+              featuredImage={featuredImage}
+              primaryMediaType={primaryMediaType}
             />
           </div>
         </div>

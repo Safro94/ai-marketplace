@@ -14,7 +14,7 @@ export const UploadFile: FC<ComponentProps<typeof UploadDropzone>> = ({
 }) => (
   <UploadDropzone
     config={{ cn: twMerge, mode: 'auto' }}
-    className='ut-button:bg-primary ut-label:text-primary ut-allowed-content:!h-auto flex-1'
+    className='mt-auto h-[250px] lg:!h-[400px] lg:min-h-[400px] lg:max-h-[400px] ut-button:bg-primary ut-label:text-primary ut-allowed-content:!h-auto flex-1'
     {...rest}
   />
 )

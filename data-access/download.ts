@@ -54,6 +54,7 @@ export const getDashboardDownloads = async ({
               title: true,
               assetFile: true,
               featuredImage: true,
+              primaryMediaType: true,
             },
           },
         },

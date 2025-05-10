@@ -137,32 +137,33 @@ model Category {
 }
 
 model Asset {
-  id              String      @id @default(cuid())
-  title           String
-  slug            String      @unique
-  description     String      @db.Text
-  features        String[]    @db.Text
-  requirements    String[]    @db.Text
-  creatorId       String
-  basePrice       Float       @default(0)
-  creator         Profile     @relation(fields: [creatorId], references: [id])
-  featuredImage   String
-  galleryImages   String[]
-  assetFile       String
-  status          AssetStatus @default(PENDING_REVIEW)
-  categoryId      String
-  category        Category    @relation(fields: [categoryId], references: [id])
-  useCase         String?
-  tags            String[]
-  revenue         Float       @default(0)
-  averageRating   Float       @default(0)
-  moderationNotes String?
-  approvedAt      DateTime?
-  totalSales      Int         @default(0)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  featured        Boolean     @default(false)
-  featuredOrder   Int? // Optional field for controlling the order of featured assets
+  id               String           @id @default(cuid())
+  title            String
+  slug             String           @unique
+  description      String           @db.Text
+  features         String[]         @db.Text
+  requirements     String[]         @db.Text
+  creatorId        String
+  basePrice        Float            @default(0)
+  creator          Profile          @relation(fields: [creatorId], references: [id])
+  featuredImage    String
+  primaryMediaType PrimaryMediaType @default(IMAGE)
+  galleryImages    String[]
+  assetFile        String
+  status           AssetStatus      @default(PENDING_REVIEW)
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  useCase          String?
+  tags             String[]
+  revenue          Float            @default(0)
+  averageRating    Float            @default(0)
+  moderationNotes  String?
+  approvedAt       DateTime?
+  totalSales       Int              @default(0)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  featured         Boolean          @default(false)
+  featuredOrder    Int? // Optional field for controlling the order of featured assets
 
   // Relations
   viewedBy       Profile[]       @relation("ProfileViewedAssets")
@@ -473,4 +474,9 @@ enum DiscountType {
   CREATOR_PROMOTION // Special promotion by a creator
   ABANDONED_CART // Discount to recover abandoned cart
   SOCIAL_MEDIA // From social media campaign
+}
+
+enum PrimaryMediaType {
+  IMAGE
+  VIDEO
 }

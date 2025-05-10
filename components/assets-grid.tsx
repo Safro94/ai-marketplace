@@ -13,6 +13,8 @@ interface Props {
           description: true
           averageRating: true
           basePrice: true
+          primaryMediaType: true
+
           category: {
             select: {
               name: true
@@ -48,6 +50,7 @@ export const AssetsGrid: FC<Props> = ({ items }) => {
           creator={asset.creator}
           featuredImage={asset.featuredImage}
           totalReviews={asset.totalReviews}
+          primaryMediaType={asset.primaryMediaType}
         />
       ))}
     </div>

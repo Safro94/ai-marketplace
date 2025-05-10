@@ -18,6 +18,8 @@ type FavoritesProps = Prisma.FavoriteGetPayload<{
         description: true
         averageRating: true
         basePrice: true
+        primaryMediaType: true
+
         category: {
           select: {
             name: true

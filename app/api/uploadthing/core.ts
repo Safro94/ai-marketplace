@@ -16,7 +16,7 @@ const auth = async () => {
 export const fileRouter = {
   assetUploadFeaturedImageOrVideo: f({
     image: {
-      maxFileSize: '1MB',
+      maxFileSize: '2MB',
       maxFileCount: 1,
     },
   })
@@ -28,7 +28,7 @@ export const fileRouter = {
 
   assetUploadGalleryImages: f({
     image: {
-      maxFileSize: '1MB',
+      maxFileSize: '2MB',
       maxFileCount: 3,
     },
   })

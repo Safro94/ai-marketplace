@@ -2,6 +2,7 @@ import {
   CreatorApplicationPaymentMethod,
   LicenseType,
   PaymentProvider,
+  PrimaryMediaType,
   Prisma,
 } from '@prisma/client'
 import * as LucideIcons from 'lucide-react'
@@ -40,7 +41,16 @@ export interface Pagination {
 }
 
 export type ExploreAsset = Prisma.AssetGetPayload<{
-  include: {
+  select: {
+    id: true
+    featuredImage: true
+    title: true
+    description: true
+    averageRating: true
+    totalReviews: true
+    basePrice: true
+    primaryMediaType: true
+
     category: {
       select: {
         name: true
@@ -65,7 +75,8 @@ export interface CartItem {
   title: string
   price: number
   licenseName: string
-  image: string
+  primaryMedia: string
+  primaryMediaType: PrimaryMediaType
 }
 
 export type CheckoutCreatorsData = Record<
@@ -134,6 +145,7 @@ export type CreatorDashboardAssetWithAnalytics = Prisma.AssetGetPayload<{
     averageRating: true
     featuredImage: true
     moderationNotes: true
+    primaryMediaType: true
 
     assetAnalytics: {
       select: {

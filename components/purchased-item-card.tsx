@@ -9,7 +9,7 @@ import { format } from 'date-fns'
 import { ExternalLink } from 'lucide-react'
 import { FC } from 'react'
 import { AssetDownloadButton } from './asset-download-button'
-import { AssetImage } from './asset-image'
+import { AssetPrimaryMedia } from './asset-primary-media'
 import { Badge } from './ui/badge'
 
 type Props = Prisma.PurchaseItemGetPayload<{
@@ -35,6 +35,7 @@ type Props = Prisma.PurchaseItemGetPayload<{
         description: true
         featuredImage: true
         assetFile: true
+        primaryMediaType: true
 
         category: {
           select: {
@@ -56,9 +57,10 @@ export const PurchasedItemCard: FC<Props> = ({
 }) => (
   <Card className='p-4'>
     <div className='flex flex-col lg:flex-row lg:items-center gap-4'>
-      <AssetImage
+      <AssetPrimaryMedia
         src={asset.featuredImage || '/placeholder.svg'}
         alt={asset.title}
+        type={asset.primaryMediaType}
       />
 
       <div className='flex-1'>

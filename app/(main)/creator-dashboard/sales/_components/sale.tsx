@@ -1,4 +1,4 @@
-import { AssetImage } from '@/components/asset-image'
+import { AssetPrimaryMedia } from '@/components/asset-primary-media'
 import { ROUTES } from '@/lib/constants'
 import { formatCurrency } from '@/lib/utils'
 import { Prisma } from '@prisma/client'
@@ -22,6 +22,7 @@ type Props = Prisma.PurchaseItemGetPayload<{
         id: true
         title: true
         featuredImage: true
+        primaryMediaType: true
       }
     }
   }
@@ -44,9 +45,10 @@ export const CreatorDashboardSale: FC<Props> = ({
       target='_blank'
     >
       <div className='flex flex-col md:flex-row md:items-center gap-4'>
-        <AssetImage
+        <AssetPrimaryMedia
           src={asset.featuredImage || '/placeholder.svg'}
           alt={asset.title}
+          type={asset.primaryMediaType}
         />
 
         <div className='flex-1 flex flex-col md:flex-row justify-between items-center gap-4'>

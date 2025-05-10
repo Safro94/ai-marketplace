@@ -114,6 +114,7 @@ export const getAllPurchasesByProfileId = async ({
               description: true,
               featuredImage: true,
               assetFile: true,
+              primaryMediaType: true,
 
               category: {
                 select: {
@@ -174,6 +175,7 @@ export const getAllCreatorDashboardPurchasesByAssetCreator = async ({
               id: true,
               title: true,
               featuredImage: true,
+              primaryMediaType: true,
             },
           },
         },

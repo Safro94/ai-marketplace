@@ -5,7 +5,7 @@ import { toast } from '@/components/ui/toast'
 import { useCart } from '@/contexts/cart-context'
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/constants'
-import { ExploreAsset } from '@/lib/types'
+import { CartItem, ExploreAsset } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { LicenseType } from '@prisma/client'
 import { ShoppingCart, Trash2 } from 'lucide-react'
@@ -21,7 +21,10 @@ import { Skeleton } from './ui/skeleton'
 import { Tooltip } from './ui/tooltip'
 
 interface Props
-  extends Pick<ExploreAsset, 'id' | 'title' | 'basePrice' | 'featuredImage'>,
+  extends Pick<
+      ExploreAsset,
+      'id' | 'title' | 'basePrice' | 'featuredImage' | 'primaryMediaType'
+    >,
     Pick<
       ComponentProps<typeof LoadingButton>,
       'variant' | 'className' | 'size'
@@ -34,14 +37,15 @@ interface Props
 
 export const AssetAddToCartButton: FC<Props> = ({
   id,
+  size,
   title,
+  showText,
   basePrice,
-  featuredImage,
-  assetLicenseId,
   licenseName,
   licensePrice,
-  size,
-  showText,
+  featuredImage,
+  assetLicenseId,
+  primaryMediaType,
   ...props
 }) => {
   const router = useRouter()
@@ -105,12 +109,13 @@ export const AssetAddToCartButton: FC<Props> = ({
         optimisticallySetIsItemInCart({ type: 'add' })
 
         try {
-          const item = {
-            assetId: id,
-            assetLicenseId: licenseId,
+          const item: CartItem = {
             title,
             price,
-            image: featuredImage,
+            primaryMediaType,
+            assetId: id,
+            assetLicenseId: licenseId,
+            primaryMedia: featuredImage,
             licenseName: licenseName || 'Standard License',
           }
 

@@ -36,12 +36,12 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
                 ?.map((item, i) => (
                   <Image
                     key={item + i}
-                    width={150}
-                    height={150}
+                    priority
                     src={item}
                     alt='Image'
+                    width={150}
+                    height={150}
                     className='object-fill rounded-lg'
-                    priority
                   />
                 ))}
             </div>
@@ -67,7 +67,7 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
               height={150}
               src={form.getValues(formField)}
               alt='Featured Image'
-              className='w-full h-full object-fill rounded-lg'
+              className='w-full h-[400px] object-fill rounded-lg'
               priority
             />
 
@@ -86,8 +86,8 @@ export const AssetImageUpload: FC<Props> = ({ form, formField }) => {
         )
       default:
         return (
-          <div className='flex flex-col gap-2 h-full flex-1'>
-            <span className='text-2xl font-medium h-full w-full flex flex-col gap-4 justify-center items-center border rounded-lg bg-gray-100'>
+          <div className='flex flex-col gap-2 h-full flex-1 justify-end'>
+            <span className='text-2xl font-medium h-[250px] lg:!h-[400px] w-full flex flex-col gap-4 justify-center items-center border rounded-lg bg-gray-100'>
               Preview not available
               <Button
                 type='button'

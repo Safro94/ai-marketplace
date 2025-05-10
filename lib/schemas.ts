@@ -1,4 +1,4 @@
-import { LicenseType } from '@prisma/client'
+import { LicenseType, PrimaryMediaType } from '@prisma/client'
 import { z } from 'zod'
 import { BIO_MAX_LENGTH } from './constants'
 
@@ -11,6 +11,7 @@ export const assetUploadSchema = z.object({
   features: z.string().min(1, 'The product must contain at least one feature'),
   requirements: z.string().optional(),
   featuredImage: z.string().url('Please upload a file'),
+  primaryMediaType: z.enum([PrimaryMediaType.IMAGE, PrimaryMediaType.VIDEO]),
   galleryImages: z.array(z.string().url()).default([]).optional(),
   assetFile: z.string().url('Please upload a file'),
   slug: z.string(),

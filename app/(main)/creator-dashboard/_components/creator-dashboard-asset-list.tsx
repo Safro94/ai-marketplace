@@ -1,6 +1,6 @@
 'use client'
 
-import { AssetImage } from '@/components/asset-image'
+import { AssetPrimaryMedia } from '@/components/asset-primary-media'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -96,9 +96,10 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
           <Card key={asset.id}>
             <CardContent className='p-4'>
               <div className='flex flex-col items-center justify-center gap-2 md:flex-row space-x-4'>
-                <AssetImage
+                <AssetPrimaryMedia
                   src={asset.featuredImage || '/placeholder.svg'}
                   alt={asset.title}
+                  type={asset.primaryMediaType}
                 />
 
                 <div className='flex-1 min-w-0'>

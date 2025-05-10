@@ -36,6 +36,7 @@ export default async function Page() {
       averageRating: true,
       featuredImage: true,
       moderationNotes: true,
+      primaryMediaType: true,
 
       assetAnalytics: {
         select: {
