@@ -19,6 +19,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'industry-solutions',
     'content-templates',
     'data-tools',
+    'data-tools',
+    'ai-artwork',
+    'ai-artwork-generation',
   ].map((category) => ({
     url: `${baseUrl}/categories/${category}`,
     lastModified: new Date(),

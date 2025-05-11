@@ -9,9 +9,9 @@ import { HeroSection } from './_components/hero-section'
 import { TestimonialSection } from './_components/testimonial-section'
 
 export const metadata: Metadata = {
-  title: 'GPTs, Prompts, Workflows & AI Tools for Everyone',
+  title: 'GPTs, Prompts, Workflows, AI Tools & AI Artwork  for Everyone',
   description:
-    'Discover high-quality AI prompt systems, custom GPTs, and specialized tools created by experts. The leading marketplace for AI assets.',
+    'Discover high-quality AI prompt systems, custom GPTs, AI artwork and specialized tools created by experts. The leading marketplace for AI assets.',
   alternates: {
     canonical: '/',
   },

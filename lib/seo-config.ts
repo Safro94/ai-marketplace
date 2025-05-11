@@ -4,7 +4,7 @@ import { SUPPORT_EMAIL } from './constants'
 export const siteConfig = {
   name: 'AIAssetHub',
   url: 'https://www.aiassethub.pro',
-  ogImage: '/images/og-image.jpg',
+  ogImage: '/og-image.jpg',
   description: 'Discover and purchase high-quality AI assets for your projects',
   links: {
     twitter: 'https://x.com/AIAssetHub',
