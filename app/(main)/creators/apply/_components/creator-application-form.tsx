@@ -207,6 +207,12 @@ export const CreatorApplicationForm: FC<Props> = ({ user }) => {
                       Industry Expert
                     </SelectItem>
 
+                    <SelectItem value='ai-artwork'>AI Artwork</SelectItem>
+
+                    <SelectItem value='ai-artwork-generation'>
+                      AI Artwork Generation
+                    </SelectItem>
+
                     <SelectItem value='other'>Other</SelectItem>
                   </SelectContent>
                 </Select>
