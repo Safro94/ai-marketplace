@@ -139,7 +139,9 @@ export const CreatorDashboardAssetsList: FC<Props> = ({ assets }) => {
 
                 <div className='flex items-center space-x-2'>
                   <Button variant='outline' size='sm' asChild>
-                    <Link href={ROUTES.assetsDetail(asset.id)}>View</Link>
+                    <Link href={ROUTES.assetsDetail(asset.id)} target='_blank'>
+                      View
+                    </Link>
                   </Button>
 
                   <DropdownMenu>

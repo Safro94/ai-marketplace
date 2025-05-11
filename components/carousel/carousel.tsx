@@ -85,6 +85,7 @@ export const Carousel: FC<Props> = ({ slides, options }) => {
                       className='object-fill rounded-lg'
                       src={src || '/placeholder.svg?height=600&width=800'}
                       alt={title}
+                      onContextMenu={(e) => e.preventDefault()}
                     />
                   </div>
                 </Thumb>

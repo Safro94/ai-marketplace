@@ -1,3 +1,5 @@
+'use client'
+
 import { cn } from '@/lib/utils'
 import { PrimaryMediaType } from '@prisma/client'
 import Image from 'next/image'
@@ -23,6 +25,7 @@ export const AssetPrimaryMedia: FC<{
             src={src}
             alt={alt}
             className={cn('object-fill rounded-lg', classNames?.image)}
+            onContextMenu={(e) => e.preventDefault()}
           />
         )
       case PrimaryMediaType.VIDEO:
