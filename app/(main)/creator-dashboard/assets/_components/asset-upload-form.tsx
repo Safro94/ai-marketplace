@@ -355,12 +355,12 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
             name='features'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Features</FormLabel>
+                <FormLabel>Features (Optional)</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
                     className='min-h-[100px]'
-                    placeholder='Enter each feature on a new line'
+                    placeholder='Enter each feature, comma separated'
                   />
                 </FormControl>
 
@@ -382,7 +382,7 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   <Textarea
                     {...field}
                     className='min-h-[100px]'
-                    placeholder='Enter each requirement on a new line'
+                    placeholder='Enter each requirement, comma separated'
                   />
                 </FormControl>
 

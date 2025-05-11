@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       basePrice: Number(
         Math.min(...licenses.map((license) => license.price)).toFixed(2),
       ),
-      features: features.split(',').filter((f) => f.trim()),
+      features: features ? features.split(',').filter((r) => r.trim()) : [],
       requirements: requirements
         ? requirements.split(',').filter((r) => r.trim())
         : [],
@@ -190,7 +190,7 @@ export async function PATCH(request: Request) {
       basePrice: Number(
         Math.min(...licenses.map((license) => license.price)).toFixed(2),
       ),
-      features: features.split(',').filter((f) => f.trim()),
+      features: features ? features.split(',').filter((r) => r.trim()) : [],
       requirements: requirements
         ? requirements.split(',').filter((r) => r.trim())
         : [],

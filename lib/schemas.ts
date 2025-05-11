@@ -8,7 +8,7 @@ export const assetUploadSchema = z.object({
   description: z
     .string()
     .min(150, 'Description must be at least 150 characters'),
-  features: z.string().min(1, 'The product must contain at least one feature'),
+  features: z.string().optional(),
   requirements: z.string().optional(),
   featuredImage: z.string().url('Please upload a file'),
   primaryMediaType: z.enum([PrimaryMediaType.IMAGE, PrimaryMediaType.VIDEO]),
