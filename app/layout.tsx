@@ -50,7 +50,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [siteConfig.ogImage],
+    images: [
+      {
+        url: `https://aiassethub.pro${siteConfig.ogImage}`,
+        alt: 'AIAssetHub - AI Assets Marketplace',
+      },
+    ],
     creator: siteConfig.creator,
   },
   icons: {
