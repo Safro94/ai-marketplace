@@ -52,10 +52,13 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [
       {
-        url: `https://aiassethub.pro${siteConfig.ogImage}`,
-        alt: 'AIAssetHub - AI Assets Marketplace',
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
       },
     ],
+    site: '@AIAssetHub',
     creator: siteConfig.creator,
   },
   icons: {
