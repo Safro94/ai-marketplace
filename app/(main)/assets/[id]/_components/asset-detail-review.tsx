@@ -29,6 +29,8 @@ export const AssetDetailReview: FC<Props> = ({
   title,
   comment,
 }) => {
+  if (!title) return null
+
   return (
     <div key={id} className='border-b border-border/50 pb-6 last:border-0'>
       <div className='flex items-start justify-between mb-2'>

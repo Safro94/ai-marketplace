@@ -1,5 +1,4 @@
 import { getReviewsByAssetId } from '@/data-access/reviews'
-import { getServerSession } from '@/lib/session'
 import { getInfiniteScrollRouteParams } from '@/lib/utils'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateAssetId } from '../utils'
@@ -10,13 +9,6 @@ export async function GET(
 ) {
   try {
     const { assetId } = await validateAssetId(params)
-
-    const session = await getServerSession()
-
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     const { offset, limit } = getInfiniteScrollRouteParams(request)
 
     const reviews = await getReviewsByAssetId({
