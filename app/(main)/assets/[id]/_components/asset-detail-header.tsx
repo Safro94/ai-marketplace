@@ -29,9 +29,9 @@ export const AssetDetailHeader: FC<Props> = ({
   title,
   averageRating,
   totalSales,
+  totalReviews,
   creator,
   category,
-  reviews,
 }) => {
   return (
     <div className='mb-4'>
@@ -62,7 +62,7 @@ export const AssetDetailHeader: FC<Props> = ({
           </span>
 
           <span className='text-xs text-muted-foreground ml-1'>
-            ({reviews.length} reviews)
+            ({totalReviews} {totalReviews > 1 ? 'reviews' : 'review'})
           </span>
         </div>
 
