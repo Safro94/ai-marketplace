@@ -17,7 +17,9 @@ export default function Loading() {
           </div>
 
           <Button asChild className='w-fit'>
-            <Link href={ROUTES.creatorDashboardUpload()}>Upload New Asset</Link>
+            <Link href={ROUTES.creatorDashboardUpload()}>
+              Upload New Product
+            </Link>
           </Button>
         </div>
       }
