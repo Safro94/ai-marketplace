@@ -47,6 +47,7 @@ export const AdminSidebar = () => {
 
             return (
               <Link
+                prefetch
                 key={item.name}
                 href={item.href}
                 className={cn(
