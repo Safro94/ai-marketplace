@@ -58,9 +58,9 @@ interface Props {
 }
 
 export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
-  useBeforePageUnload(true)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+  useBeforePageUnload(isPending ? false : true)
 
   const form = useForm<FormData>({
     resolver: zodResolver(assetUploadSchema),
@@ -149,7 +149,9 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
               : 'Your product has been submitted for review.',
         })
 
-        router.push(ROUTES.creatorDashboardAssets())
+        startTransition(() => {
+          router.push(ROUTES.creatorDashboardAssets())
+        })
       } catch (error) {
         console.error(error)
 

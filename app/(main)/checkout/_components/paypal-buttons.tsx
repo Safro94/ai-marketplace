@@ -193,10 +193,9 @@ const Buttons: FC<ButtonsProps> = ({
           startTransition(async () => {
             await clearCart()
             addOrClearAffiliateCode()
+            router.push(`${ROUTES.checkoutSuccess()}`)
           })
         })
-
-        router.push(`${ROUTES.checkoutSuccess()}`)
       }}
       onError={() => {
         setIsPurchasing(false)
