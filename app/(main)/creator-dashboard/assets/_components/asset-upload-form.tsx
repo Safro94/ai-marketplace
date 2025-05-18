@@ -344,8 +344,8 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                 <FormDescription>
                   Detailed description of your product, its capabilities, and
                   use cases. Please describe what the buyer will get after they
-                  purchase your product. You can use HTML tags to format your
-                  description.
+                  purchase your product. Use HTML tags for formatting, if you
+                  don&apos;t, the text will be displayed as plain text.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
