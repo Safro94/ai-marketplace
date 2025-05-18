@@ -95,9 +95,10 @@ export const Asset: FC<
           }
         />
 
-        <p className='text-sm text-gray-500 dark:text-secondary-foreground mb-4 line-clamp-3'>
-          {description}
-        </p>
+        <p
+          dangerouslySetInnerHTML={{ __html: description }}
+          className='text-sm text-gray-500 dark:text-secondary-foreground mb-4 line-clamp-3'
+        />
 
         <div className='flex flex-col md:flex-row items-center gap-2 justify-between'>
           <Badge
