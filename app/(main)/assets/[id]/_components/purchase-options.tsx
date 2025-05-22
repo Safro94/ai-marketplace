@@ -79,6 +79,8 @@ export const PurchaseOptions: FC<Props> = ({
     })
   }
 
+  if (!selectedLicense?.price) return null
+
   return (
     <Card className='border-border/50'>
       <CardContent className='p-6'>

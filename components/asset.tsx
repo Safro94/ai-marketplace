@@ -51,8 +51,9 @@ export const Asset: FC<
           type={primaryMediaType}
           classNames={{
             container: 'h-full w-full',
+            video: 'rounded-b-none',
             image:
-              'object-fill transition-transform duration-300 group-hover:scale-105',
+              'object-fill transition-transform duration-300 group-hover:scale-105 rounded-b-none',
           }}
         />
 

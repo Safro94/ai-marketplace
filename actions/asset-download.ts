@@ -8,7 +8,7 @@ import { validateSession } from '@/lib/session'
 import { revalidateTag } from 'next/cache'
 
 export const saveDownload = withErrorHandler(
-  async (assetId: string, purchaseItemId: string) => {
+  async (assetId: string, purchaseItemId?: string) => {
     const { user } = await validateSession()
     const profile = await getUserProfile(user.id)
     if (!profile) throw Error('Profile not found')

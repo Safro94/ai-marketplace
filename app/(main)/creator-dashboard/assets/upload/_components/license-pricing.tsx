@@ -92,7 +92,7 @@ export const LicensePricing: FC<Props> = ({ setValue, control, errors }) => {
 
   const inputProps = {
     type: 'number',
-    min: '1',
+    min: '0',
     step: '0.5',
     className: 'pl-6 w-24',
   }
@@ -207,7 +207,8 @@ const LicenseCard: FC<
         <div>
           <h3 className='font-medium'>{license?.name}</h3>
           <p className='text-sm text-muted-foreground'>
-            {license?.description}
+            {license?.description}, set the price to 0 if you want the asset to
+            be free.
           </p>
         </div>
 

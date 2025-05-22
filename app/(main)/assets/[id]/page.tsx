@@ -17,6 +17,7 @@ import { AssetDetailHeader } from './_components/asset-detail-header'
 import { AssetDetailsTabs } from './_components/asset-details-tabs'
 import { getLicenses } from './_components/asset-details-utils'
 import { AssetDownload } from './_components/asset-download'
+import { AssetDownloadFree } from './_components/asset-download-free'
 import { LicenseSkeleton } from './_components/license-skeleton'
 import { PurchaseOptions } from './_components/purchase-options'
 import { RelatedAssets } from './_components/related-assets'
@@ -135,6 +136,9 @@ export default async function AssetPage({
       },
       take: INFINITE_SCROLL_NUMBER_OF_ITEMS,
     },
+    _count: {
+      select: { downloads: true },
+    },
   })
 
   if (!asset) notFound()
@@ -210,11 +214,19 @@ export default async function AssetPage({
           </div>
 
           <div className='space-y-6 lg:sticky lg:top-20'>
-            <AssetDownload
-              assetId={asset.id}
-              fileName={asset.title}
-              assetUrl={asset.assetFile}
-            />
+            {asset.basePrice ? (
+              <AssetDownload
+                assetId={asset.id}
+                fileName={asset.title}
+                assetUrl={asset.assetFile}
+              />
+            ) : (
+              <AssetDownloadFree
+                assetId={asset.id}
+                fileName={asset.title}
+                assetUrl={asset.assetFile}
+              />
+            )}
 
             <Suspense fallback={<LicenseSkeleton />}>
               <PurchaseOptions

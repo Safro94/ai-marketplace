@@ -1,7 +1,7 @@
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import type { Prisma } from '@prisma/client'
-import { StarIcon } from 'lucide-react'
+import { Download, Package, StarIcon } from 'lucide-react'
 import { FC } from 'react'
 
 type Props = Prisma.AssetGetPayload<{
@@ -22,10 +22,14 @@ type Props = Prisma.AssetGetPayload<{
       }
     }
     reviews: true
+    _count: {
+      select: { downloads: true }
+    }
   }
 }>
 
 export const AssetDetailHeader: FC<Props> = ({
+  _count: { downloads },
   title,
   averageRating,
   totalSales,
@@ -66,7 +70,15 @@ export const AssetDetailHeader: FC<Props> = ({
           </span>
         </div>
 
-        <div className='text-sm text-muted-foreground'>{totalSales} sales</div>
+        <div className='text-sm text-muted-foreground flex items-center'>
+          <Download className='h-4 w-4 mr-1' />
+          {downloads} Downloads
+        </div>
+
+        <div className='text-sm text-muted-foreground flex items-center'>
+          <Package className='h-4 w-4 mr-1' />
+          {totalSales} sales
+        </div>
 
         <Badge>{category.name}</Badge>
       </div>

@@ -254,15 +254,15 @@ model AssetLicense {
 }
 
 model Download {
-  id             String       @id @default(cuid())
-  purchaseItemId String
-  purchaseItem   PurchaseItem @relation(fields: [purchaseItemId], references: [id])
-  downloadedAt   DateTime     @default(now())
+  id             String        @id @default(cuid())
+  purchaseItemId String?
+  purchaseItem   PurchaseItem? @relation(fields: [purchaseItemId], references: [id])
+  downloadedAt   DateTime      @default(now())
   ipAddress      String?
   userAgent      String?
-  Asset          Asset?       @relation(fields: [assetId], references: [id])
+  Asset          Asset?        @relation(fields: [assetId], references: [id])
   assetId        String?
-  Profile        Profile?     @relation(fields: [profileId], references: [id])
+  Profile        Profile?      @relation(fields: [profileId], references: [id])
   profileId      String?
 
   @@index([purchaseItemId])

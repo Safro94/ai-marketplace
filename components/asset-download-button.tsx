@@ -25,7 +25,7 @@ export const AssetDownloadButton: FC<Props> = ({
   const handleDownload = async () => {
     if (!assetFileUrl) {
       toast.error('Error', {
-        description: 'Please enter a URL',
+        description: 'Cannot find asset URL',
       })
       return
     }

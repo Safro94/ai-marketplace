@@ -11,7 +11,7 @@ export const downloadCreate = async ({
   profileId,
 }: {
   assetId: string
-  purchaseItemId: string
+  purchaseItemId?: string
   profileId: string
 }) => {
   const headersList = await headers()
@@ -19,11 +19,11 @@ export const downloadCreate = async ({
   await prisma.download.create({
     data: {
       assetId,
-      purchaseItemId,
       profileId: profileId ?? '',
       userAgent: headersList.get('user-agent'),
       ipAddress:
         headersList.get('x-real-ip') || headersList.get('x-forwarded-for'),
+      ...(purchaseItemId && { purchaseItemId }),
     },
   })
 }
@@ -44,19 +44,19 @@ export const getDashboardDownloads = async ({
     },
     select: {
       id: true,
+      Asset: {
+        select: {
+          id: true,
+          title: true,
+          assetFile: true,
+          featuredImage: true,
+          primaryMediaType: true,
+        },
+      },
       purchaseItem: {
         select: {
           id: true,
           createdAt: true,
-          asset: {
-            select: {
-              id: true,
-              title: true,
-              assetFile: true,
-              featuredImage: true,
-              primaryMediaType: true,
-            },
-          },
         },
       },
     },

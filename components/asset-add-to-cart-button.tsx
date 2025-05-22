@@ -79,6 +79,15 @@ export const AssetAddToCartButton: FC<Props> = ({
       return
     }
 
+    if (!basePrice) {
+      toast.error('Error', {
+        description:
+          "Free assets can't be added to the cart. Go to the asset details page and download it directly",
+      })
+
+      return
+    }
+
     const price = licensePrice !== undefined ? licensePrice : basePrice
     const licenseId = assetLicenseId || LicenseType.STANDARD
 

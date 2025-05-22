@@ -19,7 +19,10 @@ export const assetUploadSchema = z.object({
   licenses: z.array(
     z.object({
       licenseId: z.enum([LicenseType.STANDARD, LicenseType.EXTENDED]),
-      price: z.number().min(5, 'Price must be 5 or more'),
+      price: z
+        .number()
+        .positive('Price must be a positive number')
+        .or(z.literal(0)),
     }),
   ),
 })
