@@ -62,7 +62,6 @@ export const RelatedAssets: FC<Props> = async ({
         id: true,
         featuredImage: true,
         title: true,
-        description: true,
         averageRating: true,
         totalReviews: true,
         basePrice: true,

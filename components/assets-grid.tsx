@@ -10,7 +10,6 @@ interface Props {
           featuredImage: true
           totalReviews: true
           title: true
-          description: true
           averageRating: true
           basePrice: true
           primaryMediaType: true
@@ -43,7 +42,6 @@ export const AssetsGrid: FC<Props> = ({ items }) => {
           key={asset.id}
           id={asset.id}
           title={asset.title}
-          description={asset.description}
           averageRating={asset.averageRating}
           basePrice={asset.basePrice}
           category={asset.category}

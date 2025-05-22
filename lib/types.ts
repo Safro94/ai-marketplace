@@ -46,7 +46,6 @@ export type ExploreAsset = Prisma.AssetGetPayload<{
     featuredImage: true
     galleryImages: true
     title: true
-    description: true
     averageRating: true
     totalReviews: true
     basePrice: true

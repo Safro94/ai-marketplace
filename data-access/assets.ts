@@ -87,7 +87,6 @@ export const getPaginatedAssets = async ({
         featuredImage: true,
         totalReviews: true,
         title: true,
-        description: true,
         averageRating: true,
         basePrice: true,
         primaryMediaType: true,

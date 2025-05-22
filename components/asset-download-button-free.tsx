@@ -3,8 +3,11 @@
 import { saveDownload } from '@/actions/asset-download'
 import { LoadingButton } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
+import { useAuth } from '@/hooks/use-auth'
+import { ROUTES } from '@/lib/constants'
 import { createDownloadLink } from '@/lib/utils'
 import { Download } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { FC, useTransition } from 'react'
 
 interface Props {
@@ -18,9 +21,22 @@ export const AssetDownloadButtonFree: FC<Props> = ({
   fileName,
   assetId,
 }) => {
+  const router = useRouter()
+  const { user } = useAuth()
   const [isPending, startTransition] = useTransition()
 
   const handleDownload = async () => {
+    if (!user) {
+      toast.error('Authentication required', {
+        description: 'Please log in to add items to your cart',
+      })
+
+      router.push(
+        `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+      )
+      return
+    }
+
     if (!assetFileUrl) {
       toast.error('Error', {
         description: 'Cannot find asset URL',

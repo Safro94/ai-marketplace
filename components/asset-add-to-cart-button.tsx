@@ -33,6 +33,7 @@ interface Props
   licenseName?: string
   licensePrice?: number
   showText?: boolean
+  skeletonClassName?: string
 }
 
 export const AssetAddToCartButton: FC<Props> = ({
@@ -46,6 +47,7 @@ export const AssetAddToCartButton: FC<Props> = ({
   featuredImage,
   assetLicenseId,
   primaryMediaType,
+  skeletonClassName,
   ...props
 }) => {
   const router = useRouter()
@@ -150,7 +152,7 @@ export const AssetAddToCartButton: FC<Props> = ({
   return (
     <>
       {isLoading ? (
-        <Skeleton className='h-[30px] w-[30px]' />
+        <Skeleton className={cn('h-[30px] w-[30px]', skeletonClassName)} />
       ) : (
         <Tooltip
           content={isItemInCart ? 'Remove from cart' : 'Add to cart'}

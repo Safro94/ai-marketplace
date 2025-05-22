@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
+import { Tooltip } from './ui/tooltip'
 
 const SOCIAL_MEDIA_POST_TEXT = 'Checkout my new AI product'
 
@@ -36,20 +37,25 @@ export const ShareButton: FC<{ assetId: string }> = ({ assetId }) => {
     <div onClick={(e) => e.stopPropagation()}>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button
-            size='icon'
-            variant='outline'
-            className='w-6 h-6 md:h-10 md:w-10 z-50 bg-white group rounded-full'
-            onClick={(e) => {
-              e.preventDefault()
-              e.nativeEvent.stopImmediatePropagation()
+          <Tooltip
+            content='Share product'
+            trigger={
+              <Button
+                size='icon'
+                variant='outline'
+                className='w-6 h-6 md:h-10 md:w-10 z-50 bg-white group rounded-full'
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.nativeEvent.stopImmediatePropagation()
 
-              setIsOpen(true)
-            }}
-          >
-            <Share className='w-4 h-4 text-black group-hover:text-primary' />
-            <span className='sr-only'>Share button</span>
-          </Button>
+                  setIsOpen(true)
+                }}
+              >
+                <Share className='w-4 h-4 text-black group-hover:text-primary' />
+                <span className='sr-only'>Share button</span>
+              </Button>
+            }
+          />
         </DialogTrigger>
 
         <DialogContent className='max-w-3xl'>

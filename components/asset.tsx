@@ -8,7 +8,6 @@ import { AssetActionsContainer } from './asset-actions-container'
 import { AssetAddToCartButton } from './asset-add-to-cart-button'
 import { AssetPrimaryMedia } from './asset-primary-media'
 import { ShareButton } from './share-button'
-import { Avatar } from './ui/avatar'
 import { Badge } from './ui/badge'
 import { Tooltip } from './ui/tooltip'
 
@@ -18,7 +17,6 @@ export const Asset: FC<
     | 'id'
     | 'featuredImage'
     | 'title'
-    | 'description'
     | 'category'
     | 'creator'
     | 'averageRating'
@@ -30,7 +28,6 @@ export const Asset: FC<
   id,
   featuredImage,
   title,
-  description,
   category,
   creator,
   averageRating,
@@ -59,71 +56,56 @@ export const Asset: FC<
 
         <AssetActionsContainer>
           <ShareButton assetId={id} />
+          <AssetAddToCartButton
+            id={id}
+            size='icon'
+            variant='outline'
+            title={title}
+            showText={false}
+            basePrice={basePrice}
+            className='w-6 h-6 md:h-10 md:w-10 z-50 bg-white text-black group rounded-full'
+            skeletonClassName='w-6 h-6 md:h-10 md:w-10 rounded-full'
+            featuredImage={featuredImage}
+            primaryMediaType={primaryMediaType}
+          />
         </AssetActionsContainer>
+
+        <Badge
+          variant='secondary'
+          className='absolute shadow-sm shadow-primary bottom-2.5 left-2.5 bg-primary-foreground dark:text-primary hover:bg-primary-foreground font-bold'
+        >
+          {category.name}
+        </Badge>
       </div>
 
-      <div className='p-5'>
-        <div className='flex items-center justify-between mb-2'>
-          <div className='flex items-center space-x-2'>
-            <Avatar
-              className='h-6 w-6'
-              src={creator.user.image}
-              alt={creator.user.name}
-              fallback={creator.user.name?.charAt(0).toUpperCase()}
-            />
+      <div className='p-3 border-t border-t-primary/20'>
+        <div className='flex items-center justify-between'>
+          <Tooltip
+            align='start'
+            content={title}
+            trigger={
+              <h3 className='text-lg font-semibold text-gray-900 dark:text-secondary-foreground line-clamp-1'>
+                {title}
+              </h3>
+            }
+          />
 
-            <span className='text-sm text-gray-500 dark:text-secondary-foreground'>
-              {creator.user.name}
-            </span>
-          </div>
-
-          <div className='flex items-center'>
-            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
-
-            <span className='ml-1 text-sm font-medium text-gray-600 dark:text-secondary-foreground'>
-              {averageRating.toFixed(1)} ({totalReviews})
-            </span>
-          </div>
+          <span className='text-md font-bold text-primary dark:text-primary-foreground'>
+            {!!basePrice ? formatCurrency(basePrice) : 'Free'}
+          </span>
         </div>
 
-        <Tooltip
-          align='start'
-          content={title}
-          trigger={
-            <h3 className='text-lg font-semibold text-gray-900 dark:text-secondary-foreground mb-1 line-clamp-1'>
-              {title}
-            </h3>
-          }
-        />
+        <div className='flex items-center justify-between'>
+          <span className='text-sm text-gray-500 dark:text-secondary-foreground'>
+            by <b>{creator.user.name}</b>
+          </span>
 
-        <p
-          dangerouslySetInnerHTML={{ __html: description }}
-          className='text-sm text-gray-500 dark:text-secondary-foreground mb-4 line-clamp-3'
-        />
+          <div className='flex items-center'>
+            <Star className='w-3 h-3 text-yellow-500 fill-yellow-500' />
 
-        <div className='flex flex-col md:flex-row items-center gap-2 justify-between'>
-          <Badge
-            variant='secondary'
-            className='bg-primary text-white hover:bg-primary self-center text-[11px]'
-          >
-            {category.name}
-          </Badge>
-
-          <div className='flex items-center gap-2'>
-            <span className='text-md font-bold text-primary dark:text-primary-foreground'>
-              {formatCurrency(basePrice)}
+            <span className='ml-1 text-xs font-medium text-gray-600 dark:text-secondary-foreground'>
+              {averageRating.toFixed(1)} ({totalReviews})
             </span>
-
-            <AssetAddToCartButton
-              id={id}
-              size='icon'
-              title={title}
-              showText={false}
-              basePrice={basePrice}
-              className='w-[30px] h-[30px]'
-              featuredImage={featuredImage}
-              primaryMediaType={primaryMediaType}
-            />
           </div>
         </div>
       </div>
