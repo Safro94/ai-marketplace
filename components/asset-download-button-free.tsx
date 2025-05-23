@@ -32,7 +32,7 @@ export const AssetDownloadButtonFree: FC<Props> = ({
       })
 
       router.push(
-        `${ROUTES.login()}?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+        `${ROUTES.login()}?callbackUrl=${ROUTES.assetsDetail(assetId)}`,
       )
       return
     }

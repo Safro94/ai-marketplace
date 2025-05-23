@@ -1,4 +1,5 @@
 import { SocialButtons } from '@/components/social-buttons'
+import { FC } from 'react'
 
 // const formSchema = z.object({
 //   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -7,7 +8,7 @@ import { SocialButtons } from '@/components/social-buttons'
 //     .min(6, { message: 'Password must be at least 6 characters' }),
 // })
 
-export const LoginForm = () => {
+export const LoginForm: FC<{ callbackUrl?: string }> = ({ callbackUrl }) => {
   // const form = useForm<z.infer<typeof formSchema>>({
   //   resolver: zodResolver(formSchema),
   //   defaultValues: {
@@ -101,7 +102,7 @@ export const LoginForm = () => {
         </div>
       </div> */}
 
-      <SocialButtons sign='in' />
+      <SocialButtons sign='in' callbackUrl={callbackUrl} />
     </div>
   )
 }

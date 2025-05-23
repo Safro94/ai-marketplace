@@ -19,7 +19,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>
+}) {
+  const callbackUrl = (await searchParams).callbackUrl
+
   return (
     <PageContainer className='max-w-none min-h-screen grid lg:grid-cols-2 gap-12 md:p-0'>
       <AuthFormPanel
@@ -39,7 +45,7 @@ export default function LoginPage() {
           </>
         }
       >
-        <LoginForm />
+        <LoginForm callbackUrl={callbackUrl} />
       </AuthFormPanel>
 
       <AuthSidePanel

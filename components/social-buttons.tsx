@@ -10,7 +10,10 @@ import { GithubIcon, GoogleIcon } from './icons'
 import { Button } from './ui/button'
 import { toast } from './ui/toast'
 
-export const SocialButtons: FC<{ sign: 'in' | 'up' }> = ({ sign }) => {
+export const SocialButtons: FC<{ sign: 'in' | 'up'; callbackUrl?: string }> = ({
+  sign,
+  callbackUrl,
+}) => {
   const { validateCaptcha } = useValidateCaptcha()
   const [isPending, startTransition] = useTransition()
 
@@ -45,7 +48,7 @@ export const SocialButtons: FC<{ sign: 'in' | 'up' }> = ({ sign }) => {
               startTransition(async () => {
                 await authClient.signIn.social({
                   provider,
-                  callbackURL: ROUTES.home(),
+                  callbackURL: callbackUrl ?? ROUTES.home(),
                   fetchOptions: {
                     onError(context) {
                       toast.error('Error', {
