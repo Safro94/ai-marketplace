@@ -5,25 +5,14 @@ import { unstable_cacheLife, unstable_cacheTag } from 'next/cache'
 import { headers } from 'next/headers'
 import 'server-only'
 
-export const downloadCreate = async ({
-  assetId,
-  purchaseItemId,
-  profileId,
-}: {
-  assetId: string
-  purchaseItemId?: string
-  profileId: string
-}) => {
-  const headersList = await headers()
-
-  await prisma.download.create({
-    data: {
+export const getDownloadsByAssetIdAndProfile = async (
+  assetId: string,
+  profileId: string,
+) => {
+  return await prisma.download.count({
+    where: {
+      profileId,
       assetId,
-      profileId: profileId ?? '',
-      userAgent: headersList.get('user-agent'),
-      ipAddress:
-        headersList.get('x-real-ip') || headersList.get('x-forwarded-for'),
-      ...(purchaseItemId && { purchaseItemId }),
     },
   })
 }
@@ -64,6 +53,29 @@ export const getDashboardDownloads = async ({
     skip: offset,
     orderBy: {
       downloadedAt: 'desc',
+    },
+  })
+}
+
+export const downloadCreate = async ({
+  assetId,
+  purchaseItemId,
+  profileId,
+}: {
+  assetId: string
+  purchaseItemId?: string
+  profileId: string
+}) => {
+  const headersList = await headers()
+
+  await prisma.download.create({
+    data: {
+      assetId,
+      profileId: profileId ?? '',
+      userAgent: headersList.get('user-agent'),
+      ipAddress:
+        headersList.get('x-real-ip') || headersList.get('x-forwarded-for'),
+      ...(purchaseItemId && { purchaseItemId }),
     },
   })
 }

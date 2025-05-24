@@ -8,6 +8,7 @@ import { ReviewForm } from './review-form'
 interface Props
   extends Prisma.AssetGetPayload<{
     select: {
+      basePrice: true
       reviews: {
         include: {
           userProfile: {
@@ -27,7 +28,7 @@ interface Props
   assetId: string
 }
 
-export const AssetReviews: FC<Props> = ({ assetId, reviews }) => {
+export const AssetReviews: FC<Props> = ({ assetId, reviews, basePrice }) => {
   // Calculate rating distribution
   const ratingCounts = [0, 0, 0, 0, 0] // 1-5 stars
   reviews.forEach((review) => {
@@ -106,7 +107,7 @@ export const AssetReviews: FC<Props> = ({ assetId, reviews }) => {
         )}
       </div>
 
-      <ReviewForm assetId={assetId} />
+      <ReviewForm assetId={assetId} basePrice={basePrice} />
     </div>
   )
 }

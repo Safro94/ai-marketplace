@@ -199,10 +199,11 @@ export default async function AssetPage({
             {/* Asset Details */}
             <AssetDetailsTabs
               id={asset.id}
-              description={asset.description}
-              reviews={asset.reviews}
               features={features}
+              reviews={asset.reviews}
+              basePrice={asset.basePrice}
               requirements={requirements}
+              description={asset.description}
             />
 
             {/* Creator Info (Mobile) */}

@@ -11,6 +11,7 @@ type Props = Prisma.AssetGetPayload<{
     description: true
     features: true
     requirements: true
+    basePrice: true
     reviews: {
       include: {
         userProfile: {
@@ -36,10 +37,11 @@ enum TabsEnum {
 
 export const AssetDetailsTabs: FC<Props> = ({
   id,
-  description,
-  features,
-  requirements,
   reviews,
+  features,
+  basePrice,
+  description,
+  requirements,
 }) => {
   return (
     <Tabs defaultValue={TabsEnum.DESCRIPTION}>
@@ -87,7 +89,7 @@ export const AssetDetailsTabs: FC<Props> = ({
       </TabsContent>
 
       <TabsContent value={TabsEnum.REVIEWS} className='pt-6'>
-        <AssetReviews assetId={id} reviews={reviews} />
+        <AssetReviews assetId={id} reviews={reviews} basePrice={basePrice} />
       </TabsContent>
     </Tabs>
   )

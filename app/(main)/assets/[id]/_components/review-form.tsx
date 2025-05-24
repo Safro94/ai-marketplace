@@ -10,17 +10,15 @@ import { useAuth } from '@/hooks/use-auth'
 import { StarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useState, useTransition } from 'react'
-import { useAssetDetail } from './use-asset-detail'
 
 interface Props {
   assetId: string
+  basePrice: number
 }
 
-export const ReviewForm: FC<Props> = ({ assetId }) => {
+export const ReviewForm: FC<Props> = ({ assetId, basePrice }) => {
   const { user } = useAuth()
   const router = useRouter()
-  const { userPurchaseData } = useAssetDetail(assetId)
-
   const [isPending, startTransition] = useTransition()
 
   const [rating, setRating] = useState(0)
@@ -60,7 +58,7 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
     }
 
     startTransition(async () => {
-      const { error } = await createReviewAction({
+      const { error } = await createReviewAction(assetId, basePrice, {
         asset: { connect: { id: assetId } },
         userProfile: { connect: { userId: user.id } },
         rating,
@@ -71,6 +69,7 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
       if (error) {
         toast.error('Error', {
           description:
+            error ||
             'There was a problem submitting your review. Please try again.',
         })
 
@@ -86,13 +85,11 @@ export const ReviewForm: FC<Props> = ({ assetId }) => {
         setRating(0)
         setTitle('')
         setComment('')
-
-        router.refresh()
       })
+
+      router.refresh()
     })
   }
-
-  if (!userPurchaseData?.isPurchased) return null
 
   return (
     <div className='mt-8 pt-8 border-t'>
