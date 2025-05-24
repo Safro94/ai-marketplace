@@ -28,7 +28,7 @@ export const AssetDownloadButtonFree: FC<Props> = ({
   const handleDownload = async () => {
     if (!user) {
       toast.error('Authentication required', {
-        description: 'Please log in to add items to your cart',
+        description: 'Please log in to download assets',
       })
 
       router.push(
