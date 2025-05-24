@@ -18,6 +18,7 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
+  const urlFree = Boolean(searchParams.get(EXPLORE_PARAMS.FREE))
   const urlRating = searchParams.get(EXPLORE_PARAMS.MIN_RATING)
   const urlMinPrice = Number(searchParams.get(EXPLORE_PARAMS.MIN_PRICE)) || 0
   const urlSortByOption = searchParams.get(
@@ -29,6 +30,7 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
     sort: urlSortByOption || EXPLORE_SORT_BY.FEATURED,
     priceRange: [urlMinPrice, maxPrice],
     rating: urlRating ? [Number(urlRating)] : [],
+    free: urlFree || false,
   })
 
   const handleSave = () => {
@@ -52,6 +54,12 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
       params.delete(EXPLORE_PARAMS.MIN_PRICE)
     }
 
+    if (!!filters.free) {
+      params.set(EXPLORE_PARAMS.FREE, filters.free.toString())
+    } else {
+      params.delete(EXPLORE_PARAMS.FREE)
+    }
+
     const pageUrlParam = params.get(EXPLORE_PARAMS.PAGE)
     if (pageUrlParam) params.delete(EXPLORE_PARAMS.PAGE)
 
@@ -63,6 +71,7 @@ export const ShowFiltersButton: FC<{ maxPrice: number }> = ({ maxPrice }) => {
       sort: EXPLORE_SORT_BY.FEATURED,
       rating: [],
       priceRange: [0, maxPrice],
+      free: false,
     })
 
     router.push(ROUTES.explore())

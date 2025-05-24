@@ -151,6 +151,7 @@ export const getExploreAssets = withErrorHandler(
   ) => {
     const params = await searchParams
 
+    const isFree = Boolean(params[EXPLORE_PARAMS.FREE])
     const query = params[EXPLORE_PARAMS.QUERY]
     const useCase = params[EXPLORE_PARAMS.USE_CASES]
     const minPrice = params[EXPLORE_PARAMS.MIN_PRICE]
@@ -193,6 +194,12 @@ export const getExploreAssets = withErrorHandler(
     if (minPrice !== undefined) {
       where.basePrice = {
         gte: minPrice,
+      }
+    }
+
+    if (isFree) {
+      where.basePrice = {
+        equals: 0,
       }
     }
 

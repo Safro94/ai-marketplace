@@ -118,6 +118,7 @@ export enum EXPLORE_PARAMS {
   SORT_BY = 'sortBy',
   PAGE = 'page',
   QUERY = 'q',
+  FREE = 'free',
 }
 
 export enum EXPLORE_SORT_BY {
@@ -132,6 +133,7 @@ export interface ExploreFilters {
   sort: EXPLORE_SORT_BY
   priceRange: number[]
   rating: number[]
+  free: boolean
 }
 
 export type CreatorDashboardAssetWithAnalytics = Prisma.AssetGetPayload<{

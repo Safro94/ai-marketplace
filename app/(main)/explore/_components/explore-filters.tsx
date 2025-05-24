@@ -24,6 +24,7 @@ enum EXPLORE_FITLERS {
   PRICE = 'price',
   USE_CASES = 'use-cases',
   RATINGS = 'ratings',
+  FREE = 'free',
 }
 
 const RATINGS = [
@@ -113,6 +114,34 @@ export const ExploreFilters: FC<Props> = ({ filters, setFilters }) => {
             </div>
           </AccordionContent>
         </AccordionItem>
+
+        <Filter
+          value={EXPLORE_FITLERS.FREE}
+          title='Pricing Options'
+          items={[{ id: 1, label: 'Free' }]}
+        >
+          {(item) => (
+            <>
+              <Checkbox
+                id={`free-${item.id}`}
+                checked={filters.free}
+                onCheckedChange={() =>
+                  setFilters((prevState) => ({
+                    ...prevState,
+                    free: !prevState.free,
+                  }))
+                }
+              />
+
+              <Label
+                htmlFor={`free-${item.id}`}
+                className='text-sm font-normal cursor-pointer flex items-center'
+              >
+                {item.label}
+              </Label>
+            </>
+          )}
+        </Filter>
 
         <Filter value={EXPLORE_FITLERS.RATINGS} title='Ratings' items={RATINGS}>
           {(item) => (
