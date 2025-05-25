@@ -97,7 +97,7 @@ export default function RootLayout({
 
         <Providers>
           <div className='min-h-screen grid grid-rows-[max-content_1fr_max-content]'>
-            <main className='bg-main-background overflow-auto'>{children}</main>
+            <div className='bg-main-background overflow-auto'>{children}</div>
           </div>
 
           <Toaster richColors />

@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
-import { AffiliateSection } from './_components/affiliate-section'
+import { AudienceSection } from './_components/audience-section'
 import { BenefitsSection } from './_components/benefits-section'
 import { CategoriesSection } from './_components/categories-section'
 import { CreatorCTASection } from './_components/creator-cta-section'
-import { CreatorsSection } from './_components/creators-section'
 import { FeaturedSection } from './_components/featured-section'
 import { HeroSection } from './_components/hero-section'
 
@@ -23,8 +22,9 @@ export default function Home() {
       <FeaturedSection />
       <CategoriesSection />
       <BenefitsSection />
-      <AffiliateSection />
-      <CreatorsSection />
+      <AudienceSection />
+      {/* <AffiliateSection /> */}
+      {/* <CreatorsSection /> */}
       {/* <TestimonialSection /> */}
       <CreatorCTASection />
     </div>
