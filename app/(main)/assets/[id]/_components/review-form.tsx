@@ -43,20 +43,6 @@ export const ReviewForm: FC<Props> = ({ assetId, basePrice }) => {
       return
     }
 
-    if (!title.trim()) {
-      toast.error('Title required', {
-        description: 'Please provide a review title',
-      })
-      return
-    }
-
-    if (!comment.trim()) {
-      toast.error('Review comment required', {
-        description: 'Please provide review comment',
-      })
-      return
-    }
-
     startTransition(async () => {
       const { error } = await createReviewAction(assetId, basePrice, {
         asset: { connect: { id: assetId } },
@@ -69,8 +55,7 @@ export const ReviewForm: FC<Props> = ({ assetId, basePrice }) => {
       if (error) {
         toast.error('Error', {
           description:
-            error ||
-            'There was a problem submitting your review. Please try again.',
+            'There was a problem submitting your review. Remember you can only review assets once.',
         })
 
         return
