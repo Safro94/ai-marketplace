@@ -34,8 +34,7 @@ export const FeaturedSection = async () => {
         </HomeSectionTitle>
 
         <HomeSectionDescription>
-          Discover our most popular digital products created by talented
-          creators
+          Most Popular AI Tools This Week
         </HomeSectionDescription>
       </HomeSectionTitleContainer>
 

@@ -18,7 +18,7 @@ export const Footer = () => {
             <Logo />
 
             <p className='text-sm text-muted-foreground'>
-              The marketplace for high-quality AI assets, tools, and resources.
+              Premium AI tools and prompts that actually deliver results.
             </p>
 
             <div className='flex gap-4'>

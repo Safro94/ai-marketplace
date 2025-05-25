@@ -6,7 +6,6 @@ import { CreatorCTASection } from './_components/creator-cta-section'
 import { CreatorsSection } from './_components/creators-section'
 import { FeaturedSection } from './_components/featured-section'
 import { HeroSection } from './_components/hero-section'
-import { TestimonialSection } from './_components/testimonial-section'
 
 export const metadata: Metadata = {
   title: 'GPTs, Prompts, Workflows, AI Tools & AI Artwork  for Everyone',
@@ -26,7 +25,7 @@ export default function Home() {
       <BenefitsSection />
       <AffiliateSection />
       <CreatorsSection />
-      <TestimonialSection />
+      {/* <TestimonialSection /> */}
       <CreatorCTASection />
     </div>
   )

@@ -48,7 +48,10 @@ export const CreatorCTASection: FC<{
           size='lg'
           asChild
           variant={btnVariant ?? 'outline'}
-          className={cn('w-fit', btnVariant === 'outline' && 'text-white')}
+          className={cn(
+            'w-fit dark:bg-primary-foreground dark:text-primary',
+            btnVariant === 'outline' && 'text-white',
+          )}
         >
           <Link href={ROUTES.creators()}>
             Get started now

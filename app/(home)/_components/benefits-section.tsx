@@ -6,20 +6,20 @@ import {
 } from '@/components/page-container'
 import { Motion } from '@/components/ui/motion'
 import { STAGGER } from '@/lib/constants'
-import { Search, Shield, Sparkles, Zap } from 'lucide-react'
+import { Goal, Shield, TrendingUp, Zap } from 'lucide-react'
 
 const BENEFITS = [
   {
-    Icon: Search,
-    title: 'All in one place',
+    Icon: Goal,
+    title: 'Battle-Tested Results',
     description:
-      'Find the perfect digital assets for your next project. Prompt Engineering Systems, Custom GPTs, AI Agents, and more - all in one place.',
+      'Every AI tool is tested by real professionals before listing. No broken prompts or outdated techniques.',
   },
   {
     Icon: Zap,
-    title: 'Instant Access',
+    title: 'Instant Implementation',
     description:
-      'Get immediate access to your purchased assets and start implementing them in your projects.',
+      'Copy, paste, and start using immediately. All tools come with clear instructions and examples.',
   },
   {
     Icon: Shield,
@@ -28,10 +28,10 @@ const BENEFITS = [
       'Our platform ensures secure payments and protects both buyers and creators.',
   },
   {
-    Icon: Sparkles,
-    title: 'Curated Quality',
+    Icon: TrendingUp,
+    title: 'Weekly Updates',
     description:
-      'Every asset is reviewed for quality and effectiveness before being listed on our marketplace.',
+      'New AI tools and prompt systems added every week. Stay ahead of the curve.',
   },
 ]
 
@@ -39,9 +39,9 @@ export const BenefitsSection = () => {
   return (
     <HomeSection className='bg-muted'>
       <HomeSectionTitleContainer>
-        <HomeSectionTitle>Why Choose Our Platform</HomeSectionTitle>
+        <HomeSectionTitle>Why AI Professionals Choose Us</HomeSectionTitle>
 
-        <HomeSectionDescription>
+        <HomeSectionDescription className='md:max-w-3xl'>
           We offer unique benefits that make our referral programs stand out
           from the rest.
         </HomeSectionDescription>
