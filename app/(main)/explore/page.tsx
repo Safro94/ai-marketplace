@@ -35,6 +35,7 @@ export default async function ExplorePage({ searchParams }: Props) {
   const { data: categoriesWithCount, error: categoriesWithCountError } =
     await getCategoriesWithCount()
 
+  const filteredCategories = categoriesWithCount?.filter((cat) => cat.count > 0)
   const urlCategoriesArray = categorySlug?.split(',')
   const filteredCategoriesIds = categoriesWithCount
     ?.filter((item) => urlCategoriesArray?.includes(item.slug))
@@ -57,11 +58,11 @@ export default async function ExplorePage({ searchParams }: Props) {
           Browse our curated collection of high-quality AI assets
         </p>
 
-        {categoriesWithCount?.length && (
+        {filteredCategories?.length && (
           <ScrollArea className='py-4'>
             <div className='flex items-center gap-4'>
               <ExploreCategoriesSelector
-                categories={categoriesWithCount}
+                categories={filteredCategories}
                 initialCategories={urlCategoriesArray}
               />
             </div>
