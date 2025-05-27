@@ -8,6 +8,7 @@ import { Suspense } from 'react'
 
 export const CategoryShowcase = async () => {
   const { data, error } = await getCategoriesWithCount()
+  const filteredCategories = data?.filter((cat) => cat.count > 0)
 
   return (
     <>
@@ -18,7 +19,7 @@ export const CategoryShowcase = async () => {
       </Suspense>
 
       <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
-        {data?.map((category, i) => {
+        {filteredCategories?.map((category, i) => {
           const IconComponent =
             // @ts-expect-error error
             LucideIcons[

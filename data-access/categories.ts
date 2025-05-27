@@ -32,8 +32,6 @@ export const getCategoriesWithCount = withErrorHandler(async () => {
     }),
   )
 
-  const filteredCategories = categoriesWithData.filter((cat) => cat.count > 0)
-  filteredCategories.sort((a, b) => b.count - a.count)
-
-  return filteredCategories
+  categoriesWithData.sort((a, b) => b.count - a.count)
+  return categoriesWithData
 })
