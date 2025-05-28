@@ -43,6 +43,30 @@ export const AssetDetailsTabs: FC<Props> = ({
   description,
   requirements,
 }) => {
+  const sanitizedDescription = DOMPurify.sanitize(description, {
+    ALLOWED_TAGS: [
+      'p',
+      'br',
+      'strong',
+      'em',
+      'b',
+      'i',
+      'u',
+      'ul',
+      'ol',
+      'li',
+      'blockquote',
+      'a',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+    ],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+  })
+
   return (
     <Tabs defaultValue={TabsEnum.DESCRIPTION}>
       <TabsList className='grid grid-cols-3'>
@@ -54,7 +78,7 @@ export const AssetDetailsTabs: FC<Props> = ({
       <TabsContent value={TabsEnum.DESCRIPTION} className='pt-6'>
         <p
           className='prose prose-invert max-w-none break-anywhere'
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description) }}
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
         />
       </TabsContent>
 

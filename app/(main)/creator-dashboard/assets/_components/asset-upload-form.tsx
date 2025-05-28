@@ -40,6 +40,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AssetImageUpload } from '../upload/_components/asset-image-upload'
 import { LicensePricing } from '../upload/_components/license-pricing'
+import { TiptapEditor } from './tiptap-editor'
 
 type FormData = z.infer<typeof assetUploadSchema>
 
@@ -338,14 +339,17 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea {...field} className='min-h-[200px]' />
+                  <TiptapEditor
+                    content={field.value}
+                    onChange={field.onChange}
+                    placeholder='Detailed description of your product, its capabilities, and use cases...'
+                  />
                 </FormControl>
-
                 <FormDescription>
                   Detailed description of your product, its capabilities, and
                   use cases. Please describe what the buyer will get after they
-                  purchase your product. Use HTML tags for formatting, if you
-                  don&apos;t, the text will be displayed as plain text.
+                  purchase your product. Use the formatting tools above to make
+                  your description more engaging.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
