@@ -4,6 +4,7 @@ import { NextConfig } from 'next'
 const config: NextConfig = {
   experimental: {
     useCache: true,
+    ppr: true,
   },
   logging: {
     fetches: {
