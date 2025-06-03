@@ -89,6 +89,10 @@ export default function RootLayout({
             __html: JSON.stringify(generateOrganizationJsonLd()),
           }}
         />
+        <meta
+          name='google-site-verification'
+          content='7Gg5Q3O3xL3R0ZIZXxoBskrOxImF8-WWizdW3yN7_hc'
+        />
       </head>
       <body
         className={cn('bg-background font-sans antialiased', inter.className)}
