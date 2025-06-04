@@ -190,9 +190,9 @@ export async function PATCH(request: Request) {
       basePrice: Number(
         Math.min(...licenses.map((license) => license.price)).toFixed(2),
       ),
-      features: features ? features.split(',').filter((r) => r.trim()) : [],
+      features: features ? features.split(';').filter((r) => r.trim()) : [],
       requirements: requirements
-        ? requirements.split(',').filter((r) => r.trim())
+        ? requirements.split(';').filter((r) => r.trim())
         : [],
       status: AssetStatus.PENDING_REVIEW,
       featured: false,

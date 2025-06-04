@@ -69,8 +69,8 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
       id: initialData?.id,
       title: initialData?.title || '',
       description: initialData?.description || '',
-      features: initialData?.features.join(',') || '',
-      requirements: initialData?.requirements.join(',') || '',
+      features: initialData?.features.join(';') || '',
+      requirements: initialData?.requirements.join(';') || '',
       featuredImage: initialData?.featuredImage || '',
       primaryMediaType: initialData?.primaryMediaType || PrimaryMediaType.IMAGE,
       assetFile: initialData?.assetFile || '',
@@ -366,12 +366,12 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   <Textarea
                     {...field}
                     className='min-h-[100px]'
-                    placeholder='Enter each feature, comma separated'
+                    placeholder='Enter each feature, semicolon separated'
                   />
                 </FormControl>
 
                 <FormDescription>
-                  List the key features of your product, comma separated
+                  List the key features of your product, semicolon separated
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -388,12 +388,12 @@ export const AssetUploadForm: FC<Props> = ({ categories, initialData }) => {
                   <Textarea
                     {...field}
                     className='min-h-[100px]'
-                    placeholder='Enter each requirement, comma separated'
+                    placeholder='Enter each requirement, semicolon separated'
                   />
                 </FormControl>
 
                 <FormDescription>
-                  List any requirements or dependencies, comma separated
+                  List any requirements or dependencies, semicolon separated
                 </FormDescription>
                 <FormMessage />
               </FormItem>
