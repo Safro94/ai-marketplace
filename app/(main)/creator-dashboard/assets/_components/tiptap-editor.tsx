@@ -7,6 +7,9 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import {
   Bold,
+  Heading1,
+  Heading2,
+  Heading3,
   Italic,
   LinkIcon,
   List,
@@ -36,12 +39,33 @@ export function TiptapEditor({
       StarterKit.configure({
         paragraph: {
           HTMLAttributes: {
-            class: 'mb-4', // Add margin between paragraphs
+            class: 'mb-4',
           },
         },
         hardBreak: {
           HTMLAttributes: {
             class: 'block',
+          },
+        },
+        bulletList: {
+          HTMLAttributes: {
+            class: 'list-disc ml-2',
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: 'list-decimal ml-2',
+          },
+        },
+        blockquote: {
+          HTMLAttributes: {
+            class: 'border-l-2 border-gray-300 pl-4 italic text-gray-600',
+          },
+        },
+        heading: {
+          levels: [1, 2, 3],
+          HTMLAttributes: {
+            class: 'font-bold',
           },
         },
       }),
@@ -64,7 +88,7 @@ export function TiptapEditor({
     editorProps: {
       attributes: {
         class:
-          'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4 [&_p]:mb-4 [&_br]:block',
+          'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4 [&_p]:mb-4 [&_br]:block [&_h1]:text-2xl [&_h2]:text-xl [&_h3]:text-base',
       },
     },
   })
@@ -116,6 +140,43 @@ export function TiptapEditor({
           <Italic className='h-4 w-4' />
         </Button>
 
+        <div className='w-px h-6 bg-border mx-1' />
+
+        <Button
+          type='button'
+          variant='ghost'
+          size='sm'
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          className={editor.isActive('heading', { level: 1 }) ? 'bg-muted' : ''}
+        >
+          <Heading1 className='h-4 w-4' />
+        </Button>
+
+        <Button
+          type='button'
+          variant='ghost'
+          size='sm'
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          className={editor.isActive('heading', { level: 2 }) ? 'bg-muted' : ''}
+        >
+          <Heading2 className='h-4 w-4' />
+        </Button>
+
+        <Button
+          type='button'
+          variant='ghost'
+          size='sm'
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          className={editor.isActive('heading', { level: 3 }) ? 'bg-muted' : ''}
+        >
+          <Heading3 className='h-4 w-4' />
+        </Button>
         <div className='w-px h-6 bg-border mx-1' />
 
         <Button

@@ -83,14 +83,16 @@ export default async function ModerationPage() {
                     <div className='grid  md:grid-cols-3 gap-6'>
                       <div>
                         {asset.featuredImage ? (
-                          <AssetPrimaryMedia
-                            alt={asset.title}
-                            src={asset.featuredImage}
-                            type={asset.primaryMediaType}
-                            classNames={{
-                              container: 'h-full w-full',
-                            }}
-                          />
+                          <div className='aspect-video'>
+                            <AssetPrimaryMedia
+                              alt={asset.title}
+                              src={asset.featuredImage}
+                              type={asset.primaryMediaType}
+                              classNames={{
+                                container: 'h-full w-full',
+                              }}
+                            />
+                          </div>
                         ) : (
                           <div className='aspect-video bg-muted rounded-md flex items-center justify-center'>
                             <AlertCircle className='h-8 w-8 text-muted-foreground' />
@@ -103,9 +105,12 @@ export default async function ModerationPage() {
                           <h3 className='text-sm font-medium mb-1'>
                             Description
                           </h3>
-                          <p className='text-sm text-muted-foreground'>
-                            {asset.description}
-                          </p>
+                          <p
+                            className='text-sm text-muted-foreground'
+                            dangerouslySetInnerHTML={{
+                              __html: asset.description,
+                            }}
+                          />
                         </div>
 
                         <div>

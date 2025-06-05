@@ -20,7 +20,7 @@ export const FeaturedSection = async () => {
       featured: true,
     },
     orderBy: [{ featuredOrder: 'asc' }, { createdAt: 'desc' }],
-    limit: 4,
+    limit: 8,
     skip: 0,
   })
 
