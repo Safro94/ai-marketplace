@@ -43,6 +43,10 @@ export const fileRouter = {
       maxFileCount: 1,
       maxFileSize: '2MB',
     },
+    'text/html': {
+      maxFileCount: 1,
+      maxFileSize: '4MB',
+    },
     'application/xslt+xml': {
       maxFileCount: 1,
       maxFileSize: '4MB',
