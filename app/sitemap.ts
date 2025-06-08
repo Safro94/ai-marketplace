@@ -1,66 +1,58 @@
+import prisma from '@/lib/prisma'
 import { siteConfig } from '@/lib/seo-config'
 import type { MetadataRoute } from 'next'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url
 
-  // Mock data for assets and categories
-  const assets = [1, 2, 3, 4, 5, 6].map((id) => ({
-    url: `${baseUrl}/assets/${id}`,
+  // Fetch real assets and categories
+  const [assets, categories] = await Promise.all([
+    prisma.asset.findMany({
+      where: { status: 'PUBLISHED' },
+      select: { id: true, updatedAt: true },
+    }),
+    prisma.category.findMany({
+      select: { slug: true, updatedAt: true },
+    }),
+  ])
+
+  const staticPages = [
+    '/',
+    '/explore',
+    '/creators',
+    '/refe',
+    '/login',
+    '/signup',
+    '/about',
+    '/terms',
+    '/privacy',
+    '/contact',
+    '/account',
+    '/purchases',
+    '/cart',
+    '/affiliate',
+  ].map((path) => ({
+    url: `${baseUrl}${path}`,
     lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: path === '' ? 1 : 0.7,
+  }))
+
+  // Dynamic assets
+  const assetPages = assets.map((asset) => ({
+    url: `${baseUrl}/assets/${asset.id}`,
+    lastModified: asset.updatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }))
 
-  const categories = [
-    'prompt-engineering',
-    'custom-gpts',
-    'ai-workflows',
-    'industry-solutions',
-    'content-templates',
-    'data-tools',
-    'data-tools',
-    'ai-artwork',
-    'ai-artwork-generation',
-  ].map((category) => ({
-    url: `${baseUrl}/categories/${category}`,
-    lastModified: new Date(),
+  // Dynamic categories
+  const categoryPages = categories.map((category) => ({
+    url: `${baseUrl}/categories/${category.slug}`,
+    lastModified: category.updatedAt,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
 
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/explore`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/creators`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/signup`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    ...assets,
-    ...categories,
-  ]
+  return [...staticPages, ...assetPages, ...categoryPages]
 }
