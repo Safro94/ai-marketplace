@@ -41,7 +41,7 @@ model CreatorProfile {
   experience     String
   portfolio      String?
   paymentMethods CreatorApplicationPaymentMethod[]
-  commissionRate Float                             @default(25.0) // Default 25%
+  commissionRate Float                             @default(15.0) // Default 15%
   isExclusive    Boolean                           @default(false)
   createdAt      DateTime                          @default(now())
   updatedAt      DateTime                          @updatedAt

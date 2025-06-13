@@ -17,11 +17,11 @@ const USER_DISCOUNT_THRESHOLDS = [
 ]
 
 const CREATOR_COMMISSION_THRESHOLDS = [
-  { sales: 0, commissionRate: 25 }, // Default
-  { sales: 250, commissionRate: 22.5 },
-  { sales: 1000, commissionRate: 20 },
-  { sales: 2500, commissionRate: 17.5 },
-  { sales: 5000, commissionRate: 15 },
+  { sales: 0, commissionRate: 15 }, // Default
+  { sales: 250, commissionRate: 12.5 },
+  { sales: 1000, commissionRate: 10 },
+  { sales: 2500, commissionRate: 7.5 },
+  { sales: 5000, commissionRate: 5 },
 ]
 
 /**

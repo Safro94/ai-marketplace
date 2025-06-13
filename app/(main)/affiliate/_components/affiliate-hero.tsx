@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { getUserProfile } from '@/data-access/profile'
-import { ROUTES } from '@/lib/constants'
+import { LOWEST_SERVICE_CHARGE, ROUTES } from '@/lib/constants'
 import { isAdminOrCreator } from '@/lib/permissions'
 import { getServerSession } from '@/lib/session'
 import { ArrowRight } from 'lucide-react'
@@ -87,7 +87,9 @@ export const AffiliateHero = async () => {
             </div>
 
             <div>
-              <h3 className='text-3xl font-bold'>15%</h3>
+              <h3 className='text-3xl font-bold'>
+                {LOWEST_SERVICE_CHARGE * 100}%
+              </h3>
               <p className='text-sm opacity-80'>Min Commission</p>
             </div>
           </div>

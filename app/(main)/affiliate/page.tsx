@@ -121,7 +121,7 @@ export default function AffiliatePage() {
               thresholdLabel='Sales Generated'
               benefitLabel='Commission Rate'
               thresholds={[250, 1000, 2500, 5000]}
-              benefits={['22.5%', '20%', '17.5%', '15%']}
+              benefits={['12.5%', '10%', '7.5%', '5%']}
               prefix='$'
             />
           </div>

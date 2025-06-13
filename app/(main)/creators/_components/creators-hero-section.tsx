@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Motion } from '@/components/ui/motion'
-import { ROUTES } from '@/lib/constants'
+import { LOWEST_SERVICE_CHARGE, ROUTES } from '@/lib/constants'
 import { ArrowRight, InfoIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -121,7 +121,7 @@ export const CreatorsHeroSection: FC<Props> = ({
                 description: 'Earning Potential',
               },
               {
-                title: '15%',
+                title: `${LOWEST_SERVICE_CHARGE * 100}%`,
                 description: 'Minimum Commission',
               },
               {

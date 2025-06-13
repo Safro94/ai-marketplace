@@ -152,7 +152,7 @@ export async function POST(request: Request) {
       })
 
       const revenue =
-        assetPrice - assetPrice * (creatorProfile.commissionRate / 100) // commissionRate es (25,20,etc)
+        assetPrice - assetPrice * (creatorProfile.commissionRate / 100) // commissionRate es (15,12.5,etc)
 
       // Update asset sales and revenue
       const updatedAsset = await updateAsset({

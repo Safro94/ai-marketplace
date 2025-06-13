@@ -14,15 +14,15 @@ const tiers = [
   },
   {
     salesThreshold: '$250 - $1,000',
-    commissionRate: '22.5%',
+    commissionRate: `${(SERVICE_CHARGE - 0.025) * 100}%`,
   },
   {
     salesThreshold: '$1,000 - $2,500',
-    commissionRate: '20%',
+    commissionRate: `${(SERVICE_CHARGE - 0.05) * 100}%`,
   },
   {
     salesThreshold: '$2,500 - $5,000',
-    commissionRate: '17.5%',
+    commissionRate: `${(SERVICE_CHARGE - 0.075) * 100}%`,
   },
   {
     salesThreshold: '$5,000+',
